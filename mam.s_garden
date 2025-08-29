@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>엄마의 정원 | 마음에 물을 주는 시간, 치유의 공간</title>
+    <meta name="description" content="경남 밀양의 '엄마의 정원'은 27년간의 정성과 그리움이 담긴 특별한 공간입니다. 자연과 교감하며 온전한 쉼을 경험하세요.">
+    <meta name="keywords" content="엄마의 정원, 밀양 카페, 경남 민간정원, 힐링, 치유, 숲속 카페, 자연 명소, 밀양 여행">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: #FBF9F6;
+            color: #4A4A4A;
+            word-break: keep-all; /* 단어 단위 줄바꿈 적용 */
+        }
+        h1, h2, h3, .font-serif {
+            font-family: 'Noto Serif KR', serif;
+        }
+        .hero-bg {
+            background-image: url('https://oneapp2.godohosting.com/garden/main.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #8C7B70;
+        }
+        .travel-item {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .travel-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-[#FBF9F6]">
+
+    <!-- Header Section -->
+    <header id="header" class="bg-white/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-sm transition-all duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="font-serif text-2xl font-bold text-[#6D5B51]">엄마의 정원</a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#story" class="nav-link text-lg text-gray-700">이야기</a>
+                <a href="#explore" class="nav-link text-lg text-gray-700">둘러보기</a>
+                <a href="#menu" class="nav-link text-lg text-gray-700">메뉴</a>
+                <a href="#visit-and-shop" class="nav-link text-lg text-gray-700">방문 & 정보</a>
+                <a href="#travel" class="nav-link text-lg text-gray-700">여행 코스</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 p-2 -mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#story" class="block py-2 text-gray-700">이야기</a>
+            <a href="#explore" class="block py-2 text-gray-700">둘러보기</a>
+            <a href="#menu" class="block py-2 text-gray-700">메뉴</a>
+            <a href="#visit-and-shop" class="block py-2 text-gray-700">방문 & 정보</a>
+            <a href="#travel" class="block py-2 text-gray-700">여행 코스</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-bg h-screen flex items-center justify-center text-white text-center px-4">
+            <div class="bg-black/40 p-6 sm:p-10 rounded-lg">
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold font-serif mb-4">엄마의 정원</h1>
+                <p class="text-lg sm:text-xl md:text-2xl font-light">마음에 물을 주는 시간, 치유의 공간</p>
+            </div>
+        </section>
+
+        <!-- Brand Story Section -->
+        <section id="story" class="py-16 md:py-24 bg-white section-fade-in">
+            <div class="container mx-auto px-6 text-center max-w-4xl">
+                <h2 class="text-3xl sm:text-4xl font-serif text-[#6D5B51] mb-6">진심이 담긴 27년의 이야기</h2>
+                <p class="text-base sm:text-lg leading-relaxed text-gray-600 mb-4">
+                    '엄마의 정원'은 1997년부터 2만 2천 평의 부지를 가꾼 한 조경인의 손끝과 작고하신 어머니의 마음을 담아 천천히 완성된 작품입니다.
+                </p>
+                <p class="text-base sm:text-lg leading-relaxed text-gray-600">
+                    매일 풀을 뽑고 물을 주며 정원을 가꾼 어머니에 대한 그리움이 담긴 이 공간은, 방문객에게 깊은 진정성과 함께 '힐링'을 선물합니다.
+                </p>
+                <!-- Story Timeline Section -->
+                <div class="mt-12 md:mt-16 text-left relative">
+                    <div class="w-1 bg-[#EAE6E1] h-full absolute left-4 md:left-1/2 md:-translate-x-1/2"></div>
+                    <div class="mb-8 pl-10 md:pl-0">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-[#8C7B70] border-4 border-white z-10 -ml-12 md:ml-0 md:absolute md:left-1/2 md:-translate-x-1/2"></div>
+                            <div class="md:w-1/2 md:text-right md:pr-8">
+                                <h3 class="font-serif text-xl sm:text-2xl text-[#6D5B51] mb-1">1997년</h3>
+                                <p class="text-gray-600">정원 조성 시작</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-8 pl-10 md:pl-0">
+                         <div class="flex items-center md:flex-row-reverse">
+                            <div class="w-8 h-8 rounded-full bg-[#8C7B70] border-4 border-white z-10 -ml-12 md:ml-0 md:absolute md:left-1/2 md:-translate-x-1/2"></div>
+                            <div class="md:w-1/2 md:text-left md:pl-8">
+                                <h3 class="font-serif text-xl sm:text-2xl text-[#6D5B51] mb-1">2021년</h3>
+                                <p class="text-gray-600">경남 민간정원 등록</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pl-10 md:pl-0">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-[#8C7B70] border-4 border-white z-10 -ml-12 md:ml-0 md:absolute md:left-1/2 md:-translate-x-1/2"></div>
+                            <div class="md:w-1/2 md:text-right md:pr-8">
+                                <h3 class="font-serif text-xl sm:text-2xl text-[#6D5B51] mb-1">현재</h3>
+                                <p class="text-gray-600">자연과 사람이 공존하는 치유의 공간</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Explore Section -->
+        <section id="explore" class="py-16 md:py-24 section-fade-in bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl sm:text-4xl font-serif text-center text-[#6D5B51] mb-12">정원 그 자체가 상품인 이유</h2>
+                <!-- Key Value 1: Healing and Peace -->
+                <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center mb-12 md:mb-16">
+                    <div class="md:w-1/2">
+                        <img src="https://oneapp2.godohosting.com/garden/sub1.jpg" alt="고요한 정원의 풍경" class="rounded-lg shadow-xl w-full h-64 md:h-80 object-cover">
+                    </div>
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4">치유와 평온</h3>
+                        <p class="text-base sm:text-lg leading-relaxed text-gray-600">
+                            방문객들이 가장 많이 언급하는 감정은 '힐링'입니다. 정원의 잔잔한 물소리, 오래된 나무의 풍경, 그리고 고요한 분위기는 지친 몸과 마음에 온전한 쉼을 선물합니다.
+                        </p>
+                    </div>
+                </div>
+                <!-- Key Value 2: Authenticity and Passion -->
+                <div class="flex flex-col md:flex-row-reverse gap-8 md:gap-12 items-center mb-12 md:mb-16">
+                    <div class="md:w-1/2">
+                        <img src="https://oneapp2.godohosting.com/garden/sub2.png" alt="창업자의 정성 어린 손길" class="rounded-lg shadow-xl w-full h-64 md:h-80 object-cover">
+                    </div>
+                    <div class="md:w-1/2 text-center md:text-right">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4">진정성과 열정</h3>
+                        <p class="text-base sm:text-lg leading-relaxed text-gray-600">
+                            27년간 이어진 창업주의 개인적인 열정은 '엄마의 정원'을 단순한 카페가 아닌 하나의 작품으로 만들었습니다. 이러한 진정성은 다른 어떤 곳도 흉내 낼 수 없는 강력한 브랜드 강점입니다.
+                        </p>
+                    </div>
+                </div>
+                <!-- Key Value 3: Communion with Nature -->
+                <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+                    <div class="md:w-1/2">
+                        <img src="https://oneapp2.godohosting.com/garden/sub3.jpg" alt="다양한 식물과 조형물" class="rounded-lg shadow-xl w-full h-64 md:h-80 object-cover">
+                    </div>
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4">자연과의 온전한 교감</h3>
+                        <p class="text-base sm:text-lg leading-relaxed text-gray-600">
+                            이곳은 '카페가 있는 거대한 정원'입니다. 방문객들은 130여 종의 식물과 나무, 이국적인 조형물, 그리고 공작새와 닭을 구경하며 자연과 온전히 교감하는 특별한 경험을 하게 됩니다.
+                        </p>
+                    </div>
+                </div>
+                <!-- Interactive Garden Map Placeholder -->
+                <div class="mt-16">
+                    <h3 class="font-serif text-2xl text-center text-[#6D5B51] mb-6">대화형 정원 지도</h3>
+                    <div class="relative w-full aspect-video max-w-4xl mx-auto rounded-lg shadow-lg overflow-hidden bg-[#EAE6E1] flex items-center justify-center">
+                        <img src="https://oneapp2.godohosting.com/garden/map.jpg" alt="정원 지도" class="w-full h-full object-cover">
+                        <div id="map-point-1" class="absolute flex items-center justify-center rounded-full cursor-pointer transition-transform duration-300 hover:scale-125 bg-red-500 hover:bg-red-600 text-white font-bold opacity-80 w-8 h-8 text-sm md:w-10 md:h-10 md:text-lg" style="top: 30%; left: 28%;" data-content="카페 엄마의 정원">?</div>
+                        <div id="map-point-2" class="absolute flex items-center justify-center rounded-full cursor-pointer transition-transform duration-300 hover:scale-125 bg-red-500 hover:bg-red-600 text-white font-bold opacity-80 w-8 h-8 text-sm md:w-10 md:h-10 md:text-lg" style="top: 50%; right: 25%;" data-content="비밀 포토존">?</div>
+                        <div id="map-point-3" class="absolute flex items-center justify-center rounded-full cursor-pointer transition-transform duration-300 hover:scale-125 bg-red-500 hover:bg-red-600 text-white font-bold opacity-80 w-8 h-8 text-sm md:w-10 md:h-10 md:text-lg" style="bottom: 15%; left: 21%;" data-content="배롱나무 군락">?</div>
+                    </div>
+                    <p id="map-tooltip" class="mt-4 text-center text-gray-600 text-lg font-bold transition-all duration-300 opacity-0 h-6">지도 위 물음표를 눌러보세요.</p>
+                </div>
+                <!-- FAQ Section -->
+                <div class="mt-16 max-w-4xl mx-auto">
+                    <h3 class="font-serif text-2xl text-[#6D5B51] mb-6 border-b-2 border-[#EAE6E1] pb-4 text-center">자주 묻는 질문</h3>
+                    <div class="text-left text-base sm:text-lg text-gray-700 space-y-4">
+                        <div>
+                            <p class="font-bold">Q. 가장 좋은 방문 시기는?</p>
+                            <p>A. 사계절 모두 다른 매력이 있습니다. 특히 봄의 수국, 여름의 능소화, 가을의 단풍이 아름답습니다.</p>
+                        </div>
+                        <div>
+                            <p class="font-bold">Q. 예상 소요 시간은?</p>
+                            <p>A. 카페에서 차를 마시는 시간을 포함하여 정원을 둘러보는 데 약 1~2시간 정도 소요됩니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu" class="py-16 md:py-24 section-fade-in">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl sm:text-4xl font-serif text-[#6D5B51] mb-12">다양한 음료와 디저트</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div class="p-6 rounded-lg bg-white shadow-md">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4">커피 & 음료</h3>
+                        <ul class="text-left text-base sm:text-lg text-gray-700 space-y-2">
+                            <li class="text-red-500">- 더치레몬커피</li>
+                            <li>- 아포카토</li>
+                            <li>- 아메리카노 / 카페라떼</li>
+                            <li>- 헤이즐넛 / 바닐라 라떼</li>
+                            <li>- 스무디 / 에이드 / 주스</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 rounded-lg bg-white shadow-md">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4">꽃잎차 & 수제차</h3>
+                        <ul class="text-left text-base sm:text-lg text-gray-700 space-y-2">
+                            <li class="text-red-500">- 나한과 국화차</li>
+                            <li>- 민들레 뿌리 자스민차</li>
+                            <li>- 레몬국화 장미차</li>
+                            <li>- 수제 레몬차 / 대추차</li>
+                            <li>- 쌍화차 / 자몽차</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 rounded-lg bg-white shadow-md">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4">디저트</h3>
+                        <ul class="text-left text-base sm:text-lg text-gray-700 space-y-2">
+                            <li class="text-red-500">- 매화다과세트</li>
+                            <li>- 수제모둠 콩백설기</li>
+                            <li>- 흑임자크림 찹쌀모찌</li>
+                            <li>- 치즈스틱케이크</li>
+                            <li>- 소금빵</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Combined Visit and Info Section -->
+        <section id="visit-and-shop" class="py-16 md:py-24 section-fade-in bg-[#FBF9F6]">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col lg:flex-row gap-10 max-w-6xl mx-auto lg:items-stretch">
+                    <!-- Visit Info Section -->
+                    <div id="visit-info" class="lg:w-1/2 w-full bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                        <h2 class="font-serif text-3xl sm:text-4xl text-[#6D5B51] text-center mb-6">찾아오시는 길</h2>
+                        <div class="space-y-4 text-base sm:text-lg text-gray-700 pt-4 mt-6 border-t-2 border-[#EAE6E1]">
+                            <p><strong>주소:</strong> 경남 밀양시 하남읍 남전7길 41-19</p>
+                            <p><strong>전화번호:</strong> 055-391-5957</p>
+                            <p><strong>영업시간:</strong> 11:00 - 17:00 (마지막 주문 16:30)</p>
+                            <p><strong>정기휴무:</strong> 매주 화요일</p>
+                            <p><strong>주차:</strong> 카페 앞 주차장 이용 가능</p>
+                        </div>
+                    </div>
+                    <!-- More Info Section -->
+                    <div id="more-info" class="lg:w-1/2 w-full bg-white p-6 md:p-8 rounded-lg shadow-lg text-center flex flex-col justify-center">
+                        <h2 class="font-serif text-3xl sm:text-4xl text-[#6D5B51] mb-6">정원 소식 & 후기</h2>
+                        <p class="text-base sm:text-lg leading-relaxed text-gray-600 mb-8">
+                            생생한 방문자 후기와 더 자세한 가게 정보가 궁금하다면 네이버 플레이스를 확인해 보세요.
+                        </p>
+                        <a href="https://map.naver.com/p/entry/place/1088554601?lng=128.7316285&lat=35.4070568&placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202508290846&locale=ko&svcName=map_pcv5&fromPanelNum=1&additionalHeight=76&timestamp=202508290846&locale=ko&svcName=map_pcv5&entry=plt&searchType=place&c=15.00,0,0,0,dh" target="_blank" rel="noopener noreferrer" id="naver-place-link" class="inline-block bg-[#8C7B70] text-white font-bold text-lg px-8 py-3 sm:px-10 sm:py-4 rounded-full shadow-lg hover:bg-[#6D5B51] transition-colors duration-300">
+                            네이버 플레이스 바로가기
+                        </a>
+                        <p class="text-sm text-gray-500 mt-4">
+                            * 위 버튼을 누르면 '엄마의 정원' 네이버 플레이스 페이지로 이동합니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Travel Courses Section (Moved to bottom) -->
+        <section id="travel" class="py-16 md:py-24 section-fade-in">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl sm:text-4xl font-serif text-[#6D5B51] mb-12">엄마의 정원과 함께하는<br class="md:hidden"> 밀양 여행 코스</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <div class="travel-item bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4 border-b border-[#EAE6E1] pb-2">힐링 & 자연 코스</h3>
+                        <ul class="text-left text-base sm:text-lg text-gray-700 space-y-2">
+                            <li><strong class="font-serif">위양지:</strong> 이팝나무가 어우러진 산책하기 좋은 곳.</li>
+                            <li><strong class="font-serif">호박소계곡:</strong> 맑은 물과 시원한 바람이 불어오는 계곡.</li>
+                            <li><strong class="font-serif">엄마의 정원:</strong> 자연 속 산책 후 편안하게 힐링.</li>
+                            <li><strong class="font-serif">만어사:</strong> 신비로운 운해 풍경으로 유명한 사찰.</li>
+                        </ul>
+                    </div>
+                    <div class="travel-item bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                        <h3 class="font-serif text-2xl text-[#6D5B51] mb-4 border-b border-[#EAE6E1] pb-2">밀양 역사 & 문화 코스</h3>
+                        <ul class="text-left text-base sm:text-lg text-gray-700 space-y-2">
+                            <li><strong class="font-serif">영남루:</strong> 밀양강변에 자리한 아름다운 누각.</li>
+                            <li><strong class="font-serif">월연정:</strong> 절벽 위 고즈넉한 분위기의 정자.</li>
+                            <li><strong class="font-serif">엄마의 정원:</strong> 고즈넉한 풍경 후 차 한 잔의 여유.</li>
+                            <li><strong class="font-serif">트윈터널:</strong> 폐터널을 활용한 이색적인 피서지.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-8">
+        <div class="container mx-auto px-6 text-center text-gray-600">
+            <p>&copy; <span id="current-year"></span> 엄마의 정원. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const header = document.getElementById('header');
+            const headerHeight = header.offsetHeight;
+
+            // Function to handle smooth scrolling
+            function smoothScroll(targetId) {
+                const targetElement = document.getElementById(targetId.substring(1));
+                if (targetElement) {
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Add click listeners for all nav links
+            const navLinks = document.querySelectorAll('a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                    
+                    smoothScroll(targetId);
+                });
+            });
+            
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Fade-in animation for sections on scroll
+            const sections = document.querySelectorAll('.section-fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Handle interactive map popups
+            const mapTooltip = document.getElementById('map-tooltip');
+            const mapPoints = document.querySelectorAll('#explore .absolute');
+            mapPoints.forEach(point => {
+                point.addEventListener('mouseenter', () => {
+                    mapTooltip.textContent = point.dataset.content;
+                    mapTooltip.classList.remove('opacity-0');
+                });
+                point.addEventListener('mouseleave', () => {
+                    mapTooltip.textContent = '지도 위 물음표를 눌러보세요.';
+                    mapTooltip.classList.add('opacity-0');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
