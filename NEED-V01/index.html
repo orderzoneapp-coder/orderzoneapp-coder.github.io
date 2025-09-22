@@ -29,148 +29,161 @@
 </head>
 <body class="bg-slate-50 text-slate-800">
 
-    <div class="container mx-auto p-4 md:p-8">
-        
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">동적 UI 기반 B2B 플랫폼 혁신 전략</h1>
-            <p class="text-lg text-slate-600 max-w-3xl mx-auto">사용자 접속 경로와 유형에 따라 개인화된 화면을 제공하여 파트너사의 비즈니스 성장을 지원하고, 운영 효율을 극대화하는 방안을 탐색합니다.</p>
-        </header>
+    <!-- Password Overlay -->
+    <div id="passwordOverlay" class="fixed inset-0 bg-slate-800 bg-opacity-95 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center">
+            <h2 class="text-2xl font-bold mb-4">비밀번호를 입력하세요</h2>
+            <p class="text-sm text-slate-500 mb-4">콘텐츠를 보려면 비밀번호가 필요합니다.</p>
+            <input type="password" id="passwordInput" class="w-full p-3 border border-slate-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="비밀번호">
+            <button id="passwordSubmit" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition-colors">확인</button>
+            <p id="errorMessage" class="text-red-500 mt-4 text-sm hidden">비밀번호가 틀렸습니다.</p>
+        </div>
+    </div>
 
-        <main>
-            <!-- Section 1: Implementation Flow -->
-            <section id="implementation" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">핵심 구현 플로우 요약</h2>
-                <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
-                    성공적인 동적 UI 시스템은 아래 4단계의 유기적인 데이터 흐름과 기능 구현을 통해 완성됩니다. 각 단계는 다음 단계의 기반이 되어 전체 시스템의 안정성과 확장성을 보장합니다.
-                </p>
-                <div class="flow-container flex justify-center items-stretch flex-wrap gap-2 md:gap-4">
-                    <div class="flow-step">
-                        <div class="text-3xl mb-2">①</div>
-                        <h3 class="font-bold text-lg mb-1">데이터 연동</h3>
-                        <p class="text-sm text-slate-500">회원/상품 정보에 '유통사 코드'를 연결하여 개인화의 기반 마련</p>
-                    </div>
-                    <div class="flow-arrow">&rarr;</div>
-                    <div class="flow-step">
-                        <div class="text-3xl mb-2">②</div>
-                        <h3 class="font-bold text-lg mb-1">관리 기능 구현</h3>
-                        <p class="text-sm text-slate-500">본사/유통사가 로고, GNB 버튼 등을 직접 설정하는 관리자 페이지 개발</p>
-                    </div>
-                    <div class="flow-arrow">&rarr;</div>
-                    <div class="flow-step">
-                        <div class="text-3xl mb-2">③</div>
-                        <h3 class="font-bold text-lg mb-1">맞춤형 데이터 제공</h3>
-                        <p class="text-sm text-slate-500">사용자 로그인 정보와 접속 URL을 분석해 최적의 UI 데이터 조합</p>
-                    </div>
-                    <div class="flow-arrow">&rarr;</div>
-                    <div class="flow-step">
-                        <div class="text-3xl mb-2">④</div>
-                        <h3 class="font-bold text-lg mb-1">사용자 화면 적용</h3>
-                        <p class="text-sm text-slate-500">조합된 데이터를 실제 로고, 상품 목록, GNB 버튼에 시각적으로 구현</p>
-                    </div>
-                </div>
-            </section>
+    <!-- Main Content -->
+    <div id="mainContent" class="hidden">
+        <div class="container mx-auto p-4 md:p-8">
             
-            <!-- Section 2: Interactive Simulator -->
-            <section id="simulator" class="mb-16 bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
-                <h2 class="text-3xl font-bold text-center mb-2">동적 UI 인터랙티브 시뮬레이터</h2>
-                <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
-                    아래 옵션을 변경하여 사용자와 접속 경로에 따라 UI가 어떻게 실시간으로 변화하는지 직접 확인해보세요.
-                </p>
-                <div class="grid md:grid-cols-3 gap-6 items-start">
-                    <div class="md:col-span-1 bg-slate-50 p-6 rounded-lg">
-                        <h3 class="font-bold text-lg mb-4">시나리오 설정</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="userType" class="block text-sm font-medium text-slate-700 mb-1">접속 사용자 유형</label>
-                                <select id="userType" class="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="guest">비로그인 방문자</option>
-                                    <option value="general">일반 고객</option>
-                                    <option value="distA_member">ORDERZ A유통사 전용회원</option>
-                                    <option value="distB_member">ORDERZ B유통사 전용회원</option>
-                                    <option value="distA_admin">ORDERZ A유통사 관리자</option>
-                                    <option value="hq_admin">본사 관리자</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="accessPath" class="block text-sm font-medium text-slate-700 mb-1">접속 경로 (URL)</label>
-                                <select id="accessPath" class="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="default">https://orderz.kr (기본 도메인)</option>
-                                    <option value="distA">https://distA.orderz.kr (A유통사 전용)</option>
-                                    <option value="distB">https://distB.orderz.kr (B유통사 전용)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md:col-span-2 p-6 bg-slate-100 rounded-lg border-2 border-dashed border-slate-300">
-                        <h3 class="font-bold text-lg mb-4 text-center">미리보기: 사용자 맞춤형 화면</h3>
-                        <div class="bg-white rounded-md shadow-inner p-4">
-                            <!-- Mock Header -->
-                            <div class="flex justify-between items-center p-3 border-b border-slate-200 mb-4">
-                                <span id="mockLogoText" class="text-xl font-bold">ORDERZ HQ</span>
-                                <button id="mockGNB" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors"></button>
-                            </div>
-                            <!-- Mock Product List -->
-                            <div>
-                                <h4 class="font-semibold px-3 mb-2">노출 상품 목록</h4>
-                                <ul id="mockProducts" class="space-y-2 text-sm"></ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <header class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">동적 UI 기반 B2B 플랫폼 혁신 전략</h1>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto">사용자 접속 경로와 유형에 따라 개인화된 화면을 제공하여 파트너사의 비즈니스 성장을 지원하고, 운영 효율을 극대화하는 방안을 탐색합니다.</p>
+            </header>
 
-            <!-- Section 3: Applications -->
-            <section id="applications">
-                <h2 class="text-3xl font-bold text-center mb-8">운영 및 마케팅 활용 방안</h2>
-                 <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
-                    동적 UI는 단순한 화면 변경을 넘어, B2B 플랫폼의 핵심 경쟁력을 강화하는 전략적 도구입니다. 각 비즈니스 영역별 구체적인 활용 방안을 살펴보세요.
-                </p>
-                <div class="flex justify-center border-b border-slate-200 mb-6">
-                    <button data-tab="tab1" class="tab-btn active px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">회원 관리</button>
-                    <button data-tab="tab2" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">상품/주문 관리</button>
-                    <button data-tab="tab3" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">마케팅/브랜딩</button>
-                    <button data-tab="tab4" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">데이터/확장성</button>
-                </div>
+            <main>
+                <!-- Section 1: Implementation Flow -->
+                <section id="implementation" class="mb-16">
+                    <h2 class="text-3xl font-bold text-center mb-8">핵심 구현 플로우 요약</h2>
+                    <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
+                        성공적인 동적 UI 시스템은 아래 4단계의 유기적인 데이터 흐름과 기능 구현을 통해 완성됩니다. 각 단계는 다음 단계의 기반이 되어 전체 시스템의 안정성과 확장성을 보장합니다.
+                    </p>
+                    <div class="flow-container flex justify-center items-stretch flex-wrap gap-2 md:gap-4">
+                        <div class="flow-step">
+                            <div class="text-3xl mb-2">①</div>
+                            <h3 class="font-bold text-lg mb-1">데이터 연동</h3>
+                            <p class="text-sm text-slate-500">회원/상품 정보에 '유통사 코드'를 연결하여 개인화의 기반 마련</p>
+                        </div>
+                        <div class="flow-arrow">&rarr;</div>
+                        <div class="flow-step">
+                            <div class="text-3xl mb-2">②</div>
+                            <h3 class="font-bold text-lg mb-1">관리 기능 구현</h3>
+                            <p class="text-sm text-slate-500">본사/유통사가 로고, GNB 버튼 등을 직접 설정하는 관리자 페이지 개발</p>
+                        </div>
+                        <div class="flow-arrow">&rarr;</div>
+                        <div class="flow-step">
+                            <div class="text-3xl mb-2">③</div>
+                            <h3 class="font-bold text-lg mb-1">맞춤형 데이터 제공</h3>
+                            <p class="text-sm text-slate-500">사용자 로그인 정보와 접속 URL을 분석해 최적의 UI 데이터 조합</p>
+                        </div>
+                        <div class="flow-arrow">&rarr;</div>
+                        <div class="flow-step">
+                            <div class="text-3xl mb-2">④</div>
+                            <h3 class="font-bold text-lg mb-1">사용자 화면 적용</h3>
+                            <p class="text-sm text-slate-500">조합된 데이터를 실제 로고, 상품 목록, GNB 버튼에 시각적으로 구현</p>
+                        </div>
+                    </div>
+                </section>
                 
-                <div id="tab-contents">
-                    <!-- Member Management -->
-                    <div id="tab1" class="content-panel active grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 맞춤형 고객 경험 제공</h3>
-                            <p class="text-slate-600">유통사 전용 링크로 접속한 고객에게는 해당 유통사의 로고와 맞춤 메시지를 노출하여, 마치 해당 유통사의 독립몰에 온 듯한 전문적이고 신뢰도 높은 첫인상을 제공합니다.</p>
+                <!-- Section 2: Interactive Simulator -->
+                <section id="simulator" class="mb-16 bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <h2 class="text-3xl font-bold text-center mb-2">동적 UI 인터랙티브 시뮬레이터</h2>
+                    <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
+                        아래 옵션을 변경하여 사용자와 접속 경로에 따라 UI가 어떻게 실시간으로 변화하는지 직접 확인해보세요.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-6 items-start">
+                        <div class="md:col-span-1 bg-slate-50 p-6 rounded-lg">
+                            <h3 class="font-bold text-lg mb-4">시나리오 설정</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="userType" class="block text-sm font-medium text-slate-700 mb-1">접속 사용자 유형</label>
+                                    <select id="userType" class="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="guest">비로그인 방문자</option>
+                                        <option value="general">일반 고객</option>
+                                        <option value="distA_member">ORDERZ A유통사 전용회원</option>
+                                        <option value="distB_member">ORDERZ B유통사 전용회원</option>
+                                        <option value="distA_admin">ORDERZ A유통사 관리자</option>
+                                        <option value="hq_admin">본사 관리자</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="accessPath" class="block text-sm font-medium text-slate-700 mb-1">접속 경로 (URL)</label>
+                                    <select id="accessPath" class="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                        <option value="default">https://orderz.kr (기본 도메인)</option>
+                                        <option value="distA">https://distA.orderz.kr (A유통사 전용)</option>
+                                        <option value="distB">https://distB.orderz.kr (B유통사 전용)</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 효율적인 회원 소속 관리</h3>
-                            <p class="text-slate-600">전용 링크를 통해 가입하는 신규 고객은 자동으로 해당 유통사 소속으로 지정됩니다. 수동 배정 작업이 사라져 관리 리소스가 절감되고, 오류 가능성이 원천 차단됩니다.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 그룹별 커뮤니케이션 강화</h3>
-                            <p class="text-slate-600">GNB 버튼을 'A유통사 소식' 또는 'B도매사 공지' 등으로 설정하여, 각 파트너사가 자신의 고객 그룹에게만 타겟팅된 정보와 이벤트를 효과적으로 전달할 수 있습니다.</p>
+                        <div class="md:col-span-2 p-6 bg-slate-100 rounded-lg border-2 border-dashed border-slate-300">
+                            <h3 class="font-bold text-lg mb-4 text-center">미리보기: 사용자 맞춤형 화면</h3>
+                            <div class="bg-white rounded-md shadow-inner p-4">
+                                <!-- Mock Header -->
+                                <div class="flex justify-between items-center p-3 border-b border-slate-200 mb-4">
+                                    <span id="mockLogoText" class="text-xl font-bold">ORDERZ HQ</span>
+                                    <button id="mockGNB" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors"></button>
+                                </div>
+                                <!-- Mock Product List -->
+                                <div>
+                                    <h4 class="font-semibold px-3 mb-2">노출 상품 목록</h4>
+                                    <ul id="mockProducts" class="space-y-2 text-sm"></ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- Product/Order Management -->
-                    <div id="tab2" class="content-panel grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 유통사 전용 상품 운영</h3>
-                            <p class="text-slate-600">특정 유통사 소속 회원에게만 보이는 '전용 상품'을 등록하고 판매할 수 있습니다. 파트너사별로 차별화된 상품 포트폴리오를 구축하여 경쟁력을 강화합니다.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 맞춤형 가격 및 프로모션</h3>
-                            <p class="text-slate-600">고객 등급이나 소속 유통사에 따라 다른 가격 정책을 적용하거나, 특정 그룹에게만 노출되는 프로모션 상품을 구성하여 타겟화된 판매 전략을 구사할 수 있습니다.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 간소화된 주문 프로세스</h3>
-                            <p class="text-slate-600">자주 주문하는 상품이나 소속 유통사가 주력으로 판매하는 상품들을 상위에 노출시켜, 고객의 상품 탐색 시간을 줄이고 빠르고 편리한 주문 경험을 제공합니다.</p>
-                        </div>
+                </section>
+
+                <!-- Section 3: Applications -->
+                <section id="applications">
+                    <h2 class="text-3xl font-bold text-center mb-8">운영 및 마케팅 활용 방안</h2>
+                    <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
+                        동적 UI는 단순한 화면 변경을 넘어, B2B 플랫폼의 핵심 경쟁력을 강화하는 전략적 도구입니다. 각 비즈니스 영역별 구체적인 활용 방안을 살펴보세요.
+                    </p>
+                    <div class="flex justify-center border-b border-slate-200 mb-6">
+                        <button data-tab="tab1" class="tab-btn active px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">회원 관리</button>
+                        <button data-tab="tab2" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">상품/주문 관리</button>
+                        <button data-tab="tab3" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">마케팅/브랜딩</button>
+                        <button data-tab="tab4" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">데이터/확장성</button>
                     </div>
-                    <!-- Marketing/Branding -->
-                    <div id="tab3" class="content-panel grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 파트너사 브랜딩 강화</h3>
-                            <p class="text-slate-600">유통사가 자신의 로고를 직접 등록하고 고객에게 노출함으로써, 플랫폼 내에서 독립적인 브랜드 정체성을 구축하고 고객과의 유대감을 강화할 수 있습니다.</p>
+                    
+                    <div id="tab-contents">
+                        <!-- Member Management -->
+                        <div id="tab1" class="content-panel active grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 맞춤형 고객 경험 제공</h3>
+                                <p class="text-slate-600">유통사 전용 링크로 접속한 고객에게는 해당 유통사의 로고와 맞춤 메시지를 노출하여, 마치 해당 유통사의 독립몰에 온 듯한 전문적이고 신뢰도 높은 첫인상을 제공합니다.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 효율적인 회원 소속 관리</h3>
+                                <p class="text-slate-600">전용 링크를 통해 가입하는 신규 고객은 자동으로 해당 유통사 소속으로 지정됩니다. 수동 배정 작업이 사라져 관리 리소스가 절감되고, 오류 가능성이 원천 차단됩니다.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 그룹별 커뮤니케이션 강화</h3>
+                                <p class="text-slate-600">GNB 버튼을 'A유통사 소식' 또는 'B도매사 공지' 등으로 설정하여, 각 파트너사가 자신의 고객 그룹에게만 타겟팅된 정보와 이벤트를 효과적으로 전달할 수 있습니다.</p>
+                            </div>
                         </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 타겟 마케팅 캠페인 실행</h3>
+                        <!-- Product/Order Management -->
+                        <div id="tab2" class="content-panel grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 유통사 전용 상품 운영</h3>
+                                <p class="text-slate-600">특정 유통사 소속 회원에게만 보이는 '전용 상품'을 등록하고 판매할 수 있습니다. 파트너사별로 차별화된 상품 포트폴리오를 구축하여 경쟁력을 강화합니다.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 맞춤형 가격 및 프로모션</h3>
+                                <p class="text-slate-600">고객 등급이나 소속 유통사에 따라 다른 가격 정책을 적용하거나, 특정 그룹에게만 노출되는 프로모션 상품을 구성하여 타겟화된 판매 전략을 구사할 수 있습니다.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 간소화된 주문 프로세스</h3>
+                                <p class="text-slate-600">자주 주문하는 상품이나 소속 유통사가 주력으로 판매하는 상품들을 상위에 노출시켜, 고객의 상품 탐색 시간을 줄이고 빠르고 편리한 주문 경험을 제공합니다.</p>
+                            </div>
+                        </div>
+                        <!-- Marketing/Branding -->
+                        <div id="tab3" class="content-panel grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 파트너사 브랜딩 강화</h3>
+                                <p class="text-slate-600">유통사가 자신의 로고를 직접 등록하고 고객에게 노출함으로써, 플랫폼 내에서 독립적인 브랜드 정체성을 구축하고 고객과의 유대감을 강화할 수 있습니다.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                                <h3 class="font-bold text-xl mb-3">✔ 타겟 마케팅 캠페인 실행</h3>
                             <p class="text-slate-600">유통사 전용 링크를 SMS, 이메일, SNS 등 다양한 채널에 활용하여 특정 고객 그룹을 타겟으로 하는 신제품 홍보, 이벤트 참여 유도 등 정교한 마케팅 캠페인을 진행할 수 있습니다.</p>
                         </div>
                         <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
@@ -200,11 +213,37 @@
         <footer class="text-center mt-16 pt-8 border-t border-slate-200">
             <p class="text-slate-500">본 문서는 '사용자 맞춤형 동적 UI 개발 기획안'을 기반으로 제작된 인터랙티브 분석 자료입니다.</p>
         </footer>
-
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const correctPassword = '4579';
+        const passwordOverlay = document.getElementById('passwordOverlay');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordSubmit = document.getElementById('passwordSubmit');
+        const errorMessage = document.getElementById('errorMessage');
+        const mainContent = document.getElementById('mainContent');
+
+        function checkPassword() {
+            if (passwordInput.value === correctPassword) {
+                passwordOverlay.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                initializeSimulator();
+            } else {
+                errorMessage.classList.remove('hidden');
+                passwordInput.value = '';
+            }
+        }
+
+        passwordSubmit.addEventListener('click', checkPassword);
+        passwordInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function initializeSimulator() {
             const userTypeSelect = document.getElementById('userType');
             const accessPathSelect = document.getElementById('accessPath');
             
@@ -323,7 +362,8 @@
                     });
                 });
             });
-        });
-    </script>
+        }
+    });
+</script>
 </body>
 </html>
