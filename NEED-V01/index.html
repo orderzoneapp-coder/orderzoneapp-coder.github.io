@@ -106,7 +106,7 @@
                         <div class="bg-white rounded-md shadow-inner p-4">
                             <!-- Mock Header -->
                             <div class="flex justify-between items-center p-3 border-b border-slate-200 mb-4">
-                                <img id="mockLogo" src="https://placehold.co/120x40/e2e8f0/475569?text=ORDERZ_HQ" alt="logo" class="h-10">
+                                <span id="mockLogoText" class="text-xl font-bold">ORDERZ HQ</span>
                                 <button id="mockGNB" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors"></button>
                             </div>
                             <!-- Mock Product List -->
@@ -208,23 +208,23 @@
             const userTypeSelect = document.getElementById('userType');
             const accessPathSelect = document.getElementById('accessPath');
             
-            const mockLogo = document.getElementById('mockLogo');
+            const mockLogoText = document.getElementById('mockLogoText');
             const mockGNB = document.getElementById('mockGNB');
             const mockProducts = document.getElementById('mockProducts');
 
             const uiData = {
                 hq: {
-                    logo: 'https://placehold.co/120x40/e2e8f0/475569?text=ORDERZ_HQ',
+                    logoText: 'ORDERZ',
                     gnbText: '고객센터',
                     gnbLink: '/service'
                 },
                 distA: {
-                    logo: 'https://placehold.co/120x40/dbeafe/1e40af?text=ORDERZ_A_Distributor',
+                    logoText: 'A유통사',
                     gnbText: 'A사 문의하기',
                     gnbLink: '/distA/contact'
                 },
                 distB: {
-                    logo: 'https://placehold.co/120x40/dcfce7/15803d?text=ORDERZ_B_Distributor',
+                    logoText: 'B유통사',
                     gnbText: 'B사 전용관',
                     gnbLink: '/distB/lounge'
                 },
@@ -244,48 +244,60 @@
                 const user = userTypeSelect.value;
                 const path = accessPathSelect.value;
                 
-                let currentLogo = uiData.hq.logo;
+                let currentLogoText = uiData.hq.logoText;
                 let currentGNB = { text: uiData.hq.gnbText, link: uiData.hq.gnbLink };
-                let productsToShow = [...productData.common];
+                let productsToShow = [];
 
                 if (user.includes('admin')) {
                     currentGNB = { text: uiData.admin.gnbText, link: uiData.admin.gnbLink };
+                    productsToShow = [...productData.common, ...productData.distA, ...productData.distB];
                     if (user === 'distA_admin') {
-                        currentLogo = uiData.distA.logo;
+                        currentLogoText = uiData.distA.logoText;
                     }
                 } else if (user === 'distA_member') {
-                    currentLogo = uiData.distA.logo;
+                    currentLogoText = uiData.distA.logoText;
                     currentGNB = { text: uiData.distA.gnbText, link: uiData.distA.gnbLink };
                     productsToShow.push(...productData.distA);
                 } else if (user === 'distB_member') {
-                    currentLogo = uiData.distB.logo;
+                    currentLogoText = uiData.distB.logoText;
                     currentGNB = { text: uiData.distB.gnbText, link: uiData.distB.gnbLink };
                     productsToShow.push(...productData.distB);
                 } else if (user === 'guest' || user === 'general') {
                     if (path === 'distA') {
-                        currentLogo = uiData.distA.logo;
+                        currentLogoText = uiData.distA.logoText;
                         currentGNB = { text: uiData.distA.gnbText, link: uiData.distA.gnbLink };
+                        productsToShow.push(...productData.distA);
                     } else if (path === 'distB') {
-                        currentLogo = uiData.distB.logo;
+                        currentLogoText = uiData.distB.logoText;
                         currentGNB = { text: uiData.distB.gnbText, link: uiData.distB.gnbLink };
+                        productsToShow.push(...productData.distB);
+                    } else {
+                        productsToShow.push(...productData.common);
                     }
                 }
                 
-                mockLogo.src = currentLogo;
+                mockLogoText.textContent = currentLogoText;
                 mockGNB.textContent = currentGNB.text;
                 mockGNB.onclick = () => alert(`'${currentGNB.link}' (으)로 이동합니다.`);
                 
                 mockProducts.innerHTML = '';
-                productsToShow.forEach(product => {
+                if (productsToShow.length === 0) {
                     const li = document.createElement('li');
-                    li.className = 'p-2 bg-slate-50 rounded';
-                    if (product.includes('전용')) {
-                        li.innerHTML = `<span class="font-semibold text-blue-600">${product}</span>`;
-                    } else {
-                        li.textContent = product;
-                    }
+                    li.className = 'p-2 bg-slate-50 rounded text-center text-slate-400';
+                    li.textContent = '노출할 상품이 없습니다.';
                     mockProducts.appendChild(li);
-                });
+                } else {
+                    productsToShow.forEach(product => {
+                        const li = document.createElement('li');
+                        li.className = 'p-2 bg-slate-50 rounded';
+                        if (product.includes('전용')) {
+                            li.innerHTML = `<span class="font-semibold text-blue-600">${product}</span>`;
+                        } else {
+                            li.textContent = product;
+                        }
+                        mockProducts.appendChild(li);
+                    });
+                }
             }
 
             userTypeSelect.addEventListener('change', updateSimulator);
