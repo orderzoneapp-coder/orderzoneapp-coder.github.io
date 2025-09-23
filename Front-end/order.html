@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전용몰 주문서 (최소 기능 버전)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .payment-label, .shipping-label {
+            transition: all 0.2s ease-in-out;
+        }
+        input[type="radio"]:checked + .payment-label,
+        input[type="radio"]:checked + .shipping-label {
+            border-color: #14b8a6;
+            background-color: #f0fdfa;
+            color: #0d9488;
+            font-weight: 600;
+        }
+        .toggle-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+            padding: 0;
+            opacity: 0;
+            margin-top: 0;
+        }
+        .toggle-section.show {
+            max-height: 1000px; /* 충분한 높이 */
+            opacity: 1;
+            margin-top: 1rem; /* mt-4 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="max-w-md mx-auto bg-white">
+        
+        <header class="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <h1 class="text-lg font-bold">주문서 작성</h1>
+            <div class="w-6"></div>
+        </header>
+
+        <main class="p-4 pb-0">
+            
+            <section>
+                <h2 class="text-base font-semibold mb-3">주문 상품</h2>
+                <div class="flex items-center p-2 text-xs text-gray-500 bg-gray-50 border-t border-b">
+                    <p class="flex-1">품명(규격)</p>
+                    <span class="w-20 text-center">단가</span>
+                    <span class="w-12 text-center">수량</span>
+                    <span class="w-20 text-center">소계</span>
+                </div>
+                <div class="border-b divide-y">
+                    <div class="flex items-center p-3 text-sm">
+                        <p class="flex-1 text-gray-800">양파 20KG</p>
+                        <span class="w-20 text-center text-gray-600">23,000</span>
+                        <span class="w-12 text-center">1</span>
+                        <span class="w-20 text-center font-medium">23,000원</span>
+                    </div>
+                    <div class="flex items-center p-3 text-sm">
+                        <p class="flex-1 text-gray-800">양배추_중_5입</p>
+                        <span class="w-20 text-center text-gray-600">12,000</span>
+                        <span class="w-12 text-center">1</span>
+                        <span class="w-20 text-center font-medium">12,000원</span>
+                    </div>
+                    <div class="flex items-center p-3 text-sm">
+                        <p class="flex-1 text-gray-800">감자왕왕_10kg</p>
+                        <span class="w-20 text-center text-gray-600">18,000</span>
+                        <span class="w-12 text-center">1</span>
+                        <span class="w-20 text-center font-medium">18,000원</span>
+                    </div>
+                </div>
+                
+                <div id="summary-box" class="mt-4 bg-teal-50 border border-teal-100 rounded-lg p-4 space-y-3 text-sm">
+                    <div class="flex justify-between text-gray-700">
+                        <span>주문</span>
+                        <span id="items-subtotal"></span>
+                    </div>
+                    <div class="flex justify-between text-gray-700">
+                        <span>배송비</span>
+                        <span id="items-shipping-fee"></span>
+                    </div>
+                    <div id="points-summary-row" class="hidden justify-between text-gray-700">
+                        <span>포인트 사용</span>
+                        <span id="points-discount" class="font-medium text-red-600"></span>
+                    </div>
+                     <div id="coupon-summary-row" class="hidden justify-between text-gray-700">
+                        <span>쿠폰 할인</span>
+                        <span id="coupon-discount" class="font-medium text-red-600"></span>
+                    </div>
+                    <div class="flex justify-between font-bold text-base text-gray-800 mt-2 pt-3 border-t border-teal-200">
+                        <span>총계</span>
+                        <span id="items-total-amount" class="text-red-600 font-bold text-lg"></span>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-6">
+
+            <section>
+                <h2 class="text-base font-semibold mb-3">배송 정보</h2>
+                <div class="space-y-2">
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <input type="radio" name="shipping-option" id="so-same" value="same" class="hidden" checked>
+                            <label for="so-same" class="shipping-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer h-full">주문자 동일</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="shipping-option" id="so-recent" value="recent" class="hidden">
+                            <label for="so-recent" class="shipping-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer h-full">최근 배송지</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="shipping-option" id="so-new" value="new" class="hidden">
+                            <label for="so-new" class="shipping-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer h-full">신규 배송지</label>
+                        </div>
+                    </div>
+                    <div id="shipping-info-display" class="mt-2 text-sm text-gray-700 p-4 border rounded-lg bg-gray-50/50">
+                        <p class="font-bold">꽃놀이식당(김민준) <span class="text-teal-600 font-semibold">전용회원</span></p>
+                        <p class="mt-1">010-1234-5678</p>
+                        <p class="mt-1">(51496) 경남 창원시 성산구 가음정로 94, 상세주소</p>
+                    </div>
+                    <div id="new-shipping-form" class="hidden mt-2 space-y-3 p-4 border rounded-lg">
+                        <input type="text" placeholder="배송지명 (예: 집, 회사)" class="w-full rounded-md border-gray-300 shadow-sm p-2 text-sm">
+                        <div class="flex items-center">
+                            <input id="set-default-address" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500">
+                            <label for="set-default-address" class="ml-2 block text-sm text-gray-700">기본 배송지로 설정</label>
+                        </div>
+                        <input type="text" placeholder="이름" class="w-full rounded-md border-gray-300 shadow-sm p-2 text-sm">
+                        <input type="text" placeholder="연락처" class="w-full rounded-md border-gray-300 shadow-sm p-2 text-sm">
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="우편번호" class="w-2/3 rounded-md border-gray-300 shadow-sm p-2 text-sm bg-gray-100" readonly>
+                            <button class="w-1/3 bg-gray-200 text-sm rounded-md hover:bg-gray-300">주소 검색</button>
+                        </div>
+                        <input type="text" placeholder="기본 주소" class="w-full rounded-md border-gray-300 shadow-sm p-2 text-sm bg-gray-100" readonly>
+                        <input type="text" placeholder="상세 주소" class="w-full rounded-md border-gray-300 shadow-sm p-2 text-sm">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label for="delivery-request-custom" class="text-sm font-medium text-gray-700">전하실 말씀</label>
+                    <input type="text" id="delivery-request-custom" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2" placeholder="전하실 말씀을 입력해주세요.">
+                </div>
+            </section>
+            
+            <div id="points-section">
+                <hr class="my-6">
+                <section>
+                    <h2 class="text-base font-semibold mb-3">포인트</h2>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="points-input" placeholder="0" class="w-full rounded-md border-gray-300 shadow-sm p-2 text-sm text-right">
+                        <button id="use-all-points-btn" class="bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md flex-shrink-0 hover:bg-gray-300">전액사용</button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1 text-right">사용 가능: <span id="available-points"></span>P</p>
+                </section>
+            </div>
+
+            <div id="coupon-section">
+                <hr class="my-6">
+                <section>
+                    <h2 class="text-base font-semibold mb-3">쿠폰</h2>
+                    <button id="coupon-btn" class="w-full text-left p-2 border rounded-md flex justify-between items-center hover:bg-gray-50">
+                        <span id="coupon-text">사용 가능한 쿠폰 1장</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                </section>
+            </div>
+            
+            <hr class="my-6">
+
+            <section>
+                <h2 class="text-base font-semibold mb-3">결제 수단</h2>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <input type="radio" name="payment-method" id="pm-simple" value="simple" class="hidden">
+                      <label for="pm-simple" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">간편결제</label>
+                   </div>
+                    <div>
+                      <input type="radio" name="payment-method" id="pm-card" value="card" class="hidden">
+                      <label for="pm-card" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">카드결제</label>
+                   </div>
+                    <div>
+                      <input type="radio" name="payment-method" id="pm-bank" value="bank" class="hidden" checked>
+                      <label for="pm-bank" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">무통장입금</label>
+                   </div>
+                   <div>
+                      <input type="radio" name="payment-method" id="pm-credit" value="credit" class="hidden">
+                      <label for="pm-credit" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">신용 거래</label>
+                   </div>
+               </div>
+                
+                <div id="credit-info" class="toggle-section">
+                    <div class="p-4 border rounded-lg bg-gray-50">
+                        <h3 class="font-semibold text-gray-800">신용 한도</h3>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <div class="flex justify-between"><span>총 한도</span><span id="total-credit-limit"></span></div>
+                            <div class="flex justify-between"><span>사용 금액</span><span id="used-credit"></span></div>
+                            <div class="flex justify-between text-teal-600"><span class="font-bold">잔여 한도</span><span id="available-credit" class="font-bold"></span></div>
+                        </div>
+                        <div class="mt-3 w-full bg-gray-200 rounded-full h-2.5"><div id="credit-usage-bar" class="bg-teal-500 h-2.5 rounded-full"></div></div>
+                    </div>
+                </div>
+                
+                <div id="bank-info" class="toggle-section show">
+                    <div class="bg-gray-50 rounded-md border text-sm p-4 space-y-4">
+                        <div>
+                            <p class="font-medium text-gray-800">입금 계좌</p>
+                            <div class="mt-2 flex justify-between items-center bg-white p-3 rounded-md">
+                                <p class="text-gray-700">
+                                    <span class="font-bold text-gray-800">우리은행 1002-123-456789</span>
+                                    <span class="text-gray-500 ml-2">(예금주: 이무철)</span>
+                                </p>
+                                <button onclick="copyToClipboard()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold py-2 px-3 rounded flex-shrink-0 ml-2">복사</button>
+                            </div>
+                        </div>
+                        <div class="border-t pt-4 flex items-center justify-between">
+                             <label for="depositor-name" class="text-sm font-medium text-gray-800 flex-shrink-0">입금자명</label>
+                             <input type="text" id="depositor-name" value="꽃놀이식당" class="w-3/5 rounded-md border-gray-300 shadow-sm p-2 text-sm h-10 text-right">
+                        </div>
+                    </div>
+                </div>
+                <div id="copy-message" class="text-center text-sm text-teal-600 mt-2 h-5"></div>
+
+                <div id="payment-insufficient-notice" class="hidden mt-4 p-4 border rounded-lg bg-red-50 text-red-700 text-sm">
+                    <h3 class="font-semibold">주문 불가</h3>
+                    <p class="mt-1">신용 한도가 부족하여 주문을 진행할 수 없습니다.</p>
+                </div>
+                
+                <div class="mt-2 text-xs text-gray-500 space-y-2">
+                     <p class="leading-relaxed">
+                        오더즈는 통신판매중개자이며, 통신판매의 당사자가 아닙니다. 따라서 오더즈는 상품, 거래정보 및 거래에 대하여 책임을 지지 않습니다.
+                    </p>
+                     <p class="font-medium text-gray-600">
+                        주문 내역을 확인했으며, 구매에 동의합니다.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="sticky bottom-0 bg-white border-t p-4 mt-6">
+            <button id="payment-button" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"></button>
+        </footer>
+    </div>
+
+    <script>
+        // --- 데이터 (서버에서 가져올 정보) ---
+        const creditData = { totalLimit: 5000000, used: 4950000 };
+        const orderTotal = 53000; 
+        const shippingFee = 3000;
+        const freeShippingThreshold = 50000;
+        const bankAccount = '1002-123-456789';
+        const userPoints = 5000; // 0으로 바꾸면 포인트 섹션이 사라집니다.
+        const coupon = { available: true, applied: false, discount: 2000, name: '2,000원 할인 쿠폰' }; // available: false로 바꾸면 쿠폰 섹션이 사라집니다.
+
+        // --- UI 요소 ---
+        const ui = {
+            paymentButton: document.getElementById('payment-button'),
+            shippingInfoDisplay: document.getElementById('shipping-info-display'),
+            newShippingForm: document.getElementById('new-shipping-form'),
+            itemsSubtotal: document.getElementById('items-subtotal'),
+            itemsShippingFee: document.getElementById('items-shipping-fee'),
+            itemsTotalAmount: document.getElementById('items-total-amount'),
+            bankInfo: document.getElementById('bank-info'),
+            creditInfo: document.getElementById('credit-info'),
+            copyMessage: document.getElementById('copy-message'),
+            totalCreditLimit: document.getElementById('total-credit-limit'),
+            usedCredit: document.getElementById('used-credit'),
+            availableCredit: document.getElementById('available-credit'),
+            creditUsageBar: document.getElementById('credit-usage-bar'),
+            paymentInsufficientNotice: document.getElementById('payment-insufficient-notice'),
+            pointsSection: document.getElementById('points-section'),
+            couponSection: document.getElementById('coupon-section'),
+            pointsInput: document.getElementById('points-input'),
+            useAllPointsBtn: document.getElementById('use-all-points-btn'),
+            availablePoints: document.getElementById('available-points'),
+            couponBtn: document.getElementById('coupon-btn'),
+            couponText: document.getElementById('coupon-text'),
+            pointsSummaryRow: document.getElementById('points-summary-row'),
+            pointsDiscount: document.getElementById('points-discount'),
+            couponSummaryRow: document.getElementById('coupon-summary-row'),
+            couponDiscount: document.getElementById('coupon-discount'),
+        };
+
+        // --- 이벤트 리스너 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initialize();
+            document.querySelectorAll('input[name="payment-method"]').forEach(radio => radio.addEventListener('change', updatePaymentView));
+            document.querySelectorAll('input[name="shipping-option"]').forEach(radio => radio.addEventListener('change', updateShippingView));
+            ui.pointsInput.addEventListener('input', updatePaymentView);
+            ui.useAllPointsBtn.addEventListener('click', useAllPoints);
+            ui.couponBtn.addEventListener('click', toggleCoupon);
+        });
+
+        // --- 함수 ---
+        function initialize() {
+            // 보유 포인트/쿠폰에 따라 섹션 노출 여부 결정
+            ui.pointsSection.style.display = userPoints > 0 ? 'block' : 'none';
+            ui.couponSection.style.display = coupon.available ? 'block' : 'none';
+            
+            ui.availablePoints.textContent = userPoints.toLocaleString();
+            updateCreditInfo();
+            updatePaymentView();
+            updateShippingView();
+        }
+
+        function formatCurrency(amount, includeSymbol = true) {
+            const formatted = new Intl.NumberFormat('ko-KR').format(amount);
+            return includeSymbol ? formatted + '원' : formatted;
+        }
+        
+        function useAllPoints() {
+            const maxPoints = Math.min(userPoints, orderTotal + (orderTotal >= freeShippingThreshold ? 0 : shippingFee));
+            ui.pointsInput.value = maxPoints;
+            updatePaymentView();
+        }
+
+        function toggleCoupon() {
+            coupon.applied = !coupon.applied;
+            if (coupon.applied) {
+                ui.couponText.textContent = `${coupon.name} (적용됨)`;
+                ui.couponBtn.classList.add('border-teal-500', 'text-teal-600');
+            } else {
+                ui.couponText.textContent = '사용 가능한 쿠폰 1장';
+                ui.couponBtn.classList.remove('border-teal-500', 'text-teal-600');
+            }
+            updatePaymentView();
+        }
+
+        function updateShippingView() {
+            const selectedShipping = document.querySelector('input[name="shipping-option"]:checked').value;
+            ui.shippingInfoDisplay.classList.toggle('hidden', selectedShipping === 'new');
+            ui.newShippingForm.classList.toggle('hidden', selectedShipping !== 'new');
+        }
+
+        function updateCreditInfo() {
+            const availableCredit = creditData.totalLimit - creditData.used;
+            const usagePercentage = (creditData.used / creditData.totalLimit) * 100;
+            ui.totalCreditLimit.textContent = formatCurrency(creditData.totalLimit);
+            ui.usedCredit.textContent = formatCurrency(creditData.used);
+            ui.availableCredit.textContent = formatCurrency(availableCredit);
+            ui.creditUsageBar.style.width = `${usagePercentage}%`;
+        }
+        
+        function updatePaymentView() {
+            const selectedPayment = document.querySelector('input[name="payment-method"]:checked').value;
+            
+            const currentShippingFee = orderTotal >= freeShippingThreshold ? 0 : shippingFee;
+            const baseTotal = orderTotal + currentShippingFee;
+
+            let pointsUsed = parseInt(ui.pointsInput.value) || 0;
+            if (pointsUsed > userPoints) pointsUsed = userPoints;
+            if (pointsUsed > baseTotal) pointsUsed = baseTotal;
+            ui.pointsInput.value = pointsUsed > 0 ? pointsUsed : '';
+
+            const couponDiscount = coupon.applied ? coupon.discount : 0;
+            
+            let finalAmount = baseTotal - pointsUsed - couponDiscount;
+            if (finalAmount < 0) finalAmount = 0;
+
+            ui.itemsSubtotal.textContent = formatCurrency(orderTotal);
+            ui.itemsShippingFee.textContent = formatCurrency(currentShippingFee);
+            
+            ui.pointsSummaryRow.style.display = pointsUsed > 0 ? 'flex' : 'none';
+            ui.pointsDiscount.textContent = `-${formatCurrency(pointsUsed)}`;
+
+            ui.couponSummaryRow.style.display = couponDiscount > 0 ? 'flex' : 'none';
+            ui.couponDiscount.textContent = `-${formatCurrency(couponDiscount)}`;
+
+            ui.itemsTotalAmount.textContent = formatCurrency(finalAmount);
+
+            ui.bankInfo.classList.toggle('show', selectedPayment === 'bank');
+            ui.creditInfo.classList.toggle('show', selectedPayment === 'credit');
+            
+            let isOrderable = true;
+            let buttonText = `${formatCurrency(finalAmount)} 결제하기`;
+
+            if (selectedPayment === 'credit') {
+                const availableCredit = creditData.totalLimit - creditData.used;
+                if (finalAmount <= availableCredit) {
+                    ui.paymentInsufficientNotice.classList.add('hidden');
+                } else {
+                    isOrderable = false;
+                    buttonText = '신용 한도가 부족합니다';
+                    ui.paymentInsufficientNotice.classList.remove('hidden');
+                }
+            } else {
+                ui.paymentInsufficientNotice.classList.add('hidden');
+            }
+            
+            ui.paymentButton.textContent = buttonText;
+            ui.paymentButton.disabled = !isOrderable;
+        }
+
+        function copyToClipboard() {
+            const tempInput = document.createElement('input');
+            tempInput.value = bankAccount;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            ui.copyMessage.textContent = '계좌번호가 복사되었습니다.';
+            setTimeout(() => { ui.copyMessage.textContent = ''; }, 2000);
+        }
+    </script>
+</body>
+</html>
