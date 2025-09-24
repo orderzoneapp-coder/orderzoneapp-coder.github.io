@@ -70,7 +70,7 @@
                     <button id="toggle-address-btn" class="text-teal-600 text-sm font-medium">변경</button>
                 </div>
                 <div id="address-summary" class="mt-3 text-sm text-gray-700 p-4 border rounded-lg bg-gray-50/50">
-                    <p class="font-bold">우리식당</p>
+                    <p class="font-bold">김민준 사장님 (상호명)</p>
                     <p class="mt-1">010-1234-5678</p>
                     <p class="mt-1">(51496) 경남 창원시 성산구 가음정로 94, 상세주소</p>
                 </div>
@@ -117,6 +117,30 @@
             <!-- 결제 정보 -->
             <section>
                 <h2 class="text-base font-semibold mb-3">결제 정보</h2>
+
+                <div id="coupon-section" class="mb-4">
+                    <h3 class="text-sm font-medium text-gray-700">쿠폰</h3>
+                    <div class="mt-1 flex justify-between items-center text-sm p-3 bg-teal-50 rounded-lg border border-teal-200">
+                        <span class="text-teal-700 font-medium">10% 할인 쿠폰 자동 적용</span>
+                        <span id="coupon-discount-amount" class="text-teal-700 font-medium"></span>
+                    </div>
+                </div>
+                <div id="points-section" class="mb-4">
+                    <h3 class="text-sm font-medium text-gray-700">포인트</h3>
+                    <p class="text-xs text-gray-500 mb-1">보유 포인트: <span id="my-points"></span> P</p>
+                    <div class="flex space-x-2">
+                        <input type="number" id="points-to-use" placeholder="0" class="block w-full rounded-md border-gray-300 shadow-sm p-2">
+                        <button class="w-1/3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50" onclick="useAllPoints()">전액사용</button>
+                    </div>
+                </div>
+                <div id="deposits-section" class="mb-4">
+                    <h3 class="text-sm font-medium text-gray-700">예치금</h3>
+                    <p class="text-xs text-gray-500 mb-1">보유 예치금: <span id="my-deposits"></span> 원</p>
+                    <div class="flex space-x-2">
+                        <input type="number" id="deposits-to-use" placeholder="0" class="block w-full rounded-md border-gray-300 shadow-sm p-2">
+                        <button class="w-1/3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50" onclick="useAllDeposits()">전액사용</button>
+                    </div>
+                </div>
                 
                 <div class="p-4 border rounded-lg bg-gray-50 mb-4">
                     <h3 class="font-semibold text-gray-800">여신 현황</h3>
@@ -131,6 +155,7 @@
                 <!-- 여신 한도 충분할 때 UI -->
                 <div id="payment-sufficient">
                      <h3 class="text-sm font-medium text-gray-700 mb-2">결제 수단</h3>
+                     <!-- ✨ 개선점: 2x2 그리드로 변경하고 무통장입금 추가 -->
                      <div class="grid grid-cols-2 gap-2">
                         <div>
                            <input type="radio" name="payment-method" id="pm-credit" value="credit" class="hidden" checked>
@@ -144,34 +169,30 @@
                            <input type="radio" name="payment-method" id="pm-card" value="card" class="hidden">
                            <label for="pm-card" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">신용카드</label>
                         </div>
-                         <div>
-                           <input type="radio" name="payment-method" id="pm-vbank" value="vbank" class="hidden">
-                           <label for="pm-vbank" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">가상계좌</label>
+                        <div>
+                           <input type="radio" name="payment-method" id="pm-bank" value="bank" class="hidden">
+                           <label for="pm-bank" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">무통장입금</label>
                         </div>
                     </div>
                 </div>
 
                 <!-- 여신 한도 부족할 때 UI -->
                 <div id="payment-shortfall" class="hidden">
-                    <div class="p-4 border-2 border-orange-300 bg-orange-50 rounded-lg">
-                        <h3 class="font-semibold text-orange-800">차액 결제 안내</h3>
-                        <p class="text-xs text-orange-700 mt-2">잔여 여신 한도가 부족하여 차액 결제로 진행됩니다.</p>
-                        <div class="mt-4 space-y-2 text-sm border-t border-orange-200 pt-3">
-                            <div class="flex justify-between"><span>최종 결제 금액</span><span id="shortfall-total" class="font-medium text-gray-700"></span></div>
-                            <div class="flex justify-between"><span>여신 사용</span><span id="shortfall-credit-used" class="font-medium text-gray-700"></span></div>
-                            <div class="flex justify-between text-orange-800"><span class="font-bold">추가 결제할 금액</span><span id="shortfall-amount" class="font-bold"></span></div>
+                    <div class="p-4 border rounded-lg bg-gray-50">
+                        <h3 class="font-semibold text-gray-800">차액 결제 안내</h3>
+                        <p class="text-xs text-gray-600 mt-2">잔여 여신 한도가 부족하여 차액 결제로 진행됩니다.</p>
+                        <div class="mt-4 space-y-2 text-sm border-t pt-3">
+                            <div class="flex justify-between"><span>최종 결제 금액</span><span id="shortfall-total"></span></div>
+                            <div class="flex justify-between text-teal-600"><span>여신으로 결제</span><span id="shortfall-credit-used"></span></div>
+                            <div class="flex justify-between text-blue-600"><span class="font-bold">추가 결제할 금액</span><span id="shortfall-amount" class="font-bold"></span></div>
                         </div>
                     </div>
 
                     <div class="mt-4">
                         <h3 class="text-sm font-medium text-gray-700 mb-2">결제 수단</h3>
-                        <div class="grid grid-cols-2 gap-2">
+                        <div class="grid grid-cols-3 gap-2">
                             <div>
-                               <input type="radio" name="shortfall-payment" id="sp-vbank" value="vbank" class="hidden" checked>
-                               <label for="sp-vbank" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">가상계좌</label>
-                            </div>
-                            <div>
-                               <input type="radio" name="shortfall-payment" id="sp-bank" value="bank" class="hidden">
+                               <input type="radio" name="shortfall-payment" id="sp-bank" value="bank" class="hidden" checked>
                                <label for="sp-bank" class="payment-label flex items-center justify-center p-3 border rounded-lg text-sm cursor-pointer">무통장입금</label>
                             </div>
                             <div>
@@ -186,6 +207,7 @@
                     </div>
                 </div>
                 
+                <!-- ✨ 개선점: 공용으로 사용할 bank-info 섹션 -->
                 <div id="bank-info" class="bg-gray-50 rounded-md border text-sm">
                     <div class="p-4 space-y-3">
                         <div class="flex justify-between items-center">
@@ -221,8 +243,10 @@
 
     <script>
         // --- 데이터 (서버에서 가져올 정보) ---
-        const creditData = { totalLimit: 5000000, used: 4990000 };
+        const creditData = { totalLimit: 5000000, used: 1250000 };
+        const userData = { points: 25400, deposits: 50000 };
         const orderTotal = 27800;
+        const couponRate = 0.10;
         const shippingFee = 3000;
         const freeShippingThreshold = 50000;
         const bankAccount = '1002-123-456789';
@@ -233,6 +257,11 @@
             usedCredit: document.getElementById('used-credit'),
             availableCredit: document.getElementById('available-credit'),
             creditUsageBar: document.getElementById('credit-usage-bar'),
+            myPoints: document.getElementById('my-points'),
+            pointsToUse: document.getElementById('points-to-use'),
+            myDeposits: document.getElementById('my-deposits'),
+            depositsToUse: document.getElementById('deposits-to-use'),
+            couponDiscountAmount: document.getElementById('coupon-discount-amount'),
             paymentSufficient: document.getElementById('payment-sufficient'),
             paymentShortfall: document.getElementById('payment-shortfall'),
             shortfallTotal: document.getElementById('shortfall-total'),
@@ -242,10 +271,15 @@
             copyMessage: document.getElementById('copy-message'),
             footerSummary: document.getElementById('footer-summary'),
             paymentButton: document.getElementById('payment-button'),
+            couponSection: document.getElementById('coupon-section'),
+            pointsSection: document.getElementById('points-section'),
+            depositsSection: document.getElementById('deposits-section'),
         };
 
         document.addEventListener('DOMContentLoaded', () => {
             initialize();
+            if (userData.points > 0) ui.pointsToUse.addEventListener('input', updateSummary);
+            if (userData.deposits > 0) ui.depositsToUse.addEventListener('input', updateSummary);
             document.querySelectorAll('input[name="payment-method"], input[name="shortfall-payment"]').forEach(radio => {
                 radio.addEventListener('change', updateSummary);
             });
@@ -254,15 +288,42 @@
         function formatCurrency(amount) { return new Intl.NumberFormat('ko-KR').format(amount) + '원'; }
 
         function initialize() {
-            const addressEditForm = `<div class="space-y-3 pt-4"><div><label class="text-sm font-medium text-gray-700">상호명</label><input type="text" value="우리식당" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"></div><div><label class="text-sm font-medium text-gray-700">휴대폰 번호</label><input type="text" value="010-1234-5678" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"></div><div><label class="text-sm font-medium text-gray-700">주소</label><div class="flex space-x-2 mt-1"><input type="text" value="51496" class="block w-1/3 rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"><button class="w-2/3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">주소검색</button></div><input type="text" value="경남 창원시 성산구 가음정로 94" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"><input type="text" placeholder="상세주소 입력" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm p-2"></div></div>`;
+            const addressEditForm = `<div class="space-y-3 pt-4"><div><label class="text-sm font-medium text-gray-700">이름</label><input type="text" value="김민준 사장님" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"></div><div><label class="text-sm font-medium text-gray-700">휴대폰 번호</label><input type="text" value="010-1234-5678" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"></div><div><label class="text-sm font-medium text-gray-700">주소</label><div class="flex space-x-2 mt-1"><input type="text" value="51496" class="block w-1/3 rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"><button class="w-2/3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">주소검색</button></div><input type="text" value="경남 창원시 성산구 가음정로 94" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-100"><input type="text" placeholder="상세주소 입력" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm p-2"></div></div>`;
             document.getElementById('address-edit').innerHTML = addressEditForm;
             setupAccordion('toggle-address-btn', 'address-edit', false, document.getElementById('address-summary'));
+
+            if (couponRate <= 0) ui.couponSection.style.display = 'none';
+            if (userData.points <= 0) ui.pointsSection.style.display = 'none';
+            if (userData.deposits <= 0) ui.depositsSection.style.display = 'none';
+            
+            if(ui.myPoints) ui.myPoints.textContent = userData.points.toLocaleString();
+            if(ui.myDeposits) ui.myDeposits.textContent = formatCurrency(userData.deposits);
+            
             updateSummary();
         }
 
         function updateSummary() {
             const currentShippingFee = orderTotal < freeShippingThreshold ? shippingFee : 0;
-            const finalAmount = orderTotal + currentShippingFee;
+            const priceBeforeDiscount = orderTotal + currentShippingFee;
+
+            const couponDiscount = (couponRate > 0) ? Math.floor(orderTotal * couponRate) : 0;
+            let pointsToUse = (userData.points > 0) ? parseInt(ui.pointsToUse.value) || 0 : 0;
+            if (pointsToUse > userData.points) pointsToUse = userData.points;
+            if (pointsToUse < 0) pointsToUse = 0;
+            if(ui.pointsToUse) ui.pointsToUse.value = pointsToUse;
+            
+            const priceAfterDiscount = priceBeforeDiscount - (couponDiscount + pointsToUse);
+
+            let depositsToUse = (userData.deposits > 0) ? parseInt(ui.depositsToUse.value) || 0 : 0;
+            if (depositsToUse > userData.deposits) depositsToUse = userData.deposits;
+            if (depositsToUse > priceAfterDiscount) depositsToUse = priceAfterDiscount;
+            if (depositsToUse < 0) depositsToUse = 0;
+            if(ui.depositsToUse) ui.depositsToUse.value = depositsToUse;
+
+            const finalAmount = priceAfterDiscount - depositsToUse;
+            
+            if(ui.couponDiscountAmount) ui.couponDiscountAmount.textContent = '-' + formatCurrency(couponDiscount);
+
             const availableCredit = creditData.totalLimit - creditData.used;
             const usagePercentage = (creditData.used / creditData.totalLimit) * 100;
 
@@ -276,9 +337,13 @@
                 ui.paymentShortfall.classList.add('hidden');
                 const selectedPayment = document.querySelector('input[name="payment-method"]:checked').value;
                 
-                ui.bankInfo.classList.toggle('show', selectedPayment === 'vbank' || selectedPayment === 'bank');
+                ui.bankInfo.classList.toggle('show', selectedPayment === 'bank');
 
-                let summaryHtml = `<div class="flex justify-between"><span class="text-gray-600">총 상품금액</span><span>${formatCurrency(orderTotal)}</span></div><div class="flex justify-between"><span class="text-gray-600">배송비</span><span>${formatCurrency(currentShippingFee)}</span></div><hr class="my-2 !m-0">`;
+                let summaryHtml = `<div class="flex justify-between"><span class="text-gray-600">총 상품금액</span><span>${formatCurrency(orderTotal)}</span></div><div class="flex justify-between"><span class="text-gray-600">배송비</span><span>${formatCurrency(currentShippingFee)}</span></div>`;
+                if (couponDiscount > 0) summaryHtml += `<div class="flex justify-between text-teal-600"><span class="font-medium">쿠폰 할인</span><span class="font-medium">- ${formatCurrency(couponDiscount)}</span></div>`;
+                if (pointsToUse > 0) summaryHtml += `<div class="flex justify-between text-teal-600"><span class="font-medium">포인트 사용</span><span class="font-medium">- ${formatCurrency(pointsToUse)}</span></div>`;
+                if (depositsToUse > 0) summaryHtml += `<div class="flex justify-between text-blue-600"><span class="font-medium">예치금 사용</span><span class="font-medium">- ${formatCurrency(depositsToUse)}</span></div>`;
+                summaryHtml += `<hr class="my-2 !m-0">`;
                 
                 if (selectedPayment === 'credit') {
                     const remainingAfter = availableCredit - finalAmount;
@@ -299,20 +364,42 @@
                 ui.shortfallAmount.textContent = formatCurrency(shortfall);
 
                 const selectedShortfallPayment = document.querySelector('input[name="shortfall-payment"]:checked').value;
-                ui.bankInfo.classList.toggle('show', selectedShortfallPayment === 'vbank' || selectedShortfallPayment === 'bank');
+                ui.bankInfo.classList.toggle('show', selectedShortfallPayment === 'bank');
                 
-                let summaryHtml = `<div class="flex justify-between"><span class="text-gray-600">총 상품금액</span><span>${formatCurrency(orderTotal)}</span></div><div class="flex justify-between"><span class="text-gray-600">배송비</span><span>${formatCurrency(currentShippingFee)}</span></div><hr class="my-2 !m-0">`;
+                let summaryHtml = `<div class="flex justify-between"><span class="text-gray-600">총 상품금액</span><span>${formatCurrency(orderTotal)}</span></div><div class="flex justify-between"><span class="text-gray-600">배송비</span><span>${formatCurrency(currentShippingFee)}</span></div>`;
+                if (couponDiscount > 0) summaryHtml += `<div class="flex justify-between text-teal-600"><span class="font-medium">쿠폰 할인</span><span class="font-medium">- ${formatCurrency(couponDiscount)}</span></div>`;
+                if (pointsToUse > 0) summaryHtml += `<div class="flex justify-between text-teal-600"><span class="font-medium">포인트 사용</span><span class="font-medium">- ${formatCurrency(pointsToUse)}</span></div>`;
+                if (depositsToUse > 0) summaryHtml += `<div class="flex justify-between text-blue-600"><span class="font-medium">예치금 사용</span><span class="font-medium">- ${formatCurrency(depositsToUse)}</span></div>`;
+                summaryHtml += `<hr class="my-2 !m-0">`;
                 summaryHtml += `<div class="flex justify-between"><span class="text-gray-600">최종 결제 금액</span><span class="font-bold">${formatCurrency(finalAmount)}</span></div>`;
                 summaryHtml += `<div class="flex justify-between text-teal-600"><span class="font-medium">여신 사용</span><span class="font-medium">- ${formatCurrency(availableCredit)}</span></div>`;
                 
-                // ✨ 개선점: 버튼 텍스트 통일
-                if (selectedShortfallPayment === 'vbank' || selectedShortfallPayment === 'bank') {
-                    summaryHtml += `<div class="flex justify-between text-orange-800"><span class="font-bold">추가 입금 예정 금액</span><span class="font-bold">${formatCurrency(shortfall)}</span></div>`;
+                if (selectedShortfallPayment === 'bank') {
+                    summaryHtml += `<div class="flex justify-between text-blue-600"><span class="font-bold">추가 입금 예정 금액</span><span class="font-bold">${formatCurrency(shortfall)}</span></div>`;
                 } else {
-                    summaryHtml += `<div class="flex justify-between text-orange-800"><span class="font-bold">추가 결제 금액</span><span class="font-bold">${formatCurrency(shortfall)}</span></div>`;
+                    summaryHtml += `<div class="flex justify-between text-blue-600"><span class="font-bold">추가 결제 금액</span><span class="font-bold">${formatCurrency(shortfall)}</span></div>`;
                 }
                 ui.paymentButton.textContent = `${formatCurrency(shortfall)} 결제하기`;
                 ui.footerSummary.innerHTML = summaryHtml;
+            }
+        }
+
+        function useAllPoints() {
+            if (ui.pointsToUse) {
+                ui.pointsToUse.value = userData.points;
+                updateSummary();
+            }
+        }
+
+        function useAllDeposits() {
+            if (ui.depositsToUse) {
+                const currentShippingFee = orderTotal < freeShippingThreshold ? shippingFee : 0;
+                const priceBeforeDiscount = orderTotal + currentShippingFee;
+                const couponDiscount = (couponRate > 0) ? Math.floor(orderTotal * couponRate) : 0;
+                const pointsToUse = (userData.points > 0) ? parseInt(ui.pointsToUse.value) || 0 : 0;
+                const priceAfterDiscount = priceBeforeDiscount - (couponDiscount + pointsToUse);
+                ui.depositsToUse.value = Math.min(userData.deposits, priceAfterDiscount);
+                updateSummary();
             }
         }
 
