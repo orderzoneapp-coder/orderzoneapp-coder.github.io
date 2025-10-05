@@ -6,13 +6,12 @@
     <title>동적 UI 기반 B2B 플랫폼 혁신 전략</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chosen Palette: Calm Corporate -->
-    <!-- Application Structure Plan: The application is designed as an interactive strategic guide, not a direct report visualization. It starts with an overview of the 4-step implementation plan to establish context. The core of the app is a tabbed section detailing the operational and marketing applications (Member, Product, Marketing, Data), directly addressing the user's primary query. The key feature is an interactive simulator where users can select a user type and access path to see a mock UI change in real-time. This structure was chosen to transform a technical plan into a tangible business strategy, allowing users to 'experience' the plan's benefits rather than just reading about them. -->
+    <!-- Application Structure Plan: The application uses a central interactive simulator to demonstrate the critical "Session Context" preservation required by the user's latest concern. The UI logic now explicitly prioritizes Access Path (URL) > Logged-in User/Primary Affiliation > Session Context > Default, reflecting the necessary business adjustment where channel context is king but member identity is the ultimate safety net. Supporting tabs contain refactored, non-redundant strategic content (Member/Branding, Product/Order, Data/Growth) to show business value. -->
     <!-- Visualization & Content Choices: 
-        - 4-Step Plan: Report Info -> Implementation Process -> Goal: Inform -> Presentation: Interactive cards with icons -> Interaction: Click/Hover to see details -> Justification: Breaks down the technical flow into digestible, user-friendly steps.
-        - Application Areas: Report Info -> Business Applications -> Goal: Organize & Explore -> Presentation: Tabbed interface -> Interaction: Click tabs to switch content -> Justification: Categorizes diverse applications logically, preventing information overload and allowing focused exploration.
-        - Core Logic Demo: Report Info -> Dynamic UI Mechanism -> Goal: Demonstrate -> Presentation: UI Simulator -> Interaction: User selects inputs (user, URL) to trigger real-time UI changes -> Justification: Provides a powerful, hands-on demonstration of the core concept, making the abstract plan concrete and understandable.
-        - Flow Diagram: Report Info -> Entire Process Flow -> Goal: Summarize -> Presentation: HTML/CSS based diagram -> Interaction: Static -> Justification: Offers a high-level, easy-to-scan visual summary of the entire system.
-        - Library/Method: Vanilla JavaScript for all interactions. Tailwind CSS for styling and layout.
+        - 4-Step Plan: Goal: Inform (Process) -> Presentation: Flow steps.
+        - Core Logic Demo: Goal: Demonstrate (Session Persistence & Priority & Primary Affiliation) -> Presentation: UI Simulator with explicit "Session Context" tracker and Multi-Affiliation Switch.
+        - Strategic Applications: Goal: Organize & Explore (Business Value) -> Presentation: Tabbed interface with consolidated, non-redundant content.
+        - Library/Method: Vanilla JavaScript for all interactions, including the simulated Session Storage management. Tailwind CSS for styling.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -54,31 +53,31 @@
                 <section id="implementation" class="mb-16">
                     <h2 class="text-3xl font-bold text-center mb-8">핵심 구현 플로우 요약</h2>
                     <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
-                        성공적인 동적 UI 시스템은 아래 4단계의 유기적인 데이터 흐름과 기능 구현을 통해 완성됩니다. 각 단계는 다음 단계의 기반이 되어 전체 시스템의 안정성과 확장성을 보장합니다.
+                        **세션 컨텍스트 유지**를 통해 내부 링크 이동 시에도 유통사 맞춤형 UI가 유지됩니다. 판단 우선순위는 **URL > 로그인 회원 > 세션 컨텍스트** 순입니다.
                     </p>
                     <div class="flow-container flex justify-center items-stretch flex-wrap gap-2 md:gap-4">
                         <div class="flow-step">
                             <div class="text-3xl mb-2">①</div>
                             <h3 class="font-bold text-lg mb-1">데이터 연동</h3>
-                            <p class="text-sm text-slate-500">회원/상품 정보에 '유통사 코드'를 연결하여 개인화의 기반 마련</p>
+                            <p class="text-sm text-slate-500">회원/상품 정보에 '유통사 코드' 연결</p>
                         </div>
                         <div class="flow-arrow">&rarr;</div>
                         <div class="flow-step">
                             <div class="text-3xl mb-2">②</div>
-                            <h3 class="font-bold text-lg mb-1">관리 기능 구현</h3>
-                            <p class="text-sm text-slate-500">본사/유통사가 로고, GNB 버튼 등을 직접 설정하는 관리자 페이지 개발</p>
+                            <h3 class="font-bold text-lg mb-1">세션 컨텍스트 저장</h3>
+                            <p class="text-sm text-slate-500">전용 링크 접속 시, 유통사 ID를 **Session Storage**에 저장</p>
                         </div>
                         <div class="flow-arrow">&rarr;</div>
                         <div class="flow-step">
                             <div class="text-3xl mb-2">③</div>
-                            <h3 class="font-bold text-lg mb-1">맞춤형 데이터 제공</h3>
-                            <p class="text-sm text-slate-500">사용자 로그인 정보와 접속 URL을 분석해 최적의 UI 데이터 조합</p>
+                            <h3 class="font-bold text-lg mb-1">4단계 우선순위 판단</h3>
+                            <p class="text-sm text-slate-500">URL > 로그인 회원 > 세션 > 기본 순으로 최종 UI 데이터 조합</p>
                         </div>
                         <div class="flow-arrow">&rarr;</div>
                         <div class="flow-step">
                             <div class="text-3xl mb-2">④</div>
                             <h3 class="font-bold text-lg mb-1">사용자 화면 적용</h3>
-                            <p class="text-sm text-slate-500">조합된 데이터를 실제 로고, 상품 목록, GNB 버튼에 시각적으로 구현</p>
+                            <p class="text-sm text-slate-500">결정된 로고, 상품, GNB 버튼을 화면에 동적으로 구현</p>
                         </div>
                     </div>
                 </section>
@@ -87,7 +86,7 @@
                 <section id="simulator" class="mb-16 bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
                     <h2 class="text-3xl font-bold text-center mb-2">동적 UI 인터랙티브 시뮬레이터</h2>
                     <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
-                        아래 옵션을 변경하여 사용자와 접속 경로에 따라 UI가 어떻게 실시간으로 변화하는지 직접 확인해보세요.
+                        **[주요 소속]** 설정과 **[소속 전환]** 기능을 통해 다중 소속 환경에서 UI가 어떻게 제어되는지 확인해보세요.
                     </p>
                     <div class="grid md:grid-cols-3 gap-6 items-start">
                         <div class="md:col-span-1 bg-slate-50 p-6 rounded-lg">
@@ -100,18 +99,34 @@
                                         <option value="general">일반 고객</option>
                                         <option value="distA_member">ORDERZ A유통사 전용회원</option>
                                         <option value="distB_member">ORDERZ B유통사 전용회원</option>
+                                        <option value="multi_member">ORDERZ 멀티 전용회원 (A/B사 소속)</option>
                                         <option value="distA_admin">ORDERZ A유통사 관리자</option>
                                         <option value="hq_admin">본사 관리자</option>
                                     </select>
                                 </div>
+                                
+                                <!-- New Feature: Multi-Affiliation Switch -->
+                                <div id="multiAffiliationContainer" class="hidden">
+                                    <label for="activeAffiliation" class="block text-sm font-medium text-slate-700 mb-1">주요 소속 전환 (Multi-회원)</label>
+                                    <select id="activeAffiliation" class="w-full p-2 border border-slate-300 rounded-md focus:ring-green-500 focus:border-green-500 bg-white">
+                                        <option value="distA">ORDERZ A유통사 (현재 주요 소속)</option>
+                                        <option value="distB">ORDERZ B유통사</option>
+                                    </select>
+                                </div>
+
                                 <div>
                                     <label for="accessPath" class="block text-sm font-medium text-slate-700 mb-1">접속 경로 (URL)</label>
                                     <select id="accessPath" class="w-full p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                         <option value="default">https://orderz.kr (기본 도메인)</option>
                                         <option value="distA">https://distA.orderz.kr (A유통사 전용)</option>
                                         <option value="distB">https://distB.orderz.kr (B유통사 전용)</option>
+                                        <option value="internal">https://orderz.kr/mypage/settings (내부 링크)</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div class="mt-6 p-3 bg-blue-100 rounded-md border border-blue-300">
+                                <p class="text-sm font-medium text-blue-800 mb-1">현재 세션 컨텍스트 (Session Storage)</p>
+                                <p id="sessionContext" class="text-lg font-bold text-blue-900">없음 (HQ)</p>
                             </div>
                         </div>
                         <div class="md:col-span-2 p-6 bg-slate-100 rounded-lg border-2 border-dashed border-slate-300">
@@ -133,90 +148,42 @@
                 </section>
 
                 <!-- Section 3: Applications -->
-                <section id="applications">
+                <section id="applications" class="mb-16">
                     <h2 class="text-3xl font-bold text-center mb-8">운영 및 마케팅 활용 방안</h2>
                     <p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
-                        동적 UI는 단순한 화면 변경을 넘어, B2B 플랫폼의 핵심 경쟁력을 강화하는 전략적 도구입니다. 각 비즈니스 영역별 구체적인 활용 방안을 살펴보세요.
+                        동적 UI는 플랫폼의 경쟁력을 강화하는 3가지 핵심 축을 중심으로 전략적 가치를 제공합니다.
                     </p>
-                    <div class="flex justify-center border-b border-slate-200 mb-6">
-                        <button data-tab="tab1" class="tab-btn active px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">회원 관리</button>
-                        <button data-tab="tab2" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">상품/주문 관리</button>
-                        <button data-tab="tab3" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">마케팅/브랜딩</button>
-                        <button data-tab="tab4" class="tab-btn px-4 py-2 font-semibold text-slate-500 border-b-2 border-transparent">데이터/확장성</button>
-                    </div>
                     
-                    <div id="tab-contents">
-                        <!-- Member Management -->
-                        <div id="tab1" class="content-panel active grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 맞춤형 고객 경험 제공</h3>
-                                <p class="text-slate-600">유통사 전용 링크로 접속한 고객에게는 해당 유통사의 로고와 맞춤 메시지를 노출하여, 마치 해당 유통사의 독립몰에 온 듯한 전문적이고 신뢰도 높은 첫인상을 제공합니다.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 효율적인 회원 소속 관리</h3>
-                                <p class="text-slate-600">전용 링크를 통해 가입하는 신규 고객은 자동으로 해당 유통사 소속으로 지정됩니다. 수동 배정 작업이 사라져 관리 리소스가 절감되고, 오류 가능성이 원천 차단됩니다.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 그룹별 커뮤니케이션 강화</h3>
-                                <p class="text-slate-600">GNB 버튼을 'A유통사 소식' 또는 'B도매사 공지' 등으로 설정하여, 각 파트너사가 자신의 고객 그룹에게만 타겟팅된 정보와 이벤트를 효과적으로 전달할 수 있습니다.</p>
-                            </div>
-                        </div>
-                        <!-- Product/Order Management -->
-                        <div id="tab2" class="content-panel grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 유통사 전용 상품 운영</h3>
-                                <p class="text-slate-600">특정 유통사 소속 회원에게만 보이는 '전용 상품'을 등록하고 판매할 수 있습니다. 파트너사별로 차별화된 상품 포트폴리오를 구축하여 경쟁력을 강화합니다.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 맞춤형 가격 및 프로모션</h3>
-                                <p class="text-slate-600">고객 등급이나 소속 유통사에 따라 다른 가격 정책을 적용하거나, 특정 그룹에게만 노출되는 프로모션 상품을 구성하여 타겟화된 판매 전략을 구사할 수 있습니다.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 간소화된 주문 프로세스</h3>
-                                <p class="text-slate-600">자주 주문하는 상품이나 소속 유통사가 주력으로 판매하는 상품들을 상위에 노출시켜, 고객의 상품 탐색 시간을 줄이고 빠르고 편리한 주문 경험을 제공합니다.</p>
-                            </div>
-                        </div>
-                        <!-- Marketing/Branding -->
-                        <div id="tab3" class="content-panel grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 파트너사 브랜딩 강화</h3>
-                                <p class="text-slate-600">유통사가 자신의 로고를 직접 등록하고 고객에게 노출함으로써, 플랫폼 내에서 독립적인 브랜드 정체성을 구축하고 고객과의 유대감을 강화할 수 있습니다.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                                <h3 class="font-bold text-xl mb-3">✔ 타겟 마케팅 캠페인 실행</h3>
-                            <p class="text-slate-600">유통사 전용 링크를 SMS, 이메일, SNS 등 다양한 채널에 활용하여 특정 고객 그룹을 타겟으로 하는 신제품 홍보, 이벤트 참여 유도 등 정교한 마케팅 캠페인을 진행할 수 있습니다.</p>
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                            <h3 class="font-bold text-xl mb-3">파트너 브랜딩 & 고객 유지</h3>
+                            <p class="text-slate-600 mb-4">유통사 전용 링크와 맞춤형 UI(로고, GNB)를 통해 고객에게 독립적인 '전용몰' 경험을 제공합니다. 이는 유통사에게 높은 소속감을 부여하고, 고객은 접속 경로와 관계없이 일관된 파트너 브랜드를 경험하여 이탈을 방지합니다.</p>
+                            <p class="text-slate-600 font-semibold text-blue-700">핵심: 신규 가입 시 전용 링크의 유통사 ID를 **자동으로 신규 회원의 소속 코드로 기록**하여, 유통사의 고객 획득 및 회원 관리 부담을 제거하고 **전용 회원**을 자동 생성합니다.</p>
                         </div>
                         <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 신규 고객 유치 동기 부여</h3>
-                            <p class="text-slate-600">파트너사에게 '전용몰'과 같은 환경을 제공함으로써, 파트너사들이 자발적으로 자신의 고객들을 플랫폼으로 유치하도록 강력한 동기를 부여합니다. 플랫폼 전체의 파이를 키우는 효과를 가져옵니다.</p>
+                            <h3 class="font-bold text-xl mb-3">타겟 상품 및 거래 최적화</h3>
+                            <p class="text-slate-600 mb-4">접속 컨텍스트(경로 또는 세션)를 기준으로 해당 유통사의 전용 상품만 노출합니다. 이로써 경쟁사 상품 노출 없이 타겟팅된 판매 전략이 가능해지며, 고객은 불필요한 상품 탐색 없이 핵심 거래 상품을 빠르게 찾을 수 있습니다.</p>
+                            <p class="text-slate-600">향후 맞춤형 가격(계약 단가) 및 여신 한도 정보까지 동적으로 표시하여 주문 프로세스의 효율을 극대화합니다.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
+                            <h3 class="font-bold text-xl mb-3">데이터 기반 확장성 확보</h3>
+                            <p class="text-slate-600 mb-4">URL, 세션, 로그인 정보를 통합하여 유통사별 유입 경로와 고객 행동 데이터를 명확히 분석합니다. 이는 파트너사별 성과 분석 및 지원 전략을 수립하는 핵심 기반이 됩니다.</p>
+                            <p class="text-slate-600">데이터 기반으로 새로운 수익 모델(맞춤 광고, 프리미엄 서비스 등)을 설계하고, 플랫폼의 전반적인 성장 전략을 고도화할 수 있습니다.</p>
                         </div>
                     </div>
-                    <!-- Data/Scalability -->
-                    <div id="tab4" class="content-panel grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 유통사별 성과 분석</h3>
-                            <p class="text-slate-600">전용 링크를 통해 유입된 회원 수, 주문 건수, 매출액 등 파트너사별 기여도를 명확하게 측정하고 분석할 수 있습니다. 데이터 기반의 파트너사 관리 및 지원 전략 수립이 가능해집니다.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 고객 행동 데이터 확보</h3>
-                            <p class="text-slate-600">어떤 유통사의 고객들이 어떤 상품에 주로 관심을 보이는지 등, 세분화된 고객 행동 데이터를 확보하여 본사의 상품 소싱 및 개발 전략에 활용할 수 있습니다.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-md border border-slate-100">
-                            <h3 class="font-bold text-xl mb-3">✔ 신규 비즈니스 모델 확장</h3>
-                            <p class="text-slate-600">파트너사별 맞춤 광고 배너 영역을 제공하거나, 특정 고객 그룹에게만 노출되는 프리미엄 서비스를 도입하는 등 새로운 수익 모델로 확장할 수 있는 기술적 기반이 됩니다.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+                </section>
+            </main>
         
-        <footer class="text-center mt-16 pt-8 border-t border-slate-200">
-            <p class="text-slate-500">본 문서는 '사용자 맞춤형 동적 UI 개발 기획안'을 기반으로 제작된 인터랙티브 분석 자료입니다.</p>
-        </footer>
+            <footer class="text-center mt-16 pt-8 border-t border-slate-200">
+                <p class="text-slate-500">본 문서는 '사용자 맞춤형 동적 UI 개발 기획안'을 기반으로 제작된 인터랙티브 분석 자료입니다.</p>
+            </footer>
+        </div>
     </div>
-</div>
 
 <script>
+    // 이 변수는 Session Storage의 시뮬레이션 역할을 합니다.
+    let simulatedSessionContext = 'hq'; 
+
     document.addEventListener('DOMContentLoaded', function () {
         const correctPassword = '4579';
         const passwordOverlay = document.getElementById('passwordOverlay');
@@ -246,31 +213,20 @@
         function initializeSimulator() {
             const userTypeSelect = document.getElementById('userType');
             const accessPathSelect = document.getElementById('accessPath');
+            const sessionContextDisplay = document.getElementById('sessionContext');
+            const multiAffiliationContainer = document.getElementById('multiAffiliationContainer');
+            const activeAffiliationSelect = document.getElementById('activeAffiliation');
             
             const mockLogoText = document.getElementById('mockLogoText');
             const mockGNB = document.getElementById('mockGNB');
             const mockProducts = document.getElementById('mockProducts');
 
+            // UI Data setup
             const uiData = {
-                hq: {
-                    logoText: 'ORDERZ',
-                    gnbText: '고객센터',
-                    gnbLink: '/service'
-                },
-                distA: {
-                    logoText: 'A유통사',
-                    gnbText: 'A사 문의하기',
-                    gnbLink: '/distA/contact'
-                },
-                distB: {
-                    logoText: 'B유통사',
-                    gnbText: 'B사 전용관',
-                    gnbLink: '/distB/lounge'
-                },
-                admin: {
-                    gnbText: '관리자단',
-                    gnbLink: '/admin'
-                }
+                hq: { logoText: 'ORDERZ', gnbText: '고객센터', gnbLink: '/service' },
+                distA: { logoText: 'A유통사', gnbText: '[A사 소개]', gnbLink: '/distA/contact' },
+                distB: { logoText: 'B유통사', gnbText: '[B사 소식]', gnbLink: '/distB/lounge' },
+                admin: { gnbText: '관리자단', gnbLink: '/admin' }
             };
             
             const productData = {
@@ -283,41 +239,109 @@
                 const user = userTypeSelect.value;
                 const path = accessPathSelect.value;
                 
-                let currentLogoText = uiData.hq.logoText;
-                let currentGNB = { text: uiData.hq.gnbText, link: uiData.hq.gnbLink };
-                let productsToShow = [];
+                // 멀티 소속 스위치 표시 여부 결정
+                const isMultiMember = user === 'multi_member';
+                if (isMultiMember) {
+                    multiAffiliationContainer.classList.remove('hidden');
+                } else {
+                    multiAffiliationContainer.classList.add('hidden');
+                }
 
+                let currentLogoText;
+                let currentGNB;
+                let productsToShow = [];
+                let contextDistId = null; 
+
+                // ---------------------------------------------------------------------
+                // 1. Context Determination Logic (4-Step Prioritization)
+                // ---------------------------------------------------------------------
+                
+                // 1순위: 현재 접속 URL 확인 (최우선: 마케팅/경쟁 채널 분리)
+                if (path === 'distA') {
+                    contextDistId = 'distA';
+                } else if (path === 'distB') {
+                    contextDistId = 'distB';
+                }
+
+                // 2순위: 로그인 회원 정보 확인 (URL이 유통사 전용이 아닐 경우, 전용 회원의 권한 보호)
+                if (contextDistId === null || path === 'internal' || path === 'default') {
+                    if (isMultiMember) {
+                        // 멀티 회원일 경우, '주요 소속 전환' 필터의 값을 사용 (사용자의 명시적 선택)
+                        contextDistId = activeAffiliationSelect.value;
+                    } else if (user === 'distA_member' || user === 'distA_admin') {
+                        contextDistId = 'distA';
+                    } else if (user === 'distB_member' || user === 'distB_admin') {
+                        contextDistId = 'distB';
+                    }
+                }
+
+                // 3순위: 세션 컨텍스트 확인 (회원 정보도 없을 때, 세션 유지를 위해)
+                if (contextDistId === null && simulatedSessionContext !== 'hq' && (path === 'internal' || path === 'default')) {
+                    contextDistId = simulatedSessionContext;
+                }
+                
+                // 4순위: 본사 기본
+                contextDistId = contextDistId || 'hq';
+
+                // 세션 컨텍스트 업데이트 (로그인 지속성 및 URL 우선 반영)
+                if (path === 'distA' || path === 'distB') {
+                    simulatedSessionContext = contextDistId;
+                } else if (contextDistId !== 'hq' && (user.includes('member') || user.includes('admin') || isMultiMember)) {
+                    simulatedSessionContext = contextDistId;
+                } else if (contextDistId !== 'hq' && simulatedSessionContext === 'hq' && !user.includes('member')) {
+                    // 비로그인 방문자가 전용 링크로 들어와 세션이 설정된 경우 유지
+                    simulatedSessionContext = contextDistId;
+                } else if (contextDistId === 'hq' && simulatedSessionContext !== 'hq' && (path === 'internal' || path === 'default') && !user.includes('member')) {
+                    // 비로그인 상태에서 내부 이동 시 3순위 (세션)가 적용되도록 simulatedSessionContext 유지
+                }
+
+
+                // ---------------------------------------------------------------------
+                // 2. UI Rendering based on Final Context
+                // ---------------------------------------------------------------------
+                
+                let finalDistId = contextDistId;
+
+                // 2-1. 관리자 그룹 처리 (관리자는 항상 관리자단 버튼 고정)
                 if (user.includes('admin')) {
                     currentGNB = { text: uiData.admin.gnbText, link: uiData.admin.gnbLink };
+                    
+                    // 관리자는 모든 상품을 볼 수 있다고 가정
                     productsToShow = [...productData.common, ...productData.distA, ...productData.distB];
+
+                    // 관리자의 로고는 소속 유통사 또는 본사 로고를 따른다.
                     if (user === 'distA_admin') {
                         currentLogoText = uiData.distA.logoText;
+                    } else if (user === 'distB_admin') {
+                        currentLogoText = uiData.distB.logoText;
+                    } else {
+                         currentLogoText = uiData.hq.logoText;
                     }
-                } else if (user === 'distA_member') {
-                    currentLogoText = uiData.distA.logoText;
-                    currentGNB = { text: uiData.distA.gnbText, link: uiData.distA.gnbLink };
-                    productsToShow.push(...productData.distA);
-                } else if (user === 'distB_member') {
-                    currentLogoText = uiData.distB.logoText;
-                    currentGNB = { text: uiData.distB.gnbText, link: uiData.distB.gnbLink };
-                    productsToShow.push(...productData.distB);
-                } else if (user === 'guest' || user === 'general') {
-                    if (path === 'distA') {
+
+                } else {
+                    // 2-2. 고객 그룹 처리 (컨텍스트에 따라 UI 변경)
+                    if (finalDistId === 'distA') {
                         currentLogoText = uiData.distA.logoText;
                         currentGNB = { text: uiData.distA.gnbText, link: uiData.distA.gnbLink };
-                        productsToShow.push(...productData.distA);
-                    } else if (path === 'distB') {
+                        productsToShow = productData.distA;
+                    } else if (finalDistId === 'distB') {
                         currentLogoText = uiData.distB.logoText;
                         currentGNB = { text: uiData.distB.gnbText, link: uiData.distB.gnbLink };
-                        productsToShow.push(...productData.distB);
-                    } else {
-                        productsToShow.push(...productData.common);
+                        productsToShow = productData.distB;
+                    } else { // HQ/Default Context
+                        currentLogoText = uiData.hq.logoText;
+                        currentGNB = { text: uiData.hq.gnbText, link: uiData.hq.gnbLink };
+                        productsToShow = productData.common;
                     }
                 }
                 
+                // ---------------------------------------------------------------------
+                // 3. Update Display
+                // ---------------------------------------------------------------------
                 mockLogoText.textContent = currentLogoText;
                 mockGNB.textContent = currentGNB.text;
                 mockGNB.onclick = () => alert(`'${currentGNB.link}' (으)로 이동합니다.`);
+                sessionContextDisplay.textContent = simulatedSessionContext.toUpperCase();
                 
                 mockProducts.innerHTML = '';
                 if (productsToShow.length === 0) {
@@ -341,27 +365,9 @@
 
             userTypeSelect.addEventListener('change', updateSimulator);
             accessPathSelect.addEventListener('change', updateSimulator);
+            activeAffiliationSelect.addEventListener('change', updateSimulator);
             
             updateSimulator();
-
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const contentPanels = document.querySelectorAll('.content-panel');
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    
-                    const targetTab = button.getAttribute('data-tab');
-                    contentPanels.forEach(panel => {
-                        if (panel.id === targetTab) {
-                            panel.classList.add('active');
-                        } else {
-                            panel.classList.remove('active');
-                        }
-                    });
-                });
-            });
         }
     });
 </script>
