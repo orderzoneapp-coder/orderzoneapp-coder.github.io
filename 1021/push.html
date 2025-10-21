@@ -177,7 +177,6 @@
     function updateTargetUI() {
         const selected = document.querySelector('input[name="target"]:checked').value;
         
-        // Hide all conditional rows first
         targetDetailsRow.style.display = 'none';
         memberIdRow.style.display = 'none';
         
@@ -197,10 +196,9 @@
              const placeholderText = selected === 'individual' ? '회원 아이디를 콤마(,)로 구분하여 입력하세요.' : '테스트할 계정 아이디를 입력하세요.';
              memberIdInput.placeholder = placeholderText;
         } else if (selected === 'all') {
-            // "전체" 선택 시 기존 회원아이디 입력칸을 보여주되, 플레이스홀더만 유지
             memberIdRow.style.display = '';
             memberIdInput.placeholder = '값을 입력 안할 시 전체회원에게 푸쉬';
-            memberIdInput.value = ''; // Clear value
+            memberIdInput.value = '';
         }
     }
     
@@ -209,14 +207,13 @@
         const inputArea = document.getElementById('target-input-area');
         if (selectedType === 'cart_product') {
             inputArea.innerHTML = `
-                <input type="text" id="target-product-id" class="form-input" placeholder="기준 상품의 코드를 입력하세요.">
+                <input type="text" id="target-product-id" class="form-input" placeholder="기준 상품 코드를 콤마(,)로 구분하여 여러 개 입력 가능">
             `;
         } else {
             inputArea.innerHTML = '';
         }
     }
 
-    // Action Button Management
     const actionButtonsContainer = document.getElementById('action-buttons-container');
     const addButtonBtn = document.getElementById('add-button-btn');
     let buttonCount = 0;
@@ -258,3 +255,4 @@
 
 </body>
 </html>
+
