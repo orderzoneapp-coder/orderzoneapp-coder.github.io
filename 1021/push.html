@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기존 레이아웃 기반 기능 추가</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1 {
+            font-size: 18px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .push-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .push-table th, .push-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .push-table th {
+            background-color: #f2f2f2;
+            width: 120px;
+            font-weight: bold;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 98%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .button-container {
+            padding-top: 20px;
+        }
+        .submit-btn, .test-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-btn {
+            background-color: #e91e63;
+            color: white;
+        }
+        .submit-btn:hover {
+            background-color: #c2185b;
+        }
+        .test-btn {
+            background-color: #6c757d;
+            color: white;
+            margin-right: 10px;
+        }
+        .test-btn:hover {
+            background-color: #5a6268;
+        }
+        .radio-group label {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        .action-button-group {
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .add-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>푸쉬 보내기</h1>
+    <table class="push-table">
+        <tbody>
+            <!-- 1. 발송 대상 선택 -->
+            <tr>
+                <th>발송 대상</th>
+                <td class="radio-group">
+                    <label><input type="radio" name="target" value="all" checked onchange="updateTargetUI()"> 전체</label>
+                    <label><input type="radio" name="target" value="target" onchange="updateTargetUI()"> 타겟</label>
+                    <label><input type="radio" name="target" value="individual" onchange="updateTargetUI()"> 개별</label>
+                    <label><input type="radio" name="target" value="test" onchange="updateTargetUI()"> 테스트</label>
+                </td>
+            </tr>
+
+            <!-- 2. 발송 대상 상세 (동적으로 변경됨) -->
+            <tr id="target-details-row" style="display: none;">
+                <th>대상 상세</th>
+                <td id="target-details-cell">
+                    <!-- JavaScript에 의해 내용이 채워집니다. -->
+                </td>
+            </tr>
+            
+             <!-- 3. 회원 아이디 (개별/테스트 시 보임) -->
+            <tr id="member-id-row" style="display: none;">
+                <th>회원아이디</th>
+                <td>
+                    <input type="text" id="member-id-input" class="form-input" placeholder="값을 입력 안할 시 전체회원에게 푸쉬 (콤마로 여러명 가능)">
+                </td>
+            </tr>
+
+
+            <!-- 4. 제목 -->
+            <tr>
+                <th>제목</th>
+                <td><input type="text" class="form-input"></td>
+            </tr>
+
+            <!-- 5. 내용 -->
+            <tr>
+                <th>내용</th>
+                <td><textarea class="form-textarea" rows="4"></textarea></td>
+            </tr>
+            
+            <!-- 6. 기본 링크 -->
+            <tr>
+                <th>기본 링크</th>
+                <td><input type="text" class="form-input" placeholder="미입력 시 앱 홈으로 이동"></td>
+            </tr>
+
+            <!-- 7. 이미지 첨부 -->
+            <tr>
+                <th>이미지 첨부</th>
+                <td><input type="file" accept="image/png, image/jpeg, image/gif"></td>
+            </tr>
+
+            <!-- 8. 액션 버튼 -->
+            <tr>
+                <th>액션 버튼</th>
+                <td>
+                    <div id="action-buttons-container">
+                        <!-- JavaScript에 의해 버튼이 추가됩니다. -->
+                    </div>
+                    <button type="button" id="add-button-btn" class="add-btn">버튼 추가 (최대 2개)</button>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <div class="button-container">
+        <button class="test-btn">테스트 발송</button>
+        <button class="submit-btn">확인</button>
+    </div>
+</div>
+
+<script>
+    const targetDetailsRow = document.getElementById('target-details-row');
+    const targetDetailsCell = document.getElementById('target-details-cell');
+    const memberIdRow = document.getElementById('member-id-row');
+    const memberIdInput = document.getElementById('member-id-input');
+
+    function updateTargetUI() {
+        const selected = document.querySelector('input[name="target"]:checked').value;
+        
+        // Hide all conditional rows first
+        targetDetailsRow.style.display = 'none';
+        memberIdRow.style.display = 'none';
+        
+        if (selected === 'target') {
+            targetDetailsRow.style.display = '';
+            targetDetailsCell.innerHTML = `
+                <select id="target-type-select" class="form-select" onchange="handleTargetTypeChange(this)">
+                    <option value="">-- 타겟 종류 선택 --</option>
+                    <option value="inactive_7_days">최근 7일 미접속자</option>
+                    <option value="first_purchase_completed">첫 구매 완료 고객</option>
+                    <option value="cart_product">장바구니에 특정 상품 보유</option>
+                </select>
+                <div id="target-input-area" style="margin-top: 10px;"></div>
+            `;
+        } else if (selected === 'individual' || selected === 'test') {
+             memberIdRow.style.display = '';
+             const placeholderText = selected === 'individual' ? '회원 아이디를 콤마(,)로 구분하여 입력하세요.' : '테스트할 계정 아이디를 입력하세요.';
+             memberIdInput.placeholder = placeholderText;
+        } else if (selected === 'all') {
+            // "전체" 선택 시 기존 회원아이디 입력칸을 보여주되, 플레이스홀더만 유지
+            memberIdRow.style.display = '';
+            memberIdInput.placeholder = '값을 입력 안할 시 전체회원에게 푸쉬';
+            memberIdInput.value = ''; // Clear value
+        }
+    }
+    
+    function handleTargetTypeChange(selectElement) {
+        const selectedType = selectElement.value;
+        const inputArea = document.getElementById('target-input-area');
+        if (selectedType === 'cart_product') {
+            inputArea.innerHTML = `
+                <input type="text" id="target-product-id" class="form-input" placeholder="기준 상품의 코드를 입력하세요.">
+            `;
+        } else {
+            inputArea.innerHTML = '';
+        }
+    }
+
+    // Action Button Management
+    const actionButtonsContainer = document.getElementById('action-buttons-container');
+    const addButtonBtn = document.getElementById('add-button-btn');
+    let buttonCount = 0;
+
+    addButtonBtn.addEventListener('click', () => {
+        if (buttonCount >= 2) {
+            alert('버튼은 최대 2개까지 추가할 수 있습니다.');
+            return;
+        }
+        buttonCount++;
+        const newButtonHTML = `
+            <div class="action-button-group" id="button-group-${buttonCount}">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <strong>버튼 #${buttonCount}</strong>
+                    <button type="button" style="background:none; border:none; color:red; cursor:pointer;" onclick="removeButton(${buttonCount})">X</button>
+                </div>
+                <input type="text" class="form-input" placeholder="버튼 텍스트" style="margin-bottom: 5px;">
+                <input type="text" class="form-input" placeholder="URL / 딥링크 (미입력 시 홈으로)">
+            </div>
+        `;
+        actionButtonsContainer.insertAdjacentHTML('beforeend', newButtonHTML);
+        if (buttonCount >= 2) {
+            addButtonBtn.style.display = 'none';
+        }
+    });
+
+    function removeButton(id) {
+        const buttonGroup = document.getElementById(`button-group-${id}`);
+        if (buttonGroup) {
+            buttonGroup.remove();
+            buttonCount--;
+            addButtonBtn.style.display = 'block';
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', updateTargetUI);
+
+</script>
+
+</body>
+</html>
