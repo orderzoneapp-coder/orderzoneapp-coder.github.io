@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오더즈 - 빠른주문</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            overscroll-behavior-y: contain; /* Prevents pull-to-refresh on mobile */
+        }
+        /* 스크롤바 숨기기 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* 활성 탭 스타일 */
+        .tab-active {
+            border-bottom: 2px solid #28a745;
+            color: #28a745;
+            font-weight: 700;
+        }
+        .tab-inactive {
+            color: #6c757d;
+        }
+        /* 활성 카테고리 버튼 스타일 */
+        .category-btn-active span {
+            color: #28a745;
+            font-weight: 700;
+        }
+        /* 수량 버튼 */
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+        }
+        /* 주문하기 버튼 비활성 상태 */
+        .order-btn-disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+        /* 커스텀 체크박스 */
+        .custom-checkbox:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .custom-checkbox:checked + label {
+            color: #28a745;
+            font-weight: bold;
+        }
+        /* 선택된 상품 배경색 */
+        .product-item-selected {
+            background-color: #e9f5ff;
+        }
+        .edit-filter-btn.active {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        /* 스크롤 인터랙션 스타일 */
+        #sub-header {
+            transition: transform 0.3s ease-in-out;
+            background-color: white; /* 배경색 보장 */
+        }
+        .sub-header-hidden {
+            transform: translateY(-100%);
+        }
+
+        /* 기본 리스트 모드 */
+        #quick-order-view > header { position: relative; }
+        #sub-header { position: sticky; top: 0; z-index: 10; }
+
+        /* 카테고리 선택 모드 */
+        .category-mode #quick-order-view > header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        .category-mode #sub-header {
+            position: sticky;
+            top: 117px; /* 헤더 높이만큼 밀어내기 */
+            z-index: 10;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen">
+        
+        <!-- ===== 홈 뷰 ===== -->
+        <div id="home-view">
+             <header class="sticky top-0 bg-white z-20 shadow-sm">
+                <!-- 최상단 바 -->
+                <div class="flex justify-between items-center p-3 border-b">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-bars text-xl"></i>
+                    </div>
+                    <h1 id="logo-home" class="text-2xl font-extrabold text-green-600 cursor-pointer">오더즈</h1>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-semibold">OP</span>
+                        <i class="fas fa-user-circle text-2xl text-gray-400"></i>
+                    </div>
+                </div>
+                <!-- 1차 카테고리 -->
+                <nav class="flex justify-around items-center p-2">
+                    <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-carrot text-xl text-orange-400"></i><span class="text-xs font-medium">채소/과일</span></button>
+                    <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-fish text-xl text-blue-400"></i><span class="text-xs font-medium">수산/축산</span></button>
+                    <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-snowflake text-xl text-cyan-400"></i><span class="text-xs font-medium">식품/가공</span></button>
+                    <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-blender text-xl text-yellow-500"></i><span class="text-xs font-medium">양념/소스</span></button>
+                    <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-utensils text-xl text-gray-500"></i><span class="text-xs font-medium">주방/잡화</span></button>
+                </nav>
+            </header>
+            <main class="pb-24">
+                 <div class="flex justify-around items-center px-4 py-2 border-b bg-white sticky top-[117px] z-10">
+                    <button class="py-2 text-sm font-semibold border-b-2 border-green-500 text-green-500">타임세일</button>
+                    <button class="py-2 text-sm text-gray-500">경매상품</button>
+                    <button class="py-2 text-sm text-gray-500">할인상품</button>
+                    <button class="py-2 text-sm text-gray-500">마감임박</button>
+                 </div>
+                 <div id="home-product-list" class="divide-y">
+                     <!-- 홈 상품 목록 동적 생성 -->
+                 </div>
+            </main>
+        </div>
+
+
+        <!-- ===== 빠른주문 뷰 ===== -->
+        <div id="quick-order-view" class="hidden">
+            <!-- ===== 상단 고정 바 ===== -->
+            <header class="bg-white z-20 shadow-sm">
+                <!-- 최상단 바 -->
+                <div class="flex justify-between items-center p-3 border-b">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-bars text-xl"></i>
+                        <span class="font-bold text-sm">유통사 모집</span>
+                    </div>
+                    <h1 id="logo-quick-order" class="text-2xl font-extrabold text-green-600 cursor-pointer">오더즈</h1>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-semibold">OP</span>
+                        <i class="fas fa-user-circle text-2xl text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- 1차 카테고리 -->
+                <nav class="flex justify-around items-center p-2">
+                    <button data-category="vegetable" class="category-btn flex flex-col items-center space-y-1 text-gray-600">
+                        <i class="fas fa-carrot text-xl text-orange-400"></i>
+                        <span class="text-xs font-medium">채소/과일</span>
+                    </button>
+                    <button data-category="seafood" class="category-btn flex flex-col items-center space-y-1 text-gray-600">
+                         <i class="fas fa-fish text-xl text-blue-400"></i>
+                        <span class="text-xs font-medium">수산/축산</span>
+                    </button>
+                    <button data-category="processed" class="category-btn flex flex-col items-center space-y-1 text-gray-600">
+                        <i class="fas fa-snowflake text-xl text-cyan-400"></i>
+                        <span class="text-xs font-medium">식품/가공</span>
+                    </button>
+                     <button data-category="sauce" class="category-btn flex flex-col items-center space-y-1 text-gray-600">
+                        <i class="fas fa-blender text-xl text-yellow-500"></i>
+                        <span class="text-xs font-medium">양념/소스</span>
+                    </button>
+                    <button data-category="kitchen" class="category-btn flex flex-col items-center space-y-1 text-gray-600">
+                         <i class="fas fa-utensils text-xl text-gray-500"></i>
+                        <span class="text-xs font-medium">주방/잡화</span>
+                    </button>
+                </nav>
+            </header>
+
+            <!-- ===== 메인 컨텐츠 ===== -->
+            <main class="pb-40">
+                <!-- 고정되는 컨텐츠 (탭 + 검색) -->
+                <div id="sub-header" class="z-10 shadow-md">
+                    <!-- 마이리스트 탭 -->
+                    <div id="my-list-container" class="flex justify-between items-center px-4 pt-3 border-b bg-white">
+                        <div id="my-list-tabs" class="flex flex-grow justify-around overflow-x-auto no-scrollbar">
+                             <button data-list="0" class="my-list-tab py-2 tab-active flex-shrink-0">단골특가</button>
+                             <button data-list="1" class="my-list-tab py-2 tab-inactive flex-shrink-0">LIST 1</button>
+                             <button data-list="2" class="my-list-tab py-2 tab-inactive flex-shrink-0">LIST 2</button>
+                             <button data-list="3" class="my-list-tab py-2 tab-inactive flex-shrink-0">LIST 3</button>
+                        </div>
+                        <button id="edit-button" class="text-sm text-gray-500 font-semibold flex-shrink-0 ml-4">리스트 관리</button>
+                    </div>
+
+                    <!-- 검색창 -->
+                    <div class="p-4 border-b bg-white">
+                        <div class="relative">
+                            <input type="text" id="product-search-input" placeholder="찜, 단골특가 상품 검색" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 2차 카테고리 (숨김 상태) -->
+                <div id="secondary-category-container" class="hidden p-4 bg-gray-100 border-b">
+                     <div id="secondary-category-grid" class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                        <!-- JS로 동적 생성 -->
+                     </div>
+                </div>
+
+                <!-- 3차 카테고리 (숨김 상태) -->
+                <div id="tertiary-category-container" class="hidden p-4 bg-gray-100 border-b">
+                     <div id="tertiary-category-grid" class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                        <!-- JS로 동적 생성 -->
+                     </div>
+                </div>
+
+                <!-- 상품 목록 -->
+                <div id="product-list-container" class="px-4 mt-2">
+                    <div id="product-list" class="space-y-3">
+                        <!-- JS로 상품 목록 동적 생성 -->
+                    </div>
+                </div>
+
+                <!-- 주문 확인 화면 (숨김 상태) -->
+                <div id="order-confirmation-container" class="hidden px-4 mt-2">
+                    <div class="flex justify-between items-center my-4">
+                        <h2 class="text-lg font-bold">담은 상품 확인</h2>
+                        <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
+                    </div>
+                    <div id="confirmation-list" class="space-y-4">
+                        <!-- JS로 주문 확인 목록 동적 생성 -->
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ===== 편집 뷰 ===== -->
+        <div id="edit-view" class="hidden">
+            <header class="sticky top-0 bg-white z-20 shadow-sm p-3">
+                 <!-- 최상단 바 -->
+                <div class="flex justify-between items-center border-b pb-3">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-bars text-xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-extrabold text-green-600">오더즈</h1>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-semibold">25,400P</span>
+                        <i class="fas fa-user-circle text-2xl text-gray-400"></i>
+                    </div>
+                </div>
+                <!-- 편집 메뉴 -->
+                <div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3">
+                    <button data-filter="null" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold active">전체</button>
+                    <button data-filter="1" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">리스트 1</button>
+                    <button data-filter="2" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">리스트 2</button>
+                    <button data-filter="3" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">리스트 3</button>
+                    <button id="save-button" class="py-2 border rounded-md text-sm font-semibold bg-green-500 text-white">저장하기</button>
+                </div>
+            </header>
+            <main class="pb-5">
+                 <div id="edit-list" class="divide-y">
+                     <!-- 편집 상품 목록 동적 생성 -->
+                 </div>
+            </main>
+        </div>
+        
+        <!-- ===== 하단 고정 바 ===== -->
+        <footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t z-20">
+            <!-- 주문하기 버튼 (빠른주문 뷰에서만 보임) -->
+            <div id="order-bar" class="flex items-center justify-between p-3 hidden">
+                <div>
+                    <p class="text-xs text-gray-500">배송예정일</p>
+                    <p class="font-bold text-blue-600">2025-10-20</p>
+                </div>
+                <button id="order-button" class="w-2/3 py-3 rounded-lg text-white font-bold flex items-center justify-center space-x-2 order-btn-disabled">
+                    <span id="order-button-text">주문할 상품을 담아주세요</span>
+                </button>
+            </div>
+            <!-- 하단 네비게이션 -->
+            <nav id="bottom-nav" class="flex justify-around items-center py-2 text-gray-500 border-t">
+                 <a href="#" id="home-nav-btn" class="flex flex-col items-center space-y-1 text-green-500">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="text-xs font-bold">홈</span>
+                </a>
+                 <a href="#" class="flex flex-col items-center space-y-1">
+                    <i class="fas fa-search text-xl"></i>
+                    <span class="text-xs">검색</span>
+                </a>
+                 <a href="#" id="quick-order-nav-btn" class="flex flex-col items-center space-y-1">
+                    <div class="relative">
+                        <i class="fas fa-check-square text-2xl"></i>
+                        <span id="nav-badge" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    </div>
+                    <span class="text-xs">빠른주문</span>
+                </a>
+                <a href="#" class="flex flex-col items-center space-y-1">
+                    <i class="fas fa-comment-dots text-xl"></i>
+                     <span class="text-xs">채팅</span>
+                </a>
+            </nav>
+        </footer>
+
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const appState = {
+            products: {
+                vegetable: [
+                    // 홈 화면 상품
+                    { id: 100, name: '무우_특박스_10입', spec: 'BOX', price: 9500, category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '무우', liked: false, myList: [], isEvent: true, deliveryDate: '2025-10-21' },
+                    { id: 101, name: '무우_낱개', spec: '소분', price: 1400, category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '무우', liked: false, myList: [], isEvent: true, deliveryDate: '2025-10-22' },
+                    { id: 102, name: '무우2_작은무', spec: 'BOX', price: 8900, category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '무우', liked: false, myList: [], isEvent: false, deliveryDate: '2025-10-21' },
+                    { id: 103, name: '양배추40망_3입', spec: 'BOX', price: 6200, category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양배추', liked: false, myList: [], isEvent: true, deliveryDate: '2025-10-23' },
+                    { id: 104, name: '양배추_대_4입', spec: 'BOX', price: 8900, category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양배추', liked: false, myList: [], isEvent: false, deliveryDate: '2025-10-21' },
+                    { id: 105, name: '양파_왕20kg망', spec: 'BOX', price: 27800, category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', liked: false, myList: [], isEvent: true, deliveryDate: '2025-10-22' },
+
+                    // 기존 상품
+                    { id: 1, name: '흙쪽파(1kg)단', spec: '판매처: B유통', price: 9800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=쪽파', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '쪽파', liked: true, myList: [], deliveryDate: '2025-10-21' },
+                    { id: 2, name: '깐양파_10kg', spec: '판매처: B유통', price: 19500, img: 'https://placehold.co/80x80/d1e7dd/333333?text=양파', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', myList: [], deliveryDate: '2025-10-22' },
+                    { id: 3, name: '무우 (낱개)', spec: '판매처: B유통', price: 2800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=무', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '무우', liked: true, myList: [], deliveryDate: '2025-10-25' },
+                    { id: 8, name: '깻잎/쌈채/샐러드용', spec: '판매처: C유통', price: 4500, img: 'https://placehold.co/80x80/d1e7dd/333333?text=깻잎', category: 'vegetable', subCategory: '깻잎/쌈채/샐러드용', liked: true, myList: [], deliveryDate: '2025-10-21' },
+                    { id: 9, name: '바나나/레몬/수입', spec: '판매처: D유통', price: 12000, img: 'https://placehold.co/80x80/d1e7dd/333333?text=바나나', category: 'vegetable', subCategory: '바나나/레몬/수입/냉동과일', liked: true, myList: [], deliveryDate: '2025-10-21' },
+                    { id: 10, name: '국내산 대파 1kg', spec: '판매처: A유통', price: 3500, img: 'https://placehold.co/80x80/d1e7dd/333333?text=대파', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '대파', liked: true, myList: [], deliveryDate: '2025-10-22' },
+                    { id: 11, name: '깐마늘 500g', spec: '판매처: A유통', price: 6000, img: 'https://placehold.co/80x80/d1e7dd/333333?text=마늘', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '마늘', liked: true, myList: [], deliveryDate: '2025-10-23' },
+                    // myList1 상품
+                    { id: 12, name: '백다다기_5개입', price: 3500, spec: '판매처: A농산', category: 'vegetable', subCategory: '오이/호박/고추/피망', thirdCategory: '오이', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 13, name: '무우(낱개)', price: 2400, spec: '판매처: A농산', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '무우', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 14, name: '양배추(대)(낱개)', price: 3100, spec: '판매처: B농산', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양배추', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 15, name: '양파(3kg)', price: 6000, spec: '판매처: C농산', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 16, name: '깐양파_kg', price: 2600, spec: '판매처: C농산', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 17, name: '대파/ (단)', price: 2600, spec: '판매처: D농산', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '대파', myList: [1], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 18, name: '냉동다진마늘(중국)', price: 2400, spec: '판매처: 수입', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '마늘', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 19, name: '깐마늘小_1kg(그린/대구)', price: 8500, spec: '판매처: 그린', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '마늘', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 20, name: '깐마늘大_1kg(그린/대구)', price: 10100, spec: '판매처: 그린', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '마늘', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 21, name: '청양고추(상)(kg)', price: 5100, spec: '판매처: E농산', category: 'vegetable', subCategory: '오이/호박/고추/피망', thirdCategory: '고추', myList: [1], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 22, name: '브로커리[수입](kg)', price: 6900, spec: '판매처: 수입', category: 'vegetable', subCategory: '양파,브로콜리,새싹', thirdCategory: '브로콜리', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 23, name: '시소(10g)', price: 2500, spec: '판매처: F농산', category: 'vegetable', subCategory: '엽채류/산나물', thirdCategory: '특수채소', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 24, name: '무순/중(150g팩)', price: 1300, spec: '판매처: F농산', category: 'vegetable', subCategory: '양파,브로콜리,새싹', thirdCategory: '새싹', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 25, name: '밀양깻잎(50속)(5개)', price: 2800, spec: '판매처: 밀양', category: 'vegetable', subCategory: '깻잎/쌈채/샐러드용', thirdCategory: '깻잎', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 26, name: '레드쉬(적환무)(100g)', price: 3200, spec: '판매처: G농산', category: 'vegetable', subCategory: '감자/고구마/뿌리류', thirdCategory: '기타뿌리', myList: [1], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 27, name: '바실 (바질) (1kg)', price: 68200, spec: '판매처: G농산', category: 'vegetable', subCategory: '엽채류/산나물', thirdCategory: '허브', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 28, name: '청경채(kg)', price: 12800, spec: '판매처: H농산', category: 'vegetable', subCategory: '엽채류/산나물', thirdCategory: '청경채', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 29, name: '부추/특 (500g단)', price: 3900, spec: '판매처: H농산', category: 'vegetable', subCategory: '엽채류/산나물', thirdCategory: '부추', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 30, name: '새송이/특 (2kg)', price: 8900, spec: '판매처: I농산', category: 'vegetable', subCategory: '버섯/콩나물/두부', thirdCategory: '버섯', myList: [1], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 31, name: '팽이/황소고집(3개입)', price: 1500, spec: '판매처: 황소고집', category: 'vegetable', subCategory: '버섯/콩나물/두부', thirdCategory: '버섯', myList: [1], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 32, name: '숙주 (3.5kg)', price: 6100, spec: '판매처: J농산', category: 'vegetable', subCategory: '버섯/콩나물/두부', thirdCategory: '콩나물/숙주', myList: [2], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 33, name: '레몬140과[수입](낱개)', price: 600, spec: '판매처: 수입', category: 'vegetable', subCategory: '바나나/레몬/수입/냉동과일', thirdCategory: '수입과일', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 35, name: '깐호두(황토)', price: 9200, spec: '판매처: 황토', category: 'vegetable', subCategory: '견과일/견과류/한약재료', thirdCategory: '견과류', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                ],
+                seafood: [
+                    { id: 4, name: '두절건새우_소500g_수입', spec: '판매처: B유통', price: 7700, img: 'https://placehold.co/80x80/a2d2ff/333333?text=새우', category: 'seafood', subCategory: '건어물', thirdCategory: '건새우', liked: true, myList: [], deliveryDate: '2025-10-21' },
+                    { id: 36, name: '최상품참다시마_300g', price: 8600, spec: '판매처: K수산', category: 'seafood', subCategory: '김/해초', thirdCategory: '해초', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 37, name: '가리비관자(중국)500g', price: 6800, spec: '판매처: 수입', category: 'seafood', subCategory: '해산물/어패류', thirdCategory: '어패류', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 38, name: 'PDTO31/40(생칵테일)중국', price: 14700, spec: '판매처: 수입', category: 'seafood', subCategory: '해산물/어패류', thirdCategory: '새우', myList: [2], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 39, name: '칵테일새우31/50(중국)', price: 4100, spec: '판매처: 수입', category: 'seafood', subCategory: '해산물/어패류', thirdCategory: '새우', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 40, name: '솔방울오징어(중국)', price: 2100, spec: '판매처: 수입', category: 'seafood', subCategory: '해산물/어패류', thirdCategory: '오징어', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 41, name: '냉동자숙피홍합(국산)', price: 3300, spec: '판매처: 국산', category: 'seafood', subCategory: '해산물/어패류', thirdCategory: '어패류', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 43, name: '문어샐러드(마다카스카르)', price: 8200, spec: '판매처: 수입', category: 'seafood', subCategory: '해산물/어패류', thirdCategory: '기타해산물', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 44, name: '성게알A급(수입산)', price: 15100, spec: '판매처: 수입', category: 'seafood', subCategory: '해산물/어패류', thirdCategory: '기타해산물', myList: [2], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 45, name: '계란(대란/30알)1판', price: 7100, spec: '판매처: L농장', category: 'seafood', subCategory: '축산알류', thirdCategory: '계란', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 52, name: '베이컨(알찬)', price: 11500, spec: '판매처: 알찬', category: 'seafood', subCategory: '돼지고기', thirdCategory: '가공육', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                ],
+                processed: [
+                    { id: 7, name: '갓김치_얼음골_10kg', spec: '판매처: B유통', price: 58800, img: 'https://placehold.co/80x80/27ae60/ffffff?text=갓김치', category: 'processed', subCategory: '김치/반찬', thirdCategory: '김치', myList: [], deliveryDate: '2025-10-24' },
+                    { id: 34, name: '파인애플샤베트(이엔)', price: 2800, spec: '판매처: 이엔', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '아이스크림', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 42, name: '초계란말이(성산)', price: 4900, spec: '판매처: 성산', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '간편식', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 46, name: '락교파우치(코우)', price: 11100, spec: '판매처: 코우', category: 'processed', subCategory: '김치/반찬', thirdCategory: '절임류', myList: [2], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 47, name: '절임고추(산고추/코우)', price: 13500, spec: '판매처: 코우', category: 'processed', subCategory: '김치/반찬', thirdCategory: '절임류', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 48, name: '초생강(적/이엔)', price: 2100, spec: '판매처: 이엔', category: 'processed', subCategory: '김치/반찬', thirdCategory: '절임류', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 49, name: '팩두부반판_3kg팩_', price: 4500, spec: '판매처: M식품', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '두부', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 50, name: '맛살(한성)', price: 4900, spec: '판매처: 한성', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '어묵/맛살', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 51, name: '빵가루새우10미(큰바다/베트남)', price: 3200, spec: '판매처: 큰바다', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '튀김류', myList: [2], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 53, name: '감자샐러드(동원홈푸드)', price: 6500, spec: '판매처: 동원', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '샐러드', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 54, name: '감자샐러드(MDS)', price: 6500, spec: '판매처: MDS', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '샐러드', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 55, name: '한입핫도그', price: 11100, spec: '판매처: N식품', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '핫도그', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 56, name: '옥수수콘小(리치스/태국)', price: 1200, spec: '판매처: 리치스', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '통조림', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 57, name: '냉동중화면(면사랑)', price: 2900, spec: '판매처: 면사랑', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '면류', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 67, name: '타코와사비(한성)', price: 22000, spec: '판매처: 한성', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '기타냉동', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 69, name: '타코와사비(고래미)', price: 23500, spec: '판매처: 고래미', category: 'processed', subCategory: '냉동/간편식', thirdCategory: '기타냉동', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 73, name: '부침가루(이츠웰)', price: 2200, spec: '판매처: 이츠웰', category: 'processed', subCategory: '가루/조미료', thirdCategory: '가루류', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 78, name: '중력밀가루(큐원)', price: 4800, spec: '판매처: 큐원', category: 'processed', subCategory: '가루/조미료', thirdCategory: '가루류', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 79, name: '생빵가루(식빵/진현)', price: 7100, spec: '판매처: 진현', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '빵가루', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 80, name: '건식빵가루(오쉐프)', price: 4200, spec: '판매처: 오쉐프', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '빵가루', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 81, name: '무가염버터(엘로이)', price: 9400, spec: '판매처: 엘로이', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '유제품', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 82, name: 'DB휘핑크림(선인)', price: 5100, spec: '판매처: 선인', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '유제품', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 83, name: '치즈가루50%(사조오양)', price: 22100, spec: '판매처: 사조오양', category: 'processed', subCategory: '두부/면/빵', thirdCategory: '유제품', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                ],
+                sauce: [
+                    { id: 58, name: '벌꿀(허니쉼)PT', price: 6500, spec: '판매처: 허니쉼', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '시럽/꿀', myList: [2], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 59, name: '복숭아아이스티(립톤)', price: 9500, spec: '판매처: 립톤', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '음료베이스', myList: [2], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 60, name: '진간장S(PT)샘표', price: 4500, spec: '판매처: 샘표', category: 'sauce', subCategory: '장류', thirdCategory: '간장', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 61, name: '사시미간장(니비시/일본)', price: 12400, spec: '판매처: 니비시', category: 'sauce', subCategory: '장류', thirdCategory: '간장', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 62, name: '실장님초장(움트리)', price: 37800, spec: '판매처: 움트리', category: 'sauce', subCategory: '장류', thirdCategory: '고추장/초장', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 63, name: '식용유(말)쉐프원', price: 47800, spec: '판매처: 쉐프원', category: 'sauce', subCategory: '기름', thirdCategory: '식용유', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 64, name: '올리브오일(엑스트라버진)', price: 18800, spec: '판매처: 수입', category: 'sauce', subCategory: '기름', thirdCategory: '올리브유', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 65, name: '참기름(참진산골)', price: 10600, spec: '판매처: 참진산골', category: 'sauce', subCategory: '기름', thirdCategory: '참기름', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 66, name: '마요네즈스파우트(오뚜기)', price: 15500, spec: '판매처: 오뚜기', category: 'sauce', subCategory: '소스/드레싱', thirdCategory: '마요네즈', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 68, name: '초대리초밥소스(이슬나라)', price: 6100, spec: '판매처: 이슬나라', category: 'sauce', subCategory: '소스/드레싱', thirdCategory: '식초/소스', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 70, name: '생와사비999(삼광)', price: 10600, spec: '판매처: 삼광', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '와사비', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 71, name: '미림PT(소)롯데', price: 7600, spec: '판매처: 롯데', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '조미료', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                    { id: 72, name: '백설탕_3kg[백설]', price: 5000, spec: '판매처: 백설', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '설탕', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 74, name: '천일염(소금/국내산)', price: 10400, spec: '판매처: 국내산', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '소금', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 75, name: '굵은고추가루(송원/중국)', price: 10600, spec: '판매처: 송원', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '고춧가루', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                    { id: 76, name: '청양고운고추가루(송원/중국)', price: 11200, spec: '판매처: 송원', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '고춧가루', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                    { id: 77, name: '아이미(백설)', price: 12400, spec: '판매처: 백설', category: 'sauce', subCategory: '향신료/기타', thirdCategory: '조미료', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                ],
+                kitchen: [
+                     { id: 5, name: '애경부라보_퐁퐁_13kg_말', spec: '판매처: B유통', price: 15000, img: 'https://placehold.co/80x80/f8c471/333333?text=퐁퐁', category: 'kitchen', subCategory: '세제/청소', thirdCategory: '주방세제', liked: true, myList: [], deliveryDate: '2025-10-23' },
+                     { id: 84, name: '퐁퐁특A(말)', price: 8000, spec: '판매처: 퐁퐁', category: 'kitchen', subCategory: '세제/청소', thirdCategory: '주방세제', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 85, name: '스파크(세제)', price: 9600, spec: '판매처: 스파크', category: 'kitchen', subCategory: '세제/청소', thirdCategory: '세탁세제', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                     { id: 86, name: '니트릴장갑(L/블랙)', price: 5600, spec: '판매처: 공장', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '장갑', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 87, name: '면장갑(10켤레)타스', price: 2000, spec: '판매처: 타스', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '장갑', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                     { id: 88, name: '종이호일(25cm*20m)', price: 2200, spec: '판매처: O유통', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '호일/랩', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 89, name: '철수세미(1개/또순이)', price: 600, spec: '판매처: 또순이', category: 'kitchen', subCategory: '세제/청소', thirdCategory: '청소도구', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                     { id: 90, name: '은사수세미', price: 800, spec: '판매처: P유통', category: 'kitchen', subCategory: '세제/청소', thirdCategory: '청소도구', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 91, name: '타올행주(중)10장35/75', price: 10600, spec: '판매처: Q유통', category: 'kitchen', subCategory: '세제/청소', thirdCategory: '행주', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                     { id: 92, name: '행주(20장)30cm*45cm', price: 9400, spec: '판매처: Q유통', category: 'kitchen', subCategory: '세제/청소', thirdCategory: '행주', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 93, name: '랩(35cm500롤)굿초이스', price: 14100, spec: '판매처: 굿초이스', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '호일/랩', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                     { id: 94, name: '알뜰롤팩30/40(이츠웰)500매', price: 5900, spec: '판매처: 이츠웰', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '위생백', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 95, name: '부탄가스(좋은)4입/7줄', price: 4800, spec: '판매처: 좋은', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '기타잡화', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                     { id: 96, name: '화장지(25m/30롤/3겹)', price: 11600, spec: '판매처: R유통', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '화장지/티슈', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 97, name: '돌돌이물티슈_개별_400입_이츠웰', price: 0, spec: '싯가', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '화장지/티슈', myList: [3], liked: true, deliveryDate: '2025-10-22' },
+                     { id: 98, name: '원터치컵(원형/소)100개', price: 4200, spec: '판매처: S유통', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '일회용품', myList: [3], liked: true, deliveryDate: '2025-10-21' },
+                     { id: 99, name: '도시락(중)50개', price: 2800, spec: '판매처: S유통', category: 'kitchen', subCategory: '위생/잡화', thirdCategory: '일회용품', myList: [3], liked: true, deliveryDate: '2025-10-23' },
+                ],
+            },
+            secondaryCategories: {
+                vegetable: [
+                    { name: '무/배추/조미채소', total: 35 }, { name: '감자/고구마/뿌리류', total: 34 },
+                    { name: '오이/호박/고추/피망', total: 60 }, { name: '양파,브로콜리,새싹', total: 69 },
+                    { name: '깻잎/쌈채/샐러드용', total: 80 }, { name: '엽채류/산나물', total: 47 },
+                    { name: '버섯/콩나물/두부', total: 48 }, { name: '삶은/건채소/냉동채소', total: 56 },
+                    { name: '감,배,사과,토마토,딸기', total: 2 }, { name: '감귤,포도,수박,매실', total: 0 },
+                    { name: '복수아,자두,석류,기타', total: 0 }, { name: '바나나/레몬/수입/냉동과일', total: 18 },
+                    { name: '견과일/견과류/한약재료', total: 32 }, { name: '쌀,잡곡,혼합곡', total: 5 },
+                ],
+                seafood: [
+                    { name: '건어물', total: 26 }, { name: '김/해초', total: 57 },
+                    { name: '젓갈/장류', total: 8 }, { name: '해산물/어패류', total: 233 },
+                    { name: '생선', total: 90 }, { name: '축산알류', total: 7 },
+                    { name: '닭고기', total: 21 }, { name: '돼지고기', total: 0 },
+                    { name: '쇠고기', total: 0 }, { name: '양고기,오리,기타고기', total: 7 },
+                ],
+                 processed: [
+                    { name: '냉동/간편식', total: 100 }, { name: '김치/반찬', total: 50 },
+                    { name: '두부/면/빵', total: 70 }, { name: '가루/조미료', total: 30 },
+                ],
+                sauce: [
+                    { name: '장류', total: 40 }, { name: '기름', total: 20 },
+                    { name: '소스/드레싱', total: 35 }, { name: '향신료/기타', total: 60 },
+                ],
+                kitchen: [
+                    { name: '세제/청소', total: 80 }, { name: '위생/잡화', total: 120 },
+                ],
+            },
+            thirdCategories: {
+                vegetable: {
+                    '무/배추/조미채소': [
+                        { name: '무우', total: 5, liked: true }, { name: '배추', total: 2, liked: false },
+                        { name: '양배추', total: 4, liked: true }, { name: '적채', total: 0, liked: false },
+                        { name: '양파', total: 7, liked: true }, { name: '대파', total: 2, liked: true },
+                        { name: '쪽파', total: 4, liked: false }, { name: '마늘', total: 6, liked: true },
+                        { name: '생강', total: 5, liked: false },
+                    ]
+                },
+                seafood: {
+                    '건어물': [
+                        { name: '건새우', total: 3, liked: false }, { name: '노가리', total: 0, liked: false },
+                        { name: '조림멸치', total: 2, liked: false }, { name: '다시멸치', total: 1, liked: false },
+                        { name: '디포리/밴댕이', total: 1, liked: false }, { name: '쥐포', total: 2, liked: false },
+                        { name: '진미채', total: 4, liked: false }, { name: '황태', total: 3, liked: false },
+                        { name: '코다리', total: 5, liked: false }, { name: '기타건어물', total: 5, liked: false },
+                    ]
+                }
+            },
+            cart: {}, // { productId: quantity }
+            currentView: 'home', // 'home', 'quick-order', 'edit'
+            currentMyList: 0, // 0 for 단골특가, 1, 2, 3 for MY LIST
+            currentPrimaryCategory: null,
+            currentSecondaryCategory: null,
+            selectedThirdCategories: [],
+            editListFilter: null,
+            searchTerm: '',
+        };
+
+        // Views
+        const homeView = document.getElementById('home-view');
+        const quickOrderView = document.getElementById('quick-order-view');
+        const editView = document.getElementById('edit-view');
+
+        // Quick Order View Elements
+        const productListEl = document.getElementById('product-list');
+        const orderButton = document.getElementById('order-button');
+        const orderButtonText = document.getElementById('order-button-text');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const secCatContainer = document.getElementById('secondary-category-container');
+        const secCatGrid = document.getElementById('secondary-category-grid');
+        const terCatContainer = document.getElementById('tertiary-category-container');
+        const terCatGrid = document.getElementById('tertiary-category-grid');
+        const productListContainer = document.getElementById('product-list-container');
+        const orderConfirmationContainer = document.getElementById('order-confirmation-container');
+        const confirmationListEl = document.getElementById('confirmation-list');
+        const myListTabsContainer = document.getElementById('my-list-tabs');
+        const myListContainer = document.getElementById('my-list-container');
+        const productSearchInput = document.getElementById('product-search-input');
+
+        // Home View Elements
+        const homeProductListEl = document.getElementById('home-product-list');
+
+        // Edit View Elements
+        const editButton = document.getElementById('edit-button');
+        const saveButton = document.getElementById('save-button');
+        const editListEl = document.getElementById('edit-list');
+        const editFilterMenu = document.getElementById('edit-filter-menu');
+
+        // Global Elements
+        const navBadge = document.getElementById('nav-badge');
+        const quickOrderNavBtn = document.getElementById('quick-order-nav-btn');
+        const homeNavBtn = document.getElementById('home-nav-btn');
+        const bottomNav = document.getElementById('bottom-nav');
+        const orderBar = document.getElementById('order-bar');
+        const logoHome = document.getElementById('logo-home');
+        const logoQuickOrder = document.getElementById('logo-quick-order');
+
+
+        function getAllProducts() {
+            return Object.values(appState.products).flat();
+        }
+        
+        // --- VIEW MANAGEMENT ---
+        function showHomeView() {
+            appState.currentView = 'home';
+            homeView.classList.remove('hidden');
+            quickOrderView.classList.add('hidden');
+            editView.classList.add('hidden');
+
+            orderBar.classList.add('hidden');
+            bottomNav.classList.remove('hidden');
+
+            // Update nav button styles
+            homeNavBtn.classList.add('text-green-500');
+            homeNavBtn.querySelector('span').classList.add('font-bold');
+            quickOrderNavBtn.classList.remove('text-green-500');
+            quickOrderNavBtn.querySelector('span').classList.remove('font-bold');
+            
+            updateLikedCountBadge();
+            renderHomeView();
+        }
+
+        function showQuickOrderView() {
+            appState.currentView = 'quick-order';
+            homeView.classList.add('hidden');
+            quickOrderView.classList.remove('hidden');
+            editView.classList.add('hidden');
+            
+            orderBar.classList.remove('hidden');
+            bottomNav.classList.remove('hidden');
+
+            // Update nav button styles
+            homeNavBtn.classList.remove('text-green-500');
+            homeNavBtn.querySelector('span').classList.remove('font-bold');
+            quickOrderNavBtn.classList.add('text-green-500');
+            quickOrderNavBtn.querySelector('span').classList.add('font-bold');
+            
+            resetQuickOrderView();
+        }
+
+        function showEditView() {
+            appState.currentView = 'edit';
+            homeView.classList.add('hidden');
+            quickOrderView.classList.add('hidden');
+            editView.classList.remove('hidden');
+            
+            orderBar.classList.add('hidden');
+            bottomNav.classList.add('hidden');
+            
+            appState.editListFilter = null; // Reset filter
+            renderEditView();
+        }
+        
+        // --- HOME VIEW LOGIC ---
+        function renderHomeView() {
+            const homeProducts = getAllProducts().filter(p => p.id >= 100);
+            homeProductListEl.innerHTML = homeProducts.map(p => `
+                 <div class="flex items-center p-4" data-id="${p.id}">
+                    <img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0 mr-4">
+                    <div class="flex-grow">
+                        <p class="text-xs text-gray-500">한정판매</p>
+                        <p class="font-semibold">${p.name}</p>
+                        <p class="font-bold text-green-600 text-lg">${p.price.toLocaleString()}원</p>
+                    </div>
+                    <input type="checkbox" class="home-product-checkbox h-6 w-6 rounded border-gray-300 text-green-600 focus:ring-green-500" data-id="${p.id}" ${p.liked ? 'checked' : ''}>
+                </div>
+            `).join('');
+        }
+        
+        function updateLikedCountBadge() {
+             const likedCount = getAllProducts().filter(p => p.liked).length;
+             navBadge.textContent = likedCount;
+        }
+
+        homeProductListEl.addEventListener('change', e => {
+            if (e.target.matches('.home-product-checkbox')) {
+                const productId = parseInt(e.target.dataset.id, 10);
+                const isChecked = e.target.checked;
+                const product = getAllProducts().find(p => p.id === productId);
+                if (product) {
+                    product.liked = isChecked;
+                    
+                    // Auto-like the 3rd category
+                    if(product.category && product.subCategory && product.thirdCategory) {
+                        const thirdCat = appState.thirdCategories[product.category]?.[product.subCategory]?.find(c => c.name === product.thirdCategory);
+                        if(thirdCat) {
+                            thirdCat.liked = isChecked;
+                        }
+                    }
+                }
+                updateLikedCountBadge();
+            }
+        });
+
+        // --- QUICK ORDER LOGIC ---
+        function getLikedCountForSubCategory(subCategoryName) {
+            return getAllProducts()
+                .filter(p => p.subCategory === subCategoryName && p.liked)
+                .length;
+        }
+
+        function renderSecondaryCategories(primaryCategory) {
+            const categories = appState.secondaryCategories[primaryCategory] || [];
+            secCatGrid.innerHTML = categories.map(cat => {
+                const likedCount = getLikedCountForSubCategory(cat.name);
+                return `
+                    <div class="flex justify-between items-center cursor-pointer subcategory-filter p-1 rounded hover:bg-gray-200" data-subcategory="${cat.name}">
+                        <span>
+                            ${cat.name}
+                            ${likedCount > 0 ? `<span class="text-yellow-500 font-bold ml-2">(${likedCount})</span>` : ''}
+                        </span>
+                        <div class="flex items-center space-x-2 text-gray-500">
+                            <span>${cat.total}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            secCatContainer.classList.remove('hidden');
+
+            document.querySelectorAll('.subcategory-filter').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    appState.currentSecondaryCategory = e.currentTarget.dataset.subcategory;
+                    appState.selectedThirdCategories = []; // Reset
+                    
+                    secCatContainer.classList.add('hidden'); 
+
+                    renderThirdCategories(appState.currentPrimaryCategory, appState.currentSecondaryCategory);
+                });
+            });
+        }
+        
+        function renderThirdCategories(primary, secondary) {
+            const categories = appState.thirdCategories[primary]?.[secondary] || [];
+            if (categories.length === 0) {
+                terCatContainer.classList.add('hidden');
+                renderProducts();
+                return;
+            }
+            
+            terCatGrid.innerHTML = categories.map(cat => `
+                <div class="flex items-center">
+                    <input type="checkbox" id="tertiary-${cat.name}" data-cat-primary="${primary}" data-cat-secondary="${secondary}" data-cat-tertiary="${cat.name}" class="custom-checkbox category-like-checkbox h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-2" ${cat.liked ? 'checked' : ''}>
+                    <label for="tertiary-${cat.name}" class="flex-grow">${cat.name}</label>
+                    <span class="text-gray-400 text-xs">${cat.total}</span>
+                </div>
+            `).join('');
+
+            terCatContainer.classList.remove('hidden');
+            renderProducts();
+        }
+
+        terCatContainer.addEventListener('change', (e) => {
+             if (e.target.matches('.category-like-checkbox')) {
+                const primary = e.target.dataset.catPrimary;
+                const secondary = e.target.dataset.catSecondary;
+                const tertiary = e.target.dataset.catTertiary;
+                const isChecked = e.target.checked;
+                
+                const cat = appState.thirdCategories[primary]?.[secondary]?.find(c => c.name === tertiary);
+                if (cat) {
+                    cat.liked = isChecked;
+                }
+             }
+        });
+
+
+        myListTabsContainer.addEventListener('click', (e) => {
+            if (e.target.matches('.my-list-tab')) {
+                productSearchInput.value = '';
+                appState.searchTerm = '';
+
+                orderConfirmationContainer.classList.add('hidden');
+                productListContainer.classList.remove('hidden');
+                updateOrderButton();
+
+                document.body.classList.remove('category-mode'); // 카테고리 모드 해제
+
+                categoryButtons.forEach(btn => btn.classList.remove('category-btn-active'));
+                const listNumber = parseInt(e.target.dataset.list, 10);
+                appState.currentMyList = listNumber;
+                appState.currentPrimaryCategory = null;
+                appState.currentSecondaryCategory = null;
+                secCatContainer.classList.add('hidden');
+                terCatContainer.classList.add('hidden');
+                
+                myListTabsContainer.querySelectorAll('.my-list-tab').forEach(tab => {
+                    tab.classList.remove('tab-active');
+                    tab.classList.add('tab-inactive');
+                });
+                e.target.classList.add('tab-active');
+                e.target.classList.remove('tab-inactive');
+                renderProducts();
+            }
+        });
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // If the clicked category is already active, reset to default list view
+                if (e.currentTarget.classList.contains('category-btn-active')) {
+                    resetQuickOrderView();
+                    return;
+                }
+
+                productSearchInput.value = '';
+                appState.searchTerm = '';
+
+                orderConfirmationContainer.classList.add('hidden');
+                productListContainer.classList.remove('hidden');
+                updateOrderButton();
+
+                document.body.classList.add('category-mode'); // 카테고리 모드 활성화
+
+                categoryButtons.forEach(btn => btn.classList.remove('category-btn-active'));
+                e.currentTarget.classList.add('category-btn-active');
+                appState.currentMyList = 0;
+                appState.currentPrimaryCategory = e.currentTarget.dataset.category;
+                appState.currentSecondaryCategory = null;
+                terCatContainer.classList.add('hidden');
+
+                // Deactivate all list tabs visually but keep them in the DOM
+                myListTabsContainer.querySelectorAll('.my-list-tab').forEach(tab => {
+                    tab.classList.remove('tab-active');
+                    tab.classList.add('tab-inactive');
+                });
+                // Activate the '단골특가' tab logically as a default for category view
+                myListTabsContainer.querySelector('[data-list="0"]').classList.add('tab-active');
+                myListTabsContainer.querySelector('[data-list="0"]').classList.remove('tab-inactive');
+
+                
+                renderSecondaryCategories(appState.currentPrimaryCategory);
+            });
+        });
+
+        function renderProducts() {
+            // First, determine the list of liked third categories, as this is needed for '단골특가'
+            const likedThirdCategories = [];
+            Object.values(appState.thirdCategories).forEach(secondary => {
+                Object.values(secondary).forEach(tertiaryList => {
+                    tertiaryList.forEach(cat => {
+                        if (cat.liked) {
+                            likedThirdCategories.push(cat.name);
+                        }
+                    });
+                });
+            });
+
+            let productsToRender = [];
+            
+            // 검색 로직
+            if (appState.searchTerm) {
+                const searchTermLower = appState.searchTerm.toLowerCase();
+                productsToRender = getAllProducts().filter(p => {
+                    const isLiked = p.liked;
+                    // A product is '단골특가' if it's an event product AND belongs to a liked 3rd category.
+                    const isDangolSpecial = p.isEvent && likedThirdCategories.includes(p.thirdCategory);
+                    const nameMatches = p.name.toLowerCase().includes(searchTermLower);
+
+                    return (isLiked || isDangolSpecial) && nameMatches;
+                });
+            } 
+            // 기존 필터 로직
+            else {
+                // 단골특가 로직
+                if (appState.currentMyList === 0 && !appState.currentPrimaryCategory) {
+                    const allEventProducts = getAllProducts().filter(p => p.isEvent);
+                    productsToRender = allEventProducts.filter(p => likedThirdCategories.includes(p.thirdCategory));
+
+                }
+                // LIST 1, 2, 3 로직
+                else if (appState.currentMyList > 0) {
+                    productsToRender = getAllProducts().filter(p => p.myList && p.myList.includes(appState.currentMyList));
+                } 
+                // 카테고리 선택 로직
+                else {
+                     let allProducts = getAllProducts();
+
+                    if (appState.currentPrimaryCategory) {
+                        allProducts = allProducts.filter(p => p.category === appState.currentPrimaryCategory);
+                    }
+                    if (appState.currentSecondaryCategory) {
+                        allProducts = allProducts.filter(p => p.subCategory === appState.currentSecondaryCategory);
+                    }
+                    
+                    // 3차 카테고리는 선택된(checked) 것들만 필터링
+                    const selectedThirdCats = [];
+                    const catCheckboxes = terCatContainer.querySelectorAll('.category-like-checkbox:checked');
+                    catCheckboxes.forEach(cb => selectedThirdCats.push(cb.dataset.catTertiary));
+
+                    if (selectedThirdCats.length > 0) {
+                         productsToRender = allProducts.filter(p => selectedThirdCats.includes(p.thirdCategory));
+                    } else if(appState.currentSecondaryCategory) {
+                        productsToRender = allProducts; // 3차 선택 안하면 2차 전체 보여주기
+                    } else { // 1차만 선택
+                         productsToRender = allProducts.filter(p => p.liked);
+                    }
+                }
+            }
+            
+            if (productsToRender.length === 0) {
+                 productListEl.innerHTML = `<div class="text-center py-10 text-gray-500">표시할 상품이 없습니다.</div>`;
+                 return;
+            }
+
+            const today = new Date('2025-10-20T00:00:00');
+            today.setHours(0, 0, 0, 0);
+            const msPerDay = 1000 * 60 * 60 * 24;
+
+            productListEl.innerHTML = productsToRender.map(p => {
+                const isSelected = appState.cart[p.id] > 0;
+                const priceText = p.spec === '싯가' ? '싯가' : `${p.price.toLocaleString()}원`;
+                
+                // --- Brand & Date Logic ---
+                const deliveryDateStr = p.deliveryDate;
+                let deliveryHtml = '';
+                let brandHtml = '';
+
+                // Extract Brand
+                if (p.spec && p.spec.startsWith('판매처: ')) {
+                    const brandName = p.spec.replace('판매처: ', '');
+                    brandHtml = `<span class="font-bold text-gray-700 mr-2">${brandName}</span>`;
+                }
+                
+                // Format Delivery Date
+                if (deliveryDateStr) {
+                    const deliveryDate = new Date(deliveryDateStr + 'T00:00:00');
+                    deliveryDate.setHours(0, 0, 0, 0);
+
+                    const dayDiff = (deliveryDate.getTime() - today.getTime()) / msPerDay;
+
+                    let deliveryText = '';
+                    let dateColorClass = '';
+
+                    if (dayDiff === 1) { // Tomorrow
+                        deliveryText = '내일배송 (20시 마감)';
+                        dateColorClass = 'text-blue-600 font-semibold';
+                    } else if (dayDiff > 1) { // Day after tomorrow or later
+                        const dateParts = deliveryDateStr.split('-');
+                        const monthDay = `${dateParts[1]}-${dateParts[2]}`;
+                        deliveryText = `${monthDay} 배송 (20시 마감)`;
+                        dateColorClass = 'text-red-600 font-semibold';
+                    } else { // Today or past dates (unlikely but handle it)
+                         const dateParts = deliveryDateStr.split('-');
+                        const monthDay = `${dateParts[1]}-${dateParts[2]}`;
+                        deliveryText = `${monthDay} 배송`;
+                    }
+                    
+                    deliveryHtml = `<span class="${dateColorClass}">${deliveryText}</span>`;
+                }
+                // --- End Brand & Date Logic ---
+
+                // --- New Display Logic ---
+                let displaySpec = '';
+
+                if (p.spec && !p.spec.startsWith('판매처: ')) {
+                    displaySpec = p.spec;
+                }
+
+                const line1Text = `${brandHtml}${deliveryHtml}`;
+                const line2Text = displaySpec ? `${p.name} (${displaySpec})` : p.name;
+
+                // --- Icon Logic (Simplified) ---
+                const isLiked = p.liked;
+                const likeIconHtml = `
+                    <span class="like-btn relative text-xl cursor-pointer" data-product-id="${p.id}" style="width: 1.25rem; height: 1.25rem; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="${isLiked ? 'fa-solid fa-square-check text-green-600' : 'fa-regular fa-square text-gray-400'}"></i>
+                    </span>
+                `;
+
+                return `
+                <div class="product-item flex items-center space-x-3 p-2 rounded-lg ${isSelected ? 'product-item-selected' : 'bg-white'}" data-id="${p.id}">
+                    <img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0">
+                    <div class="flex-grow">
+                        <div class="flex items-start">
+                            <div class="pt-0.5">${likeIconHtml}</div>
+                            <p class="font-bold text-sm ml-2">${line2Text}</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 ml-8">${line1Text}</p>
+                    </div>
+                    <div class="flex flex-col items-end flex-shrink-0">
+                        <p class="font-bold whitespace-nowrap">${priceText}</p>
+                        <div class="flex items-center mt-1 border rounded-md">
+                            <button class="quantity-btn quantity-decrease bg-gray-100 rounded-l-md">-</button>
+                            <input type="number" class="quantity-input w-10 text-center border-l border-r text-sm" value="${appState.cart[p.id] || 0}" min="0">
+                            <button class="quantity-btn quantity-increase bg-gray-100 rounded-r-md">+</button>
+                        </div>
+                    </div>
+                </div>
+                `}).join('');
+        }
+
+        function updateCart(productId, quantity) {
+            quantity = Math.max(0, quantity);
+            if (quantity > 0) {
+                appState.cart[productId] = quantity;
+            } else {
+                delete appState.cart[productId];
+            }
+            updateOrderButton();
+        }
+
+        function updateOrderButton() {
+            const totalProducts = Object.keys(appState.cart).length;
+            let totalPrice = 0;
+            const allProducts = getAllProducts();
+
+            for (const id in appState.cart) {
+                const product = allProducts.find(p => p.id == id);
+                if (product) {
+                    totalPrice += product.price * appState.cart[id];
+                }
+            }
+            
+            // Badge on bottom nav should show cart count, not liked count
+            const cartCount = Object.keys(appState.cart).length;
+            navBadge.textContent = cartCount;
+
+
+            if (totalProducts > 0) {
+                orderButton.classList.remove('order-btn-disabled', 'bg-gray-400');
+                orderButton.classList.add('bg-green-500', 'hover:bg-green-600');
+                if (appState.currentView === 'quick-order' && orderConfirmationContainer.classList.contains('hidden')) {
+                     orderButtonText.innerHTML = `담은 상품 확인하기 <span class="bg-yellow-400 text-green-800 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">${totalProducts}</span>`;
+                } else {
+                     orderButtonText.innerHTML = `총 ${totalPrice.toLocaleString()}원 주문하기`;
+                }
+            } else {
+                orderButton.classList.add('order-btn-disabled', 'bg-gray-400');
+                orderButton.classList.remove('bg-green-500', 'hover:bg-green-600');
+                orderButtonText.textContent = '주문할 상품을 담아주세요';
+                if(!orderConfirmationContainer.classList.contains('hidden')) {
+                     resetQuickOrderView();
+                }
+            }
+        }
+        
+        function showConfirmationView() {
+            orderConfirmationContainer.classList.remove('hidden');
+            productListContainer.classList.add('hidden');
+            secCatContainer.classList.add('hidden');
+            terCatContainer.classList.add('hidden');
+
+            const cartItems = Object.keys(appState.cart);
+            const allProducts = getAllProducts();
+            
+            const totalQuantity = Object.values(appState.cart).reduce((total, quantity) => total + quantity, 0);
+            document.getElementById('confirmation-total-count').textContent = `총 ${totalQuantity}개`;
+
+            const itemsToConfirm = allProducts.filter(p => cartItems.includes(p.id.toString()));
+            
+            const categoryNames = {
+                'vegetable': '채소/과일', 'seafood': '수산/축산', 'processed': '식품/가공', 'sauce': '양념/소스', 'kitchen': '주방/잡화'
+            };
+
+            const groupedItems = itemsToConfirm.reduce((acc, item) => {
+                const category = categoryNames[item.category] || '기타';
+                if (!acc[category]) acc[category] = [];
+                acc[category].push(item);
+                return acc;
+            }, {});
+
+            confirmationListEl.innerHTML = Object.entries(groupedItems).map(([category, items]) => `
+                <div class="mb-4">
+                    <h3 class="font-bold text-md mb-2 pb-2 border-b">${category}</h3>
+                    <div class="space-y-3 mt-3">
+                        ${items.map(p => `
+                            <div class="product-item flex items-center space-x-3 p-2 rounded-lg product-item-selected" data-id="${p.id}">
+                                <img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0">
+                                <div class="flex-grow">
+                                    <p class="font-bold text-sm">${p.name}</p>
+                                    <p class="text-xs text-gray-500">${p.spec}</p>
+                                </div>
+                                <div class="flex flex-col items-end flex-shrink-0">
+                                    <p class="font-bold whitespace-nowrap">${(p.price * appState.cart[p.id]).toLocaleString()}원</p>
+                                    <div class="flex items-center mt-1 border rounded-md">
+                                        <button class="quantity-btn quantity-decrease bg-gray-100 rounded-l-md">-</button>
+                                        <input type="number" class="quantity-input w-10 text-center border-l border-r text-sm" value="${appState.cart[p.id]}" min="0">
+                                        <button class="quantity-btn quantity-increase bg-gray-100 rounded-r-md">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            updateOrderButton();
+        }
+
+        function resetQuickOrderView() {
+            productSearchInput.value = '';
+            appState.searchTerm = '';
+
+            document.body.classList.remove('category-mode');
+
+            appState.currentMyList = 0;
+            appState.currentPrimaryCategory = null;
+            appState.currentSecondaryCategory = null;
+            
+            categoryButtons.forEach(btn => btn.classList.remove('category-btn-active'));
+            myListTabsContainer.querySelectorAll('.my-list-tab').forEach(tab => {
+                const isDanGol = parseInt(tab.dataset.list, 10) === 0;
+                tab.classList.toggle('tab-active', isDanGol);
+                tab.classList.toggle('tab-inactive', !isDanGol);
+            });
+            
+            orderConfirmationContainer.classList.add('hidden');
+            productListContainer.classList.remove('hidden');
+            secCatContainer.classList.add('hidden');
+            terCatContainer.classList.add('hidden');
+
+            renderProducts();
+        }
+
+        quickOrderView.addEventListener('click', function(e) {
+            // Like button logic
+            const likeBtn = e.target.closest('.like-btn');
+            if (likeBtn) {
+                const productId = parseInt(likeBtn.dataset.productId, 10);
+                const product = getAllProducts().find(p => p.id === productId);
+                if (product) {
+                    product.liked = !product.liked;
+                    renderProducts(); // Re-render to show the change
+                }
+                return; // Stop processing further to avoid quantity changes
+            }
+
+            // Quantity logic
+            const productItem = e.target.closest('.product-item');
+            if (!productItem) return;
+            const productId = productItem.dataset.id;
+            let quantityInput = productItem.querySelector('.quantity-input');
+            let currentQuantity = parseInt(quantityInput.value);
+            let quantityChanged = false;
+
+            if (e.target.closest('.quantity-increase')) {
+                currentQuantity++;
+                quantityInput.value = currentQuantity;
+                updateCart(productId, currentQuantity);
+                quantityChanged = true;
+            }
+            if (e.target.closest('.quantity-decrease')) {
+                currentQuantity = Math.max(0, currentQuantity - 1);
+                quantityInput.value = currentQuantity;
+                updateCart(productId, currentQuantity);
+                quantityChanged = true;
+                if (!orderConfirmationContainer.classList.contains('hidden') && currentQuantity === 0) {
+                    showConfirmationView();
+                    return;
+                }
+            }
+
+            if (quantityChanged) {
+                const isSelected = currentQuantity > 0;
+                productItem.classList.toggle('product-item-selected', isSelected);
+                productItem.classList.toggle('bg-white', !isSelected);
+            }
+        });
+        
+        quickOrderView.addEventListener('change', function(e) {
+             if (e.target.classList.contains('quantity-input')) {
+                const productItem = e.target.closest('.product-item');
+                const productId = productItem.dataset.id;
+                let newQuantity = parseInt(e.target.value);
+                if (isNaN(newQuantity) || newQuantity < 0) {
+                    newQuantity = 0;
+                    e.target.value = 0;
+                }
+                updateCart(productId, newQuantity);
+                
+                const isSelected = newQuantity > 0;
+                productItem.classList.toggle('product-item-selected', isSelected);
+                productItem.classList.toggle('bg-white', !isSelected);
+                
+                if (!orderConfirmationContainer.classList.contains('hidden') && newQuantity === 0) {
+                    showConfirmationView();
+                }
+             }
+        });
+        
+        // --- EDIT VIEW LOGIC ---
+        function renderEditView() {
+            editFilterMenu.querySelectorAll('.edit-filter-btn').forEach(btn => {
+                const filterValue = btn.dataset.filter === 'null' ? null : parseInt(btn.dataset.filter, 10);
+                btn.classList.toggle('active', appState.editListFilter === filterValue);
+            });
+            
+            let likedProducts = getAllProducts().filter(p => p.liked);
+
+            likedProducts.sort((a, b) => {
+                const aHasList = a.myList && a.myList.length > 0;
+                const bHasList = b.myList && b.myList.length > 0;
+                if (aHasList === bHasList) return a.id - b.id;
+                return aHasList ? 1 : -1;
+            });
+
+            let productsToRender = likedProducts;
+            if (appState.editListFilter !== null) {
+                productsToRender = likedProducts.filter(p => p.myList && p.myList.includes(appState.editListFilter));
+            }
+            
+            editListEl.innerHTML = productsToRender.map(p => `
+                <div class="edit-item flex items-center p-3" data-id="${p.id}">
+                    <button class="delete-item-btn mr-4 text-gray-400 hover:text-red-500 w-8 h-8 flex items-center justify-center">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <div class="flex-grow pr-4">
+                        <p class="font-semibold text-sm">${p.name}</p>
+                        <p class="text-xs text-gray-500">${p.price.toLocaleString()}원</p>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <button class="list-assign-btn border w-8 h-8 rounded text-sm ${p.myList && p.myList.includes(1) ? 'bg-green-500 text-white' : ''}" data-list="1">1</button>
+                        <button class="list-assign-btn border w-8 h-8 rounded text-sm ${p.myList && p.myList.includes(2) ? 'bg-green-500 text-white' : ''}" data-list="2">2</button>
+                        <button class="list-assign-btn border w-8 h-8 rounded text-sm ${p.myList && p.myList.includes(3) ? 'bg-green-500 text-white' : ''}" data-list="3">3</button>
+                    </div>
+                    <div class="ml-2 text-gray-400 cursor-grab">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // --- GLOBAL EVENT LISTENERS ---
+        productSearchInput.addEventListener('input', (e) => {
+            appState.searchTerm = e.target.value.trim();
+            if (appState.searchTerm) {
+                // 검색 시 다른 필터들 비활성화
+                myListTabsContainer.querySelectorAll('.my-list-tab').forEach(tab => {
+                    tab.classList.remove('tab-active');
+                    tab.classList.add('tab-inactive');
+                });
+                categoryButtons.forEach(btn => btn.classList.remove('category-btn-active'));
+                secCatContainer.classList.add('hidden');
+                terCatContainer.classList.add('hidden');
+            } else {
+                // 검색어가 비워지면 기본 뷰로 리셋
+                resetQuickOrderView();
+            }
+            renderProducts();
+        });
+
+        orderButton.addEventListener('click', function() {
+            if (Object.keys(appState.cart).length === 0) return;
+            if (orderConfirmationContainer.classList.contains('hidden')) {
+                showConfirmationView();
+            } else {
+                alert('주문서로 이동합니다!');
+            }
+        });
+
+        homeNavBtn.addEventListener('click', e => { e.preventDefault(); showHomeView(); });
+        quickOrderNavBtn.addEventListener('click', e => { e.preventDefault(); showQuickOrderView(); });
+        logoHome.addEventListener('click', showHomeView);
+        logoQuickOrder.addEventListener('click', showHomeView);
+
+        editButton.addEventListener('click', showEditView);
+        saveButton.addEventListener('click', showQuickOrderView);
+        
+        editFilterMenu.addEventListener('click', (e) => {
+            if(e.target.matches('.edit-filter-btn')) {
+                const filter = e.target.dataset.filter;
+                appState.editListFilter = filter === 'null' ? null : parseInt(filter, 10);
+                renderEditView();
+            }
+        });
+        
+        editListEl.addEventListener('click', (e) => {
+            const assignBtn = e.target.closest('.list-assign-btn');
+            const deleteBtn = e.target.closest('.delete-item-btn');
+
+            if (assignBtn) {
+                const itemEl = assignBtn.closest('.edit-item');
+                const productId = parseInt(itemEl.dataset.id, 10);
+                const listNumber = parseInt(assignBtn.dataset.list, 10);
+                const product = getAllProducts().find(p => p.id === productId);
+
+                if (product) {
+                    if (!product.myList) product.myList = [];
+                    const listIndex = product.myList.indexOf(listNumber);
+                    if (listIndex > -1) {
+                        product.myList.splice(listIndex, 1);
+                    } else {
+                        product.myList.push(listNumber);
+                    }
+                    renderEditView();
+                }
+            }
+
+            if (deleteBtn) {
+                const itemEl = deleteBtn.closest('.edit-item');
+                const productId = parseInt(itemEl.dataset.id, 10);
+                const product = getAllProducts().find(p => p.id === productId);
+
+                if (product) {
+                    product.liked = false;
+                    product.myList = []; // 리스트からも 당연히 제거
+                    renderEditView(); // 리스트 새로고침
+                    updateLikedCountBadge(); // 홈 화면 뱃지 업데이트
+                }
+            }
+        });
+
+        // --- Scroll Logic for Sub-header ---
+        let lastScrollY = window.scrollY;
+        const subHeader = document.getElementById('sub-header');
+        
+        window.addEventListener('scroll', () => {
+            if (appState.currentView !== 'quick-order' || !subHeader) return;
+            
+            const currentScrollY = window.scrollY;
+            const threshold = 50;
+
+            if (appState.searchTerm) {
+                // --- 검색 시 스크롤 로직 ---
+                subHeader.classList.remove('sub-header-hidden'); // 전체 숨김 비활성화
+
+                if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+                    // 아래로 스크롤: 리스트 탭 숨기기
+                    myListContainer.classList.add('hidden');
+                } else if (currentScrollY < lastScrollY) {
+                    // 위로 스크롤: 리스트 탭 보이기
+                    myListContainer.classList.remove('hidden');
+                }
+            } else {
+                // --- 일반 스크롤 로직 ---
+                myListContainer.classList.remove('hidden'); // 리스트 탭이 항상 보이도록 설정
+
+                if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+                    // 아래로 스크롤: 전체 서브헤더 숨기기
+                    subHeader.classList.add('sub-header-hidden');
+                } else if (currentScrollY < lastScrollY) {
+                    // 위로 스크롤: 전체 서브헤더 보이기
+                    subHeader.classList.remove('sub-header-hidden');
+                }
+            }
+
+            // 스크롤 위치 초기화
+            lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
+        }, { passive: true });
+
+
+        // --- INITIAL RENDER ---
+        showHomeView();
+    });
+</script>
+
+</body>
+</html>
