@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개선된 발송 이력 관리</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1000px; /* 너비를 조금 더 확보 */
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        /* 검색창 스타일 */
+        .search-bar {
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .search-bar .form-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .search-bar label {
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .search-bar input[type="date"],
+        .search-bar select,
+        .search-bar input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .search-btn {
+            background-color: #4a5568;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            table-layout: fixed; /* 테이블 레이아웃 고정 */
+        }
+        .history-table th, .history-table td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: middle;
+            word-wrap: break-word; /* 기본적으로 단어 줄바꿈 */
+        }
+        .history-table th {
+            background-color: #4a5568; /* From screenshot */
+            color: white;
+            font-weight: bold;
+        }
+        .history-table tr:nth-child(even) {
+            background-color: #f7fafc; /* Lighter background for rows */
+        }
+
+        /* 내용이 길어질 경우 ... 처리 */
+        .truncate-cell {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* 컬럼별 너비 조정 (발송자 삭제 후) */
+        .history-table th:nth-child(1) { width: 10%; } /* 발송 구분 */
+        .history-table th:nth-child(2) { width: 17%; } /* 발송 대상 */
+        .history-table th:nth-child(3) { width: 17%; } /* 푸시 제목 */
+        .history-table th:nth-child(4) { width: 22%; } /* 푸시내용 */
+        .history-table th:nth-child(5) { width: 13%; } /* 전송일 */
+        .history-table th:nth-child(6) { width: 13%; } /* 발송 상태 */
+        .history-table th:nth-child(7) { width: 8%; } /* 상세 */
+
+
+        .detail-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .detail-btn:hover {
+            background-color: #0056b3;
+        }
+        .status-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-fail {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination a, .pagination strong {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .pagination strong {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .modal-close-btn {
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .modal-details th {
+            width: 100px;
+            text-align: right;
+            padding: 8px;
+            background-color: #f9f9f9;
+            vertical-align: top;
+        }
+        .modal-details td {
+            padding: 8px;
+            word-break: break-all;
+        }
+        .modal-details img {
+            max-width: 100%;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 검색창 추가 -->
+    <div class="search-bar">
+        <div class="form-group">
+            <label for="start-date">전송일</label>
+            <input type="date" id="start-date">
+            <span>~</span>
+            <input type="date" id="end-date">
+        </div>
+        <div class="form-group">
+            <label for="search-type">검색</label>
+            <select id="search-type">
+                <option value="title">푸시 제목</option>
+                <option value="content">푸시 내용</option>
+                <option value="target">발송 대상</option>
+            </select>
+            <input type="text" id="search-keyword" placeholder="검색어를 입력하세요">
+        </div>
+        <button class="search-btn">검색</button>
+    </div>
+
+    <table class="history-table">
+        <thead>
+            <tr>
+                <!-- 컬럼 순서 변경 (발송자 삭제) -->
+                <th>발송 구분</th>
+                <th>발송 대상</th>
+                <th>푸시 제목</th>
+                <th>푸시내용</th>
+                <th>전송일</th>
+                <th>발송 상태</th>
+                <th>상세</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 예시 데이터 1: 타겟 발송 (장바구니) -->
+            <tr>
+                <!-- 컬럼 순서 변경 -->
+                <td>타겟</td>
+                <td class="truncate-cell">장바구니 상품 (A123, B456)</td>
+                <td class="truncate-cell">[행사] 무우가 단돈 1,000원!</td>
+                <td class="truncate-cell">장바구니에 담아두신 무우, 오늘만 특가!</td>
+                <td>2025-10-21 14:30:15</td>
+                <td class="status-success">성공 (1,204명)</td>
+                <td><button class="detail-btn" onclick="openDetailModal('target')">보기</button></td>
+            </tr>
+            <!-- 예시 데이터 2: 개별 발송 -->
+            <tr>
+                <!-- 컬럼 순서 변경 -->
+                <td>개별</td>
+                <td class="truncate-cell">kakao_8452086e1</td>
+                <td class="truncate-cell">대파▼500원 하락!</td>
+                <td class="truncate-cell">한정수량!✨ 결재상품✨</td>
+                <td>2025-10-21 11:10:07</td>
+                <td class="status-success">성공 (1명)</td>
+                <td><button class="detail-btn" onclick="openDetailModal('individual')">보기</button></td>
+            </tr>
+            <!-- 예시 데이터 3: 전체 발송 -->
+            <tr>
+                <!-- 컬럼 순서 변경 -->
+                <td>전체</td>
+                <td class="truncate-cell">-</td>
+                <td class="truncate-cell">이번 주 신규 입고 상품 안내</td>
+                <td class="truncate-cell">더 신선하고 다양한 식자재가 입고되었습니다.</td>
+                <td>2025-10-20 09:00:00</td>
+                <td class="status-success">성공 (10,580명)</td>
+                <td><button class="detail-btn" onclick="openDetailModal('all')">보기</button></td>
+            </tr>
+            <!-- 예시 데이터 4: 타겟 발송 (미접속) -->
+             <tr>
+                <!-- 컬럼 순서 변경 -->
+                <td>타겟</td>
+                <td class="truncate-cell">최근 7일 미접속자</td>
+                <td class="truncate-cell">사장님, 보고싶었어요! 5% 할인 쿠폰 도착</td>
+                <td class="truncate-cell">오랜만이에요! 다시 찾아주신 사장님을 위해...</td>
+                <td>2025-10-19 10:00:00</td>
+                <td class="status-fail">실패 (0명)</td>
+                <td><button class="detail-btn" onclick="openDetailModal('inactive')">보기</button></td>
+            </tr>
+             <!-- ... (기존 이력들) ... -->
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <strong>1</strong>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">&raquo;</a>
+    </div>
+</div>
+
+<!-- 상세 보기 팝업 (Modal) HTML -->
+<div id="detailModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close-btn" onclick="closeDetailModal()">&times;</span>
+        <h2>푸시 발송 상세 내역</h2>
+        <table id="modal-details-table" class="modal-details" style="width: 100%; text-align: left;">
+            <!-- JavaScript가 이 부분에 상세 내용을 채워줍니다. -->
+        </table>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('detailModal');
+    const modalDetailsTable = document.getElementById('modal-details-table');
+
+    // (임시) 예시 데이터 (순서는 팝업 표시와 상관없음)
+    const pushDetails = {
+        'target': {
+            '전송일': '2025-10-21 14:30:15',
+            '발송 구분': '타겟',
+            '발송 대상': '장바구니에 특정 상품 보유 (A123, B456)',
+            '제목': '[행사] 무우가 단돈 1,000원!',
+            '내용': '장바구니에 담아두신 무우, 오늘만 특가! 더 저렴한 행사 상품으로 구매하세요!',
+            '기본 링크': 'my-app://products/C789',
+            '이미지': 'https://placehold.co/600x300/e91e63/white?text=Price+Drop!',
+            '버튼 1': '텍스트: <b>행사 무우 보기</b><br>링크: my-app://products/C789',
+            '버튼 2': '텍스트: <b>장바구니 가기</b><br>링크: my-app://cart'
+        },
+        'individual': {
+            '전송일': '2025-10-21 11:10:07',
+            '발송 구분': '개별',
+            '발송 대상': 'kakao_8452086e1',
+            '제목': '대파▼500원 하락!',
+            '내용': '한정수량!✨ 결재상품✨',
+            '기본 링크': 'my-app://products/D001',
+            '이미지': '(없음)',
+            '버튼 1': '(없음)'
+        },
+        'all': {
+            '전송일': '2025-10-20 09:00:00',
+            '발송 구분': '전체',
+            '발송 대상': '전체 사용자',
+            '제목': '이번 주 신규 입고 상품 안내',
+            '내용': '더 신선하고 다양한 식자재가 입고되었습니다. 지금 바로 확인하세요.',
+            '기본 링크': 'my-app://new',
+            '이미지': 'https://placehold.co/600x300/007bff/white?text=New+Arrival',
+            '버튼 1': '텍스트: <b>신상품 전체보기</b><br>링크: my-app://new'
+        },
+        'inactive': {
+            '전송일': '2025-10-19 10:00:00',
+            '발송 구분': '타겟',
+            '발송 대상': '최근 7일 미접속자',
+            '제목': '사장님, 보고싶었어요! 5% 할인 쿠폰 도착',
+            '내용': '오랜만이에요! 다시 찾아주신 사장님을 위해 작은 선물을 준비했어요.',
+            '기본 링크': 'my-app://coupons',
+            '이미지': '(없음)',
+            '버튼 1': '텍스트: <b>쿠폰 받기</b><br>링크: my-app://coupons'
+        }
+    };
+
+    function openDetailModal(type) {
+        const details = pushDetails[type];
+        if (!details) return;
+
+        let html = '<tbody>';
+        // 팝업 안의 순서는 이 객체 순서대로 조절 가능 (발송자 제거)
+        const displayOrder = ['전송일', '발송 구분', '발송 대상', '제목', '내용', '기본 링크', '이미지', '버튼 1', '버튼 2'];
+        
+        for (const key of displayOrder) {
+            if (details[key]) {
+                let value = details[key];
+                if (key === '이미지' && value !== '(없음)') {
+                    value = `<img src="${value}" alt="첨부 이미지">`;
+                }
+
+                html += `
+                    <tr>
+                        <th>${key}</th>
+                        <td>${value}</td>
+                    </tr>
+                `;
+            }
+        }
+        html += '</tbody>';
+        
+        modalDetailsTable.innerHTML = html;
+        modal.style.display = 'block';
+    }
+
+    function closeDetailModal() {
+        modal.style.display = 'none';
+    }
+
+    // 모달 오버레이 클릭 시 닫기
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeDetailModal();
+        }
+    }
+</script>
+
+</body>
+</html>
+
