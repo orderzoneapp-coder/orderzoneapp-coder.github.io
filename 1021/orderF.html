@@ -77,7 +77,7 @@
         /* 스크롤 인터랙션 스타일 */
         #sub-header {
             transition: transform 0.3s ease-in-out;
-            background-color: white; /* 배경색 보장 */
+            /* background-color: white;  배경색 보장 */ /* NEW: 이 줄은 삭제 또는 주석 처리되어야 함 */
         }
         .sub-header-hidden {
             transform: translateY(-100%);
@@ -119,11 +119,9 @@
 
     <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen">
         
-        <!-- ===== 홈 뷰 ===== -->
-        <div id="home-view">
+        <!-- ===== 홈 뷰 ===== --><div id="home-view">
              <header class="sticky top-0 bg-white z-20 shadow-sm">
-                <!-- 최상단 바 -->
-                <div class="flex justify-between items-center p-3 border-b">
+                <!-- 최상단 바 --><div class="flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
@@ -133,8 +131,7 @@
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                     </div>
                 </div>
-                <!-- 1차 카테고리 -->
-                <nav class="flex justify-around items-center p-2">
+                <!-- 1차 카테고리 --><nav class="flex justify-around items-center p-2">
                     <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-carrot text-xl text-orange-400"></i><span class="text-xs font-medium">채소/과일</span></button>
                     <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-fish text-xl text-blue-400"></i><span class="text-xs font-medium">수산/축산</span></button>
                     <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-snowflake text-xl text-cyan-400"></i><span class="text-xs font-medium">식품/가공</span></button>
@@ -150,31 +147,25 @@
                     <button class="py-2 text-sm text-gray-500">마감임박</button>
                  </div>
                  <div id="home-product-list" class="divide-y">
-                     <!-- 홈 상품 목록 동적 생성 -->
-                 </div>
+                     <!-- 홈 상품 목록 동적 생성 --></div>
             </main>
         </div>
 
 
-        <!-- ===== 빠른주문 뷰 ===== -->
-        <div id="quick-order-view" class="hidden">
-            <!-- ===== 상단 고정 바 ===== -->
-            <header class="sticky top-0 bg-white z-20 shadow-sm">
-                <!-- 최상단 바 -->
-                <div class="flex justify-between items-center p-3 border-b">
+        <!-- ===== 빠른주문 뷰 ===== --><div id="quick-order-view" class="hidden">
+            <!-- ===== 상단 고정 바 ===== --><header class="sticky top-0 bg-white z-20 shadow-sm">
+                <!-- 최상단 바 --><div class="flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
-                    <!-- '오더즈' 로고 대신 페이지 제목으로 변경 -->
-                    <h1 id="logo-quick-order" class="text-2xl font-extrabold text-green-600 cursor-pointer">오더즈</h1>
+                    <!-- '오더즈' 로고 대신 페이지 제목으로 변경 --><h1 id="logo-quick-order" class="text-2xl font-extrabold text-green-600 cursor-pointer">빠른 주문</h1>
                     <div class="flex items-center space-x-2">
                         <span class="text-xs font-semibold">OP</span>
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                     </div>
                 </div>
 
-                <!-- 1차 카테고리 -->
-                <nav class="flex justify-around items-center p-2">
+                <!-- 1차 카테고리 --><nav class="flex justify-around items-center p-2">
                     <button data-category="vegetable" class="category-btn flex flex-col items-center space-y-1 text-gray-600">
                         <i class="fas fa-carrot text-xl text-orange-400"></i>
                         <span class="text-xs font-medium">채소/과일</span>
@@ -198,14 +189,10 @@
                 </nav>
             </header>
 
-            <!-- ===== 메인 컨텐츠 ===== -->
-            <main class="pb-40">
-                <!-- 고정되는 컨텐츠 (탭 + 검색) -->
-                <div id="sub-header" class="z-10 shadow-md">
-                    <!-- 마이리스트 탭 -->
-                    <div id="my-list-container" class="flex justify-between items-center px-4 py-3 border-b bg-white">
-                        <!-- NEW: 검색 아이콘 버튼 -->
-                        <button id="show-search-btn" class="flex-shrink-0 mr-3 p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+            <!-- ===== 메인 컨텐츠 ===== --><main class="pb-40">
+                <!-- 고정되는 컨텐츠 (탭 + 검색) --><!-- NEW: bg-gray-100 클래스 추가 --><div id="sub-header" class="z-10 shadow-md bg-gray-100"> 
+                    <!-- 마이리스트 탭 --><!-- 'py-3' -> 'py-2'로 수정하여 상하 간격 축소 --><div id="my-list-container" class="flex justify-between items-center px-4 py-2 border-b bg-white">
+                        <!-- NEW: 검색 아이콘 버튼 --><button id="show-search-btn" class="flex-shrink-0 mr-3 p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
                             <i class="fas fa-search text-sm w-4 h-4"></i>
                         </button>
                         
@@ -217,15 +204,13 @@
                         </div>
                         
                         <button id="edit-button" class="text-gray-500 flex-shrink-0 ml-4 p-1">
-                            <!-- '편집' 텍스트 대신 아이콘으로 변경 -->
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <!-- '편집' 텍스트 대신 아이콘으로 변경 --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
                             </svg>
                         </button>
                     </div>
 
-                    <!-- 검색창 (기본 숨김) -->
-                    <div id="search-container" class="p-2 border-b bg-white search-hidden">
+                    <!-- 검색창 (기본 숨김) --><!-- 'p-2' -> 'p-1.5'로 수정하여 상하 간격 축소 --><div id="search-container" class="p-1.5 border-b bg-white search-hidden">
                         <div class="flex items-center w-full">
                             <div class="relative flex-grow">
                                 <input type="text" id="product-search-input" placeholder="찜, 단골특가 상품 검색" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
@@ -233,51 +218,40 @@
                                     <i class="fas fa-search text-gray-400"></i>
                                 </div>
                             </div>
-                            <!-- NEW: 취소 버튼 -->
-                            <button id="cancel-search-btn" class="flex-shrink-0 ml-3 text-sm text-gray-600 font-medium px-2">취소</button>
+                            <!-- NEW: 취소 버튼 --><button id="cancel-search-btn" class="flex-shrink-0 ml-3 text-sm text-gray-600 font-medium px-2">취소</button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 2차 카테고리 (숨김 상태) -->
-                <div id="secondary-category-container" class="hidden p-4 bg-gray-100 border-b">
+                <!-- 2차 카테고리 (숨김 상태) --><div id="secondary-category-container" class="hidden p-4 bg-gray-100 border-b">
                      <div id="secondary-category-grid" class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                        <!-- JS로 동적 생성 -->
-                     </div>
+                        <!-- JS로 동적 생성 --></div>
                 </div>
 
-                <!-- 3차 카테고리 (숨김 상태) -->
-                <div id="tertiary-category-container" class="hidden p-4 bg-gray-100 border-b">
+                <!-- 3차 카테고리 (숨김 상태) --><div id="tertiary-category-container" class="hidden p-4 bg-gray-100 border-b">
                      <div id="tertiary-category-grid" class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                        <!-- JS로 동적 생성 -->
-                     </div>
+                        <!-- JS로 동적 생성 --></div>
                 </div>
 
-                <!-- 상품 목록 -->
-                <div id="product-list-container" class="px-4 mt-2">
+                <!-- 상품 목록 --><div id="product-list-container" class="px-4 mt-2">
                     <div id="product-list" class="space-y-2">
-                        <!-- JS로 상품 목록 동적 생성 -->
-                    </div>
+                        <!-- JS로 상품 목록 동적 생성 --></div>
                 </div>
 
-                <!-- 주문 확인 화면 (숨김 상태) -->
-                <div id="order-confirmation-container" class="hidden px-4 mt-2">
+                <!-- 주문 확인 화면 (숨김 상태) --><div id="order-confirmation-container" class="hidden px-4 mt-2">
                     <div class="flex justify-between items-center my-4">
                         <h2 class="text-lg font-bold">담은 상품 확인</h2>
                         <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
                     </div>
                     <div id="confirmation-list" class="space-y-4">
-                        <!-- JS로 주문 확인 목록 동적 생성 -->
-                    </div>
+                        <!-- JS로 주문 확인 목록 동적 생성 --></div>
                 </div>
             </main>
         </div>
 
-        <!-- ===== 편집 뷰 ===== -->
-        <div id="edit-view" class="hidden">
+        <!-- ===== 편집 뷰 ===== --><div id="edit-view" class="hidden">
             <header class="sticky top-0 bg-white z-20 shadow-sm p-3">
-                 <!-- 최상단 바 -->
-                <div class="flex justify-between items-center border-b pb-3">
+                 <!-- 최상단 바 --><div class="flex justify-between items-center border-b pb-3">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
@@ -287,8 +261,7 @@
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                     </div>
                 </div>
-                <!-- 편집 메뉴 -->
-                <div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3">
+                <!-- 편집 메뉴 --><div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3">
                     <button data-filter="null" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold active">전체</button>
                     <button data-filter="1" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 1</button>
                     <button data-filter="2" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 2</button>
@@ -298,27 +271,22 @@
             </header>
             <main class="pb-5">
                  <div id="edit-list" class="divide-y">
-                     <!-- 편집 상품 목록 동적 생성 -->
-                 </div>
+                     <!-- 편집 상품 목록 동적 생성 --></div>
             </main>
         </div>
         
-        <!-- ===== 하단 고정 바 ===== -->
-        <footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t z-20">
-            <!-- 주문하기 버튼 (빠른주문 뷰에서만 보임) -->
-            <div id="order-bar" class="flex items-center justify-between p-3 hidden">
+        <!-- ===== 하단 고정 바 ===== --><footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t z-20">
+            <!-- 주문하기 버튼 (빠른주문 뷰에서만 보임) --><div id="order-bar" class="flex items-center justify-between p-3 hidden">
                 <div>
                     <p class="text-xs text-gray-500">배송예정일</p>
                     <p class="font-bold text-blue-600">2025-10-20</p>
                 </div>
                 <button id="order-button" class="w-2/3 py-3 rounded-lg text-white font-bold flex items-center justify-center space-x-2 order-btn-disabled">
-                    <!-- NEW: Bubble span -->
-                    <span id="order-bubble" class="bg-yellow-400 text-green-800 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+                    <!-- NEW: Bubble span --><span id="order-bubble" class="bg-yellow-400 text-green-800 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
                     <span id="order-button-text">주문할 상품을 담아주세요</span>
                 </button>
             </div>
-            <!-- 하단 네비게이션 -->
-            <nav id="bottom-nav" class="flex justify-around items-center py-2 text-gray-500 border-t">
+            <!-- 하단 네비게이션 --><nav id="bottom-nav" class="flex justify-around items-center py-2 text-gray-500 border-t">
                  <a href="#" id="home-nav-btn" class="flex flex-col items-center space-y-1 text-green-500">
                     <i class="fas fa-home text-xl"></i>
                     <span class="text-xs font-bold">홈</span>
@@ -963,13 +931,9 @@
 
                 return `
                 <div class="product-item flex items-start space-x-2 p-2 rounded-lg ${isSelected ? 'product-item-selected' : 'bg-white'}" data-id="${p.id}">
-                    ${likeIconHtml} <!-- 아이콘 위치 이동 -->
-                    <img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-14 h-14 object-cover rounded-md flex-shrink-0">
+                    ${likeIconHtml} <!-- 아이콘 위치 이동 --><img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-14 h-14 object-cover rounded-md flex-shrink-0">
                     <div class="flex-grow">
-                        <!-- 기존 flex items-start 래퍼 제거 -->
-                        <p class="font-bold text-sm">${line2Text}</p> <!-- ml-2 제거 -->
-                        <p class="text-xs text-gray-500 mt-0.5">${line1Text}</p> <!-- ml-7 제거 -->
-                    </div>
+                        <!-- 기존 flex items-start 래퍼 제거 --><p class="font-bold text-sm">${line2Text}</p> <!-- ml-2 제거 --><p class="text-xs text-gray-500 mt-0.5">${line1Text}</p> <!-- ml-7 제거 --></div>
                     <div class="flex flex-col items-end flex-shrink-0">
                         <p class="font-bold whitespace-nowrap">${priceText}</p>
                         <div class="flex items-center mt-1 border rounded-md">
@@ -1259,7 +1223,10 @@
         saveButton.addEventListener('click', showQuickOrderView);
         
         // NEW: 검색 버튼/취소 버튼 리스너
-        showSearchBtn.addEventListener('click', () => toggleSearchMode(true));
+        showSearchBtn.addEventListener('click', () => {
+            // 이미 검색 모드일 경우, 버튼을 다시 누르면 검색 모드 종료
+            toggleSearchMode(!appState.isSearching);
+        });
         cancelSearchBtn.addEventListener('click', () => toggleSearchMode(false));
 
         editFilterMenu.addEventListener('click', (e) => {
@@ -1336,5 +1303,6 @@
 
 </body>
 </html>
+
 
 
