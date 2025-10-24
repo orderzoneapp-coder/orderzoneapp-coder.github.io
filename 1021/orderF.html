@@ -921,17 +921,10 @@
                 const line1Text = `${brandHtml}${deliveryHtml}`;
                 const line2Text = displaySpec ? `${p.name} (${displaySpec})` : p.name;
 
-                // --- Icon Logic (Simplified) ---
-                const isLiked = p.liked;
-                const likeIconHtml = `
-                    <span class="like-btn relative text-lg cursor-pointer mt-1" data-product-id="${p.id}" style="width: 1.125rem; height: 1.125rem; display: inline-flex; align-items: center; justify-content: center;">
-                        <i class="${isLiked ? 'fa-solid fa-square-check text-green-600' : 'fa-regular fa-square text-gray-400'}"></i>
-                    </span>
-                `;
-
+            
                 return `
                 <div class="product-item flex items-start space-x-2 p-2 rounded-lg ${isSelected ? 'product-item-selected' : 'bg-white'}" data-id="${p.id}">
-                    ${likeIconHtml} <!-- 아이콘 위치 이동 --><img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-14 h-14 object-cover rounded-md flex-shrink-0">
+                    <img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-14 h-14 object-cover rounded-md flex-shrink-0">
                     <div class="flex-grow">
                         <!-- 기존 flex items-start 래퍼 제거 --><p class="font-bold text-sm">${line2Text}</p> <!-- ml-2 제거 --><p class="text-xs text-gray-500 mt-0.5">${line1Text}</p> <!-- ml-7 제거 --></div>
                     <div class="flex flex-col items-end flex-shrink-0">
@@ -1080,17 +1073,7 @@
         }
 
         quickOrderView.addEventListener('click', function(e) {
-            // Like button logic
-            const likeBtn = e.target.closest('.like-btn');
-            if (likeBtn) {
-                const productId = parseInt(likeBtn.dataset.productId, 10);
-                const product = getAllProducts().find(p => p.id === productId);
-                if (product) {
-                    product.liked = !product.liked;
-                    renderProducts(); // Re-render to show the change
-                }
-                return; // Stop processing further to avoid quantity changes
-            }
+            
 
             // Quantity logic
             const productItem = e.target.closest('.product-item');
@@ -1303,6 +1286,3 @@
 
 </body>
 </html>
-
-
-
