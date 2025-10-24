@@ -190,11 +190,11 @@
             </header>
 
             <!-- ===== 메인 컨텐츠 ===== --><main class="pb-40">
-                <!-- 고정되는 컨텐츠 (탭 + 검색) --><!-- NEW: bg-gray-100 클래스 추가 --><div id="sub-header" class="z-10 shadow-md bg-gray-100"> 
+                <!-- 고정되는 컨텐츠 (탭 + 검색) --><!-- NEW: bg-gray-100 클래스 추가 --><div id="sub-header" class="z-10 shadow-md bg-white">
                     <!-- 마이리스트 탭 --><!-- 'py-3' -> 'py-2'로 수정하여 상하 간격 축소 --><div id="my-list-container" class="flex justify-between items-center px-4 py-2 border-b bg-white">
-                        <!-- NEW: 검색 아이콘 버튼 --><button id="show-search-btn" class="flex-shrink-0 mr-3 p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
-                            <i class="fas fa-search text-sm w-4 h-4"></i>
-                        </button>
+                        <!-- NEW: 검색 아이콘 버튼 --><button id="show-search-btn" class="flex-shrink-0 mr-3 rounded-full bg-white text-gray-600 hover:bg-green-100 w-7 h-7 flex items-center justify-center">
+                    <i class="fas fa-search text-sm"></i>
+                    </button>
                         
                         <div id="my-list-tabs" class="flex flex-1 justify-around overflow-x-auto no-scrollbar">
                              <button data-list="0" class="my-list-tab py-2 tab-active flex-shrink-0 text-sm">단골특가</button>
@@ -1138,11 +1138,9 @@
             let likedProducts = getAllProducts().filter(p => p.liked);
 
             likedProducts.sort((a, b) => {
-                const aHasList = a.myList && a.myList.length > 0;
-                const bHasList = b.myList && b.myList.length > 0;
-                if (aHasList === bHasList) return a.id - b.id;
-                return aHasList ? 1 : -1;
-            });
+                // '최신순' (ID 역순)으로만 정렬하도록 변경
+                return b.id - a.id;
+            });
 
             let productsToRender = likedProducts;
             if (appState.editListFilter !== null) {
@@ -1203,7 +1201,7 @@
         logoQuickOrder.addEventListener('click', showHomeView);
 
         editButton.addEventListener('click', showEditView);
-        saveButton.addEventListener('click', showQuickOrderView);
+        // saveButton.addEventListener('click', showQuickOrderView);
         
         // NEW: 검색 버튼/취소 버튼 리스너
         showSearchBtn.addEventListener('click', () => {
@@ -1213,12 +1211,19 @@
         cancelSearchBtn.addEventListener('click', () => toggleSearchMode(false));
 
         editFilterMenu.addEventListener('click', (e) => {
-            if(e.target.matches('.edit-filter-btn')) {
-                const filter = e.target.dataset.filter;
-                appState.editListFilter = filter === 'null' ? null : parseInt(filter, 10);
-                renderEditView();
-            }
-        });
+            // 1. '저장하기' 버튼(id=save-button)을 클릭했는지 확인
+            if (e.target.closest('#save-button')) {
+                showQuickOrderView(); // 빠른주문 뷰로 이동
+            	return; // 저장 버튼이므로 필터 로직은 중단
+            }
+
+            // 2. 기존 필터 버튼(class=edit-filter-btn)을 클릭했는지 확인
+            if(e.target.matches('.edit-filter-btn')) {
+                const filter = e.target.dataset.filter;
+                appState.editListFilter = filter === 'null' ? null : parseInt(filter, 10);
+                renderEditView();
+            }
+        });
         
         editListEl.addEventListener('click', (e) => {
             const assignBtn = e.target.closest('.list-assign-btn');
