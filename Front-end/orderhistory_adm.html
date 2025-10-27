@@ -3,475 +3,476 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이페이지 (최근 주문내역 개선)</title>
+    <title>주문 상세 (FIFO 버튼 레이아웃)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Noto+Sans+KR', sans-serif;
+            background-color: #f8f9fa; /* (ERP 화면 배경색과 유사하게) */
         }
-        .tab-button.active {
-            border-bottom: 2px solid #1f2937;
-            color: #1f2937;
+        .admin-content {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            border: 1px solid #dee2e6;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
             font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+        .btn-primary { background-color: #3b82f6; color: white; }
+        .btn-primary:hover { background-color: #2563eb; }
+        .btn-danger { background-color: #ef4444; color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .btn-outline { background-color: white; color: #4b5563; border: 1px solid #d1d5db; }
+        .btn-outline:hover { background-color: #f9fafb; }
+        
+        /* 탭 스타일 (image_7ae7c9.png 참조) */
+        .tabs {
+            border-bottom: 2px solid #36465d; /* (헤더 색상 기준) */
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .tab-link {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+            border-bottom: 0;
+            margin-right: 4px;
+            border-radius: 4px 4px 0 0;
+            font-weight: 500;
+            color: #495057;
+        }
+        .tab-link:hover {
+            background-color: #e9ecef;
+        }
+        .tab-link.active {
+            color: #212529;
+            background-color: #ffffff;
+            border-bottom: 1px solid #ffffff;
+            font-weight: 700;
+            position: relative;
+            top: 1px; /* (활성 탭이 보더를 덮도록) */
+            border-bottom: 2px solid #ffffff;
+            margin-bottom: -2px;
         }
         .tab-content {
             display: none;
+            padding-top: 1.5rem;
+            border: 1px solid #dee2e6;
+            border-top: 0;
+            padding: 1.5rem;
         }
         .tab-content.active {
             display: block;
         }
 
-        /* 주문 상태별 색상 (요구사항 반영) */
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem; /* py-1 px-2 */
-            font-size: 0.75rem; /* text-xs */
-            font-weight: 600; /* font-semibold */
-            border-radius: 0.25rem; /* rounded */
+        /* 폼 테이블 스타일 */
+        .form-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-top: 2px solid #666;
         }
-        /* 입금대기 (기존) */
-        .status-deposit-wait {
-            background-color: #fff7ed; /* bg-orange-100 */
-            color: #c2410c; /* text-orange-600 */
+        .form-table th, .form-table td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            vertical-align: middle;
         }
-        /* 배송완료 (기존) */
-        .status-delivery-complete {
-            background-color: #f0fdfa; /* bg-teal-100 */
-            color: #0f766e; /* text-teal-700 */
+        .form-table th {
+            background-color: #f8f9fa;
+            text-align: left;
+            font-weight: 600;
+            width: 150px;
         }
-        /* 결제완료 (요구사항: 완료:Blue) */
-        .status-complete {
-            background-color: #eef2ff; /* bg-blue-100 */
-            color: #3730a3; /* text-blue-700 */
+        .form-table input[type="text"], 
+        .form-table input[type="number"], 
+        .form-table select {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 0.375rem 0.75rem;
+            width: 100%;
+            max-width: 250px;
         }
-        /* 주문취소 (기존) */
-        .status-cancel {
-            background-color: #fef2f2; /* bg-red-100 */
-            color: #dc2626; /* text-red-700 */
-        }
-        /* 주문 (요구사항: 주문:Pink) */
-        .status-order {
-            background-color: #fdf2f8; /* bg-pink-100 */
-            color: #be185d; /* text-pink-700 */
-        }
-        /* 입금 (요구사항: 입금:Green) */
-        .status-deposit-confirm {
-            background-color: #f0fdf4; /* bg-green-100 */
-            color: #15803d; /* text-green-700 */
-        }
-        /* 배송 (요구사항: 배송:Orange) */
-        .status-delivery-prep {
-             background-color: #fff7ed; /* bg-orange-100 */
-            color: #c2410c; /* text-orange-700 */
+        /* [수정] 좌측 확인용 입력창 스타일 */
+        .input-field-readonly {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 0.375rem 0.75rem;
+            width: 100px; /* 크기 고정 */
         }
 
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="text-gray-800">
 
-    <div class="max-w-md mx-auto bg-white min-h-screen">
-        
-        <!-- 헤더 -->
-        <header class="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-            <h1 class="text-lg font-bold">마이페이지</h1>
-            <div class="w-6"></div>
-        </header>
+    <div class="admin-content">
+        <h1 class="text-xl font-bold mb-4">주문 내역 수정</h1>
+        <!-- [삭제] (이 페이지는 '꽃놀이식당'...) 텍스트 삭제 -->
+        <p class="mb-4 text-sm text-gray-600 hidden">
+            (이 페이지는 '꽃놀이식당' (코드: 1001) / 주문번호: 2025102501383037 의 상세 내역입니다.)
+        </p>
 
-        <main>
-            
-            <!-- 프로필 섹션 -->
-            <section class="p-4">
-                <div class="flex items-center">
-                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="font-bold text-lg">꽃놀이식당(김민준)</p>
-                        <p class="text-sm text-gray-600 mt-1">경남 창원시 성산구 가양로 34</p>
-                        <a href="#" class="text-sm text-teal-600 underline mt-2 inline-block font-medium">정보변경</a>
-                    </div>
+        <!-- 탭 메뉴 (image_7ae7c9.png 참조) -->
+        <div class="tabs">
+            <span class="tab-link" data-tab="tab1">결제상세정보</span>
+            <span class="tab-link" data-tab="tab2">주문상품 목록</span>
+            <span class="tab-link" data-tab="tab3">주문결제 내역</span>
+            <span class="tab-link active" data-tab="tab4">결제상세정보 확인/수정</span>
+            <span class="tab-link" data-tab="tab5">상점메모</span>
+            <span class="tab-link" data-tab="tab6">주문하신 분</span>
+            <span class="tab-link" data-tab="tab7">받으시는 분</span>
+        </div>
+
+        <!-- 탭 컨텐츠 4: 결제상세정보 확인/수정 (활성 탭) -->
+        <div id="tab4" class="tab-content active">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- (기존) 왼쪽: 결제상세정보 확인 (Read-only) -->
+                <div>
+                    <!-- [수정] (이 주문 1건) 텍스트 삭제 -->
+                    <h3 class="text-md font-semibold text-gray-700 mb-3 border-b pb-2">결제상세정보 확인</h3>
+                    <table class="form-table">
+                        <tbody>
+                            <tr>
+                                <th>계좌번호</th>
+                                <td>농협은행 302-1586-5706-41 이우철</td>
+                            </tr>
+                            <tr>
+                                <th>무통장 입금액</th>
+                                <td>0원</td>
+                            </tr>
+                            <tr>
+                                <th>입금자</th>
+                                <td>균일가</td>
+                            </tr>
+                            <tr>
+                                <th>입금확인일시</th>
+                                <td>입금 확인일시를 체크해 주세요.</td>
+                            </tr>
+                            <tr>
+                                <th>과세공급가액</th>
+                                <td>21,818원</td>
+                            </tr>
+                            <tr>
+                                <th>과세부가세액</th>
+                                <td>2,182원</td>
+                            </tr>
+                            <tr>
+                                <th>비과세공급가액</th>
+                                <td>0원</td>
+                            </tr>
+                            <tr>
+                                <th>주문금액할인</th>
+                                <td>0원</td>
+                            </tr>
+                            <tr>
+                                <th>포인트</th>
+                                <td>0점</td>
+                            </tr>
+                            <tr>
+                                <th>결제취소/환불액</th>
+                                <td>0원</td>
+                            </tr>
+
+                            <!-- [수정] 배송비/추가금액을 입력창 형태로 변경 (원본 레이아웃) -->
+                            <tr>
+                                <th>배송비</th>
+                                <td><input type="number" value="0" class="input-field-readonly"> 원</td>
+                            </tr>
+                            <tr>
+                                <th>추가금액</th>
+                                <td><input type="number" value="0" class="input-field-readonly"> 원</td>
+                            </tr>
+
+                            <!-- ################################################ -->
+                            <!-- [수정] 배송/알림 항목을 이 테이블에 병합 -->
+                            <!-- ################################################ -->
+                            <tr>
+                                <th>운송장번호</th>
+                                <td><input type="text"></td>
+                            </tr>
+                            <tr>
+                                <th>배송회사</th>
+                                <td>
+                                    <input type="checkbox" id="basicShipping"> <label for="basicShipping">기본 배송회사로 설정</label><br>
+                                    <input type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>배송일시</th>
+                                <td>
+                                    <input type="checkbox" id="shippingNow"> <label for="shippingNow">현재 시간으로 설정</label><br>
+                                    <input type="text" placeholder="YYYY-MM-DD HH:MM:SS">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>메일발송</th>
+                                <td>
+                                    <p class="text-xs text-gray-500 mb-2">주문자님께 입금, 배송내역을 메일로 발송합니다.<br>메일발송시 상점메모에 기록됩니다.</p>
+                                    <input type="checkbox" id="sendMail"> <label for="sendMail">메일발송</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </section>
 
-            
-            <!-- 잔액/결제 관리 -->
-            <section class="p-4 pt-0">
-                <div class="border rounded-lg p-4 bg-gray-50">
-                    <div class="grid grid-cols-2 divide-x">
-                        <div class="pr-4">
-                            <p class="text-sm text-gray-500">예치금/사용 가능 한도</p>
-                            <p class="font-bold text-lg text-teal-600 mt-1">3,750,000원</p>
-                        </div>
-                        <div class="pl-4">
-                            <p class="text-sm text-gray-500">결제할 금액</p>
-                            <p class="font-bold text-lg text-red-600 mt-1">1,250,000원</p>
-                        </div>
-                    </div>
-                    
-                    <!-- 계좌번호 섹션 (한 줄로 수정) -->
-                    <div class="border-t border-gray-200 mt-2 pt-2">
-                        <div class="flex items-center justify-between">
-                            <div class="flex-grow">
-                                <span class="text-xs text-gray-500">입금 계좌:</span>
-                                <!-- 계좌번호 회색으로 변경 -->
-                                <span id="accountNumber" class="text-sm font-bold text-gray-600 ml-1">우리은행 1002-123-456789</span>
-                            </div>
-                            <button id="copyAccountBtn" class="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-semibold rounded hover:bg-gray-300 relative flex-shrink-0">
-                                복사
-                                <span id="copyMessage" class="absolute left-1/2 -top-8 -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded hidden whitespace-nowrap">복사되었습니다!</span>
+                <!-- (기존) 오른쪽: 결제상세정보 수정 (Write) -->
+                <div>
+                    <!-- [수정] (이 주문 1건) 텍스트 삭제 -->
+                    <h3 class="text-md font-semibold text-gray-700 mb-3 border-b pb-2">결제상세정보 수정</h3>
+                    <table class="form-table">
+                        <tbody>
+                            <tr>
+                                <th>계좌번호</th>
+                                <td><select><option>선택하십시오</option></select></td>
+                            </tr>
+                            <tr>
+                                <th>무통장 입금액</th>
+                                <td><input type="checkbox"> <label>결제금액 입력</label><br><input type="number" value="0"> 원</td>
+                            </tr>
+                            <tr>
+                                <th>입금자명</th>
+                                <td><input type="text" value="균일가"></td>
+                            </tr>
+                            <tr>
+                                <th>입금 확인일시</th>
+                                <td><input type="checkbox"> <label>현재 시간으로 설정</label><br><input type="text" placeholder="YYYY-MM-DD HH:MM:SS"></td>
+                            </tr>
+                            <tr>
+                                <th>포인트 결제액</th>
+                                <td><input type="number" value="0"> 점</td>
+                            </tr>
+                            <tr>
+                                <th>결제취소/환불 금액</th>
+                                <td><input type="number" value="0"> 원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- ################################################ -->
+                    <!-- [수정] 2. 미수금 일괄 입금 처리 (FIFO) 섹션 (우측 하단으로 이동) -->
+                    <h3 class="text-md font-semibold text-gray-700 mb-3 border-b pb-2 mt-6">거래처 전체 미수금 처리</h3>
+
+                    <div class="border-2 border-red-300 p-3 rounded-md bg-red-50">
+                        <p class="text-sm font-semibold text-gray-800">거래처명: <span class="font-bold">'꽃놀이식당'</span></p>
+                        <p class="text-xs text-gray-600 mb-2 mt-1">* 입금액은 가장 오래된 주문부터 자동으로 상계 처리(FIFO)됩니다.</p>
+                        
+                        <!-- [수정] 미수금과 버튼을 한 줄에 배치 (flex) -->
+                        <div class="flex justify-between items-center mt-2">
+                            <!-- 1. 좌측: 현재 미수금 -->
+                            <p class="text-sm font-semibold text-gray-800">
+                                <!-- [수정] '(예시)' 텍스트 삭제 -->
+                                현재 미수금: <span class="font-bold text-red-600">1,250,000 원</span>
+                            </p>
+                            
+                            <!-- ################################################ -->
+                            <!-- [복원] 누락되었던 버튼 코드 -->
+                            <!-- ################################################ -->
+                            <button id="openModalBtn" class="btn btn-danger whitespace-nowrap">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                미수금 일괄 입금
                             </button>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <div class="w-full h-2 bg-gray-100"></div>
+            </div>
+        </div>
+        <!-- ... (기타 비활성 탭 컨텐츠) ... -->
+        <div id="tab1" class="tab-content"></div>
+        <div id="tab2" class="tab-content"></div>
+        <div id="tab3" class="tab-content"></div>
+        <div id="tab5" class="tab-content"></div>
+        <div id="tab6" class="tab-content"></div>
+        <div id="tab7" class="tab-content"></div>
+    </div>
 
+    <!-- 팝업 모달 (기능은 생략, 레이아웃 확인용) -->
+    <!-- [수정] 팝업창 폼 순서 및 항목을 '결제상세정보 수정'과 동일하게 변경 -->
+    <div id="depositModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden justify-center items-center">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold">일괄 입금 등록</h3>
+                <span id="closeModalBtn" class="text-2xl cursor-pointer">&times;</span>
+            </div>
             
-            <!-- 탭 네비게이션 -->
-            <section class="sticky top-[61px] bg-white z-10">
-                <div class="border-b">
-                    <nav class="flex -mb-px">
-                        <button class="tab-button flex-1 text-gray-500 py-3 text-center text-sm active" data-tab="orders">최근 주문내역</button>
-                        <button class="tab-button flex-1 text-gray-500 py-3 text-center text-sm" data-tab="points">포인트 <span class="font-bold text-teal-600 ml-1">5,000</span></button>
-                        <button class="tab-button flex-1 text-gray-500 py-3 text-center text-sm" data-tab="coupons">쿠폰 <span class="font-bold text-teal-600 ml-1">1</span></button>
-                    </nav>
+            <div class="space-y-4">
+                <!-- 거래처 정보 (유지) -->
+                <div class="p-3 bg-blue-50 rounded-md border border-blue-200">
+                    <p class="text-sm font-semibold text-gray-700">거래처명: <span class="text-blue-600">'꽃놀이식당'</span></U></p>
+                    <p class="text-sm text-gray-700">현재 미결제 총액: <span class="font-bold text-red-600">1,250,000 원</span></p>
                 </div>
-            </section>
 
-            
-            <!-- 탭 컨텐츠 -->
-            <div id="tab-contents" class="p-4">
-                
-                <!-- 최근 주문내역 탭 -->
-                <div id="orders" class="tab-content active">
-                    <div class="border-t">
-                        
-                        
-                        <!-- ▼▼▼▼▼ 표 제목 행 추가 ▼▼▼▼▼ -->
-                        <!-- 헤더(61px) + 탭(48px) = 109px. 탭(z-10)보다 낮은 z-index(9) 설정 -->
-                        <div class="flex bg-gray-50 border-b sticky top-[109px] z-[9]">
-                            <div class="w-1/4 text-center px-1 py-2 text-sm font-semibold text-gray-600">
-                                일자/상태
-                            </div>
-                            <div class="w-[40%] px-2 py-2 text-sm font-semibold text-gray-600">
-                                상품명/금액
-                            </div>
-                            <div class="w-[35%] px-1 py-2 text-sm font-semibold text-gray-600">
-                                결제내역
-                            </div>
-                        </div>
-                        <!-- ▲▲▲▲▲ 표 제목 행 끝 ▲▲▲▲▲ -->
-
-
-                        <!-- 주문 내역 아이템 1: 입금대기 -->
-                        <div class="border-b py-3 flex items-start">
-                            
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-26</p>
-                                <div class="mt-1">
-                                    <span class="status-badge status-deposit-wait">입금대기</span>
-                                </div>
-                            </div>
-                            
-                            <!-- 상품명/금액 -->
-                            <div class="w-[40%] px-2">
-                                <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">양파 20KG 외 2건</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문금액: 51,000원</p>
-                                    <p>추가금액: 0원</p>
-                                    <p>취소금액: 2,000원</p>
-                                </div>
-                            </div>
-                            
-                            <!-- 결제내역 -->
-                            <div class="w-[35%] px-1 text-xs text-gray-500">
-                                <div class="space-y-1">
-                                    <p>입금: 0원</p>
-                                    <p>포인트(쿠): 0원</p>
-                                    <p>환불액(포): 0원</p>
-                                    <p class="font-bold text-red-600">잔액: 53,000원</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 주문 내역 아이템 2: 배송완료 -->
-                        <div class="border-b py-3 flex items-start">
-                            
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-25</p>
-                                <div class="mt-1">
-                                    <span class="status-badge status-delivery-complete">배송완료</span>
-                                </div>
-                            </div>
-                            
-                            <!-- 상품명/금액 -->
-                            <div class="w-[40%] px-2">
-                                <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">흙쪽파(1kg)단 외 1건</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문금액: 32,700원</p>
-                                    <p>추가금액: 0원</p>
-                                    <p>취소금액: 0원</p>
-                                </div>
-                            </div>
-                            
-                            <!-- 결제내역 -->
-                            <div class="w-[35%] px-1 text-xs text-gray-500">
-                                <div class="space-y-1">
-                                    <p>입금: 32,700원</p>
-                                    <p>포인트(쿠): 0원</p>
-                                    <p>환불액(포): 0원</p>
-                                    <p class="font-bold text-gray-500">잔액: 0원</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 주문 내역 아이템 3: 결제완료 -->
-                        <div class="border-b py-3 flex items-start">
-                            
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-24</p>
-                                <div class="mt-1">
-                                    <span class="status-badge status-complete">결제완료</span>
-                                </div>
-                            </div>
-                            
-                            <!-- 상품명/금액 -->
-                            <div class="w-[40%] px-2">
-                                <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">배추_3입망 외 5건</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문금액: 16,700원</p>
-                                    <p>추가금액: 0원</p>
-                                    <p>취소금액: 0원</p>
-                                </div>
-                            </div>
-                            
-                            <!-- 결제내역 -->
-                            <div class="w-[35%] px-1 text-xs text-gray-500">
-                                <div class="space-y-1">
-                                    <p>입금: 16,700원</p>
-                                    <p>포인트(쿠): 0원</p>
-                                    <p>환불액(포): 0원</p>
-                                    <p class="font-bold text-gray-500">잔액: 0원</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 주문 내역 아이템 4: 추가결제분 -->
-                        <div class="border-b py-3 flex items-start">
-                            
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-23</p>
-                                <div class="mt-1">
-                                    <span class="status-badge status-complete">결제완료</span>
-                                </div>
-                                <p class="text-xs text-blue-600 mt-1">(추가결제분)</p>
-                            </div>
-                            
-                            <!-- 상품명/금액 -->
-                            <div class="w-[40%] px-2">
-                                <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">엄청나게 긴 상품명입니다. 레이아웃이 깨지지 않아야 합니다.</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문금액: 10,000원</p>
-                                    <p>추가금액: 3,000원</p>
-                                    <p>취소금액: 0원</p>
-                                </div>
-                            </div>
-                            
-                            <!-- 결제내역 -->
-                            <div class="w-[35%] px-1 text-xs text-gray-500">
-                                <div class="space-y-1">
-                                    <p>입금: 13,000원</p>
-                                    <p>포인트(쿠): 0원</p>
-                                    <p>환불액(포): 0원</p>
-                                    <p class="font-bold text-gray-500">잔액: 0원</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 주문 내역 아이템 5: 선입금 -->
-                        <div class="border-b py-3 flex items-start">
-                            
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-21</p>
-                                <div class="mt-1">
-                                    <span class="status-badge status-deposit-confirm">입금완료</span>
-                                </div>
-                                <p class="text-xs text-gray-600 mt-1">(선입금)</p>
-                            </div>
-                            
-                            <!-- 상품명/금액 -->
-                            <div class="w-[40%] px-2">
-                                <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">선입금 충전</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문금액: 0원</p>
-                                    <p>추가금액: 0원</p>
-                                    <p>취소금액: 0원</p>
-                                </div>
-                            </div>
-                            
-                            <!-- 결제내역 -->
-                            <div class="w-[35%] px-1 text-xs text-gray-500">
-                                <div class="space-y-1">
-                                    <p>입금: 50,000원</p>
-                                    <p>포인트(쿠): 0원</p>
-                                    <p>환불액(포): 0원</p>
-                                    <p class="font-bold text-blue-600">잔액: 50,000원</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 주문 내역 아이템 6: 주문취소 -->
-                        <div class="border-b py-3 flex items-start text-gray-400">
-                            
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm">2025-08-22</p>
-                                <div class="mt-1">
-                                    <span class="status-badge status-cancel">주문취소</span>
-                                </div>
-                            </div>
-                            
-                            <!-- 상품명/금액 -->
-                            <div class="w-[40%] px-2">
-                                <p class="text-sm overflow-hidden text-ellipsis whitespace-nowrap">양파 10kg 박스</p>
-                                <div class="text-xs mt-1 space-y-0.5">
-                                    <p>주문금액: 41,300원</p>
-                                    <p>추가금액: 0원</p>
-                                    <p>취소금액: 41,300원</p>
-                                </div>
-                            </div>
-                            
-                            <!-- 결제내역 -->
-                            <div class="w-[35%] px-1 text-xs">
-                                <div class="space-y-1">
-                                    <p>입금: 41,300원</p>
-                                    <p>포인트(쿠): 0원</p>
-                                    <p>환불액(포): 41,300원</p>
-                                    <p class="font-bold text-gray-500">잔액: 0원</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
-                        내역 더보기
-                    </button>
+                <!-- [수정] 폼 순서 및 항목 변경 -->
+                <div>
+                    <label for="depositAccount" class="block text-sm font-medium text-gray-700">계좌번호</label>
+                    <select id="depositAccount" class="w-full border p-2 rounded mt-1">
+                        <option value="">선택하십시오</option>
+                        <option value="account1">농협은행 302-1586-...</option>
+                        <option value="account2">다른 계좌...</option>
+                    </select>
                 </div>
-                
-                <!-- 포인트 탭 -->
-                <div id="points" class="tab-content">
-                    <div class="text-center py-10">
-                        <p class="text-gray-500">포인트 내역이 없습니다.</p>
+
+                <div>
+                    <label for="depositAmount" class="block text-sm font-medium text-gray-700">무통장 입금액</label>
+                    <div class="mt-1">
+                        <!-- ################################################ -->
+                        <!-- [삭제] '결제금액 입력' 체크박스 및 라벨 삭제 -->
+                        <!--
+                        <input type="checkbox" id="enableDepositAmount" checked> 
+                        <label for="enableDepositAmount" class="text-sm text-gray-600">결제금액 입력</label>
+                        -->
+                        <!-- ################################################ -->
+                        <div class="flex items-center">
+                            <input type="number" id="depositAmount" class="w-full border p-2 rounded" placeholder="실제 입금된 총액 입력">
+                            <span class="ml-2">원</span>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- 쿠폰 탭 -->
-                <div id="coupons" class="tab-content">
-                     <div class="text-center py-10">
-                        <p class="text-gray-500">사용 가능한 쿠폰이 없습니다.</p>
+                <div>
+                    <label for="depositorName" class="block text-sm font-medium text-gray-700">입금자명</label>
+                    <input type="text" id="depositorName" class="w-full border p-2 rounded mt-1" placeholder="미입력시 거래처명으로 기록">
+                </div>
+                
+                <div>
+                    <label for="depositDate" class="block text-sm font-medium text-gray-700">입금 확인일시</label>
+                    <div class="mt-1">
+                        <input type="checkbox" id="setDepositDateNow"> 
+                        <label for="setDepositDateNow" class="text-sm text-gray-600">현재 시간으로 설정</label>
+                        <input type="text" id="depositDate" class="w-full border p-2 rounded" placeholder="YYYY-MM-DD HH:MM:SS">
                     </div>
                 </div>
             </div>
-        </main>
+
+            <div class="mt-6 pt-4 border-t text-right space-x-2">
+                <button id="cancelBtn" class="btn btn-outline">취소</button>
+                <button class="btn btn-primary">저장하고 자동 처리</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 탭 기능
-            const tabs = document.querySelectorAll('.tab-button');
-            const contents = document.querySelectorAll('.tab-content');
+        // ################################################
+        // [수정] 탭 기능 스크립트 오류 수정
+        // ################################################
+        const tabs = document.querySelectorAll('.tab-link');
+        const tabContents = document.querySelectorAll('.tab-content');
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // 모든 탭과 컨텐츠에서 active 클래스 제거
-                    tabs.forEach(t => t.classList.remove('active'));
-                    contents.forEach(c => c.classList.remove('active'));
+        tabs.forEach(link => {
+            link.addEventListener('click', () => {
+                // 모든 탭/컨텐츠 비활성화
+                tabs.forEach(l => l.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
 
-                    // 클릭된 탭과 해당하는 컨텐츠에 active 클래스 추가
-                    tab.classList.add('active');
-                    document.getElementById(tab.dataset.tab).classList.add('active');
-                });
-            });
-
-            // 계좌번호 복사 기능
-            const copyAccountBtn = document.getElementById('copyAccountBtn');
-            const accountNumberElement = document.getElementById('accountNumber');
-            
-            if(copyAccountBtn && accountNumberElement) {
-                const accountNumber = accountNumberElement.textContent;
-                const copyMessage = document.getElementById('copyMessage');
-
-                copyAccountBtn.addEventListener('click', () => {
-                    // navigator.clipboard.writeText 사용 (권장)
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(accountNumber).then(() => {
-                            copyMessage.classList.remove('hidden');
-                            setTimeout(() => {
-                                copyMessage.classList.add('hidden');
-                            }, 2000); // 2초 후 메시지 숨김
-                        }).catch(err => {
-                            console.error('Failed to copy: ', err);
-                            fallbackCopyTextToClipboard(accountNumber); // 실패 시 폴백
-                        });
-                    } else {
-                        fallbackCopyTextToClipboard(accountNumber); // navigator.clipboard 미지원 시 폴백
-                    }
-                });
-            }
-
-            // 폴백 복사 기능 (https 환경이 아니거나 구형 브라우저일 경우)
-            function fallbackCopyTextToClipboard(text) {
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
+                // 클릭된 탭 활성화
+                link.classList.add('active');
                 
-                // 화면에서 보이지 않도록 스타일 설정
-                textArea.style.position = "fixed";
-                textArea.style.top = "0";
-                textArea.style.left = "0";
-                textArea.style.width = "2em";
-                textArea.style.height = "2em";
-                textArea.style.padding = "0";
-                textArea.style.border = "none";
-                textArea.style.outline = "none";
-                textArea.style.boxShadow = "none";
-                textArea.style.background = "transparent";
-                
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                
-                try {
-                    const successful = document.execCommand('copy');
-                    const msg = successful ? 'successful' : 'unsuccessful';
-                    console.log('Fallback: Copying text command was ' + msg);
-
-                    if (successful) {
-                        const copyMessage = document.getElementById('copyMessage');
-                        copyMessage.classList.remove('hidden');
-                        setTimeout(() => {
-                            copyMessage.classList.add('hidden');
-                        }, 2000);
-                    }
-                } catch (err) {
-                    console.error('Fallback: Oops, unable to copy', err);
-                    // alert()는 캔버스 환경에서 작동하지 않으므로 console.error로 대체합니다.
-                    console.error('계좌번호 복사에 실패했습니다.');
+                // 연결된 컨텐츠가 존재하면 활성화
+                const content = document.getElementById(link.dataset.tab);
+                if (content) {
+                    content.classList.add('active');
                 }
-                
-                document.body.removeChild(textArea);
-            }
+            });
         });
+        
+        // 페이지 로드 시 활성화된 탭의 컨텐츠만 보여주기 (존재할 경우)
+        const activeTab = document.querySelector('.tab-link.active');
+        if(activeTab) {
+             const activeContent = document.getElementById(activeTab.dataset.tab);
+             if(activeContent) {
+                activeContent.classList.add('active');
+             }
+        }
+
+        // 모달 기능 (시뮬레이션)
+        const modal = document.getElementById('depositModal');
+        const depositDateInput = document.getElementById('depositDate');
+        const setDepositDateNowCheckbox = document.getElementById('setDepositDateNow'); // [신규]
+
+        // [신규] 날짜 포맷 함수
+        const getFormattedDateTime = (date) => {
+            const y = date.getFullYear();
+            const m = (date.getMonth() + 1).toString().padStart(2, '0');
+            const d = date.getDate().toString().padStart(2, '0');
+            // [수정] 누락된 코드 복원
+            const h = date.getHours().toString().padStart(2, '0');
+            const min = date.getMinutes().toString().padStart(2, '0');
+            const s = date.getSeconds().toString().padStart(2, '0');
+            return `${y}-${m}-${d} ${h}:${min}:${s}`;
+        };
+
+        // 오늘 날짜/시간 기본값 설정
+        if(depositDateInput) {
+            depositDateInput.value = getFormattedDateTime(new Date());
+        }
+                
+        const openModalBtn = document.getElementById('openModalBtn');
+        
+        /* ################################################ */
+        /* [수정] HTML 주석 -> JS 주석으로 변경 */
+        /* [복원] 누락되었던 스크립트 나머지 부분 */
+        /* ################################################ */
+        if(openModalBtn) {
+            openModalBtn.addEventListener('click', () => {
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
+                // 모달 열릴 때마다 날짜 재설정
+                if(depositDateInput) {
+                    depositDateInput.value = getFormattedDateTime(new Date());
+                    if (setDepositDateNowCheckbox) {
+                        setDepositDateNowCheckbox.checked = false; // 체크박스 초기화
+                        depositDateInput.readOnly = false;
+                    }
+                }
+            });
+        }
+        
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        if(closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        const cancelBtn = document.getElementById('cancelBtn');
+         if(cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            });
+         }
+         
+        // [신규] '현재 시간으로 설정' 체크박스 이벤트
+        if(setDepositDateNowCheckbox) {
+            setDepositDateNowCheckbox.addEventListener('change', () => {
+                if(depositDateInput) {
+                    if(setDepositDateNowCheckbox.checked) {
+                        depositDateInput.value = getFormattedDateTime(new Date());
+                        depositDateInput.readOnly = true; // 수정 불가
+                    } else {
+                        depositDateInput.readOnly = false; // 수정 가능
+                    }
+                }
+            });
+        }
+         
     </script>
 </body>
 </html>
-
 
 
