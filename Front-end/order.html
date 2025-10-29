@@ -69,6 +69,16 @@
         }
 
 
+        /* [v2.1] 스크롤 인터랙션 스타일 - 숨김 로직 제거 */
+        /*
+        #sub-header {
+            transition: transform 0.3s ease-in-out;
+        }
+        .sub-header-hidden {
+            transform: translateY(-100%);
+        }
+        */
+
         #search-container {
             transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out, opacity 0.3s ease-in-out, border 0.3s ease-in-out;
             overflow: hidden;
@@ -99,15 +109,22 @@
             z-index: 5; /* 상품 목록보다 위에 오도록 */
             padding-top: 0.5rem; /* pt-2 */
             padding-bottom: 0.25rem; /* pb-1 */
+            /* [v2.5] 하단 구분선 추가 */
             border-bottom: 1px solid #e5e7eb; /* border-gray-200 */
-            /* [v2.4] 좌우 여백 제거 */
-            padding-left: 0.5rem; /* pl-2 (완전 제거 대신 약간 남김) */
-            padding-right: 0.5rem; /* pr-2 */
         }
 
         /* 검색 모드일 때 LIST 1 섹션 헤더 sticky 위치 조정 */
         #app.search-mode-active .list1-section-header-sticky {
             top: 142px; /* 기존 top(96px) + 검색창 높이(약 46px) */
+        }
+
+        /* [v2.5] 상품 아이템 구분선 */
+        .product-item {
+            border-bottom: 1px solid #f3f4f6; /* gray-100 */
+        }
+        /* [v2.6] 마지막 아이템은 하단 선 제거 (border-b-0) */
+        .product-item:last-child {
+            border-bottom-width: 0;
         }
 
 
@@ -216,7 +233,8 @@
                     <div id="search-container" class="p-2 border-b bg-white search-hidden">
                         <div class="flex items-center w-full">
                             <div class="relative flex-grow">
-                                <input type="text" id="product-search-input" placeholder="현재 탭 상품 검색" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
+                                <!-- [v2.11] 플레이스홀더 수정 -->
+                                <input type="text" id="product-search-input" placeholder="빠른 주문 전체 검색" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-search text-gray-400"></i>
                                 </div>
@@ -228,24 +246,24 @@
                 </div>
 
                 <!-- 상품 목록 -->
-                <!-- [v2.4][v2.8] 좌우 여백 제거 (px-4 제거) -->
+                <!-- [v2.4] 좌우 여백(px-4) 제거, [v2.7] mt-2 제거 -->
                 <div id="product-list-container">
                     <!-- 상품 목록 렌더링 영역 -->
-                    <!-- [v2.5][v2.6][v2.8] space-y-2 제거, border-t 추가 -->
-                    <div id="product-list" class="border-t">
+                    <!-- [v2.5] space-y-2 제거, [v2.6] border-t 추가 -->
+                    <div id="product-list" class="bg-white border-t">
                         <!-- JS 렌더링 -->
                     </div>
                 </div>
 
                 <!-- 주문 확인 목록 (숨겨짐) -->
-                <!-- [v2.4] 좌우 여백 제거 (px-4 제거) -->
+                <!-- [v2.4] 좌우 여백(px-4) 제거 -->
                 <div id="order-confirmation-container" class="hidden mt-2">
-                    <div class="flex justify-between items-center my-4 px-2"> <!-- 확인 목록은 약간의 여백(px-2) 유지 -->
+                    <div class="flex justify-between items-center my-4 px-4"> <!-- 확인 목록 타이틀에는 패딩 유지 -->
                         <h2 class="text-lg font-bold">담은 상품 확인</h2>
                         <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
                     </div>
-                    <!-- [v2.5] 확인 목록은 카드 스타일 유지 (space-y-4) -->
-                    <div id="confirmation-list" class="space-y-4 px-2">
+                    <!-- [v2.6] 확인 목록에도 border-t 추가 -->
+                    <div id="confirmation-list" class="bg-white border-t">
                         <!-- JS 렌더링 -->
                     </div>
                 </div>
@@ -279,7 +297,7 @@
             </header>
             <main class="pb-5">
                  <!-- 편집 뷰 목록 -->
-                 <div id="edit-list"> <!-- [v2.9] 편집 목록은 divide-y 대신 개별 border-b 사용 -->
+                 <div id="edit-list" class="divide-y">
                      <!-- JS 렌더링 -->
                  </div>
             </main>
@@ -373,9 +391,10 @@
             currentView: 'home', // 'home', 'quick-order', 'edit'
             currentMyList: 0, // 0 for 단골특가, 1, 2, 3 for MY LIST
             editListFilter: null,
+            // [v2.9] 편집 뷰에서 임시 변경 사항을 저장할 객체
+            editChanges: {}, // { productId: [1, 2], ... }
             searchTerm: '',
             isSearching: false, // 검색 모드 상태
-            editChanges: {}, // [v2.9] 편집 중인 찜 리스트 임시 저장
         };
 
         // --- ELEMENTS ---
@@ -470,10 +489,11 @@
 
             appState.editListFilter = null;
 
-            // [v2.9] 편집 시작 시, 현재 찜 상태를 editChanges로 복사
-            appState.editChanges = {};
+            // [v2.9] 편집 뷰 진입 시 현재 myList 상태를 editChanges로 복사
+            appState.editChanges = {}; // 임시 변경 사항 초기화
             getAllProducts().filter(p => p.liked).forEach(p => {
-                appState.editChanges[p.id] = p.myList ? [...p.myList] : [];
+                // 원본 배열을 복사하여 editChanges에 저장
+                appState.editChanges[p.id] = [...(p.myList || [])];
             });
 
             renderEditView();
@@ -577,19 +597,18 @@
         // 상품 아이템 HTML 생성 함수
         function getProductItemHtml(p, isDangolTab = false) {
             const isSelected = appState.cart[p.id] > 0;
-            // [v2.4] 싯가 텍스트 크기 축소
             const priceText = p.price > 0 ? `${p.price.toLocaleString()}원` : '싯가';
             const allowLike = p.allowLike !== false; // 기본값 true
 
-            // --- 찜 체크박스 또는 아이콘 (v2.2에서 제거됨) ---
+            // --- [v2.2] 찜 체크박스 또는 아이콘 제거 ---
             let likeCheckboxHtml = '';
 
             // --- 특가 배지 ---
+            // [v2.2] 특가 배지 숨김 처리 (eventBadgeHtml은 빈 문자열)
+            // [v2.13] eventBadgeHtml 변수 선언은 유지하되, 사용처에서 제거
             const eventBadgeHtml = p.isEvent
                 ? `<span class="text-xs font-bold text-red-500 bg-red-100 px-1.5 py-0.5 rounded-full">특가</span>`
                 : '';
-            // [v2.2] 특가 배지 위치 조정 (단골탭 이미지 하단 제거됨)
-            const eventBadgeLocationClass = 'ml-1';
 
 
             // --- Brand & Date Logic ---
@@ -599,7 +618,7 @@
 
             if (p.spec && p.spec.startsWith('판매처: ')) {
                 const brandName = p.spec.replace('판매처: ', '');
-                brandHtml = `<span class="font-bold text-gray-700 mr-2 text-xs">${brandName}</span>`; // [v2.4] 텍스트 크기 축소
+                brandHtml = `<span class="font-bold text-gray-700 mr-2">${brandName}</span>`;
             }
 
             if (deliveryDateStr) {
@@ -627,7 +646,7 @@
                     const monthDay = `${dateParts[1]}-${dateParts[2]}`;
                     deliveryText = `${monthDay} 배송`;
                 }
-                deliveryHtml = `<span class="${dateColorClass} text-xs">${deliveryText}</span>`; // [v2.4] 텍스트 크기 축소
+                deliveryHtml = `<span class="${dateColorClass}">${deliveryText}</span>`;
             }
             // --- End Brand & Date Logic ---
 
@@ -637,31 +656,33 @@
             }
 
             const line1Text = `${brandHtml}${deliveryHtml}`;
-            // [v2.4] 상품명 텍스트 크기 축소 (text-xs)
+            // [v2.4] 텍스트 크기 text-xs로 축소
             const line2Text = displaySpec ? `${p.name} (${displaySpec})` : p.name;
 
 
             return `
             <!-- [v2.10] items-center로 변경 -->
-            <div class="product-item flex items-center space-x-2 p-2 ${isSelected ? 'product-item-selected' : 'bg-white'} border-b" data-id="${p.id}">
+            <div class="product-item flex items-center space-x-2 p-2 ${isSelected ? 'product-item-selected' : ''}" data-id="${p.id}">
                 <!-- [v2.2] 찜 아이콘 (단골특가 탭 전용) 제거됨 -->
 
-                <!-- [v2.4] 이미지 크기 w-10 h-10 (40px)로 축소, [v2.10] pt-1 제거 -->
+                <!-- [v2.10] pt-1 제거 -->
                 <div class="flex flex-col items-center flex-shrink-0">
-                   <img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-10 h-10 object-cover rounded-md" onerror="this.src='https://placehold.co/80x80/eeeeee/cccccc?text=No+Image'">
-                   <!-- [v2.2] 단골특가 탭에서만 특가 배지 이미지 하단 표시 (제거됨) -->
+                   <!-- [v2.3] 이미지 크기 w-10 h-10 (40px)으로 축소 -->
+                   <img src="${p.img || `https://placehold.co/40x40/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-10 h-10 object-cover rounded-md" onerror="this.src='https://placehold.co/40x40/eeeeee/cccccc?text=No+Image'">
+                   <!-- [v2.2] 단골특가 탭 특가 배지 제거됨 -->
                 </div>
 
-                <!-- [v2.3] 행간 mt-1로 수정 -->
+                <!-- [v2.4] 텍스트 크기 text-xs로 축소 -->
                 <div class="flex-grow">
                     <p class="font-bold text-xs">${line2Text}</p>
+                    <!-- [v2.3] 상품명/배송정보 행간 mt-1로 수정 -->
                     <p class="text-xs text-gray-500 mt-1">${line1Text}</p>
                 </div>
 
                 <!-- [v2.4] 단가/수량 한 줄 정렬 (flex-col 제거, flex items-center space-x-2 추가) -->
                 <div class="flex items-center space-x-2 flex-shrink-0">
-                    <!-- [v2.4] 가격 텍스트 크기 text-xs로 축소 -->
-                    <p class="font-bold whitespace-nowrap text-xs">${priceText} ${!isDangolTab ? eventBadgeHtml : ''}</p>
+                    <!-- [v2.4] 가격 텍스트 크기 text-xs로 축소, [v2.13] 특가 배지(eventBadgeHtml) 완전 제거 -->
+                    <p class="font-bold whitespace-nowrap text-xs">${priceText}</p>
                     <div class="flex items-center border rounded-md">
                         <button class="quantity-btn quantity-decrease bg-gray-100 rounded-l-md">-</button>
                         <input type="number" class="quantity-input w-10 text-center border-l border-r text-sm" value="${appState.cart[p.id] || 0}" min="0">
@@ -679,81 +700,97 @@
 
             let baseList = []; // 현재 탭의 기본 상품 목록
 
-            // 탭별 기본 목록 정의
-            if (appState.currentMyList === 0) { // 단골특가
-                // 찜 ➔ 3차 카테고리 자동 관심 등록 ➔ 해당 카테고리의 행사 상품 노출
-                const likedThirdCategories = new Set(likedProducts.map(p => p.thirdCategory).filter(Boolean));
-                baseList = allProducts.filter(p => p.isEvent && likedThirdCategories.has(p.thirdCategory));
-            } else if (appState.currentMyList === 1) { // LIST 1
-                baseList = likedProducts; // 찜한 상품 전체 (미지정 + LIST 1 지정)
-            } else { // LIST 2, 3
-                baseList = likedProducts.filter(p => p.myList && p.myList.includes(appState.currentMyList));
-            }
-
-            // 검색어 적용
-            let filteredList = baseList;
+            // [v2.11] 검색 로직 수정
             if (appState.searchTerm) {
+                // 검색어가 있으면: 단골특가 + 전체 찜 목록에서 검색
+                const likedThirdCategories = new Set(likedProducts.map(p => p.thirdCategory).filter(Boolean));
+                const dangolList = allProducts.filter(p => p.isEvent && likedThirdCategories.has(p.thirdCategory));
+                const allMyList = likedProducts; // 찜한 상품 전체
+
+                // 중복 제거 (Set 사용)
+                const combinedSet = new Set([...dangolList, ...allMyList]);
+                
                 const searchTermLower = appState.searchTerm.toLowerCase();
-                filteredList = baseList.filter(p => p.name.toLowerCase().includes(searchTermLower));
-            }
+                const filteredList = Array.from(combinedSet).filter(p => p.name.toLowerCase().includes(searchTermLower));
 
-            // 화면 출력 로직
-            if (filteredList.length === 0) {
-                let message = "표시할 상품이 없습니다.";
-                if (appState.currentMyList === 0 && likedProducts.length === 0) {
-                     message = "'홈'에서 상품을 찜하면, 관련 특가 상품이 여기에 표시됩니다.";
-                } else if (appState.searchTerm) {
-                    message = `'${appState.searchTerm}'에 대한 검색 결과가 없습니다.`;
-                } else if (appState.currentMyList === 1 && likedProducts.length === 0) {
-                    message = "'홈'에서 상품을 찜하면, 관리할 상품이 여기에 표시됩니다.";
+                if (filteredList.length === 0) {
+                     productsToRenderHtml = `<div class="text-center py-10 text-gray-500">'${appState.searchTerm}'에 대한 검색 결과가 없습니다.</div>`;
+                } else {
+                    // 검색 결과는 탭 구분 없이 단일 목록으로 표시
+                     productsToRenderHtml = filteredList
+                        .sort((a, b) => a.id - b.id) // ID 순 정렬
+                        .map(p => getProductItemHtml(p, appState.currentMyList === 0)) // 탭 상태에 따라 찜 버튼 표시 여부 결정
+                        .join('');
                 }
-                 productsToRenderHtml = `<div class="text-center py-10 text-gray-500">${message}</div>`;
+
             } else {
+                // 검색어가 없으면: 기존 탭 로직 수행
+                // 탭별 기본 목록 정의
                 if (appState.currentMyList === 0) { // 단골특가
-                    filteredList.sort((a, b) => a.id - b.id); // ID 순 정렬
-                    productsToRenderHtml = filteredList.map(p => getProductItemHtml(p, true)).join(''); // isDangolTab = true
-                } else if (appState.currentMyList === 1) { // LIST 1 (미지정 + 지정 분리)
-                    const unassigned = filteredList
-                        .filter(p => !p.myList || p.myList.length === 0)
-                        .sort((a, b) => (b.likedTimestamp || 0) - (a.likedTimestamp || 0)); // 최근순
-
-                    const assigned = filteredList
-                        .filter(p => p.myList && p.myList.includes(1))
-                        .sort((a, b) => a.id - b.id); // ID 순
-
-                    let unassignedHtml = '';
-                    if (unassigned.length > 0) {
-                        unassignedHtml = `
-                            <h4 class="list1-section-header-sticky text-sm font-semibold text-blue-600">리스트 미지정 상품 (${unassigned.length})</h4>
-                            <!-- [v2.5] space-y-2 제거 -->
-                            <div class="mt-1">
-                                ${unassigned.map(p => getProductItemHtml(p)).join('')}
-                            </div>
-                        `;
-                    }
-                    let assignedHtml = '';
-                    if (assigned.length > 0) {
-                        const separator = unassigned.length > 0 ? '<div class="pt-2"></div>' : ''; // 구분 간격
-                        assignedHtml = `
-                            ${separator}
-                            <h4 class="list1-section-header-sticky text-sm font-semibold text-gray-700">LIST 1 지정 상품 (${assigned.length})</h4>
-                             <!-- [v2.5] space-y-2 제거 -->
-                             <div class="mt-1">
-                                ${assigned.map(p => getProductItemHtml(p)).join('')}
-                            </div>
-                        `;
-                    }
-                    productsToRenderHtml = unassignedHtml + assignedHtml;
-
-                    if (!productsToRenderHtml && !appState.searchTerm) { // 검색어가 없는데 목록이 빈 경우
-                         productsToRenderHtml = `<div class="text-center py-10 text-gray-500">찜한 상품이 없습니다.</div>`;
-                    }
-
+                    // 찜 ➔ 3차 카테고리 자동 관심 등록 ➔ 해당 카테고리의 행사 상품 노출
+                    const likedThirdCategories = new Set(likedProducts.map(p => p.thirdCategory).filter(Boolean));
+                    baseList = allProducts.filter(p => p.isEvent && likedThirdCategories.has(p.thirdCategory));
+                } else if (appState.currentMyList === 1) { // LIST 1
+                    baseList = likedProducts; // 찜한 상품 전체 (미지정 + LIST 1 지정)
                 } else { // LIST 2, 3
-                    filteredList.sort((a, b) => a.id - b.id); // ID 순 정렬
-                    productsToRenderHtml = filteredList.map(p => getProductItemHtml(p)).join('');
+                    baseList = likedProducts.filter(p => p.myList && p.myList.includes(appState.currentMyList));
+                }
+
+                // 화면 출력 로직
+                if (baseList.length === 0) {
+                    let message = "표시할 상품이 없습니다.";
+                    if (appState.currentMyList === 0 && likedProducts.length === 0) {
+                         message = "'홈'에서 상품을 찜하면, 관련 특가 상품이 여기에 표시됩니다.";
+                    } else if (appState.currentMyList === 1 && likedProducts.length === 0) {
+                        message = "'홈'에서 상품을 찜하면, 관리할 상품이 여기에 표시됩니다.";
+                    }
+                     productsToRenderHtml = `<div class="text-center py-10 text-gray-500">${message}</div>`;
+                } else {
+                    if (appState.currentMyList === 0) { // 단골특가
+                        baseList.sort((a, b) => a.id - b.id); // ID 순 정렬
+                        productsToRenderHtml = baseList.map(p => getProductItemHtml(p, true)).join(''); // isDangolTab = true
+                    } else if (appState.currentMyList === 1) { // LIST 1 (미지정 + 지정 분리)
+                        const unassigned = baseList
+                            .filter(p => !p.myList || p.myList.length === 0)
+                            .sort((a, b) => (b.likedTimestamp || 0) - (a.likedTimestamp || 0)); // 최근순
+
+                        const assigned = baseList
+                            .filter(p => p.myList && p.myList.includes(1))
+                            .sort((a, b) => a.id - b.id); // ID 순
+
+                        let unassignedHtml = '';
+                        if (unassigned.length > 0) {
+                            unassignedHtml = `
+                                <h4 class="list1-section-header-sticky text-sm font-semibold text-blue-600 px-4">리스트 미지정 상품 (${unassigned.length})</h4>
+                                <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->
+                                    ${unassigned.map(p => getProductItemHtml(p)).join('')}
+                                </div>
+                            `;
+                        }
+                        let assignedHtml = '';
+                        if (assigned.length > 0) {
+                            const separator = unassigned.length > 0 ? '<div class="pt-2"></div>' : ''; // 구분 간격
+                            assignedHtml = `
+                                ${separator}
+                                <h4 class="list1-section-header-sticky text-sm font-semibold text-gray-700 px-4">LIST 1 지정 상품 (${assigned.length})</h4>
+                                 <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->
+                                    ${assigned.map(p => getProductItemHtml(p)).join('')}
+                                </div>
+                            `;
+                        }
+                        productsToRenderHtml = unassignedHtml + assignedHtml;
+
+                        if (!productsToRenderHtml) { // 탭은 있으나 목록이 빈 경우
+                             productsToRenderHtml = `<div class="text-center py-10 text-gray-500">찜한 상품이 없습니다.</div>`;
+                        }
+
+                    } else { // LIST 2, 3
+                        baseList.sort((a, b) => a.id - b.id); // ID 순 정렬
+                        productsToRenderHtml = baseList.map(p => getProductItemHtml(p)).join('');
+                    }
                 }
             }
+
 
             productListEl.innerHTML = productsToRenderHtml;
         }
@@ -834,20 +871,26 @@
 
             confirmationListEl.innerHTML = Object.entries(groupedItems).map(([category, items]) => `
                 <div class="mb-4">
-                    <h3 class="font-bold text-md mb-2 pb-2 border-b">${category}</h3>
-                    <div class="space-y-3 mt-3">
+                    <!-- [v2.4] px-4 추가 -->
+                    <h3 class="font-bold text-md mb-2 pb-2 border-b px-4">${category}</h3>
+                    <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->
                         ${items.map(p => {
                             const itemTotalPrice = (p.price || 0) * appState.cart[p.id];
                             return `
+                            <!-- [v2.10] items-center로 변경 -->
                             <div class="product-item flex items-center space-x-3 p-2 rounded-lg product-item-selected" data-id="${p.id}">
-                                <img src="${p.img || `https://placehold.co/80x80/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0" onerror="this.src='https://placehold.co/80x80/eeeeee/cccccc?text=No+Image'">
+                                <!-- [v2.3] 이미지 크기 w-10 h-10 (40px)으로 축소 -->
+                                <img src="${p.img || `https://placehold.co/40x40/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0" onerror="this.src='https://placehold.co/40x40/eeeeee/cccccc?text=No+Image'">
+                                <!-- [v2.4] 텍스트 크기 text-xs로 축소 -->
                                 <div class="flex-grow">
-                                    <p class="font-bold text-sm">${p.name}</p>
-                                    <p class="text-xs text-gray-500">${p.spec}</p>
+                                    <p class="font-bold text-xs">${p.name}</p>
+                                    <p class="text-xs text-gray-500 mt-1">${p.spec}</p>
                                 </div>
-                                <div class="flex flex-col items-end flex-shrink-0">
-                                    <p class="font-bold whitespace-nowrap">${itemTotalPrice > 0 ? itemTotalPrice.toLocaleString()+'원' : '싯가'}</p>
-                                    <div class="flex items-center mt-1 border rounded-md">
+                                <!-- [v2.4] 단가/수량 한 줄 정렬 -->
+                                <div class="flex items-center space-x-2 flex-shrink-0">
+                                    <!-- [v2.4] 가격 텍스트 크기 text-xs로 축소 -->
+                                    <p class="font-bold whitespace-nowrap text-xs">${itemTotalPrice > 0 ? itemTotalPrice.toLocaleString()+'원' : '싯가'}</p>
+                                    <div class="flex items-center mt-0 border rounded-md">
                                         <button class="quantity-btn quantity-decrease bg-gray-100 rounded-l-md">-</button>
                                         <input type="number" class="quantity-input w-10 text-center border-l border-r text-sm" value="${appState.cart[p.id]}" min="0">
                                         <button class="quantity-btn quantity-increase bg-gray-100 rounded-r-md">+</button>
@@ -913,7 +956,7 @@
             if (quantityChanged) {
                 const isSelected = currentQuantity > 0;
                 productItem.classList.toggle('product-item-selected', isSelected);
-                productItem.classList.toggle('bg-white', !isSelected);
+                // [v2.5] bg-white 제거 (기본값이 white이므로)
             }
         });
 
@@ -931,27 +974,19 @@
 
                 const isSelected = newQuantity > 0;
                 productItem.classList.toggle('product-item-selected', isSelected);
-                productItem.classList.toggle('bg-white', !isSelected);
+                // [v2.5] bg-white 제거
 
                 if (!orderConfirmationContainer.classList.contains('hidden') && newQuantity === 0) {
                     showConfirmationView();
                 }
             }
 
-            // 단골특가 탭 찜하기
+            // [v2.2] 단골특가 탭 찜하기 로직 제거됨
+            /*
             if (e.target.matches('.dangol-like-checkbox:not(:disabled)')) {
-                 const productId = parseInt(e.target.dataset.id, 10);
-                 const isChecked = e.target.checked;
-                 const product = getAllProducts().find(p => p.id === productId);
-                 if (product) {
-                     product.liked = isChecked;
-                     product.likedTimestamp = isChecked ? Date.now() : null;
-                     if (!isChecked) { // 찜 해제 시 리스트에서도 제거
-                         product.myList = [];
-                     }
-                 }
-                 updateLikedCountBadge(); // 홈 뷰 뱃지 업데이트
+                 ...
             }
+            */
         });
 
         // --- EDIT VIEW LOGIC ---
@@ -963,25 +998,34 @@
 
             let likedProducts = getAllProducts().filter(p => p.liked);
 
-            // [v2.9] 정렬은 기존 myList 기준 (위치 고정)
-            likedProducts.sort((a, b) => { // 미지정 상품 상단 정렬
+            // [v2.14] 정렬 로직 수정: 미지정(최신순), 지정(ID순)
+            likedProducts.sort((a, b) => {
                 const aHasList = a.myList && a.myList.length > 0;
                 const bHasList = b.myList && b.myList.length > 0;
-                if (aHasList === bHasList) { return a.id - b.id; }
-                return aHasList ? 1 : -1;
+
+                if (aHasList && bHasList) {
+                    // 1. 둘 다 지정 상품: ID 순 (코드순)
+                    return a.id - b.id;
+                } else if (!aHasList && !bHasList) {
+                    // 2. 둘 다 미지정 상품: 최신순 (Timestamp 내림차순)
+                    return (b.likedTimestamp || 0) - (a.likedTimestamp || 0);
+                } else {
+                    // 3. 하나만 미지정 상품: 미지정 상품(aHasList=false)이 위로
+                    return aHasList ? 1 : -1;
+                }
             });
 
             let productsToRender = likedProducts;
-            // [v2.9] 필터링도 기존 myList 기준
             if (appState.editListFilter !== null) {
+                // [v2.9] 필터링: 원본 myList 기준으로 필터링
                 productsToRender = likedProducts.filter(p => p.myList && p.myList.includes(appState.editListFilter));
             }
 
             editListEl.innerHTML = productsToRender.map(p => {
-                // [v2.9] 버튼 활성 상태는 editChanges 기준
-                const tempMyList = appState.editChanges[p.id] || [];
-                return `
-                <div class="edit-item flex items-center p-3 border-b" data-id="${p.id}">
+                 // [v2.9] 버튼 활성화: 임시 editChanges 기준으로 표시
+                 const tempMyList = appState.editChanges[p.id] || [];
+                 return `
+                <div class="edit-item flex items-center p-3" data-id="${p.id}">
                     <button class="delete-item-btn mr-4 text-gray-400 hover:text-red-500 w-8 h-8 flex items-center justify-center">
                         <i class="fas fa-trash-alt"></i>
                     </button>
@@ -1018,17 +1062,17 @@
                 const productId = parseInt(itemEl.dataset.id, 10);
                 const listNumber = parseInt(assignBtn.dataset.list, 10);
 
-                // [v2.9] product.myList 원본 대신 editChanges 수정
-                if (!appState.editChanges[productId]) appState.editChanges[productId] = [];
+                // [v2.9] 임시 editChanges를 수정
                 const tempMyList = appState.editChanges[productId];
-                const listIndex = tempMyList.indexOf(listNumber);
-
-                if (listIndex > -1) {
-                    tempMyList.splice(listIndex, 1);
-                } else {
-                    tempMyList.push(listNumber);
+                if (tempMyList) {
+                    const listIndex = tempMyList.indexOf(listNumber);
+                    if (listIndex > -1) {
+                        tempMyList.splice(listIndex, 1);
+                    } else {
+                        tempMyList.push(listNumber);
+                    }
+                    renderEditView(); // 버튼 상태만 새로고침 (정렬 유지)
                 }
-                renderEditView(); // 버튼 상태만 업데이트 (정렬 유지)
             }
 
             if (deleteBtn) {
@@ -1040,25 +1084,35 @@
                     product.liked = false;
                     product.likedTimestamp = null;
                     product.myList = [];
-                    // [v2.9] editChanges에서도 삭제
-                    delete appState.editChanges[productId];
-                    renderEditView();
+
+                    // [v2.9] editChanges에서도 제거
+                    if (appState.editChanges[productId]) {
+                        delete appState.editChanges[productId];
+                    }
+
+                    renderEditView(); // 목록에서 즉시 제거
                     updateLikedCountBadge();
                 }
             }
         });
 
+        // [v2.9] 저장하기 버튼 로직 수정
         saveButton.addEventListener('click', () => {
             // [v2.9] 저장: editChanges를 실제 product.myList에 적용
-            const allProducts = getAllProducts();
             for (const productId in appState.editChanges) {
-                const product = allProducts.find(p => p.id == productId);
+                const product = getAllProducts().find(p => p.id == productId);
                 if (product) {
-                    product.myList = [...appState.editChanges[productId]];
+                    // 임시 변경사항(editChanges)을 원본(myList)에 덮어쓰기
+                    product.myList = appState.editChanges[productId];
                 }
             }
+            // [v2.9] 임시 변경 사항 비우기
+            appState.editChanges = {};
+            
+            // 빠른 주문 뷰로 복귀
             showQuickOrderView();
         });
+
 
         // --- GLOBAL LISTENERS ---
         productSearchInput.addEventListener('input', (e) => {
@@ -1084,7 +1138,16 @@
         showSearchBtn.addEventListener('click', () => toggleSearchMode(!appState.isSearching));
         cancelSearchBtn.addEventListener('click', () => toggleSearchMode(false));
 
-        // --- SCROLL LOGIC (제거됨) ---
+        // --- [v2.1] SCROLL LOGIC 제거 ---
+        /*
+        let lastScrollY = window.scrollY;
+        const subHeader = document.getElementById('sub-header');
+
+        window.addEventListener('scroll', () => {
+            ...
+        }, { passive: true });
+        */
+
 
         // --- INITIAL RENDER ---
         showHomeView(); // 앱 시작 시 홈 화면 표시
@@ -1093,5 +1156,4 @@
 
 </body>
 </html>
-
 
