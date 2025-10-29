@@ -136,12 +136,9 @@
 
         <!-- =======================
              HOME VIEW
-        ======================== -->
-        <div id="home-view">
-             <!-- 홈 뷰 헤더 (타이틀 + 카테고리) -->
-             <header class="sticky top-0 bg-white z-20 shadow-sm">
-                <!-- 1단: 타이틀 -->
-                <div class="flex justify-between items-center p-3 border-b">
+        ======================== --><div id="home-view">
+             <!-- 홈 뷰 헤더 (타이틀 + 카테고리) --><header class="sticky top-0 bg-white z-20 shadow-sm">
+                <!-- 1단: 타이틀 --><div class="flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
@@ -152,8 +149,7 @@
                     </div>
                 </div>
 
-                <!-- 2단: 홈 뷰 카테고리 (유지) -->
-                <nav class="flex justify-around items-center p-2">
+                <!-- 2단: 홈 뷰 카테고리 (유지) --><nav class="flex justify-around items-center p-2">
                     <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-carrot text-xl text-orange-400"></i><span class="text-xs font-medium">채소/과일</span></button>
                     <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-fish text-xl text-blue-400"></i><span class="text-xs font-medium">수산/축산</span></button>
                     <button class="flex flex-col items-center space-y-1 text-gray-600"><i class="fas fa-snowflake text-xl text-cyan-400"></i><span class="text-xs font-medium">식품/가공</span></button>
@@ -162,31 +158,25 @@
                 </nav>
             </header>
             <main class="pb-24">
-                 <!-- 홈 뷰 서브헤더 -->
-                 <div class="flex justify-around items-center px-4 py-2 border-b bg-white sticky top-[117px] z-10">
+                 <!-- 홈 뷰 서브헤더 --><div class="flex justify-around items-center px-4 py-2 border-b bg-white sticky top-[117px] z-10">
                     <button class="py-2 text-sm font-semibold border-b-2 border-green-500 text-green-500">타임세일</button>
                     <button class="py-2 text-sm text-gray-500">경매상품</button>
                     <button class="py-2 text-sm text-gray-500">할인상품</button>
                     <button class="py-2 text-sm text-gray-500">마감임박</button>
                  </div>
-                 <!-- 홈 뷰 상품 목록 -->
-                 <div id="home-product-list" class="divide-y">
-                     <!-- JS 렌더링 -->
-                 </div>
+                 <!-- 홈 뷰 상품 목록 --><div id="home-product-list" class="divide-y">
+                     <!-- JS 렌더링 --></div>
             </main>
         </div>
 
 
         <!-- =======================
              QUICK ORDER VIEW
-        ======================== -->
-        <div id="quick-order-view" class="hidden">
+        ======================== --><div id="quick-order-view" class="hidden">
 
-            <!-- 빠른주문 헤더 (카테고리바 제거됨) -->
-            <header class="sticky top-0 bg-white z-20 shadow-sm">
+            <!-- 빠른주문 헤더 (카테고리바 제거됨) --><header class="sticky top-0 bg-white z-20 shadow-sm">
 
-                <!-- 1단: 타이틀 -->
-                <div class="flex justify-between items-center p-3 border-b">
+                <!-- 1단: 타이틀 --><div class="flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
@@ -198,85 +188,70 @@
                 </div>
             </header>
 
-            <!-- 빠른주문 메인 -->
-            <main class="pb-40">
+            <!-- 빠른주문 메인 --><main class="pb-40">
 
-                <!-- 서브헤더 (탭 + 검색) -->
-                <div id="sub-header" class="z-10 shadow-md bg-gray-100">
+                <!-- 서브헤더 (탭 + 검색) --><div id="sub-header" class="z-10 shadow-md bg-gray-100">
 
-                    <!-- 탭 + 검색 버튼 + 편집 버튼 -->
-                    <div id="my-list-container" class="flex justify-between items-center px-4 py-3 border-b bg-white">
+                    <!-- 탭 + 검색 버튼 + 편집 버튼 --><div id="my-list-container" class="flex justify-between items-center px-4 py-3 border-b bg-white">
 
-                        <!-- 검색 버튼 -->
-                        <button id="show-search-btn" class="flex-shrink-0 mr-3 p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <!-- 검색 버튼 --><button id="show-search-btn" class="flex-shrink-0 mr-3 p-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
                             <i class="fas fa-search text-sm w-4 h-4"></i>
                         </button>
 
-                        <!-- MY LIST 탭 -->
-                        <div id="my-list-tabs" class="flex flex-1 justify-around overflow-x-auto no-scrollbar">
+                        <!-- MY LIST 탭 --><div id="my-list-tabs" class="flex flex-1 justify-around overflow-x-auto no-scrollbar">
                              <button data-list="0" class="my-list-tab py-2 tab-active flex-shrink-0 text-sm">단골특가</button>
                              <button data-list="1" class="my-list-tab py-2 tab-inactive flex-shrink-0 text-sm">LIST 1</button>
                              <button data-list="2" class="my-list-tab py-2 tab-inactive flex-shrink-0 text-sm">LIST 2</button>
                              <button data-list="3" class="my-list-tab py-2 tab-inactive flex-shrink-0 text-sm">LIST 3</button>
                         </div>
 
-                        <!-- 편집 버튼 -->
-                        <button id="edit-button" class="text-gray-500 flex-shrink-0 ml-4 p-1">
-                            <!-- 편집 아이콘 SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <!-- 편집 버튼 --><button id="edit-button" class="text-gray-500 flex-shrink-0 ml-4 p-1">
+                            <!-- 편집 아이콘 SVG --><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
                             </svg>
                         </button>
                     </div>
 
-                    <!-- 검색 입력창 (숨겨짐) -->
-                    <div id="search-container" class="p-2 border-b bg-white search-hidden">
+                    <!-- 검색 입력창 (숨겨짐) --><div id="search-container" class="p-2 border-b bg-white search-hidden">
                         <div class="flex items-center w-full">
                             <div class="relative flex-grow">
-                                <!-- [v2.11] 플레이스홀더 수정 -->
-                                <input type="text" id="product-search-input" placeholder="빠른 주문 전체 검색" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
+                                <!-- [v2.11] 플레이스홀더 수정 --><input type="text" id="product-search-input" placeholder="빠른 주문 전체 검색" class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-search text-gray-400"></i>
                                 </div>
                             </div>
-                            <!-- 검색 취소 버튼 -->
-                            <button id="cancel-search-btn" class="flex-shrink-0 ml-3 text-sm text-gray-600 font-medium px-2">취소</button>
+                            <!-- 검색 취소 버튼 --><button id="cancel-search-btn" class="flex-shrink-0 ml-3 text-sm text-gray-600 font-medium px-2">취소</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 상품 목록 -->
-                <!-- [v2.4] 좌우 여백(px-4) 제거, [v2.7] mt-2 제거 -->
-                <div id="product-list-container">
-                    <!-- 상품 목록 렌더링 영역 -->
-                    <!-- [v2.5] space-y-2 제거, [v2.6] border-t 추가 -->
-                    <div id="product-list" class="bg-white border-t">
-                        <!-- JS 렌더링 -->
-                    </div>
+                <!-- 상품 목록 --><!-- [v2.4] 좌우 여백(px-4) 제거, [v2.7] mt-2 제거 --><div id="product-list-container">
+                    <!-- 상품 목록 렌더링 영역 --><!-- [v2.5] space-y-2 제거, [v2.6] border-t 추가 --><div id="product-list" class="bg-white border-t">
+                        <!-- JS 렌더링 --></div>
                 </div>
 
-                <!-- 주문 확인 목록 (숨겨짐) -->
-                <!-- [v2.4] 좌우 여백(px-4) 제거 -->
-                <div id="order-confirmation-container" class="hidden mt-2">
-                    <div class="flex justify-between items-center my-4 px-4"> <!-- 확인 목록 타이틀에는 패딩 유지 -->
-                        <h2 class="text-lg font-bold">담은 상품 확인</h2>
-                        <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
+                <!-- 주문 확인 목록 (숨겨짐) --><!-- [v2.4] 좌우 여백(px-4) 제거 --><!-- [v2.19] 헤더 배경색(bg-gray-50) 적용, mt-2 제거 --><div id="order-confirmation-container" class="hidden">
+                    <!-- [v2.23] 헤더 상하 패딩 (py-1 -> py-2) 변경 --><div class="flex justify-between items-center py-2 px-4 bg-gray-100 border-t border-b">
+                        <div class="flex items-center space-x-2">
+                            <h2 class="text-lg font-bold">담은 상품</h2>
+                            <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
+                        </div>
+                        <!-- [v2.22] '상품 추가하기' 버튼 패딩 축소 (py-2 px-3 -> py-1 px-2) --><button id="add-more-items-btn" class="py-1 px-2 rounded-md text-sm font-semibold bg-white text-green-500 border border-green-500 flex items-center space-x-1.5">
+                            <i class="fas fa-plus text-xs"></i>
+                            <span>상품 추가하기</span>
+                        </button>
                     </div>
-                    <!-- [v2.6] 확인 목록에도 border-t 추가 -->
-                    <div id="confirmation-list" class="bg-white border-t">
-                        <!-- JS 렌더링 -->
-                    </div>
+                    <!-- [v2.19] 목록 배경색 bg-white로 변경 --><div id="confirmation-list" class="bg-white">
+                        <!-- JS 렌더링 --></div>
                 </div>
             </main>
         </div>
 
         <!-- =======================
              EDIT VIEW
-        ======================== -->
-        <div id="edit-view" class="hidden">
+        ======================== --><div id="edit-view" class="hidden">
             <header class="sticky top-0 bg-white z-20 shadow-sm p-3">
-                 <!-- 편집 뷰 헤더 -->
-                 <div class="flex justify-between items-center border-b pb-3">
+                 <!-- 편집 뷰 헤더 --><div class="flex justify-between items-center border-b pb-3">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
@@ -286,8 +261,7 @@
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                     </div>
                 </div>
-                <!-- 편집 뷰 필터 -->
-                <div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3">
+                <!-- 편집 뷰 필터 --><div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3">
                     <button data-filter="null" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold active">전체</button>
                     <button data-filter="1" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 1</button>
                     <button data-filter="2" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 2</button>
@@ -296,20 +270,16 @@
                 </div>
             </header>
             <main class="pb-5">
-                 <!-- 편집 뷰 목록 -->
-                 <div id="edit-list" class="divide-y">
-                     <!-- JS 렌더링 -->
-                 </div>
+                 <!-- 편집 뷰 목록 --><div id="edit-list" class="divide-y">
+                     <!-- JS 렌더링 --></div>
             </main>
         </div>
 
         <!-- =======================
              FOOTER
-        ======================== -->
-        <footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t z-20">
+        ======================== --><footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t z-20">
 
-            <!-- 주문 바 (숨겨짐) -->
-            <div id="order-bar" class="flex items-center justify-between p-3 hidden">
+            <!-- 주문 바 (숨겨짐) --><div id="order-bar" class="flex items-center justify-between p-3 hidden">
                 <div>
                     <p class="text-xs text-gray-500">배송예정일</p>
                     <p class="font-bold text-blue-600">2025-10-20</p>
@@ -320,8 +290,7 @@
                 </button>
             </div>
 
-            <!-- 하단 네비게이션 -->
-            <nav id="bottom-nav" class="flex justify-around items-center py-2 text-gray-500 border-t">
+            <!-- 하단 네비게이션 --><nav id="bottom-nav" class="flex justify-around items-center py-2 text-gray-500 border-t">
                  <a href="#" id="home-nav-btn" class="flex flex-col items-center space-y-1 text-green-500">
                     <i class="fas fa-home text-xl"></i>
                     <span class="text-xs font-bold">홈</span>
@@ -434,6 +403,9 @@
         const orderBar = document.getElementById('order-bar');
         const logoHome = document.getElementById('logo-home');
         const logoQuickOrder = document.getElementById('logo-quick-order');
+
+        // [v2.18] '상품 추가하기' 버튼
+        const addMoreItemsBtn = document.getElementById('add-more-items-btn');
 
         // --- UTILS ---
         function getAllProducts() {
@@ -661,28 +633,18 @@
 
 
             return `
-            <!-- [v2.10] items-center로 변경 -->
-            <div class="product-item flex items-center space-x-2 p-2 ${isSelected ? 'product-item-selected' : ''}" data-id="${p.id}">
-                <!-- [v2.2] 찜 아이콘 (단골특가 탭 전용) 제거됨 -->
+            <!-- [v2.10] items-center로 변경 --><div class="product-item flex items-center space-x-2 p-2 ${isSelected ? 'product-item-selected' : ''}" data-id="${p.id}">
+                <!-- [v2.2] 찜 아이콘 (단골특가 탭 전용) 제거됨 --><!-- [v2.10] pt-1 제거 --><div class="flex flex-col items-center flex-shrink-0">
+                   <!-- [v2.3] 이미지 크기 w-10 h-10 (40px)으로 축소 --><img src="${p.img || `https://placehold.co/40x40/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-10 h-10 object-cover rounded-md" onerror="this.src='https://placehold.co/40x40/eeeeee/cccccc?text=No+Image'">
+                   <!-- [v2.2] 단골특가 탭 특가 배지 제거됨 --></div>
 
-                <!-- [v2.10] pt-1 제거 -->
-                <div class="flex flex-col items-center flex-shrink-0">
-                   <!-- [v2.3] 이미지 크기 w-10 h-10 (40px)으로 축소 -->
-                   <img src="${p.img || `https://placehold.co/40x40/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-10 h-10 object-cover rounded-md" onerror="this.src='https://placehold.co/40x40/eeeeee/cccccc?text=No+Image'">
-                   <!-- [v2.2] 단골특가 탭 특가 배지 제거됨 -->
-                </div>
-
-                <!-- [v2.4] 텍스트 크기 text-xs로 축소 -->
-                <div class="flex-grow">
+                <!-- [v2.4] 텍스트 크기 text-xs로 축소 --><div class="flex-grow">
                     <p class="font-bold text-xs">${line2Text}</p>
-                    <!-- [v2.3] 상품명/배송정보 행간 mt-1로 수정 -->
-                    <p class="text-xs text-gray-500 mt-1">${line1Text}</p>
+                    <!-- [v2.3] 상품명/배송정보 행간 mt-1로 수정 --><p class="text-xs text-gray-500 mt-1">${line1Text}</p>
                 </div>
 
-                <!-- [v2.4] 단가/수량 한 줄 정렬 (flex-col 제거, flex items-center space-x-2 추가) -->
-                <div class="flex items-center space-x-2 flex-shrink-0">
-                    <!-- [v2.4] 가격 텍스트 크기 text-xs로 축소, [v2.13] 특가 배지(eventBadgeHtml) 완전 제거 -->
-                    <p class="font-bold whitespace-nowrap text-xs">${priceText}</p>
+                <!-- [v2.4] 단가/수량 한 줄 정렬 (flex-col 제거, flex items-center space-x-2 추가) --><div class="flex items-center space-x-2 flex-shrink-0">
+                    <!-- [v2.4] 가격 텍스트 크기 text-xs로 축소, [v2.13] 특가 배지(eventBadgeHtml) 완전 제거 --><p class="font-bold whitespace-nowrap text-xs">${priceText}</p>
                     <div class="flex items-center border rounded-md">
                         <button class="quantity-btn quantity-decrease bg-gray-100 rounded-l-md">-</button>
                         <input type="number" class="quantity-input w-10 text-center border-l border-r text-sm" value="${appState.cart[p.id] || 0}" min="0">
@@ -692,6 +654,83 @@
             </div>
             `;
         }
+
+        // [v2.16] '담은 상품 확인하기'용 아이템 HTML 생성 함수
+        function getConfirmationItemHtml(p) {
+            const itemTotalPrice = (p.price || 0) * appState.cart[p.id];
+            const priceText = itemTotalPrice > 0 ? `${itemTotalPrice.toLocaleString()}원` : '싯가';
+
+            // --- Brand & Date Logic (getProductItemHtml과 동일) ---
+            const deliveryDateStr = p.deliveryDate;
+            let deliveryHtml = '';
+            let brandHtml = '';
+
+            if (p.spec && p.spec.startsWith('판매처: ')) {
+                const brandName = p.spec.replace('판매처: ', '');
+                brandHtml = `<span class="font-bold text-gray-700 mr-2">${brandName}</span>`;
+            }
+
+            if (deliveryDateStr) {
+                const today = new Date('2025-10-20T00:00:00');
+                today.setHours(0, 0, 0, 0);
+                const msPerDay = 1000 * 60 * 60 * 24;
+
+                const deliveryDate = new Date(deliveryDateStr + 'T00:00:00');
+                deliveryDate.setHours(0, 0, 0, 0);
+                const dayDiff = (deliveryDate.getTime() - today.getTime()) / msPerDay;
+
+                let deliveryText = '';
+                let dateColorClass = '';
+
+                if (dayDiff === 1) {
+                    deliveryText = '내일배송 (20시 마감)';
+                    dateColorClass = 'text-blue-600 font-semibold';
+                } else if (dayDiff > 1) {
+                    const dateParts = deliveryDateStr.split('-');
+                    const monthDay = `${dateParts[1]}-${dateParts[2]}`;
+                    deliveryText = `${monthDay} 배송 (20시 마감)`;
+                    dateColorClass = 'text-red-600 font-semibold';
+                } else {
+                     const dateParts = deliveryDateStr.split('-');
+                    const monthDay = `${dateParts[1]}-${dateParts[2]}`;
+                    deliveryText = `${monthDay} 배송`;
+                }
+                deliveryHtml = `<span class="${dateColorClass}">${deliveryText}</span>`;
+            }
+            // --- End Brand & Date Logic ---
+
+            let displaySpec = '';
+            if (p.spec && !p.spec.startsWith('판매처: ')) {
+                displaySpec = p.spec;
+            }
+
+            const line1Text = `${brandHtml}${deliveryHtml}`;
+            const line2Text = displaySpec ? `${p.name} (${displaySpec})` : p.name;
+
+
+            return `
+            <!-- [v2.16] 빠른주문 목록과 동일한 레이아웃 적용 (items-center, space-x-2, p-2) --><div class="product-item flex items-center space-x-2 p-2 rounded-lg product-item-selected" data-id="${p.id}">
+                <div class="flex flex-col items-center flex-shrink-0">
+                   <img src="${p.img || `https://placehold.co/40x40/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-10 h-10 object-cover rounded-md" onerror="this.src='https://placehold.co/40x40/eeeeee/cccccc?text=No+Image'">
+                </div>
+
+                <div class="flex-grow">
+                    <p class="font-bold text-xs">${line2Text}</p>
+                    <p class="text-xs text-gray-500 mt-1">${line1Text}</p>
+                </div>
+
+                <div class="flex items-center space-x-2 flex-shrink-0">
+                    <!-- [v2.16] 합계 금액 표시 --><p class="font-bold whitespace-nowrap text-xs">${priceText}</p>
+                    <div class="flex items-center border rounded-md">
+                        <button class="quantity-btn quantity-decrease bg-gray-100 rounded-l-md">-</button>
+                        <input type="number" class="quantity-input w-10 text-center border-l border-r text-sm" value="${appState.cart[p.id]}" min="0">
+                        <button class="quantity-btn quantity-increase bg-gray-100 rounded-r-md">+</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
 
         function renderProducts() {
             let productsToRenderHtml = '';
@@ -762,8 +801,7 @@
                         if (unassigned.length > 0) {
                             unassignedHtml = `
                                 <h4 class="list1-section-header-sticky text-sm font-semibold text-blue-600 px-4">리스트 미지정 상품 (${unassigned.length})</h4>
-                                <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->
-                                    ${unassigned.map(p => getProductItemHtml(p)).join('')}
+                                <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->${unassigned.map(p => getProductItemHtml(p)).join('')}
                                 </div>
                             `;
                         }
@@ -773,8 +811,7 @@
                             assignedHtml = `
                                 ${separator}
                                 <h4 class="list1-section-header-sticky text-sm font-semibold text-gray-700 px-4">LIST 1 지정 상품 (${assigned.length})</h4>
-                                 <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->
-                                    ${assigned.map(p => getProductItemHtml(p)).join('')}
+                                 <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->${assigned.map(p => getProductItemHtml(p)).join('')}
                                 </div>
                             `;
                         }
@@ -869,35 +906,12 @@
                 return acc;
             }, {});
 
+            // [v2.15] 확인 목록 상단 border-t 제거 (HTML 태그 자체에서 제거됨)
             confirmationListEl.innerHTML = Object.entries(groupedItems).map(([category, items]) => `
-                <div class="mb-4">
-                    <!-- [v2.4] px-4 추가 -->
-                    <h3 class="font-bold text-md mb-2 pb-2 border-b px-4">${category}</h3>
-                    <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->
-                        ${items.map(p => {
-                            const itemTotalPrice = (p.price || 0) * appState.cart[p.id];
-                            return `
-                            <!-- [v2.10] items-center로 변경 -->
-                            <div class="product-item flex items-center space-x-3 p-2 rounded-lg product-item-selected" data-id="${p.id}">
-                                <!-- [v2.3] 이미지 크기 w-10 h-10 (40px)으로 축소 -->
-                                <img src="${p.img || `https://placehold.co/40x40/eeeeee/333333?text=${p.name.substring(0, 3)}`}" alt="${p.name}" class="w-10 h-10 object-cover rounded-md flex-shrink-0" onerror="this.src='https://placehold.co/40x40/eeeeee/cccccc?text=No+Image'">
-                                <!-- [v2.4] 텍스트 크기 text-xs로 축소 -->
-                                <div class="flex-grow">
-                                    <p class="font-bold text-xs">${p.name}</p>
-                                    <p class="text-xs text-gray-500 mt-1">${p.spec}</p>
-                                </div>
-                                <!-- [v2.4] 단가/수량 한 줄 정렬 -->
-                                <div class="flex items-center space-x-2 flex-shrink-0">
-                                    <!-- [v2.4] 가격 텍스트 크기 text-xs로 축소 -->
-                                    <p class="font-bold whitespace-nowrap text-xs">${itemTotalPrice > 0 ? itemTotalPrice.toLocaleString()+'원' : '싯가'}</p>
-                                    <div class="flex items-center mt-0 border rounded-md">
-                                        <button class="quantity-btn quantity-decrease bg-gray-100 rounded-l-md">-</button>
-                                        <input type="number" class="quantity-input w-10 text-center border-l border-r text-sm" value="${appState.cart[p.id]}" min="0">
-                                        <button class="quantity-btn quantity-increase bg-gray-100 rounded-r-md">+</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `}).join('')}
+                <!-- [v2.18] 카테고리 헤더(h3) 스타일 변경 (bg-white, 폰트 축소), wrapper(div)의 mb-4 -> mb-2로 변경 --><div class="mb-2">
+                    <h3 class="font-semibold text-sm p-2 border-b bg-white px-4">${category}</h3>
+                    <!-- [v2.5] space-y, mt 제거, [v2.16] getConfirmationItemHtml 사용 --><div class="space-y-0 mt-0">
+                        ${items.map(p => getConfirmationItemHtml(p)).join('')}
                     </div>
                 </div>
             `).join('');
@@ -1000,8 +1014,8 @@
 
             // [v2.14] 정렬 로직 수정: 미지정(최신순), 지정(ID순)
             likedProducts.sort((a, b) => {
-                const aHasList = a.myList && a.myList.length > 0;
-                const bHasList = b.myList && b.myList.length > 0;
+                const aHasList = (a.myList && a.myList.length > 0);
+                const bHasList = (b.myList && b.myList.length > 0);
 
                 if (aHasList && bHasList) {
                     // 1. 둘 다 지정 상품: ID 순 (코드순)
@@ -1131,12 +1145,15 @@
         });
 
         homeNavBtn.addEventListener('click', e => { e.preventDefault(); showHomeView(); });
+        // [v2.17] 빠른 주문 버튼 클릭 시 showQuickOrderView() 호출하도록 수정
         quickOrderNavBtn.addEventListener('click', e => { e.preventDefault(); showQuickOrderView(); });
         logoHome.addEventListener('click', showHomeView);
         logoQuickOrder.addEventListener('click', showHomeView);
         editButton.addEventListener('click', showEditView);
         showSearchBtn.addEventListener('click', () => toggleSearchMode(!appState.isSearching));
         cancelSearchBtn.addEventListener('click', () => toggleSearchMode(false));
+        // [v2.18] '상품 추가하기' 버튼 클릭 시 목록으로 복귀
+        addMoreItemsBtn.addEventListener('click', resetQuickOrderView);
 
         // --- [v2.1] SCROLL LOGIC 제거 ---
         /*
