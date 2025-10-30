@@ -257,7 +257,7 @@
                 </div>
 
                 <!-- 주문 확인 목록 (숨겨짐) --><!-- [v2.4] 좌우 여백(px-4) 제거, [v2.29] mt-2 제거 --><div id="order-confirmation-container" class="hidden">
-                    <!-- ▼▼▼ [v2.22] 헤더 스타일 수정 (배경색 추가, 밑줄 제거, 텍스트 변경) ▼▼▼ --><div class="flex justify-between items-center px-4 py-3 bg-gray-100">
+                    <!-- ▼▼▼ [v2.22] 헤더 스타일 수정 (배경색 추가, 밑줄 제거,  텍스트 변경) ▼▼▼ --><div class="flex justify-between items-center px-4 py-3 bg-gray-100">
                         <!-- 좌측: 타이틀 + 총 수량 --><div class="flex items-baseline space-x-2">
                             <h2 class="text-lg font-bold">담은 상품</h2>
                             <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
@@ -965,7 +965,12 @@
         function showConfirmationView() {
             orderConfirmationContainer.classList.remove('hidden');
             productListContainer.classList.add('hidden');
-            toggleSearchMode(false); // 검색창 닫기
+            // toggleSearchMode(false); // [v2.38] 검색 상태 유지를 위해 검색창 강제 닫기/초기화 로직 제거
+
+            // [v2.38] 대신, 검색창이 열려있다면 시각적으로만 숨김 (상태는 유지)
+            if (appState.isSearching) {
+                searchContainer.classList.add('search-hidden');
+            }
 
             const cartItems = Object.keys(appState.cart);
             const allProducts = getAllProducts();
@@ -1346,6 +1351,15 @@
             backToListBtn.addEventListener('click', function() {
                 orderConfirmationContainer.classList.add('hidden');
                 productListContainer.classList.remove('hidden');
+                
+                // [v2.38] 이전 검색 상태 복원
+                // 만약 '담은 상품 확인하기'를 누르기 전에 검색 중이었다면 (isSearching == true),
+                // 검색창을 다시 보여주고 포커스를 맞춤.
+                if (appState.isSearching) {
+                    searchContainer.classList.remove('search-hidden');
+                    productSearchInput.focus();
+                }
+
                 updateOrderButton(); // 하단 주문 버튼 텍스트 되돌리기
             });
         }
@@ -1368,9 +1382,4 @@
 
 </body>
 </html>
-
-
-
-
-
 
