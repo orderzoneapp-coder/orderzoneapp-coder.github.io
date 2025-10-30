@@ -1100,7 +1100,8 @@
 
             // [v2.31] 스와이프 판정: Y축 임계값(swipeYThreshold) 제거. X축 이동이 Y축 이동보다 크기만 하면 스와이프로 인정.
             // [v2.32] swipeThreshold 50 -> 30
-            if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY)) {
+            // ▼▼▼ [v2.33] Y축 이동이 X축 이동의 2배보다 작으면 스와이프로 인정하도록 완화 ▼▼▼
+            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) * 2 > Math.abs(diffY))) {
                 
                 // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
                 if (productListContainer.classList.contains('hidden')) return;
@@ -1361,4 +1362,5 @@
 
 </body>
 </html>
+
 
