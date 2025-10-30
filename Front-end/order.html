@@ -151,6 +151,12 @@
             opacity: 0;
         }
 
+        /* [v2.37] 스와이프 영역 확보를 위해 main 높이 채우기 */
+        .fill-screen-main {
+            /* 57px는 #quick-order-view 내부 <header>의 높이입니다. */
+            min-height: calc(100vh - 57px); 
+        }
+
 
     </style>
 </head>
@@ -214,7 +220,9 @@
                 </div>
             </header>
 
-            <!-- 빠른주문 메인 --><main class="pb-40">
+            <!-- 빠른주문 메인 -->
+            <!-- ▼▼▼ [v2.37] fill-screen-main 클래스 추가 ▼▼▼ -->
+            <main class="pb-40 fill-screen-main">
 
                 <!-- 서브헤더 (탭 + 검색) --><div id="sub-header" class="z-10 shadow-md bg-gray-100">
 
@@ -257,7 +265,7 @@
                 </div>
 
                 <!-- 주문 확인 목록 (숨겨짐) --><!-- [v2.4] 좌우 여백(px-4) 제거, [v2.29] mt-2 제거 --><div id="order-confirmation-container" class="hidden">
-                    <!-- ▼▼▼ [v2.22] 헤더 스타일 수정 (배경색 추가, 밑줄 제거,  텍스트 변경) ▼▼▼ --><div class="flex justify-between items-center px-4 py-3 bg-gray-100">
+                    <!-- ▼▼▼ [v2.22] 헤더 스타일 수정 (배경색 추가, 밑줄 제거, 텍스트 변경) ▼▼▼ --><div class="flex justify-between items-center px-4 py-3 bg-gray-100">
                         <!-- 좌측: 타이틀 + 총 수량 --><div class="flex items-baseline space-x-2">
                             <h2 class="text-lg font-bold">담은 상품</h2>
                             <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
@@ -965,12 +973,7 @@
         function showConfirmationView() {
             orderConfirmationContainer.classList.remove('hidden');
             productListContainer.classList.add('hidden');
-            // toggleSearchMode(false); // [v2.38] 검색 상태 유지를 위해 검색창 강제 닫기/초기화 로직 제거
-
-            // [v2.38] 대신, 검색창이 열려있다면 시각적으로만 숨김 (상태는 유지)
-            if (appState.isSearching) {
-                searchContainer.classList.add('search-hidden');
-            }
+            toggleSearchMode(false); // 검색창 닫기
 
             const cartItems = Object.keys(appState.cart);
             const allProducts = getAllProducts();
@@ -1103,16 +1106,14 @@
             const diffX = appState.touchEndX - appState.touchStartX;
             const diffY = appState.touchEndY - appState.touchStartY;
 
-            // [v2.37] 스와이프 민감도 향상 (threshold 25 -> 20)
-            const swipeThreshold = 20; 
-            const swipeYThreshold = 75; // (v2.37에서 이 값은 사용되지 않음)
+            const swipeThreshold = 25; // 50 -> 30 -> 25로 수정. [v2.35] 스와이프 민감도 향상
+            const swipeYThreshold = 75; // Y축으로 75px 이상 움직였으면 스크롤로 판단 (v2.31에서 이 값은 사용되지 않음)
 
             // [v2.31] 스와이프 판정: Y축 임계값(swipeYThreshold) 제거. X축 이동이 Y축 이동보다 크기만 하면 스와이프로 인정.
             // [v2.32] swipeThreshold 50 -> 30
-            // [v2.33] Y축 이동이 X축 이동의 2배보다 작으면 스와이프로 인정하도록 완화
+            // ▼▼▼ [v2.33] Y축 이동이 X축 이동의 2배보다 작으면 스와이프로 인정하도록 완화 ▼▼▼
             // [v2.35] swipeThreshold 30 -> 25
-            // [v2.37] 스와이프 판정 로직 완화: X축 이동이 Y축 이동보다 크면 스와이프로 인정 (Math.abs(diffX) * 2 > Math.abs(diffY) -> Math.abs(diffX) > Math.abs(diffY))
-            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) > Math.abs(diffY))) {
+            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) * 2 > Math.abs(diffY))) {
                 
                 // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
                 if (productListContainer.classList.contains('hidden')) return;
@@ -1351,15 +1352,6 @@
             backToListBtn.addEventListener('click', function() {
                 orderConfirmationContainer.classList.add('hidden');
                 productListContainer.classList.remove('hidden');
-                
-                // [v2.38] 이전 검색 상태 복원
-                // 만약 '담은 상품 확인하기'를 누르기 전에 검색 중이었다면 (isSearching == true),
-                // 검색창을 다시 보여주고 포커스를 맞춤.
-                if (appState.isSearching) {
-                    searchContainer.classList.remove('search-hidden');
-                    productSearchInput.focus();
-                }
-
                 updateOrderButton(); // 하단 주문 버튼 텍스트 되돌리기
             });
         }
@@ -1382,4 +1374,9 @@
 
 </body>
 </html>
+
+
+
+
+
 
