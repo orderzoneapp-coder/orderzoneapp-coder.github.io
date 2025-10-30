@@ -162,11 +162,12 @@
              HOME VIEW
         ======================== --><div id="home-view">
              <!-- 홈 뷰 헤더 (타이틀 + 카테고리) --><header class="sticky top-0 bg-white z-20 shadow-sm">
-                <!-- 1단: 타이틀 --><div class="flex justify-between items-center p-3 border-b">
+                <!-- 1단: 타이틀 --><!-- [v2.34] relative 추가, h1에 absolute 중앙 정렬 적용 -->
+                <div class="relative flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
-                    <h1 id="logo-home" class="text-2xl font-extrabold text-green-600 cursor-pointer">오더즈</h1>
+                    <h1 id="logo-home" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-green-600 cursor-pointer">오더즈</h1>
                     <div class="flex items-center space-x-2">
                         <span class="text-xs font-semibold">OP</span>
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
@@ -200,11 +201,12 @@
 
             <!-- 빠른주문 헤더 (카테고리바 제거됨) --><header class="sticky top-0 bg-white z-20 shadow-sm">
 
-                <!-- 1단: 타이틀 --><div class="flex justify-between items-center p-3 border-b">
+                <!-- 1단: 타이틀 --><!-- [v2.34] relative 추가, h1에 absolute 중앙 정렬 적용 -->
+                <div class="relative flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
-                    <h1 id="logo-quick-order" class="text-2xl font-extrabold text-green-600 cursor-pointer">빠른 주문</h1>
+                    <h1 id="logo-quick-order" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-green-600 cursor-pointer">빠른 주문</h1>
                     <div class="flex items-center space-x-2">
                         <span class="text-xs font-semibold">OP</span>
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
@@ -1362,5 +1364,6 @@
 
 </body>
 </html>
+
 
 
