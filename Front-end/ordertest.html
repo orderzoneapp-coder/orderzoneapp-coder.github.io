@@ -399,6 +399,7 @@
         const appContainer = document.getElementById('app');
         const homeView = document.getElementById('home-view');
         const quickOrderView = document.getElementById('quick-order-view');
+        const quickOrderMain = quickOrderView.querySelector('main'); // [v2.25] 빠른주문 메인 영역
         const editView = document.getElementById('edit-view');
 
         // Quick Order View Elements
@@ -1061,8 +1062,17 @@
         */
 
         // [v2.24] 스와이프 제스처 이벤트 리스너
-        productListContainer.addEventListener('touchstart', e => {
+        // [v2.25] productListContainer -> quickOrderMain로 변경 (빈 공간 스와이프)
+        quickOrderMain.addEventListener('touchstart', e => {
             if (appState.isAnimating) return;
+
+            // [v2.25] 스와이프가 헤더(#sub-header)에서 시작되면 무시
+            if (e.target.closest('#sub-header')) {
+                appState.touchStartX = 0;
+                appState.touchStartY = 0;
+                return;
+            }
+
             // [v2.24] 수량 버튼 근처에서 스와이프 시작 시 무시 (버튼 조작 방해 방지)
             if (e.target.closest('.quantity-btn') || e.target.closest('.quantity-input')) {
                 appState.touchStartX = 0;
@@ -1073,8 +1083,9 @@
             appState.touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
-        productListContainer.addEventListener('touchend', e => {
-            if (appState.isAnimating || appState.touchStartX === 0) return;
+        // [v2.25] productListContainer -> quickOrderMain로 변경 (빈 공간 스와이프)
+        quickOrderMain.addEventListener('touchend', e => {
+            if (appState.isAnimating || appState.touchStartX === 0) return; // [v2.25] 시작점이 0이면(무시된 터치) 종료도 무시
 
             appState.touchEndX = e.changedTouches[0].screenX;
             appState.touchEndY = e.changedTouches[0].screenY;
@@ -1088,10 +1099,13 @@
             // [v2.24] 스와이프 판정: X축 이동이 Y축 이동보다 크고, 일정 거리 이상일 때
             if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffY) < swipeYThreshold) {
                 
+                // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
+                if (productListContainer.classList.contains('hidden')) return;
+                
                 // 검색창 열려있으면 스와이프 무시
                 if (appState.isSearching) return;
-                // 주문 확인 화면이면 스와이프 무시
-                if (!orderConfirmationContainer.classList.contains('hidden')) return;
+                // 주문 확인 화면이면 스와이프 무시 (v2.25에서 위 조건으로 대체됨)
+                // if (!orderConfirmationContainer.classList.contains('hidden')) return;
 
                 let direction = '';
 
@@ -1326,6 +1340,7 @@
 
 </body>
 </html>
+
 
 
 
