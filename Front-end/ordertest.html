@@ -1098,14 +1098,16 @@
             const diffX = appState.touchEndX - appState.touchStartX;
             const diffY = appState.touchEndY - appState.touchStartY;
 
-            const swipeThreshold = 25; // 50 -> 30 -> 25로 수정. [v2.35] 스와이프 민감도 향상
-            const swipeYThreshold = 75; // Y축으로 75px 이상 움직였으면 스크롤로 판단 (v2.31에서 이 값은 사용되지 않음)
+            // [v2.37] 스와이프 민감도 향상 (threshold 25 -> 20)
+            const swipeThreshold = 20; 
+            const swipeYThreshold = 75; // (v2.37에서 이 값은 사용되지 않음)
 
             // [v2.31] 스와이프 판정: Y축 임계값(swipeYThreshold) 제거. X축 이동이 Y축 이동보다 크기만 하면 스와이프로 인정.
             // [v2.32] swipeThreshold 50 -> 30
-            // ▼▼▼ [v2.33] Y축 이동이 X축 이동의 2배보다 작으면 스와이프로 인정하도록 완화 ▼▼▼
+            // [v2.33] Y축 이동이 X축 이동의 2배보다 작으면 스와이프로 인정하도록 완화
             // [v2.35] swipeThreshold 30 -> 25
-            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) * 2 > Math.abs(diffY))) {
+            // [v2.37] 스와이프 판정 로직 완화: X축 이동이 Y축 이동보다 크면 스와이프로 인정 (Math.abs(diffX) * 2 > Math.abs(diffY) -> Math.abs(diffX) > Math.abs(diffY))
+            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) > Math.abs(diffY))) {
                 
                 // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
                 if (productListContainer.classList.contains('hidden')) return;
@@ -1366,6 +1368,7 @@
 
 </body>
 </html>
+
 
 
 
