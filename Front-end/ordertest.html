@@ -988,7 +988,8 @@
 
             // [v2.15] 확인 목록 상단 border-t 제거 (HTML 태그 자체에서 제거됨)
             confirmationListEl.innerHTML = Object.entries(groupedItems).map(([category, items]) => `
-                <!-- ▼▼▼ [v2.30] 카테고리 그룹 상단 여백(mt-4) 추가 ▼▼▼ --><div class="mt-4">
+                <!-- ▼▼▼ [v2.30] 카테고리 그룹 상단 여백(mt-4) 추가 ▼▼▼ -->
+                <!-- ▼▼▼ [v2.36] 상단 여백(mt-4) -> (mt-2)로 축소 ▼▼▼ --><div class="mt-2">
                     <!-- [v2.4] px-4 추가, [v2.29] mb-2 제거 --><h3 class="font-bold text-md pb-2 border-b px-4">${category}</h3>
                     <!-- [v2.5] space-y, mt 제거, [v2.16] getConfirmationItemHtml 사용 --><div class="space-y-0 mt-0">
                         ${items.map(p => getConfirmationItemHtml(p)).join('')}
@@ -1097,12 +1098,13 @@
             const diffX = appState.touchEndX - appState.touchStartX;
             const diffY = appState.touchEndY - appState.touchStartY;
 
-            const swipeThreshold = 30; // 50px -> 30px로 수정. [v2.32] 스와이프 민감도 향상
+            const swipeThreshold = 25; // 50 -> 30 -> 25로 수정. [v2.35] 스와이프 민감도 향상
             const swipeYThreshold = 75; // Y축으로 75px 이상 움직였으면 스크롤로 판단 (v2.31에서 이 값은 사용되지 않음)
 
             // [v2.31] 스와이프 판정: Y축 임계값(swipeYThreshold) 제거. X축 이동이 Y축 이동보다 크기만 하면 스와이프로 인정.
             // [v2.32] swipeThreshold 50 -> 30
             // ▼▼▼ [v2.33] Y축 이동이 X축 이동의 2배보다 작으면 스와이프로 인정하도록 완화 ▼▼▼
+            // [v2.35] swipeThreshold 30 -> 25
             if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) * 2 > Math.abs(diffY))) {
                 
                 // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
@@ -1364,6 +1366,8 @@
 
 </body>
 </html>
+
+
 
 
 
