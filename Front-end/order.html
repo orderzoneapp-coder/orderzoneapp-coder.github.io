@@ -151,12 +151,38 @@
             opacity: 0;
         }
 
-        /* [v2.37] 스와이프 영역 확보를 위해 main 높이 채우기 */
-        .fill-screen-main {
-            /* 57px는 #quick-order-view 내부 <header>의 높이입니다. */
-            min-height: calc(100vh - 57px); 
+        /* [v2.40] 이탈 방지 모달 스타일 */
+        #leave-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none;
         }
-
+        #leave-modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #leave-modal {
+            background-color: white;
+            border-radius: 0.75rem; /* 12px */
+            padding: 1.5rem; /* 24px */
+            width: 90%;
+            max-width: 320px;
+            transform: scale(0.95);
+            transition: transform 0.2s ease-in-out;
+        }
+        #leave-modal-overlay.visible #leave-modal {
+            transform: scale(1);
+        }
 
     </style>
 </head>
@@ -168,7 +194,8 @@
              HOME VIEW
         ======================== --><div id="home-view">
              <!-- 홈 뷰 헤더 (타이틀 + 카테고리) --><header class="sticky top-0 bg-white z-20 shadow-sm">
-                <!-- 1단: 타이틀 --><!-- [v2.34] relative 추가, h1에 absolute 중앙 정렬 적용 --><div class="relative flex justify-between items-center p-3 border-b">
+                <!-- 1단: 타이틀 --><!-- [v2.34] relative 추가, h1에 absolute 중앙 정렬 적용 -->
+                <div class="relative flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
@@ -206,7 +233,8 @@
 
             <!-- 빠른주문 헤더 (카테고리바 제거됨) --><header class="sticky top-0 bg-white z-20 shadow-sm">
 
-                <!-- 1단: 타이틀 --><!-- [v2.34] relative 추가, h1에 absolute 중앙 정렬 적용 --><div class="relative flex justify-between items-center p-3 border-b">
+                <!-- 1단: 타이틀 --><!-- [v2.34] relative 추가, h1에 absolute 중앙 정렬 적용 -->
+                <div class="relative flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
@@ -218,7 +246,7 @@
                 </div>
             </header>
 
-            <!-- 빠른주문 메인 --><!-- ▼▼▼ [v2.37] fill-screen-main 클래스 추가 ▼▼▼ --><main class="pb-40 fill-screen-main">
+            <!-- 빠른주문 메인 --><main class="pb-40">
 
                 <!-- 서브헤더 (탭 + 검색) --><div id="sub-header" class="z-10 shadow-md bg-gray-100">
 
@@ -261,7 +289,7 @@
                 </div>
 
                 <!-- 주문 확인 목록 (숨겨짐) --><!-- [v2.4] 좌우 여백(px-4) 제거, [v2.29] mt-2 제거 --><div id="order-confirmation-container" class="hidden">
-                    <!-- ▼▼▼ [v2.22] 헤더 스타일 수정 (배경색 추가, 밑줄 제거, 텍스트 변경) ▼▼▼ --><div class="flex justify-between items-center px-4 py-3 bg-gray-100">
+                    <!-- ▼▼▼ [v2.22] 헤더 스타일 수정 (배경색 추가, 밑줄 제거,  텍스트 변경) ▼▼▼ --><div class="flex justify-between items-center px-4 py-3 bg-gray-100">
                         <!-- 좌측: 타이틀 + 총 수량 --><div class="flex items-baseline space-x-2">
                             <h2 class="text-lg font-bold">담은 상품</h2>
                             <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
@@ -279,23 +307,18 @@
         <!-- =======================
              EDIT VIEW
         ======================== --><div id="edit-view" class="hidden">
-            <!-- ▼▼▼ [v2.42] 헤더에서 p-3 제거, 하위 요소에서 개별 패딩 처리 ▼▼▼ -->
-            <header class="sticky top-0 bg-white z-20 shadow-sm">
-                 <!-- ▼▼▼ [v2.42] 빠른주문 뷰 헤더와 동일하게 교체 (중앙 정렬, OP 아이콘) ▼▼▼ -->
-                 <div class="relative flex justify-between items-center p-3 border-b">
+            <header class="sticky top-0 bg-white z-20 shadow-sm p-3">
+                 <!-- 편집 뷰 헤더 --><div class="flex justify-between items-center border-b pb-3">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
-                    <h1 class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-green-600 cursor-pointer">빠른 주문</h1>
+                    <h1 class="text-2xl font-extrabold text-green-600">오더즈</h1>
                     <div class="flex items-center space-x-2">
-                        <span class="text-xs font-semibold">OP</span>
+                        <span class="text-sm font-semibold">25,400P</span>
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                     </div>
                 </div>
-                <!-- ▲▲▲ [v2.42] 헤더 교체 완료 ▲▲▲ -->
-                
-                <!-- ▼▼▼ [v2.42] 부모의 p-3가 제거되었으므로 px-3, pb-3 추가 ▼▼▼ -->
-                <div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3 px-3 pb-3">
+                <!-- 편집 뷰 필터 --><div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3">
                     <button data-filter="null" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold active">전체</button>
                     <button data-filter="1" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 1</button>
                     <button data-filter="2" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 2</button>
@@ -348,6 +371,19 @@
         </footer>
 
     </div>
+
+    <!-- [v2.40] 이탈 방지 커스텀 모달 -->
+    <div id="leave-modal-overlay" class="hidden">
+        <div id="leave-modal" class="shadow-xl">
+            <h3 class="text-lg font-bold text-center mb-2">페이지를 나가시겠습니까?</h3>
+            <p class="text-sm text-gray-600 text-center mb-6">'빠른 주문'에 담은 상품이 있습니다. 이동하시면 담은 상품이 유지됩니다.</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button id="modal-cancel-btn" class="w-full py-3 rounded-lg bg-gray-200 text-gray-700 font-semibold">머무르기</button>
+                <button id="modal-confirm-btn" class="w-full py-3 rounded-lg bg-green-500 text-white font-semibold">나가기</button>
+            </div>
+        </div>
+    </div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -405,6 +441,8 @@
             touchEndX: 0,
             touchStartY: 0,
             touchEndY: 0,
+            // [v2.40] 모달 콜백 저장
+            onModalConfirm: null,
         };
 
         // --- ELEMENTS ---
@@ -427,7 +465,6 @@
         const searchContainer = document.getElementById('search-container');
         const showSearchBtn = document.getElementById('show-search-btn');
         const cancelSearchBtn = document.getElementById('cancel-search-btn');
-        // [UX 개선] '상품 추가하기' 버튼 Element 추가
         const backToListBtn = document.getElementById('back-to-list-btn');
 
         // Home View Elements
@@ -448,14 +485,43 @@
         const logoHome = document.getElementById('logo-home');
         const logoQuickOrder = document.getElementById('logo-quick-order');
 
+        // [v2.40] Modal Elements
+        const modalOverlay = document.getElementById('leave-modal-overlay');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+
+
         // --- UTILS ---
         function getAllProducts() {
             // Ensure products is initialized before flattening
             return appState.products ? Object.values(appState.products).flat() : [];
         }
 
+        // --- [v2.40] MODAL LOGIC ---
+        function showLeaveConfirmationModal(onConfirmCallback) {
+            appState.onModalConfirm = onConfirmCallback; // 확인 버튼 콜백 저장
+            modalOverlay.classList.remove('hidden');
+            setTimeout(() => modalOverlay.classList.add('visible'), 10); // Fade-in
+        }
+
+        function hideLeaveConfirmationModal() {
+            appState.onModalConfirm = null;
+            modalOverlay.classList.remove('visible');
+            setTimeout(() => modalOverlay.classList.add('hidden'), 200); // Fade-out
+        }
+
+        modalCancelBtn.addEventListener('click', hideLeaveConfirmationModal);
+        modalConfirmBtn.addEventListener('click', () => {
+            if (typeof appState.onModalConfirm === 'function') {
+                appState.onModalConfirm(); // 저장된 콜백 실행
+            }
+            hideLeaveConfirmationModal();
+        });
+
+
         // --- VIEW MANAGEMENT ---
-        function showHomeView() {
+        // [v2.40] isFromHistory 파라미터 추가
+        function showHomeView(isFromHistory = false) {
             appState.currentView = 'home';
             homeView.classList.remove('hidden');
             quickOrderView.classList.add('hidden');
@@ -471,9 +537,15 @@
 
             updateLikedCountBadge(); // 홈 뷰에서는 찜 개수 표시
             renderHomeView();
+
+            // [v2.40] History API: 히스토리 스택에 추가
+            if (!isFromHistory) {
+                history.pushState({ view: 'home' }, '홈', '#home');
+            }
         }
 
-        function showQuickOrderView() {
+        // [v2.40] isFromHistory 파라미터 추가
+        function showQuickOrderView(isFromHistory = false) {
             appState.currentView = 'quick-order';
             homeView.classList.add('hidden');
             quickOrderView.classList.remove('hidden');
@@ -489,9 +561,15 @@
 
             resetQuickOrderView();
             updateOrderButton(); // 빠른 주문 뷰에서는 장바구니 개수 표시
+
+            // [v2.40] History API: 히스토리 스택에 추가
+            if (!isFromHistory) {
+                history.pushState({ view: 'quick-order' }, '빠른주문', '#quick-order');
+            }
         }
 
-        function showEditView() {
+        // [v2.40] isFromHistory 파라미터 추가
+        function showEditView(isFromHistory = false) {
             appState.currentView = 'edit';
             homeView.classList.add('hidden');
             quickOrderView.classList.add('hidden');
@@ -503,15 +581,33 @@
             appState.editListFilter = null;
             appState.hasEditChanges = false; // [v2.26] 편집 뷰 진입 시 '변경 없음'으로 초기화
 
-            // [v2.9] 편집 뷰 진입 시 현재 myList 상태를 editChanges로 복사
-            appState.editChanges = {}; // 임시 변경 사항 초기화
+            appState.editChanges = {};
             getAllProducts().filter(p => p.liked).forEach(p => {
-                // 원본 배열을 복사하여 editChanges에 저장
                 appState.editChanges[p.id] = [...(p.myList || [])];
             });
 
             renderEditView();
+
+            // [v2.40] History API: 히스토리 스택에 추가
+            if (!isFromHistory) {
+                history.pushState({ view: 'edit' }, '편집', '#edit');
+            }
         }
+
+        // [v2.40] '홈'으로 이동하는 모든 클릭을 처리하는 함수
+        function navigateToHome() {
+            // '빠른 주문' 뷰에 있고, 장바구니에 상품이 1개 이상 있을 때
+            if (appState.currentView === 'quick-order' && Object.keys(appState.cart).length > 0) {
+                // 커스텀 모달을 띄우고, '나가기'를 누르면 showHomeView()를 실행
+                showLeaveConfirmationModal(() => {
+                    showHomeView(); // 카트 비우지 않고 홈으로 이동
+                });
+            } else {
+                // 그 외의 경우, 즉시 홈으로 이동
+                showHomeView();
+            }
+        }
+
 
         // --- HOME VIEW LOGIC ---
         function renderHomeView() {
@@ -974,7 +1070,12 @@
         function showConfirmationView() {
             orderConfirmationContainer.classList.remove('hidden');
             productListContainer.classList.add('hidden');
-            toggleSearchMode(false); // 검색창 닫기
+            // toggleSearchMode(false); // [v2.38] 검색 상태 유지를 위해 검색창 강제 닫기/초기화 로직 제거
+
+            // [v2.38] 대신, 검색창이 열려있다면 시각적으로만 숨김 (상태는 유지)
+            if (appState.isSearching) {
+                searchContainer.classList.add('search-hidden');
+            }
 
             const cartItems = Object.keys(appState.cart);
             const allProducts = getAllProducts();
@@ -997,7 +1098,8 @@
 
             // [v2.15] 확인 목록 상단 border-t 제거 (HTML 태그 자체에서 제거됨)
             confirmationListEl.innerHTML = Object.entries(groupedItems).map(([category, items]) => `
-                <!-- ▼▼▼ [v2.30] 카테고리 그룹 상단 여백(mt-4) 추가 ▼▼▼ --><!-- ▼▼▼ [v2.36] 상단 여백(mt-4) -> (mt-2)로 축소 ▼▼▼ --><div class="mt-2">
+                <!-- ▼▼▼ [v2.30] 카테고리 그룹 상단 여백(mt-4) 추가 ▼▼▼ -->
+                <!-- ▼▼▼ [v2.36] 상단 여백(mt-4) -> (mt-2)로 축소 ▼▼▼ --><div class="mt-2">
                     <!-- [v2.4] px-4 추가, [v2.29] mb-2 제거 --><h3 class="font-bold text-md pb-2 border-b px-4">${category}</h3>
                     <!-- [v2.5] space-y, mt 제거, [v2.16] getConfirmationItemHtml 사용 --><div class="space-y-0 mt-0">
                         ${items.map(p => getConfirmationItemHtml(p)).join('')}
@@ -1066,13 +1168,6 @@
         });
         
         // [v2.24] 스와이프 방해 요소 이벤트 캡처링 (삭제 - quickOrderView.addEventListener('click', ...)가 이미 처리함)
-        /*
-        quickOrderView.addEventListener('click', function(e) {
-            if (e.target.closest('.quantity-btn') || e.target.closest('.quantity-input')) {
-                 e.stopPropagation();
-             }
-        }, true); // Use capture phase
-        */
 
         // [v2.24] 스와이프 제스처 이벤트 리스너
         // [v2.25] productListContainer -> quickOrderMain로 변경 (빈 공간 스와이프)
@@ -1106,22 +1201,18 @@
             const diffX = appState.touchEndX - appState.touchStartX;
             const diffY = appState.touchEndY - appState.touchStartY;
 
-            const swipeThreshold = 25; // 50 -> 30 -> 25로 수정. [v2.35] 스와이프 민감도 향상
-            const swipeYThreshold = 75; // Y축으로 75px 이상 움직였으면 스크롤로 판단 (v2.31에서 이 값은 사용되지 않음)
+            // [v2.37] 스와이프 민감도 향상 (threshold 25 -> 20)
+            const swipeThreshold = 20; 
+            const swipeYThreshold = 75; // (v2.37에서 이 값은 사용되지 않음)
 
-            // [v2.31] 스와이프 판정: Y축 임계값(swipeYThreshold) 제거. X축 이동이 Y축 이동보다 크기만 하면 스와이프로 인정.
-            // [v2.32] swipeThreshold 50 -> 30
-            // ▼▼▼ [v2.33] Y축 이동이 X축 이동의 2배보다 작으면 스와이프로 인정하도록 완화 ▼▼▼
-            // [v2.35] swipeThreshold 30 -> 25
-            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) * 2 > Math.abs(diffY))) {
+            // [v2.37] 스와이프 판정 로직 완화: X축 이동이 Y축 이동보다 크면 스와이프로 인정 (Math.abs(diffX) * 2 > Math.abs(diffY) -> Math.abs(diffX) > Math.abs(diffY))
+            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) > Math.abs(diffY))) {
                 
                 // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
                 if (productListContainer.classList.contains('hidden')) return;
                 
                 // 검색창 열려있으면 스와이프 무시
                 if (appState.isSearching) return;
-                // 주문 확인 화면이면 스와이프 무시 (v2.25에서 위 조건으로 대체됨)
-                // if (!orderConfirmationContainer.classList.contains('hidden')) return;
 
                 let direction = '';
 
@@ -1164,19 +1255,11 @@
 
                 const isSelected = newQuantity > 0;
                 productItem.classList.toggle('product-item-selected', isSelected);
-                // [v2.5] bg-white 제거
 
                 if (!orderConfirmationContainer.classList.contains('hidden') && newQuantity === 0) {
                     showConfirmationView();
                 }
             }
-
-            // [v2.2] 단골특가 탭 찜하기 로직 제거됨
-            /*
-            if (e.target.matches('.dangol-like-checkbox:not(:disabled)')) {
-                 ...
-            }
-            */
         });
 
         // --- EDIT VIEW LOGIC ---
@@ -1189,14 +1272,12 @@
             // ▼▼▼ [v2.26] 저장하기 버튼 활성화/비활성화 로직 ▼▼▼
             if (appState.hasEditChanges) {
                 saveButton.classList.add('bg-green-500', 'text-white');
-                // ▼▼▼ [v2.43] 비활성 색상을 bg-gray-500 -> bg-gray-400으로 변경 ▼▼▼
-                saveButton.classList.remove('bg-gray-400', 'text-gray-500', 'cursor-not-allowed'); 
+                saveButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
                 saveButton.disabled = false;
             } else {
                 // [v2.27] 비활성 시: 배경 회색, 텍스트 흰색
-                saveButton.classList.remove('bg-green-500', 'text-gray-500'); 
-                // ▼▼▼ [v2.43] 비활성 색상을 bg-gray-500 -> bg-gray-400으로 변경 ▼▼▼
-                saveButton.classList.add('bg-gray-400', 'text-white', 'cursor-not-allowed'); 
+                saveButton.classList.remove('bg-green-500', 'text-gray-500'); // 녹색 배경, 회색 텍스트 제거
+                saveButton.classList.add('bg-gray-300', 'text-white', 'cursor-not-allowed'); // 회색 배경, 흰색 텍스트, 커서 추가
                 saveButton.disabled = true;
             }
             // ▲▲▲ [v2.26] 로직 끝 ▲▲▲
@@ -1305,21 +1386,17 @@
 
         // [v2.9] 저장하기 버튼 로직 수정
         saveButton.addEventListener('click', () => {
-            // [v2.26] 변경 사항이 없으면 저장 안함
             if (!appState.hasEditChanges) return;
 
-            // [v2.9] 저장: editChanges를 실제 product.myList에 적용
             for (const productId in appState.editChanges) {
                 const product = getAllProducts().find(p => p.id == productId);
                 if (product) {
-                    // 임시 변경사항(editChanges)을 원본(myList)에 덮어쓰기
                     product.myList = appState.editChanges[productId];
                 }
             }
-            // [v2.9] 임시 변경 사항 비우기
             appState.editChanges = {};
             
-            // 빠른 주문 뷰로 복귀
+            // [v2.40] 저장 후 빠른 주문 뷰로 이동 시, History API 사용
             showQuickOrderView();
         });
 
@@ -1330,30 +1407,26 @@
             renderProducts();
         });
 
-        // [v2.38] 검색창에서 'Enter' (이동) 키 입력 시 키보드 숨기기
-        productSearchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.keyCode === 13) {
-                e.preventDefault(); // 폼 제출 방지
-                productSearchInput.blur(); // 입력창 포커스 아웃 (키보드 숨김)
-            }
-        });
-
         orderButton.addEventListener('click', function() {
             if (Object.keys(appState.cart).length === 0) return;
             if (orderConfirmationContainer.classList.contains('hidden')) {
                 showConfirmationView();
             } else {
+                // [v2.40] alert 대신 커스텀 모달 사용 (예시)
+                // showLeaveConfirmationModal(() => { /* 주문 완료 로직 */ });
                 alert('주문 완료! (실제 주문 로직 구현 필요)');
                 // 예: appState.cart = {}; resetQuickOrderView(); updateOrderButton();
             }
         });
 
-        homeNavBtn.addEventListener('click', e => { e.preventDefault(); showHomeView(); });
-        // [v2.17] 빠른 주문 버튼 클릭 시 showQuickOrderView() 호출하도록 수정
+        // [v2.40] 네비게이션 버튼 클릭 핸들러 수정
+        homeNavBtn.addEventListener('click', e => { e.preventDefault(); navigateToHome(); });
+        logoHome.addEventListener('click', navigateToHome);
+        logoQuickOrder.addEventListener('click', navigateToHome);
+        
         quickOrderNavBtn.addEventListener('click', e => { e.preventDefault(); showQuickOrderView(); });
-        logoHome.addEventListener('click', showHomeView);
-        logoQuickOrder.addEventListener('click', showHomeView);
-        editButton.addEventListener('click', showEditView);
+        editButton.addEventListener('click', () => showEditView());
+
         showSearchBtn.addEventListener('click', () => toggleSearchMode(!appState.isSearching));
         cancelSearchBtn.addEventListener('click', () => toggleSearchMode(false));
 
@@ -1362,28 +1435,59 @@
             backToListBtn.addEventListener('click', function() {
                 orderConfirmationContainer.classList.add('hidden');
                 productListContainer.classList.remove('hidden');
+                
+                if (appState.isSearching) {
+                    searchContainer.classList.remove('search-hidden');
+                }
+
                 updateOrderButton(); // 하단 주문 버튼 텍스트 되돌리기
             });
         }
 
+        // [v2.39] 'beforeunload' 리스너 제거
+        
+        // [v2.40] 'popstate' 리스너 추가 (스와이프/브라우저 뒤로가기 감지)
+        window.addEventListener('popstate', (event) => {
+            const fromView = appState.currentView;
+            const toView = event.state ? event.state.view : 'home';
+            
+            // '빠른 주문'에서 (장바구니에 상품이 든 채로) 다른 뷰로 이동 시도
+            if (fromView === 'quick-order' && toView !== 'quick-order' && Object.keys(appState.cart).length > 0) {
+                
+                // 1. 즉시 현재 뷰(빠른주문)로 히스토리를 되돌려 이탈을 '취소'시킴
+                history.pushState({ view: 'quick-order' }, '빠른주문', '#quick-order');
+                
+                // 2. 사용자에게 커스텀 모달을 보여줌
+                showLeaveConfirmationModal(() => {
+                    // 3. '나가기' 확정 시, '진짜' 뒤로가기 실행
+                    history.back(); 
+                });
+
+            } else {
+                // 정상적인 히스토리 이동 (예: 모달에서 '나가기'를 눌렀거나, 카트가 비어있음)
+                if (toView === 'home') {
+                    showHomeView(true); // true = 히스토리에서 발생한 이동
+                } else if (toView === 'quick-order') {
+                    showQuickOrderView(true);
+                } else if (toView === 'edit') {
+                    showEditView(true);
+                } else {
+                    showHomeView(true); // 기본값
+                }
+            }
+        });
+
+
         // --- [v2.1] SCROLL LOGIC 제거 ---
-        /*
-        let lastScrollY = window.scrollY;
-        const subHeader = document.getElementById('sub-header');
-
-        window.addEventListener('scroll', () => {
-            ...
-        }, { passive: true });
-        */
-
 
         // --- INITIAL RENDER ---
         showHomeView(); // 앱 시작 시 홈 화면 표시
+        
+        // [v2.40] 현재 상태를 'home'으로 History API에 등록 (초기화)
+        history.replaceState({ view: 'home' }, '홈', '#home');
     });
 </script>
 
 </body>
 </html>
-
-
 
