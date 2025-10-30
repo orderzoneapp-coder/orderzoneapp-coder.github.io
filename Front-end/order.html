@@ -1328,6 +1328,14 @@
             renderProducts();
         });
 
+        // [v2.38] 검색창에서 'Enter' (이동) 키 입력 시 키보드 숨기기
+        productSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault(); // 폼 제출 방지
+                productSearchInput.blur(); // 입력창 포커스 아웃 (키보드 숨김)
+            }
+        });
+
         orderButton.addEventListener('click', function() {
             if (Object.keys(appState.cart).length === 0) return;
             if (orderConfirmationContainer.classList.contains('hidden')) {
@@ -1374,6 +1382,7 @@
 
 </body>
 </html>
+
 
 
 
