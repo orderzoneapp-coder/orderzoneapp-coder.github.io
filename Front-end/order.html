@@ -279,18 +279,23 @@
         <!-- =======================
              EDIT VIEW
         ======================== --><div id="edit-view" class="hidden">
-            <header class="sticky top-0 bg-white z-20 shadow-sm p-3">
-                 <!-- 편집 뷰 헤더 --><div class="flex justify-between items-center border-b pb-3">
+            <!-- ▼▼▼ [v2.42] 헤더에서 p-3 제거, 하위 요소에서 개별 패딩 처리 ▼▼▼ -->
+            <header class="sticky top-0 bg-white z-20 shadow-sm">
+                 <!-- ▼▼▼ [v2.42] 빠른주문 뷰 헤더와 동일하게 교체 (중앙 정렬, OP 아이콘) ▼▼▼ -->
+                 <div class="relative flex justify-between items-center p-3 border-b">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-bars text-xl"></i>
                     </div>
-                    <h1 class="text-2xl font-extrabold text-green-600">오더즈</h1>
+                    <h1 class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-green-600 cursor-pointer">빠른 주문</h1>
                     <div class="flex items-center space-x-2">
-                        <span class="text-sm font-semibold">25,400P</span>
+                        <span class="text-xs font-semibold">OP</span>
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                     </div>
                 </div>
-                <!-- 편집 뷰 필터 --><div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3">
+                <!-- ▲▲▲ [v2.42] 헤더 교체 완료 ▲▲▲ -->
+                
+                <!-- ▼▼▼ [v2.42] 부모의 p-3가 제거되었으므로 px-3, pb-3 추가 ▼▼▼ -->
+                <div id="edit-filter-menu" class="grid grid-cols-5 gap-2 pt-3 px-3 pb-3">
                     <button data-filter="null" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold active">전체</button>
                     <button data-filter="1" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 1</button>
                     <button data-filter="2" class="edit-filter-btn py-2 border rounded-md text-sm font-semibold">LIST 2</button>
@@ -1184,12 +1189,14 @@
             // ▼▼▼ [v2.26] 저장하기 버튼 활성화/비활성화 로직 ▼▼▼
             if (appState.hasEditChanges) {
                 saveButton.classList.add('bg-green-500', 'text-white');
-                saveButton.classList.remove('bg-gray-500', 'text-gray-500', 'cursor-not-allowed'); // [v2.39] bg-gray-300 -> bg-gray-500
+                // ▼▼▼ [v2.43] 비활성 색상을 bg-gray-500 -> bg-gray-400으로 변경 ▼▼▼
+                saveButton.classList.remove('bg-gray-400', 'text-gray-500', 'cursor-not-allowed'); 
                 saveButton.disabled = false;
             } else {
                 // [v2.27] 비활성 시: 배경 회색, 텍스트 흰색
-                saveButton.classList.remove('bg-green-500', 'text-gray-500'); // 녹색 배경, 회색 텍스트 제거
-                saveButton.classList.add('bg-gray-500', 'text-white', 'cursor-not-allowed'); // [v2.39] bg-gray-300 -> bg-gray-500
+                saveButton.classList.remove('bg-green-500', 'text-gray-500'); 
+                // ▼▼▼ [v2.43] 비활성 색상을 bg-gray-500 -> bg-gray-400으로 변경 ▼▼▼
+                saveButton.classList.add('bg-gray-400', 'text-white', 'cursor-not-allowed'); 
                 saveButton.disabled = true;
             }
             // ▲▲▲ [v2.26] 로직 끝 ▲▲▲
@@ -1377,4 +1384,6 @@
 
 </body>
 </html>
+
+
 
