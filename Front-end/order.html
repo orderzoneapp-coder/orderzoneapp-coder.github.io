@@ -375,12 +375,27 @@
     <!-- [v2.40] 이탈 방지 커스텀 모달 -->
     <div id="leave-modal-overlay" class="hidden">
         <div id="leave-modal" class="shadow-xl">
-            <h3 class="text-lg font-bold text-center mb-2">페이지를 나가시겠습니까?</h3>
-            <p class="text-sm text-gray-600 text-center mb-6">'빠른 주문'에 담은 상품이 있습니다. 이동하시면 담은 상품이 유지됩니다.</p>
+            <!-- [v2.41] 텍스트 수정 -->
+            <h3 class="text-lg font-bold text-center mb-2">담은 상품이 있습니다.</h3>
+            <!-- [v2.43] 텍스트 수정 -->
+            <p class="text-sm text-gray-600 text-center mb-6">페이지를 나가시겠습니까?</p>
+            
+            <!-- [v2.43] 2버튼 상단 여백 축소 (mb-4 -> mb-2) -->
+            <!-- ▼▼▼ [v2.44] 버튼 스타일 수정 및 간격 조정 ▼▼▼ -->
             <div class="grid grid-cols-2 gap-3">
-                <button id="modal-cancel-btn" class="w-full py-3 rounded-lg bg-gray-200 text-gray-700 font-semibold">머무르기</button>
-                <button id="modal-confirm-btn" class="w-full py-3 rounded-lg bg-green-500 text-white font-semibold">나가기</button>
+                <!-- 버튼 1: 머무르기 (회색 -> 흰색 윤곽선 버튼으로 변경) -->
+                <button id="modal-cancel-stay-btn" class="w-full py-3 rounded-lg bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 font-semibold">머무르기</button>
+                <!-- 버튼 2: 저장하고 나가기 (녹색, 호버 효과 추가) -->
+                <button id="modal-confirm-leave-btn" class="w-full py-3 rounded-lg bg-green-500 hover:bg-green-600 text-white font-semibold">저장하고 나가기</button>
             </div>
+            
+            <!-- 버튼 3: 비우고 나가기 (빨간색 텍스트 링크) -->
+            <!-- [v2.44] 상단 여백 추가 (mt-3) -->
+            <div class="text-center mt-3">
+                <!-- [v2.43] 밑줄 추가 -->
+                <button id="modal-clear-leave-btn" class="text-sm text-red-500 hover:text-red-700 font-semibold underline">비우고 나가기</button>
+            </div>
+            <!-- ▲▲▲ [v2.44] 수정 끝 ▲▲▲ -->
         </div>
     </div>
 
@@ -441,8 +456,15 @@
             touchEndX: 0,
             touchStartY: 0,
             touchEndY: 0,
-            // [v2.40] 모달 콜백 저장
-            onModalConfirm: null,
+            // [v2.41] 모달 콜백 저장 (2개로 분리)
+            onModalConfirmLeave: null, // '저장하고 나가기' 콜백
+            onModalClearLeave: null,  // '비우고 나가기' 콜백
+            // [v2.38] 이전 탭 상태 저장
+            lastQuickOrderState: {
+                list: 0,
+                search: '',
+                isSearching: false
+            },
         };
 
         // --- ELEMENTS ---
@@ -485,10 +507,11 @@
         const logoHome = document.getElementById('logo-home');
         const logoQuickOrder = document.getElementById('logo-quick-order');
 
-        // [v2.40] Modal Elements
+        // [v2.41] Modal Elements (ID 변경 및 추가)
         const modalOverlay = document.getElementById('leave-modal-overlay');
-        const modalCancelBtn = document.getElementById('modal-cancel-btn');
-        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        const modalCancelStayBtn = document.getElementById('modal-cancel-stay-btn'); // ID 변경
+        const modalClearLeaveBtn = document.getElementById('modal-clear-leave-btn'); // ID 추가
+        const modalConfirmLeaveBtn = document.getElementById('modal-confirm-leave-btn'); // ID 변경
 
 
         // --- UTILS ---
@@ -497,23 +520,35 @@
             return appState.products ? Object.values(appState.products).flat() : [];
         }
 
-        // --- [v2.40] MODAL LOGIC ---
-        function showLeaveConfirmationModal(onConfirmCallback) {
-            appState.onModalConfirm = onConfirmCallback; // 확인 버튼 콜백 저장
+        // --- [v2.41] MODAL LOGIC (3버튼 용으로 수정) ---
+        function showLeaveConfirmationModal(onConfirmLeaveCallback, onClearLeaveCallback) {
+            appState.onModalConfirmLeave = onConfirmLeaveCallback; // '저장' 콜백 저장
+            appState.onModalClearLeave = onClearLeaveCallback;    // '비우기' 콜백 저장
             modalOverlay.classList.remove('hidden');
             setTimeout(() => modalOverlay.classList.add('visible'), 10); // Fade-in
         }
 
         function hideLeaveConfirmationModal() {
-            appState.onModalConfirm = null;
+            appState.onModalConfirmLeave = null; // [v2.41] 콜백 1 비우기
+            appState.onModalClearLeave = null;  // [v2.41] 콜백 2 비우기
             modalOverlay.classList.remove('visible');
             setTimeout(() => modalOverlay.classList.add('hidden'), 200); // Fade-out
         }
 
-        modalCancelBtn.addEventListener('click', hideLeaveConfirmationModal);
-        modalConfirmBtn.addEventListener('click', () => {
-            if (typeof appState.onModalConfirm === 'function') {
-                appState.onModalConfirm(); // 저장된 콜백 실행
+        modalCancelStayBtn.addEventListener('click', hideLeaveConfirmationModal); // [v2.41] '머무르기'
+
+        // [v2.41] '저장하고 나가기' 버튼
+        modalConfirmLeaveBtn.addEventListener('click', () => {
+            if (typeof appState.onModalConfirmLeave === 'function') {
+                appState.onModalConfirmLeave(); // '저장' 콜백 실행
+            }
+            hideLeaveConfirmationModal();
+        });
+
+        // [v2.41] '비우고 나가기' 버튼 (새로 추가)
+        modalClearLeaveBtn.addEventListener('click', () => {
+            if (typeof appState.onModalClearLeave === 'function') {
+                appState.onModalClearLeave(); // '비우기' 콜백 실행
             }
             hideLeaveConfirmationModal();
         });
@@ -559,7 +594,17 @@
             quickOrderNavBtn.classList.add('text-green-500');
             quickOrderNavBtn.querySelector('span').classList.add('font-bold');
 
-            resetQuickOrderView();
+            // [v2.38] 빠른주문 뷰 초기화 로직 변경 (resetQuickOrderView() -> restoreLastQuickOrderView())
+            // [v2.38] 히스토리 이동(isFromHistory)이 아닐 때만 초기화/복원 수행
+            if (!isFromHistory) {
+                 // [v2.38] (수정) '처음' 들어올 때(예: 하단 탭)만 초기화(reset)
+                 //       (showConfirmationView에서 상태 저장 후 돌아올 땐 restore 사용)
+                 //       -> v2.40 History API 도입으로, 이 로직은 단순화.
+                 //       -> showQuickOrderView()가 호출되면 무조건 기본 뷰(리스트 0)를 보여주는 게 맞음.
+                 //       -> '상품 추가하기'에서만 복원 로직이 필요함 (restoreLastQuickOrderView() 호출)
+                 resetQuickOrderView(); // (v2.38) 원복: 기본 뷰로 리셋
+            }
+
             updateOrderButton(); // 빠른 주문 뷰에서는 장바구니 개수 표시
 
             // [v2.40] History API: 히스토리 스택에 추가
@@ -598,10 +643,20 @@
         function navigateToHome() {
             // '빠른 주문' 뷰에 있고, 장바구니에 상품이 1개 이상 있을 때
             if (appState.currentView === 'quick-order' && Object.keys(appState.cart).length > 0) {
-                // 커스텀 모달을 띄우고, '나가기'를 누르면 showHomeView()를 실행
-                showLeaveConfirmationModal(() => {
-                    showHomeView(); // 카트 비우지 않고 홈으로 이동
-                });
+                
+                // [v2.41] 3버튼 모달 호출로 변경
+                showLeaveConfirmationModal(
+                    // 1. '저장하고 나가기' (ConfirmLeave)
+                    () => {
+                        showHomeView(); // 카트 유지하고 홈으로 이동
+                    },
+                    // 2. '비우고 나가기' (ClearLeave)
+                    () => {
+                        clearCart();    // 카트 비우기
+                        showHomeView(); // 홈으로 이동
+                    }
+                );
+
             } else {
                 // 그 외의 경우, 즉시 홈으로 이동
                 showHomeView();
@@ -654,10 +709,12 @@
             if (show) {
                 productSearchInput.focus();
             } else {
+                // [v2.38] 검색 모드 종료 시, 검색어/상태만 초기화 (렌더링은 X)
+                // (검색 취소('x') 버튼을 눌렀을 때만 renderProducts()가 호출되어야 함)
                 if (appState.searchTerm) {
                     productSearchInput.value = '';
                     appState.searchTerm = '';
-                    renderProducts();
+                    // renderProducts(); // [v2.38] 이 라인 제거
                 }
             }
         }
@@ -730,9 +787,12 @@
             if (e.target.matches('.my-list-tab')) {
                 if (appState.isAnimating) return; // [v2.24] 애니메이션 중 클릭 방지
 
-                productSearchInput.value = ''; // 탭 전환 시 검색어 초기화
-                appState.searchTerm = '';
-                toggleSearchMode(false); // 검색창 닫기
+                // [v2.38] 탭 전환 시 검색어/상태 초기화, 검색창 닫기
+                if (appState.isSearching) {
+                    productSearchInput.value = ''; 
+                    appState.searchTerm = '';
+                    toggleSearchMode(false); 
+                }
 
                 orderConfirmationContainer.classList.add('hidden');
                 productListContainer.classList.remove('hidden');
@@ -996,7 +1056,7 @@
                             assignedHtml = `
                                 ${separator}
                                 <h4 class="list1-section-header-sticky text-sm font-semibold text-gray-700 px-4">LIST 1 지정 상품 (${assigned.length})</h4>
-                                 <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->${assigned.map(p => getProductItemHtml(p)).join('')}
+                                 <div class="space-y-0 mt-0"> <!-- [v2.5] space-y, mt 제거 -->${unassigned.map(p => getProductItemHtml(p)).join('')}
                                 </div>
                             `;
                         }
@@ -1026,6 +1086,25 @@
                 delete appState.cart[productId];
             }
             updateOrderButton();
+        }
+
+        // [v2.41] 장바구니 비우기 함수
+        function clearCart() {
+            appState.cart = {}; // 데이터 비우기
+            updateOrderButton(); // UI (버튼, 뱃지) 업데이트
+            
+            // 현재 '확인' 뷰에 있었다면 '목록' 뷰로 되돌리기
+            if (!orderConfirmationContainer.classList.contains('hidden')) {
+                // [v2.38] '목록' 뷰로 돌아갈 때, '초기' 상태로 리셋
+                resetQuickOrderView(); 
+            } else {
+                // 현재 '목록' 뷰에 있었다면, 렌더링된 아이템들 상태만 업데이트
+                productListEl.querySelectorAll('.product-item-selected').forEach(itemEl => {
+                    itemEl.classList.remove('product-item-selected');
+                    const input = itemEl.querySelector('.quantity-input');
+                    if (input) input.value = 0;
+                });
+            }
         }
 
         function updateOrderButton() {
@@ -1062,17 +1141,24 @@
                 orderButtonText.textContent = '주문할 상품을 담아주세요';
                 orderBubble.classList.add('hidden');
                 if(!orderConfirmationContainer.classList.contains('hidden')) {
-                     resetQuickOrderView(); // 확인 화면에서 상품 다 빼면 목록으로 복귀
+                     // [v2.38] 확인 화면에서 상품 다 빼면 '초기' 목록으로 복귀
+                     resetQuickOrderView(); 
                 }
             }
         }
 
         function showConfirmationView() {
+            // [v2.38] '확인하기' 누를 때 현재 상태 저장
+            appState.lastQuickOrderState = {
+                list: appState.currentMyList,
+                search: appState.searchTerm,
+                isSearching: appState.isSearching
+            };
+
             orderConfirmationContainer.classList.remove('hidden');
             productListContainer.classList.add('hidden');
-            // toggleSearchMode(false); // [v2.38] 검색 상태 유지를 위해 검색창 강제 닫기/초기화 로직 제거
-
-            // [v2.38] 대신, 검색창이 열려있다면 시각적으로만 숨김 (상태는 유지)
+            
+            // [v2.38] 검색창이 열려있다면 시각적으로만 숨김 (상태는 유지)
             if (appState.isSearching) {
                 searchContainer.classList.add('search-hidden');
             }
@@ -1110,18 +1196,45 @@
             updateOrderButton();
         }
 
+        // [v2.38] 이전 상태 복원 함수
+        function restoreLastQuickOrderView() {
+            orderConfirmationContainer.classList.add('hidden');
+            productListContainer.classList.remove('hidden');
+
+            const lastState = appState.lastQuickOrderState;
+
+            // 1. 탭 복원
+            appState.currentMyList = lastState.list;
+            updateTabsUI(lastState.list);
+
+            // 2. 검색 상태 복원
+            appState.searchTerm = lastState.search;
+            productSearchInput.value = lastState.search;
+
+            // 3. 검색창 열림/닫힘 복원
+            if (lastState.isSearching) {
+                 toggleSearchMode(true); // 검색창 열기 (렌더링 X)
+                 searchContainer.classList.remove('search-hidden'); // [v2.38] (추가) 시각적으로 다시 보이기
+            } else {
+                 toggleSearchMode(false); // 검색창 닫기 (렌더링 X)
+            }
+            
+            // 4. (중요) 복원된 상태로 상품 목록 다시 렌더링
+            renderProducts();
+
+            updateOrderButton(); // 하단 주문 버튼 텍스트 되돌리기
+        }
+
         function resetQuickOrderView() {
+            // [v2.38] 초기화 시, lastQuickOrderState도 초기화
+            appState.lastQuickOrderState = { list: 0, search: '', isSearching: false };
+            
             productSearchInput.value = '';
             appState.searchTerm = '';
-            toggleSearchMode(false);
+            toggleSearchMode(false); // [v2.38] (수정) false 전달 시 renderProducts() 호출 안 함
 
             appState.currentMyList = 0; // 기본 탭은 단골특가
-
-            myListTabsContainer.querySelectorAll('.my-list-tab').forEach(tab => {
-                const isDanGol = parseInt(tab.dataset.list, 10) === 0;
-                tab.classList.toggle('tab-active', isDanGol);
-                tab.classList.toggle('tab-inactive', !isDanGol);
-            });
+            updateTabsUI(0); // [v2.38] (추가) 탭 UI 업데이트
 
             orderConfirmationContainer.classList.add('hidden');
             productListContainer.classList.remove('hidden');
@@ -1428,19 +1541,16 @@
         editButton.addEventListener('click', () => showEditView());
 
         showSearchBtn.addEventListener('click', () => toggleSearchMode(!appState.isSearching));
-        cancelSearchBtn.addEventListener('click', () => toggleSearchMode(false));
+        cancelSearchBtn.addEventListener('click', () => {
+            // [v2.38] 검색 '취소' 버튼 클릭 시에만 렌더링 다시 실행
+            toggleSearchMode(false);
+            renderProducts(); 
+        });
 
-        // [UX 개선] '상품 추가하기' 버튼 클릭 이벤트
+        // [v2.38] '상품 추가하기' 버튼 클릭 시, 이전 상태 복원
         if (backToListBtn) {
             backToListBtn.addEventListener('click', function() {
-                orderConfirmationContainer.classList.add('hidden');
-                productListContainer.classList.remove('hidden');
-                
-                if (appState.isSearching) {
-                    searchContainer.classList.remove('search-hidden');
-                }
-
-                updateOrderButton(); // 하단 주문 버튼 텍스트 되돌리기
+                restoreLastQuickOrderView();
             });
         }
 
@@ -1457,11 +1567,18 @@
                 // 1. 즉시 현재 뷰(빠른주문)로 히스토리를 되돌려 이탈을 '취소'시킴
                 history.pushState({ view: 'quick-order' }, '빠른주문', '#quick-order');
                 
-                // 2. 사용자에게 커스텀 모달을 보여줌
-                showLeaveConfirmationModal(() => {
-                    // 3. '나가기' 확정 시, '진짜' 뒤로가기 실행
-                    history.back(); 
-                });
+                // [v2.41] 3버튼 모달 호출로 변경
+                showLeaveConfirmationModal(
+                    // 1. '저장하고 나가기' (ConfirmLeave)
+                    () => {
+                        history.back(); // 카트 유지하고 뒤로가기
+                    },
+                    // 2. '비우고 나가기' (ClearLeave)
+                    () => {
+                        clearCart();    // 카트 비우기
+                        history.back(); // 뒤로가기
+                    }
+                );
 
             } else {
                 // 정상적인 히스토리 이동 (예: 모달에서 '나가기'를 눌렀거나, 카트가 비어있음)
@@ -1490,4 +1607,5 @@
 
 </body>
 </html>
+
 
