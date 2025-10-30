@@ -1319,7 +1319,8 @@
             const swipeYThreshold = 75; // (v2.37에서 이 값은 사용되지 않음)
 
             // [v2.37] 스와이프 판정 로직 완화: X축 이동이 Y축 이동보다 크면 스와이프로 인정 (Math.abs(diffX) * 2 > Math.abs(diffY) -> Math.abs(diffX) > Math.abs(diffY))
-            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) > Math.abs(diffY))) {
+            // [v2.45] 스와이프 판정 로직 수정: 수직 스크롤 우선. 수평(X) 이동이 수직(Y) 이동의 2배보다 클 때만 스와이프로 인정
+            if (Math.abs(diffX) > swipeThreshold && (Math.abs(diffX) > (Math.abs(diffY) * 2))) {
                 
                 // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
                 if (productListContainer.classList.contains('hidden')) return;
@@ -1607,5 +1608,6 @@
 
 </body>
 </html>
+
 
 
