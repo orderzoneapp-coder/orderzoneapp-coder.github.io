@@ -254,7 +254,7 @@
                         <!-- JS 렌더링 --></div>
                 </div>
 
-                <!-- 주문 확인 목록 (숨겨짐) --><!-- [v2.4] 좌우 여백(px-4) 제거 --><div id="order-confirmation-container" class="hidden mt-2">
+                <!-- 주문 확인 목록 (숨겨짐) --><!-- [v2.4] 좌우 여백(px-4) 제거, [v2.29] mt-2 제거 --><div id="order-confirmation-container" class="hidden">
                     <!-- ▼▼▼ [v2.22] 헤더 스타일 수정 (배경색 추가, 밑줄 제거, 텍스트 변경) ▼▼▼ --><div class="flex justify-between items-center px-4 py-3 bg-gray-100">
                         <!-- 좌측: 타이틀 + 총 수량 --><div class="flex items-baseline space-x-2">
                             <h2 class="text-lg font-bold">담은 상품</h2>
@@ -387,6 +387,7 @@
             editChanges: {}, // { productId: [1, 2], ... }
             searchTerm: '',
             isSearching: false, // 검색 모드 상태
+            hasEditChanges: false, // [v2.26] 편집 뷰 변경 사항 여부
             // [v2.24] 스와이프 상태 추적
             isAnimating: false, 
             touchStartX: 0,
@@ -489,6 +490,7 @@
             bottomNav.classList.add('hidden');
 
             appState.editListFilter = null;
+            appState.hasEditChanges = false; // [v2.26] 편집 뷰 진입 시 '변경 없음'으로 초기화
 
             // [v2.9] 편집 뷰 진입 시 현재 myList 상태를 editChanges로 복사
             appState.editChanges = {}; // 임시 변경 사항 초기화
@@ -984,8 +986,8 @@
 
             // [v2.15] 확인 목록 상단 border-t 제거 (HTML 태그 자체에서 제거됨)
             confirmationListEl.innerHTML = Object.entries(groupedItems).map(([category, items]) => `
-                <!-- ▼▼▼ [v2.23] 카테고리 헤더에 mt-4 추가 ▼▼▼ --><div class="mb-4 mt-4">
-                    <!-- [v2.4] px-4 추가 --><h3 class="font-bold text-md mb-2 pb-2 border-b px-4">${category}</h3>
+                <!-- ▼▼▼ [v2.30] 카테고리 그룹 상단 여백(mt-4) 추가 ▼▼▼ --><div class="mt-4">
+                    <!-- [v2.4] px-4 추가, [v2.29] mb-2 제거 --><h3 class="font-bold text-md pb-2 border-b px-4">${category}</h3>
                     <!-- [v2.5] space-y, mt 제거, [v2.16] getConfirmationItemHtml 사용 --><div class="space-y-0 mt-0">
                         ${items.map(p => getConfirmationItemHtml(p)).join('')}
                     </div>
@@ -1094,10 +1096,10 @@
             const diffY = appState.touchEndY - appState.touchStartY;
 
             const swipeThreshold = 50; // 50px 이상 움직여야 스와이프로 인정
-            const swipeYThreshold = 75; // Y축으로 75px 이상 움직였으면 스크롤로 판단
+            const swipeYThreshold = 75; // Y축으로 75px 이상 움직였으면 스크롤로 판단 (v2.31에서 이 값은 사용되지 않음)
 
-            // [v2.24] 스와이프 판정: X축 이동이 Y축 이동보다 크고, 일정 거리 이상일 때
-            if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffY) < swipeYThreshold) {
+            // [v2.31] 스와이프 판정: Y축 임계값(swipeYThreshold) 제거. X축 이동이 Y축 이동보다 크기만 하면 스와이프로 인정.
+            if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY)) {
                 
                 // [v2.25] 상품 목록이 보일 때만 스와이프가 작동해야 함
                 if (productListContainer.classList.contains('hidden')) return;
@@ -1169,6 +1171,19 @@
                 const filterValue = btn.dataset.filter === 'null' ? null : parseInt(btn.dataset.filter, 10);
                 btn.classList.toggle('active', appState.editListFilter === filterValue);
             });
+
+            // ▼▼▼ [v2.26] 저장하기 버튼 활성화/비활성화 로직 ▼▼▼
+            if (appState.hasEditChanges) {
+                saveButton.classList.add('bg-green-500', 'text-white');
+                saveButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                saveButton.disabled = false;
+            } else {
+                // [v2.27] 비활성 시: 배경 회색, 텍스트 흰색
+                saveButton.classList.remove('bg-green-500', 'text-gray-500'); // 녹색 배경, 회색 텍스트 제거
+                saveButton.classList.add('bg-gray-300', 'text-white', 'cursor-not-allowed'); // 회색 배경, 흰색 텍스트, 커서 추가
+                saveButton.disabled = true;
+            }
+            // ▲▲▲ [v2.26] 로직 끝 ▲▲▲
 
             let likedProducts = getAllProducts().filter(p => p.liked);
 
@@ -1245,6 +1260,7 @@
                     } else {
                         tempMyList.push(listNumber);
                     }
+                    appState.hasEditChanges = true; // [v2.26] 변경 사항 발생
                     renderEditView(); // 버튼 상태만 새로고침 (정렬 유지)
                 }
             }
@@ -1264,6 +1280,7 @@
                         delete appState.editChanges[productId];
                     }
 
+                    appState.hasEditChanges = true; // [v2.26] 변경 사항 발생
                     renderEditView(); // 목록에서 즉시 제거
                     updateLikedCountBadge();
                 }
@@ -1272,6 +1289,9 @@
 
         // [v2.9] 저장하기 버튼 로직 수정
         saveButton.addEventListener('click', () => {
+            // [v2.26] 변경 사항이 없으면 저장 안함
+            if (!appState.hasEditChanges) return;
+
             // [v2.9] 저장: editChanges를 실제 product.myList에 적용
             for (const productId in appState.editChanges) {
                 const product = getAllProducts().find(p => p.id == productId);
@@ -1340,6 +1360,12 @@
 
 </body>
 </html>
+
+
+
+
+
+
 
 
 
