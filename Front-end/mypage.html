@@ -308,12 +308,14 @@
                         <!-- 주문 내역 아이템 3: 결제완료 -->
                         <div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
                             <!-- 일자/상태 -->
+                            <!-- ▼▼▼▼▼ '결제완료'를 '배송완료'로 변경 (status-complete -> status-delivery-complete) ▼▼▼▼▼ -->
                             <div class="w-1/4 text-center px-1">
                                 <p class="text-sm text-gray-700">2025-08-24</p>
                                 <div class="mt-1">
-                                    <span class="status-badge status-complete">결제완료</span>
+                                    <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
                             </div>
+                            <!-- ▲▲▲▲▲ 변경 완료 ▲▲▲▲▲ -->
                             <!-- 주문내역 -->
                             <div class="w-[45%] px-2 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">배추_3입망 외 5건</p>
@@ -341,13 +343,15 @@
                         <!-- 주문 내역 아이템 4: 추가결제분 -->
                         <div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
                             <!-- 일자/상태 -->
+                            <!-- ▼▼▼▼▼ '결제완료'를 '배송완료'로 변경 (status-complete -> status-delivery-complete) ▼▼▼▼▼ -->
                             <div class="w-1/4 text-center px-1">
                                 <p class="text-sm text-gray-700">2025-08-23</p>
                                 <div class="mt-1">
-                                    <span class="status-badge status-complete">결제완료</span>
+                                    <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
                                 <p class="text-xs text-blue-600 mt-1">(추가결제분)</p>
                             </div>
+                            <!-- ▲▲▲▲▲ 변경 완료 ▲▲▲▲▲ -->
                             <!-- 주문내역 -->
                             <div class="w-[45%] px-2 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">엄청나게 긴 상품명입니다. 레이아웃이 깨지지 않아야 합니다.</p>
@@ -490,15 +494,6 @@
                 <!-- ▼▼▼▼▼ '알림내역' 탭 (수정) ▼▼▼▼▼ -->
                 <div id="notifications" class="tab-content">
                     
-                    <!-- ▼▼▼▼▼ [신규] 알림내역 하위 필터 추가 ▼▼▼▼▼ -->
-                    <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
-                        <button class="sub-filter-btn active">최근 7일</button>
-                        <button class="sub-filter-btn">당월 내역</button>
-                        <button class="sub-filter-btn">전월 내역</button>
-                        <button class="sub-filter-btn">전체</button>
-                    </div>
-                    <!-- ▲▲▲▲▲ [신규] 알림내역 하위 필터 끝 ▲▲▲▲▲ -->
-                    
                     <!-- ▼▼▼▼▼ 알림 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
                     <div class="flex bg-gray-50 border-y sticky top-[61px] z-[9]">
                         <div id="sort-notification-date" class="w-[25%] px-1 py-2 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
@@ -514,7 +509,6 @@
                         </div>
                         <!-- ▲▲▲▲▲ text-center 추가 끝 ▲▲▲▲▲ -->
                     </div>
-                    <!-- ▲▲▲▲▲ 알림 내역 헤더 끝 ▲▲▲▲▲ -->
 
                     <!-- ▼▼▼▼▼ 알림 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ -->
                     <div id="notification-list-container">
@@ -538,6 +532,19 @@
                     
                 </div>
                 <!-- ▲▲▲▲▲ '알림내역' 탭 끝 ▲▲▲▲▲ -->
+                <!-- ▼▼▼▼▼ [신규] 알림내역 하위 필터 추가 ▼▼▼▼▼ -->
+                <div id="notifications" class="tab-content">
+                    
+                    <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
+                        <button class="sub-filter-btn active">최근 7일</button>
+                        <button class="sub-filter-btn">당월 내역</button>
+                        <button class="sub-filter-btn">전월 내역</button>
+                        <button class="sub-filter-btn">전체</button>
+                    </div>
+                    <!-- ▲▲▲▲▲ [신규] 알림내역 하위 필터 끝 ▲▲▲▲▲ -->
+                    
+                    <!-- ▼▼▼▼▼ 알림 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
+                    <div class="flex bg-gray-50 border-y sticky top-[61px] z-[9]">
             </div>
         </main>
     </div>
@@ -723,6 +730,5 @@
     <!-- ▲▲▲▲▲ 스크립트 블록 수정 끝 ▲▲▲▲▲ -->
 </body>
 </html>
-
 
 
