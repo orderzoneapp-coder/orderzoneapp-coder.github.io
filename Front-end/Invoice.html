@@ -105,23 +105,31 @@
 
     <div class="popup-container" id="receipt-popup">
         
+        <!-- [신규] 닫기 버튼 (우측 상단 절대 위치) -->
+        <button onclick="closePopup()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition z-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        
         <!-- 로고 섹션 (상단 고정) -->
         <div class="p-4 border-b border-gray-200 bg-white text-center flex-shrink-0">
             <div class="text-2xl font-extrabold text-green-600 tracking-wider">ORDERZ</div>
         </div>
 
-        <!-- 팝업 타이틀 및 닫기 버튼 -->
-        <div class="px-4 pt-2 pb-1 flex justify-between items-center bg-gray-50 border-b border-gray-200 flex-shrink-0">
-            <h2 class="text-lg font-bold text-gray-800">주문 상세 정보</h2>
+        <!-- 팝업 타이틀 및 닫기 버튼 (사용자 요청으로 삭제됨) -->
+        <!-- 
+<div class="px-4 pt-2 pb-1 flex justify-end items-center bg-gray-50 border-b border-gray-200 flex-shrink-0">
             <div class="flex space-x-2 items-center">
-                <!-- 닫기 버튼 (아이콘 유지) -->
-                <button onclick="closePopup()" class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200 transition">
+                
+<button onclick="closePopup()" class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-        </div>
+        </div> 
+-->
 
         <!-- 스크롤 가능한 본문 영역 시작 -->
         <div class="scrollable-content">
@@ -517,3 +525,9 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
