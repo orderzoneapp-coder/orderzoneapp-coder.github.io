@@ -183,13 +183,15 @@
             <!-- ▲▲▲▲▲ 회색 스페이서 삭제 끝 ▲▲▲▲▲ -->
 
             
-            <!-- ▼▼▼▼▼ 탭 네비게이션 (디자인 변경 및 위치 이동) ▼▼▼▼▼ -->
+            <!-- ▼▼▼▼▼ 탭 네비게이션 (주문, 알림, 정산 순으로 변경) ▼▼▼▼▼ -->
             <section class="p-4 pt-2 pb-0">
                 <div class="flex justify-start space-x-2 overflow-x-auto whitespace-nowrap pb-2 border-b">
                     <!-- JS와 충돌 방지를 위해 'main-tab-btn' 클래스 사용 -->
                     <button class="main-tab-btn filter-btn active" data-tab="orders">주문내역</button>
-                    <button class="main-tab-btn filter-btn" data-tab="settlements">정산내역</button>
+                    <!-- 순서 변경: 정산내역 -> 알림내역 -->
                     <button class="main-tab-btn filter-btn" data-tab="notifications">알림내역</button>
+                    <!-- 순서 변경: 알림내역 -> 정산내역 -->
+                    <button class="main-tab-btn filter-btn" data-tab="settlements">정산내역</button>
                 </div>
             </section>
             <!-- ▲▲▲▲▲ 탭 네비게이션 변경 끝 ▲▲▲▲▲ -->
@@ -305,7 +307,7 @@
                             </div>
                         </div>
 
-                        <!-- 주문 내역 아이템 3: 결제완료 -->
+                        <!-- 주문 내역 아이템 3: 배송완료 -->
                         <div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
                             <!-- 일자/상태 -->
                             <!-- ▼▼▼▼▼ '결제완료'를 '배송완료'로 변경 (status-complete -> status-delivery-complete) ▼▼▼▼▼ -->
@@ -416,83 +418,15 @@
 
                 </div>
                 
-                <!-- ▼▼▼▼▼ 정산내역 탭 (신규) - 구조 수정 ▼▼▼▼▼ -->
-                <div id="settlements" class="tab-content">
+                <!-- ▼▼▼▼▼ '알림내역' 탭 (순서 변경됨) ▼▼▼▼▼ -->
+                <div id="notifications" class="tab-content">
                     
-                    <!-- 정산 요약 (숨김) -->
-                    <div class="mb-4 p-3 border rounded-lg bg-gray-50 hidden">
-                        ...
-                    </div>
-
-                    <!-- ▼▼▼▼▼ 정산 내역 필터 (스타일 변경) ▼▼▼▼▼ -->
                     <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
                         <button class="sub-filter-btn active">최근 7일</button>
                         <button class="sub-filter-btn">당월 내역</button>
                         <button class="sub-filter-btn">전월 내역</button>
                         <button class="sub-filter-btn">전체</button>
                     </div>
-                    <!-- ▲▲▲▲▲ 정산 내역 필터 끝 ▲▲▲▲▲ -->
-
-                    <!-- ▼▼▼▼▼ 정산 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
-                    <div class="flex bg-gray-50 border-y sticky top-[61px] z-[9]">
-                        <div id="sort-settlement-date" class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
-                            <span>일자</span>
-                            <span id="sort-settlement-arrow">▲</span> <!-- 기본: 순방향 (오름차순) -->
-                        </div>
-                        <!-- ▼▼▼▼▼ text-right -> text-center 수정 ▼▼▼▼▼ -->
-                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
-                            판매
-                        </div>
-                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
-                            입금
-                        </div>
-                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
-                            잔액
-                        </div>
-                        <!-- ▲▲▲▲▲ text-right -> text-center 수정 끝 ▲▲▲▲▲ -->
-                    </div>
-                    <!-- ▲▲▲▲▲ 정산 내역 헤더 끝 ▲▲▲▲▲ -->
-
-                    <!-- ▼▼▼▼▼ 정산 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ -->
-                    <div id="settlement-list-container">
-                        <!-- 정산 내역 아이템 4: 8월 23일 (결제완료) -->
-                        <div class="border-b py-3 flex items-center text-sm">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-23</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+13,000</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-13,000</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
-                        </div>
-                        
-                        <!-- 정산 내역 아이템 3: 8월 24일 (결제완료) -->
-                        <div class="border-b py-3 flex items-center text-sm">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-24</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+16,700</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-16,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
-                        </div>
-
-                        <!-- 정산 내역 아이템 2: 8월 25일 (결제완료) -->
-                        <div class="border-b py-3 flex items-center text-sm">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-25</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+32,700</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-32,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
-                        </div>
-
-                        <!-- 정산 내역 아이템 1: 8월 26일 (주문) -->
-                        <div class="border-b py-3 flex items-center text-sm">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-26</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+53,000</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">0</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">53,000</div> <!-- 누적 잔액 -->
-                        </div>
-                    </div>
-                    <!-- ▲▲▲▲▲ 정산 내역 리스트 끝 ▲▲▲▲▲ -->
-                </div>
-                <!-- ▲▲▲▲▲ 정산내역 탭 끝 ▲▲▲▲▲ -->
-
-                <!-- ▼▼▼▼▼ '알림내역' 탭 (수정) ▼▼▼▼▼ -->
-                <div id="notifications" class="tab-content">
                     
                     <!-- ▼▼▼▼▼ 알림 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
                     <div class="flex bg-gray-50 border-y sticky top-[61px] z-[9]">
@@ -531,20 +465,82 @@
                     <!-- ▲▲▲▲▲ 알림 내역 리스트 컨테이너 끝 ▲▲▲▲▲ -->
                     
                 </div>
-                <!-- ▲▲▲▲▲ '알림내역' 탭 끝 ▲▲▲▲▲ -->
-                <!-- ▼▼▼▼▼ [신규] 알림내역 하위 필터 추가 ▼▼▼▼▼ -->
-                <div id="notifications" class="tab-content">
+                <!-- ▲▲▲▲▲ '알림내역' 탭 끝 (순서 변경됨) ▲▲▲▲▲ -->
+                
+                <!-- ▼▼▼▼▼ 정산내역 탭 (순서 변경됨) ▼▼▼▼▼ -->
+                <div id="settlements" class="tab-content">
                     
+                    <!-- 정산 요약 (숨김) -->
+                    <div class="mb-4 p-3 border rounded-lg bg-gray-50 hidden">
+                        ...
+                    </div>
+
+                    <!-- ▼▼▼▼▼ 정산 내역 필터 (스타일 변경) ▼▼▼▼▼ -->
                     <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
                         <button class="sub-filter-btn active">최근 7일</button>
                         <button class="sub-filter-btn">당월 내역</button>
                         <button class="sub-filter-btn">전월 내역</button>
                         <button class="sub-filter-btn">전체</button>
                     </div>
-                    <!-- ▲▲▲▲▲ [신규] 알림내역 하위 필터 끝 ▲▲▲▲▲ -->
-                    
-                    <!-- ▼▼▼▼▼ 알림 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
+                    <!-- ▲▲▲▲▲ 정산 내역 필터 끝 ▲▲▲▲▲ -->
+
+                    <!-- ▼▼▼▼▼ 정산 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
                     <div class="flex bg-gray-50 border-y sticky top-[61px] z-[9]">
+                        <div id="sort-settlement-date" class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
+                            <span>일자</span>
+                            <span id="sort-settlement-arrow">▲</span> <!-- 기본: 순방향 (오름차순) -->
+                        </div>
+                        <!-- ▼▼▼▼▼ text-right -> text-center 수정 ▼▼▼▼▼ -->
+                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
+                            판매
+                        </div>
+                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
+                            입금
+                        </div>
+                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
+                            잔액
+                        </div>
+                        <!-- ▲▲▲▲▲ text-right -> text-center 수정 끝 ▲▲▲▲▲ -->
+                    </div>
+                    <!-- ▲▲▲▲▲ 정산 내역 헤더 끝 ▲▲▲▲▲ -->
+
+                    <!-- ▼▼▼▼▼ 정산 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ -->
+                    <div id="settlement-list-container">
+                        <!-- 정산 내역 아이템 4: 8월 23일 (배송완료) -->
+                        <div class="border-b py-3 flex items-center text-sm">
+                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-23</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+13,000</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-13,000</div>
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
+                        </div>
+                        
+                        <!-- 정산 내역 아이템 3: 8월 24일 (배송완료) -->
+                        <div class="border-b py-3 flex items-center text-sm">
+                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-24</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+16,700</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-16,700</div>
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
+                        </div>
+
+                        <!-- 정산 내역 아이템 2: 8월 25일 (배송완료) -->
+                        <div class="border-b py-3 flex items-center text-sm">
+                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-25</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+32,700</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-32,700</div>
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
+                        </div>
+
+                        <!-- 정산 내역 아이템 1: 8월 26일 (주문) -->
+                        <div class="border-b py-3 flex items-center text-sm">
+                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-26</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+53,000</div>
+                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">0</div>
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">53,000</div> <!-- 누적 잔액 -->
+                        </div>
+                    </div>
+                    <!-- ▲▲▲▲▲ 정산 내역 리스트 끝 ▲▲▲▲▲ -->
+                </div>
+                <!-- ▲▲▲▲▲ 정산내역 탭 끝 (순서 변경됨) ▲▲▲▲▲ -->
             </div>
         </main>
     </div>
@@ -730,5 +726,4 @@
     <!-- ▲▲▲▲▲ 스크립트 블록 수정 끝 ▲▲▲▲▲ -->
 </body>
 </html>
-
 
