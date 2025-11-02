@@ -64,11 +64,8 @@
         .status-deposit-confirm { background-color: #f0fdf4; color: #15803d; } 
         .status-delivery-prep { background-color: #fff7ed; color: #c2410c; } 
 
-        /* 상품 취소 라인 스타일 */
-        .cancelled-item {
-            color: #9ca3af; 
-            text-decoration: line-through;
-        }
+        /* 상품 취소 라인 스타일 (사용되지 않아 삭제됨) */
+        
         /* 백만 단위 이상 금액 표시를 위한 작은 폰트 클래스 (text-xs) */
         .price-sm {
             font-size: 0.75rem; 
@@ -270,6 +267,7 @@
                         <span class="text-right text-gray-600 price-cell" data-price="3400">3,400원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="3400">3,400원</span>
                     </div>
+                    <!-- Item 16: 배추우거지 (취소 상품) - 사용자 요청으로 삭제됨 -->
                 </div>
                 
                 <!-- 결제 요약 시작 -->
@@ -290,19 +288,7 @@
                     </div>
                 </div>
 
-                <!-- 취소 상품 섹션 (잔액 밑으로 이동) -->
-                <div class="mt-4 pt-4 border-t border-red-200">
-                    <h4 class="text-sm font-semibold text-red-600 mb-1">취소된 상품 내역</h4>
-                    <div class="space-y-1">
-                        <!-- Item 1: 배추우거지_15kg포대 (취소) -->
-                        <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-xs items-center cancelled-item">
-                            <span class="truncate">배추우거지_15kg포대</span>
-                            <span class="text-center">1</span>
-                            <span class="text-right price-cell" data-price="10000">10,000원</span>
-                            <span class="text-right price-cell" data-price="-10000">-10,000원</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- 취소 상품 섹션 (주문 내역 리스트로 이동하여 삭제됨) -->
             </div>
             <!-- 스크롤 가능한 본문 영역 종료 -->
         </div>
@@ -531,4 +517,3 @@
     </script>
 </body>
 </html>
-
