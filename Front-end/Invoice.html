@@ -488,9 +488,30 @@
         }
 
         // --- 페이지 로드 시 실행 ---
-        document.addEventListener('DOMContentLoaded', formatPrice);
+        document.addEventListener('DOMContentLoaded', () => {
+            formatPrice(); // Format prices first
+            
+            // [신규] 주문 상품 수량 계산 및 표시
+            try {
+                const itemList = document.getElementById('order-items-list');
+                // .grid 클래스를 가진 자식 요소의 수를 셉니다.
+                const itemCount = itemList.querySelectorAll('.grid').length;
+                
+                const finalTotalSpan = document.getElementById('final-total');
+                // final-total span의 형제 요소(label)를 찾습니다.
+                if (finalTotalSpan && finalTotalSpan.previousElementSibling) {
+                    const labelSpan = finalTotalSpan.previousElementSibling;
+                    // 레이블 텍스트를 (N건) 포함하여 업데이트합니다.
+                    labelSpan.textContent = `최종 상품 합계: (${itemCount}건)`;
+                }
+            } catch (e) {
+                console.error("상품 수량 계산 중 오류:", e);
+                // 오류가 발생해도 기존 텍스트는 유지됩니다.
+            }
+        });
 
     </script>
 </body>
 </html>
+
 
