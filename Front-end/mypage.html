@@ -66,16 +66,20 @@
             color: #c2410c; /* text-orange-700 */
         }
 
-        /* ▼▼▼▼▼ 메인 탭 버튼 (기존) ▼▼▼▼▼ */
+        /* ▼▼▼▼▼ 메인 탭 버튼 크기 조정 (요청 반영) ▼▼▼▼▼ */
         .filter-btn {
-            padding: 4px 10px;
-            font-size: 0.75rem; /* 12px */
+            padding: 6px 12px; /* py-1.5 px-3 (기존보다 더 크게) */
+            font-size: 0.875rem; /* text-sm (기존보다 크게) */
             border-radius: 16px;
             border: 1px solid #D1D5DB; /* gray-300 */
             background-color: #F9FAFB; /* gray-50 */
             color: #374151; /* gray-700 */
             transition: all 0.2s;
-            flex-shrink: 0; /* 버튼이 줄어들지 않도록 설정 */
+            flex-shrink: 0; 
+            margin-right: 8px; /* 탭 버튼 간 간격 유지 */
+        }
+        .filter-btn:last-child {
+            margin-right: 16px; /* 미수금 영역과 간격 유지를 위해 마지막 버튼만 여백 조정 */
         }
         .filter-btn:hover {
             background-color: #F3F4F6; /* gray-100 */
@@ -86,22 +90,24 @@
             color: #1D4ED8; /* blue-700 */
             font-weight: 500;
         }
-        /* ▲▲▲▲▲ 스타일 추가 끝 ▲▲▲▲▲ */
+        /* ▲▲▲▲▲ 메인 탭 버튼 크기 조정 끝 ▲▲▲▲▲ */
         
-        /* ▼▼▼▼▼ '정산내역' 탭 내부 하위 필터 스타일 (신규) ▼▼▼▼▼ */
+        /* ▼▼▼▼▼ 기간 필터 스타일 (구분선 제거 반영) ▼▼▼▼▼ */
         .sub-filter-btn {
-            padding: 2px 6px; /*
-            font-size: 0.875rem; /* text-sm */
+            padding: 2px 6px; 
             font-size: 0.8125rem; /* 13px */
             color: #6B7280; /* gray-500 */
             background-color: transparent;
             border: 0;
-            border-bottom: 2px solid transparent; /* Transparent border for alignment */
-            border-radius: 0; /* No rounding */
-            margin-right: 12px; /* space-x-3 equivalent */
+            border-bottom: 2px solid transparent; 
+            border-radius: 0; 
+            margin-right: 8px; /* space-x-2 */
             transition: all 0.2s;
             flex-shrink: 0;
             line-height: 1.5;
+        }
+        .sub-filter-btn:last-child {
+             margin-right: 0; /* 마지막 버튼 오른쪽 마진 제거 */
         }
         .sub-filter-btn:hover {
             color: #374151; /* gray-700 */
@@ -111,7 +117,7 @@
             font-weight: 600; /* semibold */
             border-bottom-color: #1D4ED8; /* blue-700 */
         }
-        /* ▲▲▲▲▲ 하위 필터 스타일 끝 ▲▲▲▲▲ */
+        /* ▲▲▲▲▲ 기간 필터 스타일 끝 ▲▲▲▲▲ */
         
         /* ▼▼▼▼▼ 소계 탭 스타일 (신규) ▼▼▼▼▼ */
         .summary-row {
@@ -136,6 +142,22 @@
             font-size: 0.875rem; /* text-sm */
         }
         /* ▲▲▲▲▲ 소계 탭 스타일 끝 ▲▲▲▲▲ */
+        
+        /* ▼▼▼▼▼ 탭 네비게이션 플렉스 조정 (미수금 영역 추가로 인한) ▼▼▼▼▼ */
+        .tab-nav-container {
+            display: flex;
+            align-items: center; /* 수직 중앙 정렬 */
+            justify-content: space-between;
+        }
+        .tab-buttons {
+            display: flex;
+            /* justify-start는 HTML에서 적용 */
+            flex-grow: 1; /* 버튼 영역이 최대한 공간을 차지하도록 */
+            overflow-x: auto;
+            white-space: nowrap;
+            /* padding-right: 10px; // 이제 마지막 버튼의 margin-right로 대체됨 */
+        }
+        /* ▲▲▲▲▲ 탭 네비게이션 플렉스 조정 끝 ▲▲▲▲▲ */
 
     </style>
 </head>
@@ -143,8 +165,7 @@
 
     <div class="max-w-md mx-auto bg-white min-h-screen">
         
-        <!-- 헤더 -->
-        <header class="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
+        <!-- 헤더 --><header class="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             <h1 class="text-lg font-bold">마이페이지</h1>
             <div class="w-6"></div>
@@ -152,17 +173,17 @@
 
         <main>
             
-            <!-- 프로필 섹션 -->
-            <section class="p-4">
+            <!-- 프로필 섹션 --><section class="p-4">
                 <div class="flex items-center">
                     <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </div>
                     <div class="ml-4">
-                        <p class="font-bold text-lg">꽃놀이식당(김민준)</p>
+                        <!-- ▼▼▼▼▼ (김민준) 삭제 ▼▼▼▼▼ -->
+                        <p class="font-bold text-lg">꽃놀이식당</p>
+                        <!-- ▲▲▲▲▲ (김민준) 삭제 끝 ▲▲▲▲▲ -->
                         <p class="text-sm text-gray-600 mt-1">경남 창원시 성산구 가양로 34</p>
-                        <!-- ▼▼▼▼▼ 정보/로그아웃 링크 (위치 이동 및 디자인 변경) ▼▼▼▼▼ -->
-                        <div class="mt-3 flex items-center space-x-3 text-xs text-gray-500">
+                        <!-- ▼▼▼▼▼ 정보/로그아웃 링크 (위치 이동 및 디자인 변경) ▼▼▼▼▼ --><div class="mt-3 flex items-center space-x-3 text-xs text-gray-500">
                             <a href="#" class="hover:underline">정보수정</a>
                             <span class="text-gray-300">|</span>
                             <a href="#" class="hover:underline">로그아웃</a>
@@ -171,403 +192,280 @@
                             <span class="text-gray-300">|</span>
                             <a href="#" class="hover:underline">공지사항</a>
                         </div>
-                        <!-- ▲▲▲▲▲ 링크 수정 끝 ▲▲▲▲▲ -->
-                    </div>
+                        <!-- ▲▲▲▲▲ 링크 수정 끝 ▲▲▲▲▲ --></div>
                 </div>
             </section>
 
-            <!-- 잔액/결제 관리 -->
-            <section class="p-4 pt-0">
-                <!-- ▼▼▼▼▼ 디자인 수정: 미수금, 결제 버튼 삭제 / 계좌번호 + 복사 버튼으로 변경 ▼▼▼▼▼ -->
-                <div class="border rounded-lg p-4 bg-gray-50">
-                    <div class="flex items-center justify-between">
+            <!-- 계좌 정보 및 탭 네비게이션을 감싸는 하나의 카드 구조 --><div class="mx-4 mb-4 p-0 border rounded-lg bg-white shadow-sm">
+
+                <!-- 잔액/결제 관리 (계좌 정보) --><section class="p-4 pb-3 pt-4"> <!-- 기존 pt-0 제거, pb-3으로 조정 --><!-- ▼▼▼▼▼ 텍스트 크기 및 버튼 크기/텍스트 크기 조정 ▼▼▼▼▼ --><div class="flex items-center justify-between">
                         <div class="flex-grow">
                             <span class="text-sm text-gray-600">입금 계좌:</span>
-                            <span id="accountNumber" class="text-sm font-bold text-gray-800 ml-1">우리은행 1002-123-456789</span>
+                            <!-- text-sm font-bold -> text-xs font-semibold 로 변경 --><span id="accountNumber" class="text-xs font-semibold text-gray-800 ml-1">우리은행 1002-123-456789</span>
                         </div>
-                        <button id="copyAccountBtn" class="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-semibold rounded hover:bg-gray-300 relative flex-shrink-0">
+                        <!-- px-3 py-1 text-xs -> px-4 py-1.5 text-sm 로 변경 --><button id="copyAccountBtn" class="px-4 py-1.5 bg-gray-200 text-gray-700 text-sm font-semibold rounded hover:bg-gray-300 relative flex-shrink-0">
                             복사
                             <span id="copyMessage" class="absolute left-1/2 -top-8 -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded hidden whitespace-nowrap">복사되었습니다!</span>
                         </button>
                     </div>
-                </div>
-                <!-- ▲▲▲▲▲ 디자인 수정 끝 ▲▲▲▲▲ -->
-            </section>
+                    <!-- ▲▲▲▲▲ 텍스트 크기 및 버튼 크기/텍스트 크기 조정 끝 ▲▲▲▲▲ --></section>
 
-            
-            <!-- ▼▼▼▼▼ 탭 네비게이션 (주문, 알림, 정산 순으로 변경) ▼▼▼▼▼ -->
-            <section class="p-4 pt-2 pb-0">
-                <div class="flex justify-start space-x-2 overflow-x-auto whitespace-nowrap pb-2 border-b">
-                    <!-- JS와 충돌 방지를 위해 'main-tab-btn' 클래스 사용 -->
-                    <button class="main-tab-btn filter-btn active" data-tab="orders">주문내역</button>
-                    <!-- 순서 변경: 정산내역 -> 알림내역 -->
-                    <button class="main-tab-btn filter-btn" data-tab="notifications">알림내역</button>
-                    <!-- 순서 변경: 알림내역 -> 정산내역 -->
-                    <button class="main-tab-btn filter-btn" data-tab="settlements">정산내역</button>
-                </div>
-            </section>
-            <!-- ▲▲▲▲▲ 탭 네비게이션 변경 끝 ▲▲▲▲▲ -->
-
-            
-            <!-- 탭 컨텐츠 -->
-            <div id="tab-contents" class="p-4">
                 
-                <!-- 최근 주문내역 탭 -->
-                <div id="orders" class="tab-content active">
-                    <!-- ▼▼▼▼▼ [신규] 주문내역 하위 필터 추가 ▼▼▼▼▼ -->
-                    <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
-                        <button class="sub-filter-btn active">최근 7일</button>
-                        <button class="sub-filter-btn">당월 내역</button>
-                        <button class="sub-filter-btn">전월 내역</button>
-                        <button class="sub-filter-btn">전체</button>
+                <!-- 탭 네비게이션 및 미수금 노출 영역 --><!-- ▼▼▼▼▼ 상단 라인 (border-t) 제거 및 위아래 간격(pt, pb) 최소화 ▼▼▼▼▼ --><section class="p-4 pt-2 pb-1"> <!-- pt-0 대신 pt-2, pb-0 대신 pb-1 --><div class="tab-nav-container"> <!-- border-t 제거 --><div class="tab-buttons">
+                            <!-- JS와 충돌 방지를 위해 'main-tab-btn' 클래스 사용 --><!-- 주문내역 버튼이 왼쪽 정렬의 기준이 됩니다. (margin-right: 8px 적용) --><button class="main-tab-btn filter-btn active" data-tab="orders">주문내역</button>
+                            <!-- 순서 변경: 정산내역 -> 알림내역 --><button class="main-tab-btn filter-btn" data-tab="notifications">알림내역</button>
+                            <!-- 순서 변경: 알림내역 -> 정산내역 --><!-- 마지막 버튼의 margin-right는 CSS에서 조정됨 --><button class="main-tab-btn filter-btn" data-tab="settlements">정산내역</button>
+                        </div>
+                        <!-- ▼▼▼▼▼ 미수금 노출 영역 - 레이블 ID 추가 ▼▼▼▼▼ --><div id="unpaid-balance-display" class="flex-shrink-0 text-right text-sm font-bold">
+                            <span id="unpaid-balance-label" class="text-gray-600 mr-1">미수금:</span>
+                            <span id="current-unpaid-amount" class="text-red-600">53,000원</span>
+                        </div>
+                        <!-- ▲▲▲▲▲ 미수금 노출 영역 끝 ▲▲▲▲▲ --></div>
+                </section>
+                
+                <!-- ▼▼▼▼▼ [수정] 기간 필터 섹션: 중간 라인 제거, 좌측 패딩 조정, 위아래 간격 최소화 ▼▼▼▼▼ --><section id="global-filter-section" class="pl-4 pr-4 pt-1 pb-3"> <!-- p-4 대신 pl-4 pr-4, pt-2 pb-3 --><div class="flex justify-start overflow-x-auto whitespace-nowrap">
+                        <button class="sub-filter-btn active" data-filter="7days">최근 7일</button>
+                        <button class="sub-filter-btn" data-filter="currentMonth">당월 내역</button>
+                        <button class="sub-filter-btn" data-filter="lastMonth">전월 내역</button>
+                        <button class="sub-filter-btn" data-filter="all">전체</button>
                     </div>
-                    <!-- ▲▲▲▲▲ [신규] 주문내역 하위 필터 끝 ▲▲▲▲▲ -->
-
-                    <!-- ▼▼▼▼▼ 주문 목록 컨테이너 ID 추가 ▼▼▼▼▼ -->
-                    <div id="order-list-container"> 
-                        
-                        <!-- ▼▼▼▼▼ 표 제목 행 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
-                        <div class="flex bg-gray-50 border-b sticky top-[61px] z-[9]">
-                            <!-- 1. '배송일' -> '일자' (정렬 버튼) -->
-                            <div id="sort-order-date" class="w-1/4 text-center px-1 py-2 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
+                </section>
+                <!-- ▲▲▲▲▲ [수정] 기간 필터 버튼 수정 끝 ▲▲▲▲▲ --></div>
+            <!-- 하나의 카드 구조 끝 --><!-- 탭 컨텐츠 --><div id="tab-contents" class="p-4 pt-0"> <!-- 상단 padding 제거 --><!-- 최근 주문내역 탭 --><div id="orders" class="tab-content active">
+                    
+                    <!-- ▼▼▼▼▼ [수정] 기간 필터 제거 및 Sticky Header 정리 ▼▼▼▼▼ --><div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200">
+                        <!-- 표 제목 행 (내부 border-b 제거, py-3으로 높이 조정) --><div class="flex">
+                            <!-- 1. '배송일' -> '일자' (정렬 버튼) --><div id="sort-order-date" class="w-1/4 text-center px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
                                 <span>일자</span>
-                                <span id="sort-order-arrow">▼</span> <!-- 기본: 최신순 (내림차순) -->
-                            </div>
-                            <!-- 2. '상품명/금액' -> '주문내역' (변경됨) -->
-                            <div class="w-[45%] px-2 py-2 text-sm font-semibold text-gray-600 text-center">
+                                <span id="sort-order-arrow">▼</span> <!-- 기본: 최신순 (내림차순) --></div>
+                            <!-- 2. '상품명/금액' -> '주문내역' (변경됨) --><div class="w-[45%] px-2 py-3 text-sm font-semibold text-gray-600 text-center">
                                 판매
                             </div>
-                            <div class="w-[30%] px-1 py-2 text-sm font-semibold text-gray-600 text-center">
+                            <div class="w-[30%] px-1 py-3 text-sm font-semibold text-gray-600 text-center">
                                 입금
                             </div>
                         </div>
-                        <!-- ▲▲▲▲▲ 표 제목 행 끝 ▲▲▲▲▲ -->
-
-                        <!-- 주문 내역 아이템 1: 입금대기 -->
-                        <div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
-                            
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
+                        <!-- 주문내역 하위 필터 DIV 삭제 --></div>
+                    <!-- ▲▲▲▲▲ [수정] Sticky 컨테이너 끝 ▲▲▲▲▲ --><!-- ▼▼▼▼▼ 주문 목록 컨테이너 ID 추가 ▼▼▼▼▼ --><div id="order-list-container"> 
+                        
+                        <!-- 주문 내역 아이템 1: 입금대기 --><div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 --><!-- 일자/상태 --><div class="w-1/4 text-center px-1">
                                 <p class="text-sm text-gray-700">2025-08-26</p>
                                 <div class="mt-1">
                                     <span class="status-badge status-deposit-wait">입금대기</span>
                                 </div>
                             </div>
                             
-                            <!-- 주문내역 -->
-                            <div class="w-[45%] px-2 text-center">
+                            <!-- 주문내역 --><div class="w-[45%] px-2 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">양파 20KG 외 2건</p>
                                 <div class="text-xs text-gray-500 mt-1 space-y-0.5">
                                     <p>주문금액: 51,000원</p>
                                     <p class="hide-if-zero">추가금액: 0원</p>
-                                    <!-- ▼▼▼▼▼ 마이너스 표기 및 잔액 수정 ▼▼▼▼▼ -->
-                                    <p class="hide-if-zero">취소금액: -2,000원</p>
-                                    <!-- ▲▲▲▲▲ 수정 끝 ▲▲▲▲▲ -->
-                                </div>
+                                    <!-- ▼▼▼▼▼ 마이너스 표기 및 잔액 수정 ▼▼▼▼▼ --><p class="hide-if-zero">취소금액: -2,000원</p>
+                                    <!-- ▲▲▲▲▲ 수정 끝 ▲▲▲▲▲ --></div>
                             </div>
                             
-                            <!-- 결제내역 -->
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
+                            <!-- 결제내역 --><div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
                                 <div class="space-y-1 text-right">
                                     <p>0원(입금)</p>
                                     <p class="hide-if-zero">0원(포인트(쿠))</p>
                                     <p class="hide-if-zero">0원(환불액)</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-bold text-red-600">49,000원(잔액)</p> <!-- 건별 잔액 (51,000 - 2,000) -->
-                                </div>
+                                    <p class="font-bold text-red-600">49,000원(잔액)</p> <!-- 건별 잔액 (51,000 - 2,000) --></div>
                             </div>
                         </div>
 
-                        <!-- 주문 내역 아이템 2: 배송완료 -->
-                        <div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
+                        <!-- 주문 내역 아이템 2: 배송완료 --><div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 --><!-- 일자/상태 --><div class="w-1/4 text-center px-1">
                                 <p class="text-sm text-gray-700">2025-08-25</p>
                                 <div class="mt-1">
                                     <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
                             </div>
-                            <!-- 주문내역 -->
-                            <div class="w-[45%] px-2 text-center">
+                            <!-- 주문내역 --><div class="w-[45%] px-2 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">흙쪽파(1kg)단 외 1건</p>
                                 <div class="text-xs text-gray-500 mt-1 space-y-0.5">
                                     <p>주문금액: 32,700원</p>
                                     <p class="hide-if-zero">추가금액: 0원</p>
-                                    <!-- ▼▼▼▼▼ 'hide-if-zero' 클래스 추가 ▼▼▼▼▼ -->
-                                    <p class="hide-if-zero">취소금액: 0원</p>
-                                    <!-- ▲▲▲▲▲ 클래스 추가 끝 ▲▲▲▲▲ -->
-                                </div>
+                                    <!-- ▼▼▼▼▼ 'hide-if-zero' 클래스 추가 ▼▼▼▼▼ --><p class="hide-if-zero">취소금액: 0원</p>
+                                    <!-- ▲▲▲▲▲ 클래스 추가 끝 ▲▲▲▲▲ --></div>
                             </div>
-                            <!-- 결제내역 -->
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
+                            <!-- 결제내역 --><div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
                                 <div class="space-y-1 text-right">
                                     <p>32,700원(입금)</p>
                                     <p class="hide-if-zero">0원(포인트(쿠))</p>
                                     <p class="hide-if-zero">0원(환불액)</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 -->
-                                </div>
+                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 --></div>
                             </div>
                         </div>
 
-                        <!-- 주문 내역 아이템 3: 배송완료 -->
-                        <div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
-                            <!-- 일자/상태 -->
-                            <!-- ▼▼▼▼▼ '결제완료'를 '배송완료'로 변경 (status-complete -> status-delivery-complete) ▼▼▼▼▼ -->
-                            <div class="w-1/4 text-center px-1">
+                        <!-- 주문 내역 아이템 3: 배송완료 --><div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 --><!-- 일자/상태 --><!-- ▼▼▼▼▼ '결제완료'를 '배송완료'로 변경 (status-complete -> status-delivery-complete) ▼▼▼▼▼ --><div class="w-1/4 text-center px-1">
                                 <p class="text-sm text-gray-700">2025-08-24</p>
                                 <div class="mt-1">
                                     <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
                             </div>
-                            <!-- ▲▲▲▲▲ 변경 완료 ▲▲▲▲▲ -->
-                            <!-- 주문내역 -->
-                            <div class="w-[45%] px-2 text-center">
+                            <!-- ▲▲▲▲▲ 변경 완료 ▲▲▲▲▲ --><!-- 주문내역 --><div class="w-[45%] px-2 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">배추_3입망 외 5건</p>
                                 <div class="text-xs text-gray-500 mt-1 space-y-0.5">
                                     <p>주문금액: 16,700원</p>
                                     <p class="hide-if-zero">추가금액: 0원</p>
-                                    <!-- ▼▼▼▼▼ 'hide-if-zero' 클래스 추가 ▼▼▼▼▼ -->
-                                    <p class="hide-if-zero">취소금액: 0원</p>
-                                    <!-- ▲▲▲▲▲ 클래스 추가 끝 ▲▲▲▲▲ -->
-                                </div>
+                                    <!-- ▼▼▼▼▼ 'hide-if-zero' 클래스 추가 ▼▼▼▼▼ --><p class="hide-if-zero">취소금액: 0원</p>
+                                    <!-- ▲▲▲▲▲ 클래스 추가 끝 ▲▲▲▲▲ --></div>
                             </div>
-                            <!-- 결제내역 -->
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
+                            <!-- 결제내역 --><div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
                                 <div class="space-y-1 text-right">
                                     <p>16,700원(입금)</p>
                                     <p class="hide-if-zero">0원(포인트(쿠))</p>
                                     <p class="hide-if-zero">0원(환불액)</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 -->
-                                </div>
+                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 --></div>
                             </div>
                         </div>
 
-                        <!-- 주문 내역 아이템 4: 추가결제분 -->
-                        <div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
-                            <!-- 일자/상태 -->
-                            <!-- ▼▼▼▼▼ '결제완료'를 '배송완료'로 변경 (status-complete -> status-delivery-complete) ▼▼▼▼▼ -->
-                            <div class="w-1/4 text-center px-1">
+                        <!-- 주문 내역 아이템 4: 추가결제분 --><div class="order-item-row border-b py-3 flex items-stretch"> <!-- 스타일 변경: 카드형 -> 행(row)형 --><!-- 일자/상태 --><!-- ▼▼▼▼▼ '결제완료'를 '배송완료'로 변경 (status-complete -> status-delivery-complete) ▼▼▼▼▼ --><div class="w-1/4 text-center px-1">
                                 <p class="text-sm text-gray-700">2025-08-23</p>
                                 <div class="mt-1">
                                     <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
                                 <p class="text-xs text-blue-600 mt-1">(추가결제분)</p>
                             </div>
-                            <!-- ▲▲▲▲▲ 변경 완료 ▲▲▲▲▲ -->
-                            <!-- 주문내역 -->
-                            <div class="w-[45%] px-2 text-center">
+                            <!-- ▲▲▲▲▲ 변경 완료 ▲▲▲▲▲ --><!-- 주문내역 --><div class="w-[45%] px-2 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">엄청나게 긴 상품명입니다. 레이아웃이 깨지지 않아야 합니다.</p>
                                 <div class="text-xs text-gray-500 mt-1 space-y-0.5">
                                     <p>주문금액: 10,000원</p>
                                     <p class="hide-if-zero">추가금액: 3,000원</p>
-                                    <!-- ▼▼▼▼▼ 'hide-if-zero' 클래스 추가 ▼▼▼▼▼ -->
-                                    <p class="hide-if-zero">취소금액: 0원</p>
-                                    <!-- ▲▲▲▲▲ 클래스 추가 끝 ▲▲▲▲▲ -->
-                                </div>
+                                    <!-- ▼▼▼▼▼ 'hide-if-zero' 클래스 추가 ▼▼▼▼▼ --><p class="hide-if-zero">취소금액: 0원</p>
+                                    <!-- ▲▲▲▲▲ 클래스 추가 끝 ▲▲▲▲▲ --></div>
                             </div>
-                            <!-- 결제내역 -->
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
+                            <!-- 결제내역 --><div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
                                 <div class="space-y-1 text-right">
                                     <p>13,000원(입금)</p>
                                     <p class="hide-if-zero">0원(포인트(쿠))</p>
                                     <p class="hide-if-zero">0원(환불액)</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 -->
-                                </div>
+                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 --></div>
                             </div>
                         </div>
 
-                        <!-- 주문 내역 아이템 6: 주문취소 -->
-                        <div class="order-item-row border-b py-3 flex items-stretch text-gray-400"> <!-- 스타일 변경: 카드형 -> 행(row)형 -->
-                            <!-- 일자/상태 -->
-                            <div class="w-1/4 text-center px-1">
+                        <!-- 주문 내역 아이템 6: 주문취소 --><div class="order-item-row border-b py-3 flex items-stretch text-gray-400"> <!-- 스타일 변경: 카드형 -> 행(row)형 --><!-- 일자/상태 --><div class="w-1/4 text-center px-1">
                                 <p class="text-sm text-gray-700">2025-08-22</p>
                                 <div class="mt-1">
                                     <span class="status-badge status-cancel">주문취소</span>
                                 </div>
                             </div>
-                            <!-- 주문내역 -->
-                            <div class="w-[45%] px-2 text-center">
+                            <!-- 주문내역 --><div class="w-[45%] px-2 text-center">
                                 <p class="text-sm overflow-hidden text-ellipsis whitespace-nowrap">양파 10kg 박스</p>
                                 <div class="text-xs mt-1 space-y-0.5">
                                     <p>주문금액: 41,300원</p>
                                     <p class="hide-if-zero">추가금액: 0원</p>
-                                    <!-- ▼▼▼▼▼ 마이너스 표기 수정 ▼▼▼▼▼ -->
-                                    <p class="hide-if-zero">취소금액: -41,300원</p>
-                                    <!-- ▲▲▲▲▲ 수정 끝 ▲▲▲▲▲ -->
+                                    <!-- ▼▼▼▼▼ 마이너스 표기 수정 ▼▼▼▼▼ --><p class="hide-if-zero">취소금액: -41,300원</p>
                                 </div>
                             </div>
-                            <!-- 결제내역 -->
-                            <div class="w-[30%] px-1 text-xs flex flex-col justify-between">
+                            <!-- 결제내역 --><div class="w-[30%] px-1 text-xs flex flex-col justify-between">
                                 <div class="space-y-1 text-right">
                                     <p>41,300원(입금)</p>
                                     <p class="hide-if-zero">0원(포인트(쿠))</p>
                                     <p class="hide-if-zero">41,300원(환불액)</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 -->
-                                </div>
+                                    <p class="font-bold text-gray-500">0원(잔액)</p> <!-- 건별 잔액 --></div>
                             </div>
                         </div>
 
-                    </div> <!-- 'order-list-container' 탭 내부 div 래퍼 닫기 -->
-                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
+                    </div> <!-- 'order-list-container' 탭 내부 div 래퍼 닫기 --><button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
                         내역 더보기
                     </button>
 
                 </div>
                 
-                <!-- ▼▼▼▼▼ '알림내역' 탭 (순서 변경됨) ▼▼▼▼▼ -->
-                <div id="notifications" class="tab-content">
+                <!-- ▼▼▼▼▼ '알림내역' 탭 (순서 변경됨) ▼▼▼▼▼ --><div id="notifications" class="tab-content">
                     
-                    <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
-                        <button class="sub-filter-btn active">최근 7일</button>
-                        <button class="sub-filter-btn">당월 내역</button>
-                        <button class="sub-filter-btn">전월 내역</button>
-                        <button class="sub-filter-btn">전체</button>
-                    </div>
-                    
-                    <!-- ▼▼▼▼▼ 알림 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
-                    <div class="flex bg-gray-50 border-y sticky top-[61px] z-[9]">
-                        <div id="sort-notification-date" class="w-[25%] px-1 py-2 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
-                            <span>일자</span>
-                            <span id="sort-notification-arrow">▼</span> <!-- 기본: 최신순 (내림차순) -->
+                    <!-- ▼▼▼▼▼ [수정] 기간 필터 제거 및 Sticky Header 정리 ▼▼▼▼▼ --><div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200">
+                        <!-- 알림 내역 헤더 (내부 border-b 제거, py-3으로 높이 조정) --><div class="flex">
+                            <div id="sort-notification-date" class="w-[25%] px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
+                                <span>일자</span>
+                                <span id="sort-notification-arrow">▼</span> <!-- 기본: 최신순 (내림차순) --></div>
+                            <div class="w-[40%] px-2 py-3 text-sm font-semibold text-gray-600 text-center">
+                                사유
+                            </div>
+                            <div class="w-[35%] px-2 py-3 text-sm font-semibold text-gray-600 text-center">
+                                전달사항
+                            </div>
                         </div>
-                        <!-- ▼▼▼▼▼ text-center 추가 ▼▼▼▼▼ -->
-                        <div class="w-[40%] px-2 py-2 text-sm font-semibold text-gray-600 text-center">
-                            사유
-                        </div>
-                        <div class="w-[35%] px-2 py-2 text-sm font-semibold text-gray-600 text-center">
-                            전달사항
-                        </div>
-                        <!-- ▲▲▲▲▲ text-center 추가 끝 ▲▲▲▲▲ -->
-                    </div>
-
-                    <!-- ▼▼▼▼▼ 알림 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ -->
-                    <div id="notification-list-container">
-                        <!-- 알림 내역 아이템 1 -->
-                        <div class="border-b py-3 flex text-sm">
+                        <!-- 알림내역 하위 필터 DIV 삭제 --></div>
+                    <!-- ▲▲▲▲▲ [수정] Sticky 컨테이너 끝 ▲▲▲▲▲ --><!-- ▼▼▼▼▼ 알림 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ --><div id="notification-list-container">
+                        <!-- 알림 내역 아이템 1 --><div class="border-b py-3 flex text-sm">
                             <div class="w-[25%] text-center px-1 text-gray-700 text-xs">2025-11-01</div>
                             <div class="w-[40%] px-2 text-gray-800">올리브오일(엑스트라버진) 수량변경 1 -> 0</div>
                             <div class="w-[35%] px-2 text-gray-600">다음 주문부터 가능하겠습니다.</div>
                         </div>
                         
-                        <!-- 알림 내역 아이템 2 (정렬 테스트용) -->
-                        <div class="border-b py-3 flex text-sm">
+                        <!-- 알림 내역 아이템 2 (정렬 테스트용) --><div class="border-b py-3 flex text-sm">
                             <div class="w-[25%] text-center px-1 text-gray-700 text-xs">2025-10-30</div>
-                            <!-- ▼▼▼▼▼ 내용 수정 ▼▼▼▼▼ -->
-                            <div class="w-[40%] px-2 text-gray-800">포인트 ▶ 18,800</div>
+                            <!-- ▼▼▼▼▼ 내용 수정 ▼▼▼▼▼ --><div class="w-[40%] px-2 text-gray-800">포인트 ▶ 18,800</div>
                             <div class="w-[35%] px-2 text-gray-600">품절로 결품입니다. 목요일 입고 예정입니다.</div>
-                            <!-- ▲▲▲▲▲ 내용 수정 끝 ▲▲▲▲▲ -->
-                        </div>
+                            <!-- ▲▲▲▲▲ 내용 수정 끝 ▲▲▲▲▲ --></div>
                     </div>
-                    <!-- ▲▲▲▲▲ 알림 내역 리스트 컨테이너 끝 ▲▲▲▲▲ -->
+                    <!-- ▲▲▲▲▲ 알림 내역 리스트 컨테이너 끝 ▲▲▲▲▲ --></div>
+                <!-- ▲▲▲▲▲ '알림내역' 탭 끝 (순서 변경됨) ▲▲▲▲▲ --><!-- ▼▼▼▼▼ 정산내역 탭 (순서 변경됨) ▼▼▼▼▼ --><div id="settlements" class="tab-content">
                     
-                </div>
-                <!-- ▲▲▲▲▲ '알림내역' 탭 끝 (순서 변경됨) ▲▲▲▲▲ -->
-                
-                <!-- ▼▼▼▼▼ 정산내역 탭 (순서 변경됨) ▼▼▼▼▼ -->
-                <div id="settlements" class="tab-content">
-                    
-                    <!-- ▼▼▼▼▼ [삭제] 누적 정산 요약 섹션 삭제 ▼▼▼▼▼ -->
-                    <!-- 
-                    <div class="mb-4 p-4 border rounded-lg bg-white shadow-sm">
-                        ... (이전 누적 정산 요약 섹션)
-                    </div> 
-                    -->
-                    <!-- ▲▲▲▲▲ [삭제] 누적 정산 요약 섹션 삭제 끝 ▲▲▲▲▲ -->
-
-                    <!-- ▼▼▼▼▼ 정산 내역 필터 (스타일 변경) ▼▼▼▼▼ -->
-                    <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
-                        <button class="sub-filter-btn active">최근 7일</button>
-                        <button class="sub-filter-btn">당월 내역</button>
-                        <button class="sub-filter-btn">전월 내역</button>
-                        <button class="sub-filter-btn">전체</button>
-                    </div>
-                    <!-- ▲▲▲▲▲ 정산 내역 필터 끝 ▲▲▲▲▲ -->
-
-                    <!-- ▼▼▼▼▼ 정산 내역 헤더 (sticky top 수정: 109px -> 61px) ▼▼▼▼▼ -->
-                    <div class="flex bg-gray-50 border-y sticky top-[61px] z-[9]">
-                        <div id="sort-settlement-date" class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
-                            <span>일자</span>
-                            <span id="sort-settlement-arrow">▲</span> <!-- 기본: 순방향 (오름차순) -->
-                        </div>
-                        <!-- ▼▼▼▼▼ text-right -> text-center 수정 ▼▼▼▼▼ -->
-                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
-                            판매
-                        </div>
-                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
-                            입금
-                        </div>
-                        <div class="w-1/4 px-1 py-2 text-sm font-semibold text-gray-600 text-center">
-                            잔액
-                        </div>
-                        <!-- ▲▲▲▲▲ text-right -> text-center 수정 끝 ▲▲▲▲▲ -->
-                    </div>
-                    <!-- ▲▲▲▲▲ 정산 내역 헤더 끝 ▲▲▲▲▲ -->
-
-                    <!-- ▼▼▼▼▼ 정산 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ -->
-                    <div id="settlement-list-container">
-                        <!-- 정산 내역 아이템 4: 8월 23일 (배송완료) - 데이터 속성 추가 -->
-                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-23" data-sales="13000" data-deposit="13000">
+                    <!-- ▼▼▼▼▼ [수정] 기간 필터 제거 및 Sticky Header 정리 ▼▼▼▼▼ --><div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200">
+                        <!-- 정산 내역 헤더 (내부 border-b 제거, py-3으로 높이 조정) --><div class="flex">
+                            <div id="sort-settlement-date" class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
+                                <span>일자</span>
+                                <span id="sort-settlement-arrow">▲</span> <!-- 기본: 순방향 (오름차순) --></div>
+                            <!-- ▼▼▼▼▼ text-right -> text-center 수정 ▼▼▼▼▼ --><div class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 text-center">
+                                판매
+                            </div>
+                            <div class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 text-center">
+                                입금
+                            </div>
+                            <div class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 text-center">
+                                잔액
+                            </div>
+                            <!-- ▲▲▲▲▲ text-right -> text-center 수정 끝 ▲▲▲▲▲ --></div>
+                        <!-- 정산 내역 필터 DIV 삭제 --></div>
+                    <!-- ▲▲▲▲▲ [수정] Sticky 컨테이너 끝 ▲▲▲▲▲ --><!-- ▼▼▼▼▼ 정산 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ --><div id="settlement-list-container">
+                        <!-- 정산 내역 아이템 4: 8월 23일 (배송완료) - 데이터 속성 추가 --><div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-23" data-sales="13000" data-deposit="13000">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-23</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+13,000</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">-13,000</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 -->
-                        </div>
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 --></div>
                         
-                        <!-- 정산 내역 아이템 3: 8월 24일 (배송완료) - 데이터 속성 추가 -->
-                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-24" data-sales="16700" data-deposit="16700">
+                        <!-- 정산 내역 아이템 3: 8월 24일 (배송완료) - 데이터 속성 추가 --><div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-24" data-sales="16700" data-deposit="16700">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-24</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+16,700</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">-16,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 -->
-                        </div>
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 --></div>
 
-                        <!-- 정산 내역 아이템 2: 8월 25일 (배송완료) - 데이터 속성 추가 -->
-                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-25" data-sales="32700" data-deposit="32700">
+                        <!-- 정산 내역 아이템 2: 8월 25일 (배송완료) - 데이터 속성 추가 --><div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-25" data-sales="32700" data-deposit="32700">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-25</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+32,700</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">-32,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 -->
-                        </div>
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 --></div>
 
-                        <!-- 정산 내역 아이템 1: 8월 26일 (주문) - 데이터 속성 추가 -->
-                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-26" data-sales="53000" data-deposit="0">
+                        <!-- 정산 내역 아이템 1: 8월 26일 (주문) - 데이터 속성 추가 --><div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-26" data-sales="53000" data-deposit="0">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-26</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+53,000</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">0</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-red-600 balance-amount" data-balance="53000">53,000</div> <!-- 누적 잔액 -->
-                        </div>
+                            <div class="w-1/4 px-1 text-right font-bold text-red-600 balance-amount" data-balance="53000">53,000</div> <!-- 누적 잔액 --></div>
                     </div>
-                    <!-- ▲▲▲▲▲ 정산 내역 리스트 끝 ▲▲▲▲▲ -->
-                    
-                    <!-- ▼▼▼▼▼ [신규] 정산 소계 탭 (테이블 하단) ▼▼▼▼▼ -->
-                    <div class="summary-row">
+                    <!-- ▲▲▲▲▲ 정산 내역 리스트 끝 ▲▲▲▲▲ --><!-- ▼▼▼▼▼ [신규] 정산 소계 탭 (테이블 하단) ▼▼▼▼▼ --><div class="summary-row">
                         <div class="label">소계</div>
-                        <!-- 총 판매 -->
-                        <div id="summary-sales" class="value text-red-600">0</div> 
-                        <!-- 총 입금 -->
-                        <div id="summary-deposit" class="value text-blue-600">0</div>
-                        <!-- 필터 기간 잔액 (미수금) -->
-                        <div id="summary-balance" class="value font-extrabold text-red-600">0</div>
+                        <!-- 총 판매 --><div id="summary-sales" class="value text-red-600">0</div> 
+                        <!-- 총 입금 --><div id="summary-deposit" class="value text-blue-600">0</div>
+                        <!-- 필터 기간 잔액 (미수금) --><div id="summary-balance" class="value font-extrabold text-red-600">0</div>
                     </div>
-                    <!-- ▲▲▲▲▲ [신규] 정산 소계 탭 끝 ▲▲▲▲▲ -->
-
-                </div>
-                <!-- ▲▲▲▲▲ 정산내역 탭 끝 (순서 변경됨) ▲▲▲▲▲ -->
-            </div>
+                    <!-- ▲▲▲▲▲ [신규] 정산 소계 탭 끝 ▲▲▲▲▲ --></div>
+                <!-- ▲▲▲▲▲ 정산내역 탭 끝 (순서 변경됨) ▲▲▲▲▲ --></div>
         </main>
     </div>
 
-    <!-- ▼▼▼▼▼ 스크립트 블록 수정 (calculateSettlementTotals 함수명 변경 및 소계 탭 업데이트 로직 변경) ▼▼▼▼▼ -->
-        <script>
+    <!-- ▼▼▼▼▼ 스크립트 블록 수정 (미수금 상단 노출 로직 및 필터 로직 변경) ▼▼▼▼▼ --><script>
         // 통화 형식 포맷터 (예: 123456 -> 12,345)
         const currencyFormatter = new Intl.NumberFormat('ko-KR');
 
@@ -605,7 +503,7 @@
             items.forEach(item => container.appendChild(item));
         }
         
-        // ▼▼▼▼▼ [수정] 정산내역 소계 계산 및 표시 함수 (이름 변경: calculateSettlementSummary) ▼▼▼▼▼
+        // ▼▼▼▼▼ 정산내역 소계 계산 및 상단 미수금/예치금 표시 함수 ▼▼▼▼▼
         function calculateSettlementSummary() {
             const items = document.querySelectorAll('#settlement-list-container .settlement-item');
             
@@ -626,7 +524,7 @@
             // 필터 기간 잔액 = 총 판매액 - 총 입금액
             currentBalance = totalSales - totalDeposit;
 
-            // 렌더링
+            // 1. 소계 탭 (하단) 렌더링
             const summarySalesEl = document.getElementById('summary-sales');
             const summaryDepositEl = document.getElementById('summary-deposit');
             const summaryBalanceEl = document.getElementById('summary-balance');
@@ -635,26 +533,48 @@
             if (summaryDepositEl) summaryDepositEl.innerText = currencyFormatter.format(totalDeposit);
             
             if (summaryBalanceEl) {
-                summaryBalanceEl.innerText = currencyFormatter.format(currentBalance);
+                summaryBalanceEl.innerText = currencyFormatter.format(Math.abs(currentBalance)); // 예치금일 경우 양수로 표시
                 
-                // 잔액 색상 변경: 0보다 크면 미수금(빨간색), 0이하면 회색/검정색
+                // 잔액 색상 변경: 0보다 크면 미수금(빨간색), 0보다 작으면 예치금(파란색), 0이면 회색/검정색
+                summaryBalanceEl.classList.remove('text-red-600', 'text-blue-600', 'text-gray-900');
                 if (currentBalance > 0) {
                     summaryBalanceEl.classList.add('text-red-600');
-                    summaryBalanceEl.classList.remove('text-gray-900', 'text-gray-600');
                 } else if (currentBalance < 0) {
                     summaryBalanceEl.classList.add('text-blue-600');
-                    summaryBalanceEl.classList.remove('text-red-600', 'text-gray-900', 'text-gray-600');
                 } else {
                     summaryBalanceEl.classList.add('text-gray-900');
-                    summaryBalanceEl.classList.remove('text-red-600', 'text-blue-600', 'text-gray-600');
+                }
+            }
+
+            // 2. 상단 미수금/예치금 표시 (누적 잔액)
+            const unpaidAmountEl = document.getElementById('current-unpaid-amount');
+            const unpaidLabelEl = document.getElementById('unpaid-balance-label');
+            
+            if (unpaidAmountEl && unpaidLabelEl) {
+                // 금액 표시 (예치금일 경우 절댓값 사용)
+                unpaidAmountEl.innerText = currencyFormatter.format(Math.abs(currentBalance)) + '원';
+                unpaidAmountEl.classList.remove('text-red-600', 'text-blue-600', 'text-gray-900');
+
+                if (currentBalance > 0) {
+                    // 미수금 (양수)
+                    unpaidLabelEl.innerText = '미수금:';
+                    unpaidAmountEl.classList.add('text-red-600');
+                } else if (currentBalance < 0) {
+                    // 예치금 (음수)
+                    unpaidLabelEl.innerText = '예치금:';
+                    unpaidAmountEl.classList.add('text-blue-600');
+                } else {
+                    // 잔액 0
+                    unpaidLabelEl.innerText = '잔액:';
+                    unpaidAmountEl.classList.add('text-gray-900');
                 }
             }
         }
-        // ▲▲▲▲▲ [수정] 정산내역 소계 계산 및 표시 함수 끝 ▲▲▲▲▲
+        // ▲▲▲▲▲ 정산내역 소계 계산 및 상단 미수금/예치금 표시 함수 끝 ▲▲▲▲▲
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            // ▼▼▼▼▼ 탭 기능 (선택자 수정: .tab-button -> .main-tab-btn) ▼▼▼▼▼
+            // ▼▼▼▼▼ 탭 기능 ▼▼▼▼▼
             const mainTabs = document.querySelectorAll('.main-tab-btn');
             const contents = document.querySelectorAll('.tab-content');
 
@@ -666,24 +586,20 @@
 
                     // 클릭된 탭과 해당하는 컨텐츠에 active 클래스 추가
                     tab.classList.add('active');
-                    // data-tab 속성값(orders, settlements, notifications)으로 ID를 찾아 active
                     const contentId = tab.dataset.tab;
                     const contentElement = document.getElementById(contentId);
                     if(contentElement) {
                         contentElement.classList.add('active');
                         
-                        // ▼▼▼▼▼ 정산 탭이 열릴 때마다 소계 다시 계산 ▼▼▼▼▼
-                        if (contentId === 'settlements') {
-                            calculateSettlementSummary();
-                        }
-                        // ▲▲▲▲▲ 정산 탭이 열릴 때마다 소계 다시 계산 끝 ▲▲▲▲▲
+                        // 정산 탭이 열릴 때마다 소계 다시 계산
+                        calculateSettlementSummary();
                     }
                 });
             });
-            // ▲▲▲▲▲ 탭 기능 수정 끝 ▲▲▲▲▲
+            // ▲▲▲▲▲ 탭 기능 끝 ▲▲▲▲▲
 
 
-            // ▼▼▼▼▼ 계좌번호 복사 기능 (다시 추가) ▼▼▼▼▼
+            // ▼▼▼▼▼ 계좌번호 복사 기능 ▼▼▼▼▼
             const copyBtn = document.getElementById('copyAccountBtn');
             const accountSpan = document.getElementById('accountNumber'); 
             const copyMsg = document.getElementById('copyMessage');
@@ -710,67 +626,59 @@
             // ▲▲▲▲▲ 계좌번호 복사 기능 끝 ▲▲▲▲▲
 
 
-            // ▼▼▼▼▼ 0원 항목 숨기기 함수 호출 ▼▼▼▼▼
-            hideZeroValues();
-            // ▲▲▲▲▲ 함수 호출 끝 ▲▲▲▲▲
-            
-            // ▼▼▼▼▼ 정산내역 누적 미수금 초기 계산 (함수명 변경 반영) ▼▼▼▼▼
-            calculateSettlementSummary();
-            // ▲▲▲▲▲ 정산내역 누적 미수금 초기 계산 끝 ▲▲▲▲▲
+            // ▼▼▼▼▼ [변경됨] 글로벌 기간 필터 버튼 기능 ▼▼▼▼▼
+            const globalFilterSection = document.getElementById('global-filter-section');
+            const subFilterButtons = globalFilterSection.querySelectorAll('.sub-filter-btn');
 
-            // ▼▼▼▼▼ 정산내역 필터 버튼 기능 (선택자 수정) ▼▼▼▼▼
-            // (수정) 선택자를 .sub-filter-btn으로 변경
-            // ▼▼▼▼▼ [수정] 탭별 하위 필터 버튼 기능 (범용) ▼▼▼▼▼
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabContents.forEach(tabContent => {
-                const subFilterButtons = tabContent.querySelectorAll('.sub-filter-btn');
-                
-                if (subFilterButtons.length > 0) {
-                    subFilterButtons.forEach(button => {
-                        button.addEventListener('click', () => {
-                            // 1. 해당 탭 *내부의* 모든 하위 필터 버튼에서 'active' 클래스 제거
-                            subFilterButtons.forEach(btn => btn.classList.remove('active'));
-                            
-                            // 2. 클릭된 버튼에만 'active' 클래스 추가
-                            button.classList.add('active');
+            if (globalFilterSection) {
+                subFilterButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        // 1. 모든 기간 필터 버튼에서 'active' 클래스 제거
+                        subFilterButtons.forEach(btn => btn.classList.remove('active'));
+                        
+                        // 2. 클릭된 버튼에만 'active' 클래스 추가
+                        button.classList.add('active');
 
-                            // (실제 데이터 필터링 로직은 여기에 추가)
-                            const tabId = tabContent.id;
-                            console.log(`[${tabId}] 탭에서 '${button.textContent}' 필터 선택됨`);
-                            
-                            // 필터 변경 시 정산 소계 업데이트 (더미 데이터 기준)
-                            if (tabId === 'settlements') {
-                                calculateSettlementSummary();
-                            }
-                        });
+                        const filterValue = button.dataset.filter;
+                        const activeTabId = document.querySelector('.main-tab-btn.active').dataset.tab;
+                        console.log(`[${activeTabId}] 탭에서 '${button.textContent}' (${filterValue}) 필터 선택됨`);
+                        
+                        // 필터 변경 시 정산 소계 및 상단 미수금 업데이트 (더미 데이터 기준)
+                        if (activeTabId === 'settlements') {
+                            calculateSettlementSummary();
+                        }
                     });
-                }
-            });
-            // ▲▲▲▲▲ [수정] 필터 버튼 스크립트 끝 ▲▲▲▲▲
-            // ▲▲▲▲▲ 필터 버튼 스크립트 끝 ▲▲▲▲▲
+                });
+            }
+            // ▲▲▲▲▲ [변경됨] 글로벌 기간 필터 버튼 기능 끝 ▲▲▲▲▲
+
+            // ▼▼▼▼▼ 초기화 및 계산 ▼▼▼▼▼
+            hideZeroValues();
+            calculateSettlementSummary();
+            // ▲▲▲▲▲ 초기화 및 계산 끝 ▲▲▲▲▲
 
 
-            // ▼▼▼▼▼ 주문내역 일자 정렬 기능 ▼▼▼▼▼
+            // ▼▼▼▼▼ 정렬 기능 (기존 로직 유지) ▼▼▼▼▼
+            
+            // 주문내역 일자 정렬
             const sortOrderButton = document.getElementById('sort-order-date');
             const sortOrderArrow = document.getElementById('sort-order-arrow');
             const orderContainer = document.getElementById('order-list-container');
-            let orderSortDirection = 'desc'; // 초기 정렬 상태 (최신순: 내림차순)
+            let orderSortDirection = 'desc'; 
 
             if (sortOrderButton && orderContainer) {
                 sortOrderButton.addEventListener('click', () => {
                     orderSortDirection = orderSortDirection === 'desc' ? 'asc' : 'desc';
                     sortOrderArrow.innerText = orderSortDirection === 'desc' ? '▼' : '▲';
-                    <!-- ▼▼▼▼▼ 정렬 대상 선택자 변경 (.border.rounded.lg -> .order-item-row) ▼▼▼▼▼ -->
                     sortItems(orderContainer, '.order-item-row', '.text-sm.text-gray-700', orderSortDirection);
-                    <!-- ▲▲▲▲▲ 선택자 변경 끝 ▲▲▲▲▲ -->
                 });
             }
-            <!-- ▲▲▲▲▲ 주문내역 일자 정렬 기능 끝 ▲▲▲▲▲ -->
+
+            // 정산내역 일자 정렬
             const sortSettlementButton = document.getElementById('sort-settlement-date');
             const sortSettlementArrow = document.getElementById('sort-settlement-arrow');
             const settlementContainer = document.getElementById('settlement-list-container');
-            let settlementSortDirection = 'asc'; // 초기 정렬 상태 (순방향: 오름차순)
+            let settlementSortDirection = 'asc'; 
 
             if (sortSettlementButton && settlementContainer) {
                 sortSettlementButton.addEventListener('click', () => {
@@ -779,13 +687,12 @@
                     sortItems(settlementContainer, '.border-b.py-3', '.text-gray-700', settlementSortDirection);
                 });
             }
-            // ▲▲▲▲▲ 정산내역 일자 정렬 기능 끝 ▲▲▲▲▲
 
-            // ▼▼▼▼▼ 알림내역 일자 정렬 기능 (신규) ▼▼▼▼▼
+            // 알림내역 일자 정렬
             const sortNotificationButton = document.getElementById('sort-notification-date');
             const sortNotificationArrow = document.getElementById('sort-notification-arrow');
             const notificationContainer = document.getElementById('notification-list-container');
-            let notificationSortDirection = 'desc'; // 초기 정렬 상태 (최신순: 내림차순)
+            let notificationSortDirection = 'desc'; 
 
             if (sortNotificationButton && notificationContainer) {
                 sortNotificationButton.addEventListener('click', () => {
@@ -794,11 +701,10 @@
                     sortItems(notificationContainer, '.border-b.py-3', '.text-xs', notificationSortDirection);
                 });
             }
-            // ▲▲▲▲▲ 알림내역 일자 정렬 기능 끝 ▲▲▲▲▲
+            // ▲▲▲▲▲ 정렬 기능 끝 ▲▲▲▲▲
 
         });
     </script>
-    <!-- ▲▲▲▲▲ 스크립트 블록 수정 (calculateSettlementTotals 함수명 변경 및 소계 탭 업데이트 로직 변경) ▼▼▼▼▼ -->
-</body>
+    <!-- ▲▲▲▲▲ 스크립트 블록 수정 끝 ▲▲▲▲▲ --></body>
 </html>
 
