@@ -160,8 +160,8 @@
             <div class="p-4">
                 <h3 class="text-base font-semibold text-gray-800 mb-2">주문 내역</h3>
 
-                <!-- Column Headers (5fr, 1fr, 2fr, 2fr 비율로 변경하여 안정화) -->
-                <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-xs font-semibold text-gray-500 border-b border-gray-200 pb-1 mb-2">
+                <!-- Column Headers (5fr, 1fr, 2fr, 3fr 비율로 변경) -->
+                <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs font-semibold text-gray-500 border-b border-gray-200 pb-1 mb-2">
                     <span>상품명&규격</span>
                     <span class="text-center">수량</span>
                     <span class="text-right">단가</span>
@@ -171,105 +171,105 @@
                 <!-- Item List (정상 주문 상품) -->
                 <div class="space-y-2" id="order-items-list">
                     <!-- NEW ITEM: 대파(단) (백만 단위 테스트) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">대파(단)</span>
                         <span class="text-center text-gray-700">700</span>
                         <span class="text-right text-gray-600 price-cell" data-price="3500">3,500원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="2450000">2,450,000원</span>
                     </div>
                     <!-- Item 2: 깐양파_10kg (잔여 상품) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">깐양파_10kg</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="20600">20,600원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="20600">20,600원</span>
                     </div>
                     <!-- Item 3: 백다다기_5개입 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">백다다기_5개입</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="3600">3,600원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="3600">3,600원</span>
                     </div>
                     <!-- Item 4: 양배추(대)(낱개) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">양배추(대)(낱개)</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="2700">2,700원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="2700">2,700원</span>
                     </div>
                     <!-- Item 5: 깐양파_kg -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">깐양파_kg</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="2600">2,600원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="2600">2,600원</span>
                     </div>
                     <!-- Item 6: 무순/중(150g팩) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">무순/중(150g팩)</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="1300">1,300원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="1300">1,300원</span>
                     </div>
                     <!-- Item 7: 가리비관자(중국) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">가리비관자(중국) 500g</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="6800">6,800원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="6800">6,800원</span>
                     </div>
                     <!-- Item 8: 칵테일새우31/50(중국) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">칵테일새우 31/50(중국)</span>
                         <span class="text-center text-gray-700">2</span>
                         <span class="text-right text-gray-600 price-cell" data-price="4100">4,100원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="8200">8,200원</span>
                     </div>
                     <!-- Item 9: 솔방울오징어(중국) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">솔방울오징어(중국)</span>
                         <span class="text-center text-gray-700">2</span>
                         <span class="text-right text-gray-600 price-cell" data-price="2100">2,100원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="4200">4,200원</span>
                     </div>
                     <!-- Item 10: 냉동자숙피홍합(국산) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">냉동자숙피홍합(국산)</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="3300">3,300원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="3300">3,300원</span>
                     </div>
                     <!-- Item 11: 성게알A급(수입산) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">성게알 A급(수입산)</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="15100">15,100원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="15100">15,100원</span>
                     </div>
                     <!-- Item 12: 감자샐러드(MDS) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">감자샐러드(MDS)</span>
                         <span class="text-center text-gray-700">4</span>
                         <span class="text-right text-gray-600 price-cell" data-price="6500">6,500원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="26000">26,000원</span>
                     </div>
                     <!-- Item 13: 올리브오일(엑스트라버진) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">올리브오일(엑스트라버진)</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="18800">18,800원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="18800">18,800원</span>
                     </div>
                     <!-- Item 14: DB휘핑크림(선인) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">DB휘핑크림(선인)</span>
                         <span class="text-center text-gray-700">2</span>
                         <span class="text-right text-gray-600 price-cell" data-price="5100">5,100원</span>
                         <span class="text-right font-medium text-gray-800 price-cell" data-price="10200">10,200원</span>
                     </div>
                     <!-- Item 15: 레몬_10입_수입 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_2fr] gap-1 text-sm items-center">
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-sm items-center">
                         <span class="text-gray-700 truncate">레몬_10입_수입</span>
                         <span class="text-center text-gray-700">1</span>
                         <span class="text-right text-gray-600 price-cell" data-price="3400">3,400원</span>
@@ -525,9 +525,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
