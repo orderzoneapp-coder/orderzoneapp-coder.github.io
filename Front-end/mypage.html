@@ -112,6 +112,30 @@
             border-bottom-color: #1D4ED8; /* blue-700 */
         }
         /* ▲▲▲▲▲ 하위 필터 스타일 끝 ▲▲▲▲▲ */
+        
+        /* ▼▼▼▼▼ 소계 탭 스타일 (신규) ▼▼▼▼▼ */
+        .summary-row {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            border-top: 2px solid #374151; /* gray-700 */
+            background-color: #F3F4F6; /* gray-100 */
+            padding: 12px 4px; /* py-3 px-1 */
+            margin-top: 4px; /* 리스트와 약간의 간격 */
+        }
+        .summary-row .label {
+            width: 25%;
+            text-align: center;
+            font-size: 0.875rem; /* text-sm */
+            color: #374151; /* gray-700 */
+        }
+        .summary-row .value {
+            width: 25%;
+            text-align: right;
+            padding: 0 4px; /* px-1 */
+            font-size: 0.875rem; /* text-sm */
+        }
+        /* ▲▲▲▲▲ 소계 탭 스타일 끝 ▲▲▲▲▲ */
 
     </style>
 </head>
@@ -152,14 +176,6 @@
                 </div>
             </section>
 
-            <!-- ▼▼▼▼▼ 사용자 요청 메뉴 섹션 (프로필 영역으로 이동됨) ▼▼▼▼▼ -->
-            <!-- 
-            <section class="p-4 pt-2 pb-2">
-                ...
-            </section>
-             -->
-            <!-- ▲▲▲▲▲ 사용자 요청 메뉴 섹션 끝 ▲▲▲▲▲ -->
-
             <!-- 잔액/결제 관리 -->
             <section class="p-4 pt-0">
                 <!-- ▼▼▼▼▼ 디자인 수정: 미수금, 결제 버튼 삭제 / 계좌번호 + 복사 버튼으로 변경 ▼▼▼▼▼ -->
@@ -178,10 +194,6 @@
                 <!-- ▲▲▲▲▲ 디자인 수정 끝 ▲▲▲▲▲ -->
             </section>
 
-            <!-- ▼▼▼▼▼ 회색 스페이서 삭제 ▼▼▼▼▼ -->
-            <!-- <div class="w-full h-2 bg-gray-100"></div> -->
-            <!-- ▲▲▲▲▲ 회색 스페이서 삭제 끝 ▲▲▲▲▲ -->
-
             
             <!-- ▼▼▼▼▼ 탭 네비게이션 (주문, 알림, 정산 순으로 변경) ▼▼▼▼▼ -->
             <section class="p-4 pt-2 pb-0">
@@ -196,13 +208,6 @@
             </section>
             <!-- ▲▲▲▲▲ 탭 네비게이션 변경 끝 ▲▲▲▲▲ -->
 
-            <!-- ▼▼▼▼▼ 기존 고정 탭 섹션 삭제 ▼▼▼▼▼ -->
-            <!-- 
-            <section class="sticky top-[61px] bg-white z-10">
-                ...
-            </section>
-            -->
-            <!-- ▲▲▲▲▲ 기존 고정 탭 섹션 삭제 끝 ▲▲▲▲▲ -->
             
             <!-- 탭 컨텐츠 -->
             <div id="tab-contents" class="p-4">
@@ -470,10 +475,13 @@
                 <!-- ▼▼▼▼▼ 정산내역 탭 (순서 변경됨) ▼▼▼▼▼ -->
                 <div id="settlements" class="tab-content">
                     
-                    <!-- 정산 요약 (숨김) -->
-                    <div class="mb-4 p-3 border rounded-lg bg-gray-50 hidden">
-                        ...
-                    </div>
+                    <!-- ▼▼▼▼▼ [삭제] 누적 정산 요약 섹션 삭제 ▼▼▼▼▼ -->
+                    <!-- 
+                    <div class="mb-4 p-4 border rounded-lg bg-white shadow-sm">
+                        ... (이전 누적 정산 요약 섹션)
+                    </div> 
+                    -->
+                    <!-- ▲▲▲▲▲ [삭제] 누적 정산 요약 섹션 삭제 끝 ▲▲▲▲▲ -->
 
                     <!-- ▼▼▼▼▼ 정산 내역 필터 (스타일 변경) ▼▼▼▼▼ -->
                     <div class="mb-3 flex justify-start overflow-x-auto whitespace-nowrap pb-1 border-b">
@@ -506,74 +514,79 @@
 
                     <!-- ▼▼▼▼▼ 정산 내역 리스트 컨테이너 (ID 추가) ▼▼▼▼▼ -->
                     <div id="settlement-list-container">
-                        <!-- 정산 내역 아이템 4: 8월 23일 (배송완료) -->
-                        <div class="border-b py-3 flex items-center text-sm">
+                        <!-- 정산 내역 아이템 4: 8월 23일 (배송완료) - 데이터 속성 추가 -->
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-23" data-sales="13000" data-deposit="13000">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-23</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+13,000</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">-13,000</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 -->
                         </div>
                         
-                        <!-- 정산 내역 아이템 3: 8월 24일 (배송완료) -->
-                        <div class="border-b py-3 flex items-center text-sm">
+                        <!-- 정산 내역 아이템 3: 8월 24일 (배송완료) - 데이터 속성 추가 -->
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-24" data-sales="16700" data-deposit="16700">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-24</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+16,700</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">-16,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 -->
                         </div>
 
-                        <!-- 정산 내역 아이템 2: 8월 25일 (배송완료) -->
-                        <div class="border-b py-3 flex items-center text-sm">
+                        <!-- 정산 내역 아이템 2: 8월 25일 (배송완료) - 데이터 속성 추가 -->
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-25" data-sales="32700" data-deposit="32700">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-25</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+32,700</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">-32,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">0</div> <!-- 누적 잔액 -->
+                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div> <!-- 누적 잔액 -->
                         </div>
 
-                        <!-- 정산 내역 아이템 1: 8월 26일 (주문) -->
-                        <div class="border-b py-3 flex items-center text-sm">
+                        <!-- 정산 내역 아이템 1: 8월 26일 (주문) - 데이터 속성 추가 -->
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-26" data-sales="53000" data-deposit="0">
                             <div class="w-1/4 text-center px-1 text-gray-700">2025-08-26</div>
                             <div class="w-1/4 px-1 text-right font-medium text-red-600">+53,000</div>
                             <div class="w-1/4 px-1 text-right font-medium text-blue-600">0</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900">53,000</div> <!-- 누적 잔액 -->
+                            <div class="w-1/4 px-1 text-right font-bold text-red-600 balance-amount" data-balance="53000">53,000</div> <!-- 누적 잔액 -->
                         </div>
                     </div>
                     <!-- ▲▲▲▲▲ 정산 내역 리스트 끝 ▲▲▲▲▲ -->
+                    
+                    <!-- ▼▼▼▼▼ [신규] 정산 소계 탭 (테이블 하단) ▼▼▼▼▼ -->
+                    <div class="summary-row">
+                        <div class="label">소계</div>
+                        <!-- 총 판매 -->
+                        <div id="summary-sales" class="value text-red-600">0</div> 
+                        <!-- 총 입금 -->
+                        <div id="summary-deposit" class="value text-blue-600">0</div>
+                        <!-- 필터 기간 잔액 (미수금) -->
+                        <div id="summary-balance" class="value font-extrabold text-red-600">0</div>
+                    </div>
+                    <!-- ▲▲▲▲▲ [신규] 정산 소계 탭 끝 ▲▲▲▲▲ -->
+
                 </div>
                 <!-- ▲▲▲▲▲ 정산내역 탭 끝 (순서 변경됨) ▲▲▲▲▲ -->
             </div>
         </main>
     </div>
 
-    <!-- ▼▼▼▼▼ 스크립트 블록 수정 ▼▼▼▼▼ -->
+    <!-- ▼▼▼▼▼ 스크립트 블록 수정 (calculateSettlementTotals 함수명 변경 및 소계 탭 업데이트 로직 변경) ▼▼▼▼▼ -->
         <script>
+        // 통화 형식 포맷터 (예: 123456 -> 12,345)
+        const currencyFormatter = new Intl.NumberFormat('ko-KR');
+
         // 0원 항목 숨기기 기능
         function hideZeroValues() {
-            // 'hide-if-zero' 클래스를 가진 모든 p 태그를 선택합니다.
-            // ▼▼▼▼▼ 주석 수정 ▼▼▼▼▼
-            // 이 클래스는 '추가금액', '취소금액', '포인트(쿠)', '환불액' 항목에 적용됩니다.
             const candidates = document.querySelectorAll('.hide-if-zero');
-            // ▲▲▲▲▲ 주석 수정 끝 ▲▲▲▲▲
             
             candidates.forEach(el => {
-                // ▼▼▼▼▼ 0원 숨김 조건 수정 ▼▼▼▼▼
-                // 텍스트 내용에 '0원('이 포함되어 있는지(입금 섹션), 또는 ': 0원'이 포함되어 있는지(판매 섹션) 확인합니다.
                 if (el.innerText.includes('0원(') || el.innerText.includes(': 0원')) { 
-                    el.classList.add('hidden'); // Tailwind CSS의 'hidden' 클래스를 추가하여 숨깁니다.
+                    el.classList.add('hidden'); 
                 }
-                // ▲▲▲▲▲ 0원 숨김 조건 수정 끝 ▲▲▲▲▲
             });
         }
 
         /**
          * 범용 정렬 함수
-         * @param {HTMLElement} container - 정렬할 아이템들의 부모 컨테이너
-         * @param {string} itemSelector - 정렬할 아이템을 선택할 CSS 선택자
-         * @param {string} dateSelector - 각 아이템에서 날짜 텍스트를 가져올 CSS 선택자
-         * @param {'asc' | 'desc'} direction - 정렬 방향
          */
         function sortItems(container, itemSelector, dateSelector, direction) {
-            if (!container) return; // 컨테이너가 없으면 함수 종료
+            if (!container) return; 
 
             const items = Array.from(container.querySelectorAll(itemSelector));
 
@@ -591,6 +604,53 @@
             // 정렬된 아이템들을 다시 DOM에 추가
             items.forEach(item => container.appendChild(item));
         }
+        
+        // ▼▼▼▼▼ [수정] 정산내역 소계 계산 및 표시 함수 (이름 변경: calculateSettlementSummary) ▼▼▼▼▼
+        function calculateSettlementSummary() {
+            const items = document.querySelectorAll('#settlement-list-container .settlement-item');
+            
+            let totalSales = 0;
+            let totalDeposit = 0;
+            let currentBalance = 0; // 필터 기간 동안의 잔액
+
+            items.forEach(item => {
+                // data-* 속성에서 숫자 값을 가져옴
+                // 현재는 필터링 로직이 없으므로 모든 항목을 합산합니다.
+                const sales = parseInt(item.dataset.sales || 0);
+                const deposit = parseInt(item.dataset.deposit || 0);
+                
+                totalSales += sales;
+                totalDeposit += deposit;
+            });
+            
+            // 필터 기간 잔액 = 총 판매액 - 총 입금액
+            currentBalance = totalSales - totalDeposit;
+
+            // 렌더링
+            const summarySalesEl = document.getElementById('summary-sales');
+            const summaryDepositEl = document.getElementById('summary-deposit');
+            const summaryBalanceEl = document.getElementById('summary-balance');
+
+            if (summarySalesEl) summarySalesEl.innerText = currencyFormatter.format(totalSales);
+            if (summaryDepositEl) summaryDepositEl.innerText = currencyFormatter.format(totalDeposit);
+            
+            if (summaryBalanceEl) {
+                summaryBalanceEl.innerText = currencyFormatter.format(currentBalance);
+                
+                // 잔액 색상 변경: 0보다 크면 미수금(빨간색), 0이하면 회색/검정색
+                if (currentBalance > 0) {
+                    summaryBalanceEl.classList.add('text-red-600');
+                    summaryBalanceEl.classList.remove('text-gray-900', 'text-gray-600');
+                } else if (currentBalance < 0) {
+                    summaryBalanceEl.classList.add('text-blue-600');
+                    summaryBalanceEl.classList.remove('text-red-600', 'text-gray-900', 'text-gray-600');
+                } else {
+                    summaryBalanceEl.classList.add('text-gray-900');
+                    summaryBalanceEl.classList.remove('text-red-600', 'text-blue-600', 'text-gray-600');
+                }
+            }
+        }
+        // ▲▲▲▲▲ [수정] 정산내역 소계 계산 및 표시 함수 끝 ▲▲▲▲▲
 
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -611,6 +671,12 @@
                     const contentElement = document.getElementById(contentId);
                     if(contentElement) {
                         contentElement.classList.add('active');
+                        
+                        // ▼▼▼▼▼ 정산 탭이 열릴 때마다 소계 다시 계산 ▼▼▼▼▼
+                        if (contentId === 'settlements') {
+                            calculateSettlementSummary();
+                        }
+                        // ▲▲▲▲▲ 정산 탭이 열릴 때마다 소계 다시 계산 끝 ▲▲▲▲▲
                     }
                 });
             });
@@ -647,6 +713,10 @@
             // ▼▼▼▼▼ 0원 항목 숨기기 함수 호출 ▼▼▼▼▼
             hideZeroValues();
             // ▲▲▲▲▲ 함수 호출 끝 ▲▲▲▲▲
+            
+            // ▼▼▼▼▼ 정산내역 누적 미수금 초기 계산 (함수명 변경 반영) ▼▼▼▼▼
+            calculateSettlementSummary();
+            // ▲▲▲▲▲ 정산내역 누적 미수금 초기 계산 끝 ▲▲▲▲▲
 
             // ▼▼▼▼▼ 정산내역 필터 버튼 기능 (선택자 수정) ▼▼▼▼▼
             // (수정) 선택자를 .sub-filter-btn으로 변경
@@ -668,6 +738,11 @@
                             // (실제 데이터 필터링 로직은 여기에 추가)
                             const tabId = tabContent.id;
                             console.log(`[${tabId}] 탭에서 '${button.textContent}' 필터 선택됨`);
+                            
+                            // 필터 변경 시 정산 소계 업데이트 (더미 데이터 기준)
+                            if (tabId === 'settlements') {
+                                calculateSettlementSummary();
+                            }
                         });
                     });
                 }
@@ -723,7 +798,7 @@
 
         });
     </script>
-    <!-- ▲▲▲▲▲ 스크립트 블록 수정 끝 ▲▲▲▲▲ -->
+    <!-- ▲▲▲▲▲ 스크립트 블록 수정 (calculateSettlementTotals 함수명 변경 및 소계 탭 업데이트 로직 변경) ▼▼▼▼▼ -->
 </body>
 </html>
 
