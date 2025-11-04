@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 상세 정보 팝업</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 전체 화면 캡처 기능을 위한 html2canvas 라이브러리 추가 --><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: rgba(0, 0, 0, 0.5); /* 팝업 배경을 어둡게 처리 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0; /* body 상하 여백 추가 */
+        }
+        .popup-container {
+            width: 95%; /* [수정] 90% -> 95% (좌우 여백 축소) */
+            max-width: 380px; /* [수정] 400px -> 380px (최대 너비 축소) */
+            background-color: #fff;
+            border-radius: 0.5rem; 
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); 
+            overflow: hidden; 
+            
+            /* 스크롤 가능한 팝업을 위한 높이 설정 */
+            max-height: 85vh; /* [수정] 화면 높이의 85%로 제한 (90vh -> 85vh) */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* 스크롤 영역 (상품 리스트 및 요약) */
+        .scrollable-content {
+            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
+            padding-bottom: 20px; /* 스크롤 끝에 여백 제공 */
+            
+            /* [추가] 스크롤바 숨기기 (Firefox) */
+            /* [추가] 스크롤바 숨기기 (WebKit) */
+        .scrollable-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* [추가] 스크롤 영역 하단에 투명 그라데이션 마스크 추가 */
+        .scrollable-content {
+            -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+        }
+
+        /* 하단 고정 액션 바 */
+        .fixed-footer {
+            flex-shrink: 0; /* 크기가 줄어들지 않도록 고정 */
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            border-radius: 0.25rem; 
+        }
+        /* 주문 상태별 색상 (마이페이지와 통일) */
+        .status-deposit-wait { background-color: #fff7ed; color: #c2410c; } 
+        .status-delivery-complete { background-color: #f0fdfa; color: #0f766e; } 
+        .status-complete { background-color: #eef2ff; color: #3730a3; } 
+        .status-cancel { background-color: #fef2f2; color: #dc2626; } 
+        .status-order { background-color: #fdf2f8; color: #be185d; } 
+        .status-deposit-confirm { background-color: #f0fdf4; color: #15803d; } 
+        .status-delivery-prep { background-color: #fff7ed; color: #c2410c; } 
+
+        /* 상품 취소 라인 스타일 (사용되지 않아 삭제됨) */
+        
+        /* [수정] 캡처 시 줄바꿈 방지를 위해 백만 단위 이상일 때 더 작은 폰트 적용 */
+        .price-xs {
+            font-size: 0.65rem; /* [수정] 0.7rem -> 0.65rem (약 10.4px) */
+            letter-spacing: -0.025em; /* 자간을 약간 줄임 */
+        }
+        /* [신규] 더 작은 폰트 크기 (예: 단가 열) */
+        .price-xxs {
+            font-size: 0.6rem; /* [수정] 0.65rem -> 0.6rem (약 9.6px) */
+            letter-spacing: -0.035em; /* 자간을 더 줄임 */
+        }
+        /* 캡처를 위해 일시적으로 높이/스크롤을 제거하는 클래스 */
+        .capture-mode {
+            max-height: none !important;
+            height: auto !important;
+        }
+        .capture-mode .scrollable-content {
+            overflow-y: hidden !important;
+        }
+        .capture-mode .fixed-footer {
+            position: static !important;
+        }
+        /* 공유 모달 관련 스타일 */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.75);
+            transition: opacity 0.3s ease;
+        }
+        /* 로딩 스피너 스타일 */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #ffffff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="popup-container" id="receipt-popup">
+        
+        <!-- [신규] 닫기 버튼 (우측 상단 절대 위치) --><button onclick="closePopup()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition z-20">
+            <!-- [수정] 아이콘 크기 h-6 w-6 -> h-5 w-5 -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        
+        <!-- 로고 섹션 (상단 고정) --><div class="p-4 border-b border-gray-200 bg-white text-center flex-shrink-0">
+            <!-- [수정] 텍스트 크기 text-2xl -> text-xl -->
+            <div class="text-xl font-extrabold text-green-600 tracking-wider">ORDERZ</div>
+        </div>
+
+        <!-- 스크롤 가능한 본문 영역 시작 --><div class="scrollable-content">
+            
+            <!-- 헤더: 주문번호, 배송일 및 배송상태 --><div class="p-4 bg-gray-100 border-b border-gray-200 flex items-start justify-between">
+                <div class="flex-shrink-0">
+                    <!-- [수정] 텍스트 크기 text-sm -> text-xs -->
+                    <div class="text-xs mb-1">
+                        <span class="text-gray-600">주문번호:</span>
+                        <span class="font-medium text-gray-800 ml-1">20251022-1234567</span>
+                    </div>
+                    <!-- [수정] 텍스트 크기 text-sm -> text-xs -->
+                    <div class="text-xs">
+                        <span class="text-gray-600">배송일:</span>
+                        <span class="font-medium text-gray-800 ml-1">2025-10-25</span>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 mt-0.5">
+                    <!-- [유지] 뱃지 크기 text-xs 유지 -->
+                    <span class="status-badge status-delivery-complete">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        배송 완료
+                    </span>
+                </div>
+            </div>
+
+            <!-- 주문 내역 (상품명&규격, 수량, 단가, 합계) --><div class="p-4">
+                <!-- [수정] 텍스트 크기 text-base -> text-sm -->
+                <h3 class="text-sm font-semibold text-gray-800 mb-2">주문 내역</h3>
+
+                <!-- Column Headers (5fr, 1fr, 2fr, 3fr 비율로 변경) --><!-- [유지] text-xs 유지 --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs font-semibold text-gray-500 border-b border-gray-200 pb-1 mb-2">
+                    <span>상품명&규격</span>
+                    <span class="text-center">수량</span>
+                    <span class="text-right">단가</span>
+                    <span class="text-right">합계</span>
+                </div>
+
+                <!-- Item List (정상 주문 상품) --><div class="space-y-2" id="order-items-list">
+                    <!-- [수정] 아이템 텍스트 크기 text-sm -> text-xs -->
+                    <!-- NEW ITEM: 대파(단) (백만 단위 테스트) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">대파(단)</span>
+                        <span class="text-center text-gray-700">700</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="3500">3,500원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="2450000">2,450,000원</span>
+                    </div>
+                    <!-- Item 2: 깐양파_10kg (잔여 상품) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">깐양파_10kg</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="20600">20,600원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="20600">20,600원</span>
+                    </div>
+                    <!-- Item 3: 백다다기_5개입 --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">백다다기_5개입</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="3600">3,600원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="3600">3,600원</span>
+                    </div>
+                    <!-- Item 4: 양배추(대)(낱개) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">양배추(대)(낱개)</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="2700">2,700원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="2700">2,700원</span>
+                    </div>
+                    <!-- Item 5: 깐양파_kg --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">깐양파_kg</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="2600">2,600원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="2600">2,600원</span>
+                    </div>
+                    <!-- Item 6: 무순/중(150g팩) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">무순/중(150g팩)</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="1300">1,300원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="1300">1,300원</span>
+                    </div>
+                    <!-- Item 7: 가리비관자(중국) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">가리비관자(중국) 500g</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="6800">6,800원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="6800">6,800원</span>
+                    </div>
+                    <!-- Item 8: 칵테일새우31/50(중국) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">칵테일새우 31/50(중국)</span>
+                        <span class="text-center text-gray-700">2</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="4100">4,100원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="8200">8,200원</span>
+                    </div>
+                    <!-- Item 9: 솔방울오징어(중국) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">솔방울오징어(중국)</span>
+                        <span class="text-center text-gray-700">2</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="2100">2,100원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="4200">4,200원</span>
+                    </div>
+                    <!-- Item 10: 냉동자숙피홍합(국산) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">냉동자숙피홍합(국산)</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="3300">3,300원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="3300">3,300원</span>
+                    </div>
+                    <!-- Item 11: 성게알A급(수입산) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">성게알 A급(수입산)</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="15100">15,100원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="15100">15,100원</span>
+                    </div>
+                    <!-- Item 12: 감자샐러드(MDS) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">감자샐러드(MDS)</span>
+                        <span class="text-center text-gray-700">4</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="6500">6,500원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="26000">26,000원</span>
+                    </div>
+                    <!-- Item 13: 올리브오일(엑스트라버진) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">올리브오일(엑스트라버진)</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="18800">18,800원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="18800">18,800원</span>
+                    </div>
+                    <!-- Item 14: DB휘핑크림(선인) --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">DB휘핑크림(선인)</span>
+                        <span class="text-center text-gray-700">2</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="5100">5,100원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="10200">10,200원</span>
+                    </div>
+                    <!-- Item 15: 레몬_10입_수입 --><div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-1 text-xs items-center">
+                        <span class="text-gray-700 truncate">레몬_10입_수입</span>
+                        <span class="text-center text-gray-700">1</span>
+                        <span class="text-right text-gray-600 price-cell" data-price="3400">3,400원</span>
+                        <span class="text-right font-medium text-gray-800 price-cell" data-price="3400">3,400원</span>
+                    </div>
+                </div>
+                
+                <!-- 결제 요약 시작 --><!-- [수정] 텍스트 크기 text-sm -> text-xs --><div class="mt-4 pt-2 border-t border-gray-200 space-y-1 text-xs">
+                    
+                    <!-- 상품 합계 (취소 상품 금액 제외 후 총액) --><div class="flex justify-between font-bold text-gray-800">
+                        <span>최종 상품 합계:</span>
+                        <span id="final-total" class="price-cell" data-price="2567800">2,567,800원</span>
+                    </div>
+                    <!-- [추가] 쿠폰 및 포인트 사용 내역 -->
+                    <div class="flex justify-between text-gray-600">
+                        <span>쿠폰 할인:</span>
+                        <!-- [수정] text-blue-600 클래스 제거 -->
+                        <span class="price-cell" data-price="5000">-5,000원</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>포인트 사용:</span>
+                        <!-- [수정] text-blue-600 클래스 제거 -->
+                        <span class="price-cell" data-price="3000">-3,000P</span>
+                    </div>
+                    <!-- [수정] '입금' 항목을 굵은 글씨(font-bold)로 강조 -->
+                    <div class="flex justify-between font-bold text-gray-800">
+                        <span>입금:</span>
+                        <span id="deposit-amount" class="price-cell" data-price="2562800">2,562,800원</span>
+                    </div>
+                    <div class="flex justify-between font-bold">
+                        <span>잔액:</span>
+                        <!-- [수정] 잔액 계산 변경 (2567800 - 5000 - 3000) - 2562800 = -3000 (초과입금) -->
+                        <!-- [수정] 요청에 따라 마이너스 잔액을 빨간색(text-red-600)으로 변경 -->
+                        <span class="text-red-600 price-cell" data-price="3000">-3,000원</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 스크롤 가능한 본문 영역 종료 --></div>
+
+        <!-- 하단 고정 액션 바 (fixed-footer 적용 및 버튼 재구성) --><div class="fixed-footer flex border-t border-gray-200 bg-white">
+            <!-- 캡처 및 공유하기 버튼 (스크롤 전체 캡처 기능 연결) --><!-- [수정] 텍스트 크기 text-base -> text-sm --><button id="capture-share-btn" onclick="captureReceiptAndShare()" class="w-1/2 p-3 text-sm font-semibold text-gray-800 bg-green-100 hover:bg-green-200 border-r border-gray-200 transition duration-150 flex items-center justify-center space-x-2">
+                <span id="capture-btn-text">캡처 및 공유하기</span>
+                <div id="capture-spinner" class="spinner hidden"></div>
+            </button>
+            <!-- 닫기 버튼 --><!-- [수정] 텍스트 크기 text-base -> text-sm --><button onclick="closePopup()" class="w-1/2 p-3 text-sm font-semibold text-gray-800 bg-gray-100 hover:bg-gray-200">닫기</button>
+        </div>
+    </div>
+
+    <!-- 공유 방식 선택 모달 (데스크톱/폴백 용) --><div id="share-modal-overlay" onclick="hideShareModal()" class="modal-overlay hidden fixed inset-0 z-50 flex justify-center items-center opacity-0 p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-xs transform transition-transform duration-300 scale-95" id="share-modal-content" onclick="event.stopPropagation()">
+            <!-- [수정] 텍스트 크기 text-lg -> text-base -->
+            <h3 class="text-base font-bold mb-4 text-center text-gray-800">공유 옵션</h3>
+            <!-- [수정] 텍스트 크기 text-sm -> text-xs -->
+            <p class="text-xs text-center text-gray-600 mb-4">
+                모바일 공유를 지원하지 않는 환경입니다. 이미지를 다운로드하거나 이미지 링크를 복사하세요.
+            </p>
+            <div class="space-y-3">
+                <!-- 다운로드 버튼 --><!-- [수정] 텍스트 크기 text-base -> text-sm -->
+                <button onclick="downloadCapturedImage()" class="w-full py-3 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    <span>이미지 다운로드</span>
+                </button>
+                <!-- 링크 복사 버튼 --><!-- [수정] 텍스트 크기 text-base -> text-sm -->
+                <button onclick="copyCapturedImageLink()" id="copy-link-btn" class="w-full py-3 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                    </svg>
+                    <span id="copy-link-text">이미지 링크 복사</span>
+                </button>
+            </div>
+            <!-- [수정] 텍스트 크기 text-sm -> text-xs -->
+            <button onclick="hideShareModal()" class="w-full mt-4 py-2 text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">
+                닫기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수로 캡처된 이미지 데이터 URL 저장
+        let capturedImageDataUrl = null;
+
+        // --- 유틸리티 함수 ---
+
+        // [수정] 가격 포맷팅 함수 (조건에 따라 'price-xs', 'price-xxs' 클래스 적용 및 접두사/접미사 지원)
+        function formatPrice() {
+            document.querySelectorAll('.price-cell').forEach(cell => {
+                const price = parseInt(cell.dataset.price, 10);
+                if (isNaN(price)) return;
+                
+                // [추가] 기존 텍스트 컨텐츠를 힌트로 사용
+                const originalText = cell.textContent || "";
+                const isNegative = originalText.startsWith('-');
+                const isPoints = originalText.endsWith('P');
+
+                const formattedNumber = price.toLocaleString('ko-KR');
+                
+                let prefix = isNegative ? '-' : '';
+                let suffix = isPoints ? 'P' : '원'; // 기본값 '원'
+
+                cell.textContent = prefix + formattedNumber + suffix;
+                
+                // [수정] cell.classList를 사용하여 단가 셀(text-gray-600)인지 확인
+                if (cell.classList.contains('text-gray-600')) { // 단가 셀인 경우
+                    if (price >= 10000) { // 10,000원 이상이면 price-xxs 적용
+                        cell.classList.add('price-xxs');
+                    } else {
+                        cell.classList.add('price-xs'); // 그 외 단가는 price-xs
+                    }
+                } 
+                // 합계 셀 또는 요약 셀 (단가 셀이 아닌 price-cell)
+                else { 
+                    // [수정] 백만 단위 이상일 때 폰트 크기를 줄이는 로직 제거 (요청 사항 반영)
+                    /*
+                    if (price >= 1000000) { // 100만원 이상이면 price-xs (합계 셀은 price-xxs까지는 필요 없을 것으로 판단)
+                        cell.classList.add('price-xs');
+                    }
+                    */
+                }
+            });
+        }
+
+        // Data URL을 File 객체로 변환하는 함수
+        function dataURLtoFile(dataurl, filename) {
+            let arr = dataurl.split(','), 
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), 
+                n = bstr.length, 
+                u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {type:mime});
+        }
+
+        // --- 팝업 및 모달 제어 ---
+
+        function closePopup() {
+            // 이 함수는 팝업을 닫는 로직을 구현해야 합니다.
+            // 예: window.close(); 또는 부모 창에 메시지 전송
+            console.log("팝업 닫기 시도");
+            // 부모 창이 있다면 닫기 메시지 전송
+            if (window.opener) {
+                window.close();
+            }
+        }
+
+        function showShareModal() {
+            const modal = document.getElementById('share-modal-overlay');
+            const modalContent = document.getElementById('share-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function hideShareModal() {
+            const modal = document.getElementById('share-modal-overlay');
+            const modalContent = document.getElementById('share-modal-content');
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                // 복사 버튼 텍스트 초기화
+                document.getElementById('copy-link-text').textContent = '이미지 링크 복사';
+                document.getElementById('copy-link-btn').disabled = false;
+            }, 300);
+        }
+
+        // --- 로딩 상태 제어 ---
+
+        function showLoading() {
+            document.getElementById('capture-btn-text').classList.add('hidden');
+            document.getElementById('capture-spinner').classList.remove('hidden');
+            document.getElementById('capture-share-btn').disabled = true;
+        }
+
+        function hideLoading() {
+            document.getElementById('capture-btn-text').classList.remove('hidden');
+            document.getElementById('capture-spinner').classList.add('hidden');
+            document.getElementById('capture-share-btn').disabled = false;
+        }
+
+        // --- 캡처 및 공유 핵심 로직 ---
+
+        async function captureReceiptAndShare() {
+            showLoading();
+            const popupElement = document.getElementById('receipt-popup');
+            
+            // 캡처 전에 스크롤을 맨 위로 이동
+            document.querySelector('.scrollable-content').scrollTop = 0;
+            
+            // 캡처 모드 활성화 (스크롤 및 높이 제한 해제)
+            popupElement.classList.add('capture-mode');
+
+            try {
+                const canvas = await html2canvas(popupElement, {
+                    useCORS: true, // 필요시
+                    allowTaint: true,
+                    // scale: window.devicePixelRatio, // 고해상도 캡처 (필요시 주석 해제)
+                });
+
+                // 캡처 모드 비활성화
+                popupElement.classList.remove('capture-mode');
+                
+                capturedImageDataUrl = canvas.toDataURL('image/png', 0.95); // PNG로, 품질 95%
+                const file = dataURLtoFile(capturedImageDataUrl, '주문내역.png');
+                
+                // Web Share API (모바일 우선)
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: '주문 상세 정보',
+                        text: '주문 내역 이미지를 확인하세요.',
+                        files: [file],
+                    });
+                    console.log('공유 성공');
+                } else {
+                    // Web Share API 미지원시 폴백 모달 표시 (데스크톱 등)
+                    console.log('Web Share API 미지원, 폴백 모달 표시');
+                    showShareModal();
+                }
+
+            } catch (err) {
+                console.error('캡처 또는 공유 실패:', err);
+                popupElement.classList.remove('capture-mode');
+                // 사용자에게 오류 알림 (alert 대신 모달 사용 권장)
+                console.log("캡처에 실패했습니다. 다시 시도해주세요."); 
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // --- 폴백 모달 액션 ---
+
+        function downloadCapturedImage() {
+            if (!capturedImageDataUrl) return;
+            const link = document.createElement('a');
+            link.href = capturedImageDataUrl;
+            link.download = '주문내역.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            hideShareModal();
+        }
+
+        function copyCapturedImageLink() {
+            if (!capturedImageDataUrl) return;
+
+            // data URL은 매우 길기 때문에 클립보드 복사가 실패할 수 있습니다.
+            // 여기서는 execCommand를 사용합니다.
+            const textArea = document.createElement('textarea');
+            textArea.value = capturedImageDataUrl;
+            textArea.style.position = 'fixed'; // 보이지 않게 처리
+            textArea.style.opacity = 0;
+            document.body.appendChild(textArea);
+            
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    const btnText = document.getElementById('copy-link-text');
+                    const btn = document.getElementById('copy-link-btn');
+                    btnText.textContent = '복사 완료!';
+                    btn.disabled = true;
+                } else {
+                    console.error('링크 복사 실패');
+                }
+            } catch (err) {
+                console.error('링크 복사 중 오류:', err);
+            }
+
+            document.body.removeChild(textArea);
+            
+            // 2초 후에 모달을 닫습니다.
+            setTimeout(hideShareModal, 2000);
+        }
+
+        // --- 페이지 로드 시 실행 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            formatPrice(); // Format prices first
+            
+            // [수정] 주문 상품 수량 (N건) 및 총 개수 (N개) 계산 및 표시
+            try {
+                const itemList = document.getElementById('order-items-list');
+                // .grid 클래스를 가진 자식 요소(상품 항목)들을 모두 가져옵니다.
+                const items = itemList.querySelectorAll('.grid');
+                const itemCount = items.length; // 상품 종류 수 (건)
+                
+                let totalQuantity = 0;
+                // 각 상품 항목을 순회하며 수량을 더합니다.
+                items.forEach(itemGrid => {
+                    // 수량 셀은 각 그리드의 두 번째 span 요소입니다. (상품명, 수량, 단가, 합계 순)
+                    const quantitySpan = itemGrid.querySelectorAll('span')[1];
+                    if (quantitySpan) {
+                        const quantity = parseInt(quantitySpan.textContent, 10);
+                        if (!isNaN(quantity)) {
+                            totalQuantity += quantity; // 총 수량(개)에 더함
+                        }
+                    }
+                });
+                
+                const finalTotalSpan = document.getElementById('final-total');
+                // final-total span의 형제 요소(label)를 찾습니다.
+                if (finalTotalSpan && finalTotalSpan.previousElementSibling) {
+                    const labelSpan = finalTotalSpan.previousElementSibling;
+                    // 레이블 텍스트를 (N건 / N개) 포함하여 업데이트합니다.
+                    labelSpan.textContent = `최종 상품 합계: (${itemCount}건 / ${totalQuantity.toLocaleString('ko-KR')}개)`;
+                }
+            } catch (e) {
+                console.error("상품 수량 계산 중 오류:", e);
+                // 오류가 발생해도 기존 텍스트는 유지됩니다.
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
