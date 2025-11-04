@@ -93,6 +93,9 @@
         }
         .capture-mode .scrollable-content {
             overflow-y: hidden !important;
+            /* [수정] 캡처 시 스크롤 마스크(그라데이션) 제거 */
+            -webkit-mask-image: none !important;
+            mask-image: none !important;
         }
         .capture-mode .fixed-footer {
             position: static !important;
@@ -447,18 +450,24 @@
         async function captureReceiptAndShare() {
             showLoading();
             const popupElement = document.getElementById('receipt-popup');
+            // [수정] 스크롤 컨텐츠 요소를 변수로 지정
+            const scrollContent = document.querySelector('.scrollable-content');
             
             // 캡처 전에 스크롤을 맨 위로 이동
-            document.querySelector('.scrollable-content').scrollTop = 0;
+            scrollContent.scrollTop = 0;
             
             // 캡처 모드 활성화 (스크롤 및 높이 제한 해제)
             popupElement.classList.add('capture-mode');
+
+            // [수정] 캡처 전 브라우저가 리플로우할 시간을 줍니다. (50ms)
+            await new Promise(resolve => setTimeout(resolve, 50)); 
 
             try {
                 const canvas = await html2canvas(popupElement, {
                     useCORS: true, // 필요시
                     allowTaint: true,
-                    // scale: window.devicePixelRatio, // 고해상도 캡처 (필요시 주석 해제)
+                    // [수정] 고해상도 캡처를 위해 scale 추가
+                    scale: window.devicePixelRatio || 2, 
                 });
 
                 // 캡처 모드 비활성화
@@ -577,14 +586,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 
