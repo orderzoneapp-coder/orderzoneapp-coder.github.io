@@ -48,6 +48,7 @@
             margin-bottom: 15px;
             display: block;
             animation: fadeIn 1s ease-out;
+            white-space: nowrap; /* PC에서 줄바꿈 방지 */
         }
         .coming-soon-header h1 {
             color: white;
@@ -58,6 +59,7 @@
             text-shadow: 0 2px 5px rgba(0,0,0,0.15);
             animation: fadeInUp 0.8s ease-out 0.2s forwards;
             opacity: 0;
+            white-space: nowrap; /* PC에서 줄바꿈 방지 */
         }
         
         /* 공통 애니메이션 */
@@ -196,7 +198,7 @@
             line-height: 1.4;
         }
         .solution-card p {
-            font-size: 1rem;
+            font-size: 1rem; /* PC 버전 기본 폰트 크기 */
             color: #475569;
             line-height: 1.6;
         }
@@ -230,9 +232,11 @@
             }
             .coming-soon-header .coming-soon-text {
                 font-size: 2.8rem;
+                white-space: nowrap; /* 모바일에서 줄바꿈 방지 */
             }
             .coming-soon-header h1 {
                 font-size: 2.1rem;
+                white-space: nowrap; /* 모바일에서 줄바꿈 방지 */
             }
             .improvement-section {
                 padding: 40px 0;
@@ -254,7 +258,7 @@
                 font-size: 1.3rem;
             }
             .solution-card p {
-                font-size: 0.9rem;
+                font-size: 1.1rem; /* 모바일에서 글자 크기 키움 */
             }
             .final-call-to-action {
                 font-size: 2.2rem;
@@ -295,6 +299,12 @@
             }
             .owner-icon {
                 font-size: 3.5rem;
+            }
+            .coming-soon-header .coming-soon-text {
+                font-size: 2.5rem; /* 더 작은 화면에서 줄바꿈 방지를 위한 추가 조정 */
+            }
+            .coming-soon-header h1 {
+                font-size: 1.8rem; /* 더 작은 화면에서 줄바꿈 방지를 위한 추가 조정 */
             }
         }
     </style>
