@@ -259,6 +259,11 @@
             .final-call-to-action {
                 font-size: 2.2rem;
             }
+            
+            /* 모바일에서만 줄바꿈 보이게 함 (768px 이하) */
+            .mobile-break {
+                display: block;
+            }
         }
         
         @media (max-width: 600px) { 
@@ -275,11 +280,11 @@
                 text-align: center;
                 white-space: normal; /* 모바일에선 다시 줄바꿈 허용 */
             }
-            /* 모바일에서만 줄바꿈 보이게 함 */
-            .mobile-break {
-                display: block;
-            }
+            
+            /* .mobile-break는 768px 미디어 쿼리로 이동됨 */
+            
             .speech-bubble:before {
+                content: "";
                 top: -10px; 
                 left: 50%;
                 transform: translateX(-50%);
@@ -315,7 +320,7 @@
             </div>
             
             <!-- (추가) 솔루션 영역 - 흰색 카드로 감싸기 --><div class="solution-wrapper">
-                <h2>사장님의 의견을 반영해, 이렇게 바뀝니다!</h2>
+                <h2>사장님의 의견을 반영해,<br class="mobile-break"> 이렇게 바뀝니다!</h2>
 
                 <div class="solution-grid">
                     
