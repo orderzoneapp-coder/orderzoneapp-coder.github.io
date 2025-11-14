@@ -84,7 +84,9 @@
             font-weight: 700; 
             color: #4F46E5;
             margin-bottom: 40px;
-            opacity: 1; 
+            /* opacity: 1;  -->> 애니메이션을 위해 제거 */
+            animation: fadeInUp 0.8s ease-out 0.7s forwards; /* (2순위) 애니메이션 */
+            opacity: 0; /* 애니메이션을 위해 추가 */
         }
         
         /* 사장님 말씀 인용 */
@@ -156,13 +158,13 @@
 
         /* 솔루션 영역 전체를 감싸는 흰색 카드 */
         .solution-wrapper {
-            background-color: #f4f8ff; /* 수정: 아주 연한 파란색 배경 */
+            /* background-color: #f4f8ff; */ /* 수정: 아주 연한 파란색 배경 -->> 제거 */
             border-radius: 20px; /* 둥근 모서리 */
-            padding: 40px; /* 내부 여백 */
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.07); /* 부드러운 그림자 */
-            margin-top: 40px; /* 말풍선과의 간격 */
+            /* padding: 40px; */ /* 내부 여백 -->> 제거 */
+            /* box-shadow: 0 15px 30px rgba(0, 0, 0, 0.07); */ /* 부드러운 그림자 -->> 제거 */
+            margin-top: 40px; /* H2와의 간격 */
             text-align: center;
-            animation: fadeInUp 0.8s ease-out 0.7s forwards; /* (2순위) 애니메이션 */
+            animation: fadeInUp 0.8s ease-out 0.9s forwards; /* (3순위) 애니메이션 (지연시간 0.7s -> 0.9s) */
             opacity: 0;
             transform: translateY(20px);
         }
@@ -171,7 +173,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
             gap: 24px;
-            margin-top: 24px;
+            /* margin-top: 24px; -->> 제거 (H2가 밖으로 빠졌으므로) */
         }
 
         .solution-card {
@@ -329,8 +331,13 @@
                 </div>
             </div>
             
-            <!-- (추가) 솔루션 영역 - 흰색 카드로 감싸기 --><div class="solution-wrapper">
-                <h2>사장님의 의견을 반영해,<br class="mobile-break"> 이렇게 바뀝니다!</h2>
+            <!-- (추가) H2 제목을 밖으로 분리 -->
+            <h2>사장님의 의견을 반영해,<br class="mobile-break"> 이렇게 바뀝니다!</h2>
+            
+            <!-- (수정) 솔루션 영역 - 배경/패딩/그림자 제거, 카드만 감싸는 역할 -->
+            <div class="solution-wrapper">
+                
+                <!-- H2가 여기에서 밖으로 이동했습니다 -->
 
                 <div class="solution-grid">
                     
@@ -358,7 +365,7 @@
     <!-- 섹션 3: 마지막 CTA --><footer class="final-call-to-action-wrapper">
         <div class="container">
             <p class="final-call-to-action">
-                11월 19일부터 주문이 ‘<strong>2배</strong>’ 빨라집니다!
+                0월0일부터 주문이 ‘<strong>2배</strong>’ 빨라집니다!
             </p>
         </div>
     </footer>
