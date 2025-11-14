@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>빠른 주문, 더 쉽고 빨라집니다!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Pretendard 폰트 적용 */
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        body {
+            font-family: 'Pretard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background-color: #f5f7fa; /* 연한 회색 배경 */
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+        
+        .full-width-section {
+            width: 100%;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* COMING SOON 섹션 */
+        .coming-soon-header {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+        .coming-soon-header .coming-soon-text {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -1.5px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+            display: block;
+            animation: fadeIn 1s ease-out;
+        }
+        .coming-soon-header h1 {
+            color: white;
+            font-size: 2.75rem;
+            line-height: 1.3;
+            margin-bottom: 0;
+            font-weight: 800;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+        
+        /* 공통 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* 핵심: 개선점 강조 섹션 */
+        .improvement-section {
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .improvement-section h2 {
+            font-family: 'Pretendard', sans-serif; 
+            font-size: 2.2rem; 
+            font-weight: 700; 
+            color: #4F46E5;
+            margin-bottom: 40px;
+            opacity: 1; 
+        }
+        
+        /* 사장님 말씀 인용 */
+        .owner-quote-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px; 
+            margin-bottom: 25px;
+            padding: 20px 16px 0 16px;
+            animation: fadeInUp 0.8s ease-out 0.5s forwards; /* (1순위) 애니메이션 */
+            opacity: 0;
+        }
+
+        .owner-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .owner-icon {
+            font-size: 4rem; 
+            line-height: 1;
+        }
+        
+        .owner-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* 말풍선 배경색 노랑색으로 변경 및 텍스트 색상 조정 */
+        .speech-bubble {
+            font-size: 1.4rem; 
+            font-weight: 600; 
+            padding: 18px 25px;
+            position: relative;
+            background: #FFD700; /* 노란색 배경 */
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 550px; 
+            margin-left: 0; 
+            margin-right: 0;
+            color: #1e293b; /* 검정색 텍스트 */
+            line-height: 1.5;
+            white-space: nowrap; /* 줄바꿈 방지 */
+        }
+        
+        /* 모바일용 줄바꿈 기본 숨김 */
+        .mobile-break {
+            display: none;
+        }
+        
+        .speech-bubble:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -10px; 
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #FFD700; /* 노란색 꼬리 */
+        }
+
+        /* 솔루션 영역 전체를 감싸는 흰색 카드 */
+        .solution-wrapper {
+            background-color: #f4f8ff; /* 수정: 아주 연한 파란색 배경 */
+            border-radius: 20px; /* 둥근 모서리 */
+            padding: 40px; /* 내부 여백 */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.07); /* 부드러운 그림자 */
+            margin-top: 40px; /* 말풍선과의 간격 */
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.7s forwards; /* (2순위) 애니메이션 */
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .solution-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12); /* 그림자 진하게 */
+            text-align: center;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .solution-card .icon {
+            font-size: 3.5rem; 
+            color: #7C3AED; 
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+        .solution-card h4 {
+            font-size: 1.5rem; 
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .solution-card p {
+            font-size: 1rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        /* 마지막 CTA */
+        .final-call-to-action-wrapper {
+            background-color: #1e293b;
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-top: 60px; 
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+        }
+        .final-call-to-action {
+            color: white;
+            font-size: 2.75rem; 
+            font-weight: 800;
+            line-height: 1.3;
+            animation: fadeIn 1s ease-out 1.2s forwards; /* 애니메이션 지연 */
+            opacity: 0;
+        }
+        .final-call-to-action strong {
+            color: #FFD700; 
+        }
+
+        /* 작은 화면 대응 (모바일) */
+        @media (max-width: 768px) {
+            .coming-soon-header {
+                padding: 40px 15px;
+            }
+            .coming-soon-header .coming-soon-text {
+                font-size: 2.8rem;
+            }
+            .coming-soon-header h1 {
+                font-size: 2.1rem;
+            }
+            .improvement-section {
+                padding: 40px 0;
+            }
+            .improvement-section h2 {
+                font-size: 1.9rem; /* 모바일 폰트 크기 최종 조정 */
+            }
+            .solution-wrapper {
+                padding: 30px 20px;
+                margin-top: 30px;
+            }
+            .solution-card {
+                padding: 24px;
+            }
+            .solution-card .icon {
+                font-size: 3rem;
+            }
+            .solution-card h4 {
+                font-size: 1.3rem;
+            }
+            .solution-card p {
+                font-size: 0.9rem;
+            }
+            .final-call-to-action {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 600px) { 
+            .owner-quote-container {
+                flex-direction: column; 
+                align-items: center;
+                gap: 15px; 
+            }
+            .speech-bubble {
+                margin-left: 0;
+                width: 100%;
+                font-size: 1.2rem; 
+                padding: 15px 20px;
+                text-align: center;
+                white-space: normal; /* 모바일에선 다시 줄바꿈 허용 */
+            }
+            /* 모바일에서만 줄바꿈 보이게 함 */
+            .mobile-break {
+                display: block;
+            }
+            .speech-bubble:before {
+                top: -10px; 
+                left: 50%;
+                transform: translateX(-50%);
+                border-top: none;
+                border-bottom: 10px solid #FFD700; /* 노란색 꼬리 */
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+            }
+            .owner-icon {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 섹션 1: 커밍순 헤더 --><header class="coming-soon-header">
+        <span class="coming-soon-text">COMING SOON!</span>
+        <h1 class="font-bold">
+            빠른 주문, 더 쉽고 빨라집니다!
+        </h1>
+    </header>
+
+    <!-- 섹션 2: 사장님 의견 반영 + 3가지 핵심 개선점 --><section class="improvement-section full-width-section">
+        <div class="container">
+            
+            <!-- 사장님 말씀 인용 (문제 제기 영역) --><div class="owner-quote-container">
+                <div class="owner-profile"> 
+                    <div class="owner-icon">👨‍🍳</div> <!-- 아이콘 --><div class="owner-name">A식당</div> <!-- 텍스트 --></div>
+                <div class="speech-bubble">
+                    "매번 스크롤하며 상품 찾기<br class="mobile-break"> 너무 힘들었어요..."
+                </div>
+            </div>
+            
+            <!-- (추가) 솔루션 영역 - 흰색 카드로 감싸기 --><div class="solution-wrapper">
+                <h2>사장님의 의견을 반영해, 이렇게 바뀝니다!</h2>
+
+                <div class="solution-grid">
+                    
+                    <!-- 솔루션 1: 내 리스트 --><div class="solution-card">
+                        <div class="icon">📋</div>
+                        <h4>내 리스트에서 빠르게 주문!</h4>
+                        <p>리스트를 3가지로 분류해서<br>더 체계적으로 관리해 보세요!</p>
+                    </div>
+                    
+                    <!-- 솔루션 2: 검색 기능 (다시 추가) --><div class="solution-card">
+                        <div class="icon">🔍</div>
+                        <h4>내 리스트에서 바로 검색!</h4>
+                        <p>리스트가 길어져도 불편함 NO!<br>담아둔 상품을 검색으로 바로 찾으세요.</p>
+                    </div>
+
+                    <!-- 솔루션 3: 행사 상품 확인 --><div class="solution-card">
+                        <div class="icon">💸</div>
+                        <h4>단골특가도 한눈에 확인!</h4>
+                        <p>"더 저렴한 상품은 없을까?"<br>라는 고민을 해결해드립니다!</p>
+                    </div>
+                </div>
+            </div> <!-- .solution-wrapper 끝 --></div>
+    </section>
+    
+    <!-- 섹션 3: 마지막 CTA --><footer class="final-call-to-action-wrapper">
+        <div class="container">
+            <p class="final-call-to-action">
+                0월0일부터 주문이 ‘<strong>2배</strong>’ 빨라집니다!
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
