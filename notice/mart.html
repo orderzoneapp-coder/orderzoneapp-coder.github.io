@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오더즈 식자재 특가관</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        /* 커서 깜빡임 애니메이션 */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- 메인 히어로 섹션 -->
+    <section class="relative bg-slate-900 text-white overflow-hidden">
+        <!-- 배경 이미지 -->
+        <div class="absolute inset-0 z-0">
+             <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="물류창고 배경" class="w-full h-full object-cover opacity-40">
+        </div>
+        
+        <div class="relative z-10 max-w-3xl mx-auto px-6 py-16 text-center">
+            <span class="inline-block py-2 px-4 rounded-full bg-orange-500 text-white text-lg md:text-xl font-bold mb-6 animate-bounce shadow-lg">
+                사장님, 혹시 아직도?
+            </span>
+            <h2 class="text-3xl md:text-4xl font-black leading-tight mb-2">
+                식자재, 마트에서<br>구매하시나요?
+            </h2>
+            <p class="text-gray-300 text-lg mt-4 font-light">
+                농산뿐만 아니라 <span class="text-white font-bold border-b-2 border-orange-500">식자재도 거품없는 가격</span>으로 드립니다.
+            </p>
+        </div>
+    </section>
+
+    <!-- 핵심 가치 (Why Cheap?) -->
+    <section class="max-w-3xl mx-auto px-4 -mt-8 relative z-20">
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
+            <!-- 수정됨: Q. 스타일 통일 -->
+            <h3 class="text-center text-2xl font-black mb-8 text-slate-800 tracking-tight">
+                Q. "왜 이렇게 싼가요?"
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-center">
+                <!-- 이유 1 -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
+                    <!-- NO 뱃지 효과 -->
+                    <div class="absolute -right-8 top-3 bg-red-500 text-white text-xs font-black px-8 py-1 transform rotate-45 shadow-sm">NO!</div>
+                    
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm border border-slate-200 text-2xl">
+                        <i class="fa-solid fa-user-slash text-slate-700"></i>
+                    </div>
+                    <p class="font-bold text-lg text-slate-800">영업사원</p>
+                    <p class="text-sm text-slate-500 mt-1">인건비 거품 제거</p>
+                </div>
+
+                <!-- 이유 2 -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all">
+                    <!-- NO 뱃지 효과 -->
+                    <div class="absolute -right-8 top-3 bg-red-500 text-white text-xs font-black px-8 py-1 transform rotate-45 shadow-sm">NO!</div>
+
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm border border-slate-200 text-2xl">
+                        <i class="fa-solid fa-bullhorn text-slate-700"></i>
+                    </div>
+                    <p class="font-bold text-lg text-slate-800">광고비</p>
+                    <p class="text-sm text-slate-500 mt-1">마케팅 비용 절감</p>
+                </div>
+
+                <!-- 이유 3 (YES/Direct) - 수정됨: 라벨 딥그린 변경 -->
+                <div class="bg-green-50 rounded-xl p-5 border border-green-100 relative overflow-hidden group hover:shadow-md transition-all">
+                    <div class="absolute -right-8 top-3 bg-green-700 text-white text-[10px] font-black px-8 py-1 transform rotate-45 shadow-sm">DIRECT</div>
+
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm border border-green-200 text-2xl">
+                        <i class="fa-solid fa-truck-fast text-green-600"></i>
+                    </div>
+                    <p class="font-bold text-lg text-slate-800">물류창고 직발송</p>
+                    <p class="text-sm text-slate-500 mt-1">유통 단계 최소화</p>
+                </div>
+            </div>
+
+            <!-- 수정됨: 디자인 강화된 강조 박스 (배색 밝게 조정) -->
+            <div class="mt-8 bg-orange-50 p-6 rounded-xl text-center shadow-md border-2 border-orange-200 relative overflow-hidden transform hover:scale-[1.01] transition-transform">
+                <div class="relative z-10">
+                    <p class="text-slate-700 text-sm md:text-base font-medium mb-1">
+                        <i class="fa-solid fa-circle-check text-green-500 mr-1"></i>
+                        품질은 <span class="text-orange-700 font-bold border-b-2 border-orange-200">대기업 정품 100%</span> 그대로
+                    </p>
+                    <p class="text-2xl md:text-3xl font-black text-orange-600 mt-2">
+                        가격 거품만 쏙 뺐습니다!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 상품 쇼케이스 (비교 강조) -->
+    <section class="max-w-4xl mx-auto px-4 py-12 bg-pattern">
+        <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-slate-800">
+                지금 납품가와 직접 비교해보세요
+            </h3>
+            <p class="text-sm text-gray-500 mt-2">똑같은 제품, 가격표를 보면 거래처가 바뀝니다.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            
+            <!-- 상품 1: 마요네즈 -->
+            <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                <div class="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded font-bold z-10">BEST</div>
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                   <img src="https://img.danawa.com/prod_img/500000/039/726/img/1726039_1.jpg?shrink=330:*" alt="오뚜기 골드마요네즈" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">오뚜기</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">골드 마요네즈<br>(스파우트팩) 3.2kg</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상품 2: 설탕 -->
+            <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                 <div class="absolute top-2 left-2 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded font-bold z-10">대용량</div>
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                    <img src="https://img.danawa.com/prod_img/500000/104/104/img/1104104_1.jpg?shrink=330:*" alt="백설 하얀설탕" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">CJ 제일제당</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">백설 하얀설탕<br>15kg</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 상품 3: 식용유 -->
+             <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                    <img src="https://img.danawa.com/prod_img/500000/805/014/img/2014805_1.jpg?shrink=330:*" alt="백설 식용유" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">CJ 백설</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">콩기름(대두유)<br>18L 캔</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 상품 4: 다시다 -->
+             <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                    <img src="https://img.danawa.com/prod_img/500000/039/047/img/11047039_1.jpg?shrink=330:*" alt="쇠고기 다시다" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">CJ 제일제당</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">쇠고기 다시다<br>2kg / 1kg</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 상품 5: 캔류 -->
+             <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                    <img src="https://img.danawa.com/prod_img/500000/081/168/img/3168081_1.jpg?shrink=330:*" alt="후르츠칵테일" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">리치스/동원</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">후르츠칵테일 / 옥수수콘<br>업소용 3kg</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상품 6: 물엿 -->
+            <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                    <img src="https://img.danawa.com/prod_img/500000/157/242/img/1242157_1.jpg?shrink=330:*" alt="청정원 물엿" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">청정원/오뚜기</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">옛날 물엿<br>10kg / 5kg</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상품 7: 참기름 -->
+            <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                    <img src="https://img.danawa.com/prod_img/500000/017/632/img/1632017_1.jpg?shrink=330:*" alt="오뚜기 참기름" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">오뚜기/이츠웰</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">고소한 참기름<br>1.8L</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 상품 8: 밀가루 -->
+             <div class="bg-white p-3 rounded-lg shadow border border-gray-100 flex flex-col items-center relative hover:border-orange-500 transition-colors cursor-pointer group">
+                <div class="w-full h-24 bg-gray-50 rounded mb-2 flex items-center justify-center overflow-hidden p-2">
+                    <img src="https://img.danawa.com/prod_img/500000/690/697/img/1697690_1.jpg?shrink=330:*" alt="밀가루" class="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="w-full text-center">
+                    <p class="text-xs text-gray-500 mb-0.5">곰표/백설</p>
+                    <h4 class="text-xs font-bold text-gray-800 leading-tight mb-2 line-clamp-2">중력 밀가루 / 튀김가루<br>20kg / 1kg</h4>
+                    <div class="mt-1 border-t border-gray-100 pt-1">
+                        <span class="text-red-600 font-black text-lg tracking-tight">O,OOO원</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 검색 유도 섹션 (수정됨: 타이핑 시뮬레이션) -->
+    <section class="max-w-3xl mx-auto px-6 pb-16">
+        <div class="bg-gray-100 rounded-xl p-6 text-center text-gray-800 relative overflow-hidden border border-gray-200">
+            <div class="relative z-10">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl border border-gray-200">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-1">찾으시는 상품이 리스트에 없나요?</h3>
+                <p class="text-gray-500 text-sm mb-4">일반 식자재도 검색해보세요. 확실히 쌉니다.</p>
+                
+                <!-- 검색 시뮬레이션 영역 -->
+                <div class="bg-white border border-gray-300 rounded-lg px-4 py-3 flex items-center w-full md:max-w-md mx-auto shadow-sm">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3"></i>
+                    <div class="flex-1 text-left text-gray-700 font-medium">
+                        <span id="typing-text"></span><span class="cursor-blink text-orange-500">|</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">하단바의 검색 버튼을 이용해보세요.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 하단 고정 CTA 버튼 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+        <div class="max-w-3xl mx-auto flex gap-3">
+             <a href="http://pf.kakao.com/_PkUxgs/chat" class="flex-1 bg-white border border-slate-300 text-slate-700 py-3 rounded-lg font-bold hover:bg-gray-50 transition text-sm flex items-center justify-center">
+                문의하기
+            </a>
+            <a href="https://orderz.kr/?type=2" class="flex-[2] bg-orange-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-orange-700 transition shadow-lg animate-pulse flex items-center justify-center">
+                📉 납품 단가표 전체보기
+            </a>
+        </div>
+    </div>
+    
+    <!-- 여백 확보용 (하단 버튼 가림 방지) -->
+    <div class="h-24"></div>
+
+    <script>
+        // 타이핑 애니메이션 스크립트
+        document.addEventListener('DOMContentLoaded', () => {
+            const textElement = document.getElementById('typing-text');
+            const sequence = [
+                { text: '마', delay: 300 },
+                { text: '마요', delay: 300 },
+                { text: '마요네즈', delay: 1500 }, // 완성 후 잠시 대기
+                { text: '', delay: 500 } // 초기화
+            ];
+            
+            let step = 0;
+
+            function playSequence() {
+                const current = sequence[step];
+                textElement.textContent = current.text;
+                
+                step = (step + 1) % sequence.length;
+                setTimeout(playSequence, current.delay);
+            }
+
+            // 시작
+            setTimeout(playSequence, 500);
+        });
+    </script>
+
+</body>
+</html>
