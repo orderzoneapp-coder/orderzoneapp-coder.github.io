@@ -25,18 +25,19 @@
         <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs md:text-sm font-bold mb-4 animate-bounce">
             OPEN! 우리 동네 도매센터가 온라인으로 들어왔어요
         </span>
-        <!-- 폰트 크기 모바일 최적화: text-3xl -> md:text-6xl -->
-        <h1 class="text-3xl md:text-6xl font-bold mb-4 leading-snug md:leading-tight break-keep">
+        <!-- 폰트 크기 모바일 최적화: text-3xl -> text-[6.5vw] (화면 너비 비례) -->
+        <h1 class="text-[6.5vw] md:text-6xl font-bold mb-4 leading-snug md:leading-tight break-keep">
             직접 와서 보셔도 <span class="text-green-400">자신 있습니다</span>,<br>
             주문은 <span class="text-yellow-400">모바일</span>로 간편하게
         </h1>
-        <p class="text-base md:text-xl text-gray-200 mb-8 max-w-2xl leading-relaxed break-keep">
+        <!-- 폰트 크기 모바일 최적화: text-base -> text-[3.8vw] -->
+        <p class="text-[3.8vw] md:text-xl text-gray-200 mb-8 max-w-2xl leading-relaxed break-keep">
             현장에서 검증된 품질 그대로 배송해 드립니다.<br>
             무거운 짐은 내려놓고, <strong>앱으로 터치 한 번에</strong> 주문하세요.
         </p>
-        <!-- 버튼 크기 및 폰트 모바일 최적화 -->
+        <!-- 버튼 크기 및 폰트 모바일 최적화: text-base -> text-[4vw] -->
         <!-- w-full 제거하여 버튼 너비 줄임 (w-auto로 변경) -->
-        <a href="https://orderz.kr/shop/listtype.php?type=2" target="_blank" class="w-auto bg-white text-green-700 font-bold py-4 sm:py-3 px-8 rounded-xl sm:rounded-full text-base md:text-lg hover:bg-green-50 transition-colors shadow-lg inline-flex justify-center items-center">
+        <a href="https://orderz.kr/shop/listtype.php?type=2" target="_blank" class="w-auto bg-white text-green-700 font-bold py-4 sm:py-3 px-8 rounded-xl sm:rounded-full text-[4vw] md:text-lg hover:bg-green-50 transition-colors shadow-lg inline-flex justify-center items-center">
             지금 가장 저렴한 식자재 확인하기
         </a>
     </header>
@@ -45,7 +46,8 @@
     <!-- 섹션 여백 축소: py-12 (모바일) -> md:py-16 (PC) -->
     <section class="py-12 md:py-16 container mx-auto px-4">
         <div class="text-center mb-8 md:mb-12">
-            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 break-keep">왜 '오더즈'여야 할까요?</h2>
+            <!-- 섹션 제목 폰트: text-2xl -> text-[5.5vw] -->
+            <h2 class="text-[5.5vw] md:text-3xl font-bold text-slate-800 break-keep">왜 '오더즈'여야 할까요?</h2>
             <p class="text-sm md:text-base text-slate-500 mt-2 break-keep">온라인의 가격 경쟁력과 오프라인의 책임감을 더했습니다.</p>
         </div>
 
@@ -54,7 +56,8 @@
             <!-- 패딩 축소: p-6 (모바일) -> md:p-8 (PC) -->
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm text-center border border-slate-100 flex flex-col items-center h-full transition-transform hover:-translate-y-1 duration-300">
                 <div class="text-4xl md:text-5xl mb-4">📦</div>
-                <h3 class="text-lg md:text-xl font-bold mb-2">6,000여 종의 압도적 구색</h3>
+                <!-- 소제목 폰트: text-lg -> text-[4.5vw] -->
+                <h3 class="text-[4.5vw] md:text-xl font-bold mb-2">6,000여 종의 압도적 구색</h3>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6 md:mb-8 break-keep">
                     여기저기 주문할 필요 없습니다.<br>
                     한식, 중식, 일식부터 카페 재료까지<br>
@@ -71,7 +74,8 @@
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm text-center border-2 border-green-50 relative overflow-hidden flex flex-col items-center h-full transition-transform hover:-translate-y-1 duration-300">
                 <span class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">PICK UP</span>
                 <div class="text-4xl md:text-5xl mb-4">🏪</div>
-                <h3 class="text-lg md:text-xl font-bold mb-2">급할 땐 바로 픽업</h3>
+                <!-- 소제목 폰트: text-[4.5vw] -->
+                <h3 class="text-[4.5vw] md:text-xl font-bold mb-2">급할 땐 바로 픽업</h3>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6 md:mb-8 break-keep">
                     재료가 갑자기 떨어지셨나요?<br>
                     <strong>전화 주시면 재고 확인 후 픽업</strong>도 가능합니다.<br>
@@ -88,7 +92,8 @@
             <!-- Benefit 3 -->
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm text-center border border-slate-100 flex flex-col items-center h-full transition-transform hover:-translate-y-1 duration-300">
                 <div class="text-4xl md:text-5xl mb-4">🤝</div>
-                <h3 class="text-lg md:text-xl font-bold mb-2">1:1 맞춤 상품 소싱</h3>
+                <!-- 소제목 폰트: text-[4.5vw] -->
+                <h3 class="text-[4.5vw] md:text-xl font-bold mb-2">1:1 맞춤 상품 소싱</h3>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6 md:mb-8 break-keep">
                     찾으시는 식자재가 안 보이시나요?<br>
                     문의 남겨주시면 사장님이 쓰시던 것과<br>
@@ -111,7 +116,8 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-10 border-b border-slate-200 pb-4">
                 <div>
                     <span class="text-red-500 font-bold text-xs md:text-sm">ALWAYS LOW PRICE</span>
-                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-1 break-keep">매일 만나는 거품 뺀 도매가</h2>
+                    <!-- 섹션 제목 폰트: text-[5.5vw] -->
+                    <h2 class="text-[5.5vw] md:text-3xl font-bold text-slate-900 mt-1 break-keep">매일 만나는 거품 뺀 도매가</h2>
                     <p class="text-sm md:text-base text-slate-500 mt-2">특가가 아닙니다. 원래 저렴합니다.</p>
                 </div>
                 <div class="mt-4 md:mt-0 text-right hidden md:block">
@@ -129,7 +135,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-blue-100 text-blue-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">감칠맛 필수</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">2.5핵산(백설) 1kg</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">2.5핵산(백설) 1kg</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">14,500</span>
@@ -146,7 +152,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-amber-100 text-amber-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">베이킹/조리</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">갈색설탕_3kg[백설]</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">갈색설탕_3kg[백설]</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">5,500</span>
@@ -163,7 +169,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-green-100 text-green-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">절임용/김장</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">뉴슈가_60gx20[범아]</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">뉴슈가_60gx20[범아]</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">3,000</span>
@@ -180,7 +186,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-slate-200 text-slate-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">대용량 조미료</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">물엿_10kg[청정원]</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">물엿_10kg[청정원]</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">11,500</span>
@@ -197,7 +203,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-red-100 text-red-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">국물 맛내기</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">백설)쇠고기다시다 2kg</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">백설)쇠고기다시다 2kg</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">28,500</span>
@@ -214,7 +220,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-amber-100 text-amber-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">업소용 쌀</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">쌀(청운추미) 20kg</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">쌀(청운추미) 20kg</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">58,500</span>
@@ -231,7 +237,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-yellow-100 text-yellow-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">대용량 소스</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">오뚜기)골드마요네즈 3.2kg</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">오뚜기)골드마요네즈 3.2kg</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">12,800</span>
@@ -247,7 +253,7 @@
                     </div>
                     <div class="p-3 md:p-5">
                         <span class="bg-indigo-100 text-indigo-700 text-[10px] md:text-xs font-bold px-2 py-1 rounded inline-block mb-1">토핑 필수</span>
-                        <h4 class="text-sm md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">옥수수콘小(리치스) 425g</h4>
+                        <h4 class="text-[3.5vw] md:text-lg font-bold text-slate-800 break-keep leading-tight group-hover:text-green-600 transition-colors">옥수수콘小(리치스) 425g</h4>
                         <div class="mt-2 md:mt-3">
                             <div class="flex items-end gap-1 flex-wrap">
                                 <span class="text-red-600 font-bold text-lg md:text-2xl">1,100</span>
@@ -265,7 +271,8 @@
         <div class="container mx-auto px-4">
             <div class="text-center mb-8 md:mb-10">
                 <span class="text-green-600 font-bold text-xs md:text-sm tracking-wider">REAL REVIEWS</span>
-                <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 break-keep">이미 많은 사장님들이 이용하고 계십니다</h2>
+                <!-- 섹션 제목 폰트: text-[5.5vw] -->
+                <h2 class="text-[5.5vw] md:text-3xl font-bold text-slate-900 mt-2 break-keep">이미 많은 사장님들이 이용하고 계십니다</h2>
             </div>
             <div class="grid md:grid-cols-3 gap-4 md:gap-6">
                 <!-- Review 1 -->
@@ -323,7 +330,8 @@
         </div>
 
         <div class="relative z-10 px-4">
-            <h2 class="text-2xl md:text-4xl font-bold mb-4 md:mb-6 break-keep">사장님, 이제 핸드폰으로 편하게 주문하세요</h2>
+            <!-- CTA 섹션 제목 폰트: text-[5.5vw] -->
+            <h2 class="text-[5.5vw] md:text-4xl font-bold mb-4 md:mb-6 break-keep">사장님, 이제 핸드폰으로 편하게 주문하세요</h2>
             <p class="text-slate-400 mb-8 md:mb-10 max-w-xl mx-auto text-base md:text-lg leading-relaxed break-keep">
                 복잡한 가입 절차 없이,<br>
                 지금 바로 <strong>우리 동네 도매센터 상품</strong>을 확인할 수 있습니다.
