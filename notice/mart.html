@@ -54,7 +54,11 @@
         <div class="grid md:grid-cols-3 gap-6 md:gap-8 items-stretch">
             <!-- Benefit 1 -->
             <!-- 패딩 축소: p-6 (모바일) -> md:p-8 (PC) -->
-            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm text-center border border-slate-100 flex flex-col items-center h-full transition-transform hover:-translate-y-1 duration-300">
+            <!-- relative overflow-hidden 클래스 추가하여 라벨 배치 가능하게 수정 -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm text-center border border-slate-100 flex flex-col items-center h-full transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+                <!-- 라벨 추가: 사업자 전용 -->
+                <span class="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg shadow-sm">사업자 전용</span>
+                
                 <div class="text-4xl md:text-5xl mb-4">📦</div>
                 <!-- 소제목 폰트: text-lg -> text-[4.5vw] -->
                 <h3 class="text-[4.5vw] md:text-xl font-bold mb-2">6,000여 종의 압도적 구색</h3>
@@ -90,7 +94,11 @@
                 </div>
             </div>
             <!-- Benefit 3 -->
-            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm text-center border border-slate-100 flex flex-col items-center h-full transition-transform hover:-translate-y-1 duration-300">
+            <!-- relative overflow-hidden 클래스 추가 -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm text-center border border-slate-100 flex flex-col items-center h-full transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+                <!-- 라벨 추가: 전담 매니저 (추천 문구 적용) -->
+                <span class="absolute top-0 right-0 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg shadow-sm">전담 매니저</span>
+
                 <div class="text-4xl md:text-5xl mb-4">🤝</div>
                 <!-- 소제목 폰트: text-[4.5vw] -->
                 <h3 class="text-[4.5vw] md:text-xl font-bold mb-2">1:1 맞춤 상품 소싱</h3>
