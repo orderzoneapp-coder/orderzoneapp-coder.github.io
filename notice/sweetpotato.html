@@ -44,15 +44,15 @@
 
             <!-- 본문 수정: 모바일에서도 3줄로 보이도록 줄바꿈 태그 통일 -->
             <p class="text-stone-100 text-base md:text-xl mb-10 leading-relaxed max-w-2xl mx-auto drop-shadow-md font-medium px-4 break-keep">
-                손님이 먼저 알아보는 퀄리티.<br />
-                익산 황토밭에서 갓 캐낸 신선함 그대로,<br />
+            <p class="text-stone-100 text-base md:text-xl mb-10 leading-relaxed max-w-2xl mx-auto drop-shadow-md font-medium px-2">
+                손님이 먼저 알아보는 퀄리티.<br class="hidden md:block"/>
+                익산 황토밭에서 갓 캐낸 신선함 그대로,<br class="hidden md:block"/>
                 <span class="text-white font-extrabold border-b-2 border-yellow-500">도매가 그대로</span> 사장님 가게로 직송합니다.
             </p>
-            
             <div class="flex justify-center gap-4">
-                <button onclick="scrollToProducts()" class="bg-yellow-500 hover:bg-yellow-400 text-amber-900 font-bold py-4 px-10 rounded-full shadow-lg transition-all transform hover:scale-105 inline-block text-center cursor-pointer text-lg">
+                <a href="https://orderz.kr/shop/search.php?q=%EA%B3%A0%EA%B5%AC%EB%A7%88%ED%96%89%EC%82%AC" target="_blank" class="bg-yellow-500 hover:bg-yellow-400 text-amber-900 font-bold py-3 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 inline-block text-center cursor-pointer no-underline">
                     상품 보러가기
-                </button>
+                </a>
             </div>
         </div>
     </header>
@@ -122,11 +122,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- 상품 1: 소 -->
                 <div class="group bg-stone-50 rounded-xl shadow-lg border border-stone-200 overflow-hidden flex flex-col hover:border-red-300 transition-colors h-full">
-                    <div class="h-64 bg-stone-100 relative overflow-hidden">
+                    <div class="h-56 md:h-64 bg-stone-100 relative overflow-hidden">
                         <img src="https://oneapp2.godohosting.com/1211_%EA%B3%A0%EA%B5%AC%EB%A7%88%ED%96%89%EC%82%AC/%EC%86%8C.jpg" alt="고구마 (소)" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-yellow-600 shadow-md">호박고구마</span>
+                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-yellow-600">호박고구마</span>
                     </div>
-                    <div class="p-6 flex flex-col flex-1 justify-between bg-white">
+                    <div class="p-5 md:p-6 flex flex-col flex-1 justify-between bg-white">
                         <div>
                             <h4 class="text-lg md:text-xl font-bold text-stone-900 mb-6 flex items-baseline gap-2">
                                 고구마 (소)
@@ -137,11 +137,11 @@
                             <div class="flex flex-col mb-4">
                                 <span class="text-red-600 font-bold text-xs bg-red-50 px-2 py-0.5 rounded w-fit mb-1">경매 특가</span>
                                 <div class="flex items-end gap-1">
-                                    <span class="text-2xl font-extrabold text-stone-900">10,000</span>
-                                    <span class="text-base font-normal text-stone-500 mb-1">원</span>
+                                    <span class="text-xl md:text-2xl font-extrabold text-stone-900">10,000</span>
+                                    <span class="text-sm md:text-base font-normal text-stone-500 mb-1">원</span>
                                 </div>
                             </div>
-                            <a href="https://orderz.kr/shop/item.php?it_id=102012144" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-4 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-base cursor-pointer decoration-0">
+                            <a href="https://orderz.kr/shop/item.php?it_id=102012144" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-sm md:text-base cursor-pointer decoration-0">
                                 주문하기 <i class="fa-solid fa-utensils"></i>
                             </a>
                         </div>
@@ -150,12 +150,12 @@
 
                 <!-- 상품 2: 못난이 A급 -->
                 <div class="group bg-stone-50 rounded-xl shadow-lg border border-stone-200 overflow-hidden flex flex-col hover:border-red-300 transition-colors h-full">
-                    <div class="h-64 bg-stone-100 relative overflow-hidden">
-                        <!-- 이미지 회전 적용 -->
-                        <img src="https://oneapp2.godohosting.com/1211_%EA%B3%A0%EA%B5%AC%EB%A7%88%ED%96%89%EC%82%AC/%EB%AA%BB%EB%82%9C%EC%9D%B4.jpg" alt="고구마 못난이 A급" class="w-full h-full object-cover transform -rotate-90 group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-yellow-600 shadow-md">호박고구마</span>
+                    <div class="h-56 md:h-64 bg-stone-100 relative overflow-hidden">
+                        <!-- 이미지 회전 제거됨 -->
+                        <img src="https://oneapp2.godohosting.com/1211_%EA%B3%A0%EA%B5%AC%EB%A7%88%ED%96%89%EC%82%AC/%EB%AA%BB%EB%82%9C%EC%9D%B4.jpg" alt="고구마 못난이 A급" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-yellow-600">호박고구마</span>
                     </div>
-                    <div class="p-6 flex flex-col flex-1 justify-between bg-white">
+                    <div class="p-5 md:p-6 flex flex-col flex-1 justify-between bg-white">
                         <div>
                             <h4 class="text-lg md:text-xl font-bold text-stone-900 mb-6 flex items-baseline gap-2">
                                 고구마 못난이 A급
@@ -166,11 +166,11 @@
                             <div class="flex flex-col mb-4">
                                 <span class="text-red-600 font-bold text-xs bg-red-50 px-2 py-0.5 rounded w-fit mb-1">경매 특가</span>
                                 <div class="flex items-end gap-1">
-                                    <span class="text-2xl font-extrabold text-stone-900">11,000</span>
-                                    <span class="text-base font-normal text-stone-500 mb-1">원</span>
+                                    <span class="text-xl md:text-2xl font-extrabold text-stone-900">11,000</span>
+                                    <span class="text-sm md:text-base font-normal text-stone-500 mb-1">원</span>
                                 </div>
                             </div>
-                            <a href="https://orderz.kr/shop/item.php?it_id=102012c144" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-4 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-base cursor-pointer decoration-0">
+                            <a href="https://orderz.kr/shop/item.php?it_id=102012c144" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-sm md:text-base cursor-pointer decoration-0">
                                 주문하기 <i class="fa-solid fa-utensils"></i>
                             </a>
                         </div>
@@ -179,11 +179,11 @@
 
                 <!-- 상품 3: 긴긴특 -->
                 <div class="group bg-stone-50 rounded-xl shadow-lg border border-stone-200 overflow-hidden flex flex-col hover:border-red-300 transition-colors h-full">
-                    <div class="h-64 bg-stone-100 relative overflow-hidden">
+                    <div class="h-56 md:h-64 bg-stone-100 relative overflow-hidden">
                         <img src="https://oneapp2.godohosting.com/1211_%EA%B3%A0%EA%B5%AC%EB%A7%88%ED%96%89%EC%82%AC/%EA%B8%B4%EA%B8%B4%ED%8A%B9.jpg" alt="고구마 긴긴특" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-yellow-600 shadow-md">호박고구마</span>
+                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-yellow-600">호박고구마</span>
                     </div>
-                    <div class="p-6 flex flex-col flex-1 justify-between bg-white">
+                    <div class="p-5 md:p-6 flex flex-col flex-1 justify-between bg-white">
                         <div>
                             <h4 class="text-lg md:text-xl font-bold text-stone-900 mb-6 flex items-baseline gap-2">
                                 고구마 긴긴특
@@ -194,11 +194,11 @@
                             <div class="flex flex-col mb-4">
                                 <span class="text-red-600 font-bold text-xs bg-red-50 px-2 py-0.5 rounded w-fit mb-1">경매 특가</span>
                                 <div class="flex items-end gap-1">
-                                    <span class="text-2xl font-extrabold text-stone-900">18,500</span>
-                                    <span class="text-base font-normal text-stone-500 mb-1">원</span>
+                                    <span class="text-xl md:text-2xl font-extrabold text-stone-900">18,500</span>
+                                    <span class="text-sm md:text-base font-normal text-stone-500 mb-1">원</span>
                                 </div>
                             </div>
-                            <a href="https://orderz.kr/shop/item.php?it_id=102012120" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-4 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-base cursor-pointer decoration-0">
+                            <a href="https://orderz.kr/shop/item.php?it_id=102012120" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-sm md:text-base cursor-pointer decoration-0">
                                 주문하기 <i class="fa-solid fa-utensils"></i>
                             </a>
                         </div>
@@ -207,12 +207,12 @@
 
                 <!-- 상품 4: 긴긴중 -->
                 <div class="group bg-stone-50 rounded-xl shadow-lg border border-stone-200 overflow-hidden flex flex-col hover:border-red-300 transition-colors h-full">
-                    <div class="h-64 bg-stone-100 relative overflow-hidden">
-                        <!-- 이미지 회전 적용 -->
-                        <img src="https://oneapp2.godohosting.com/1211_%EA%B3%A0%EA%B5%AC%EB%A7%88%ED%96%89%EC%82%AC/%EA%B8%B4%EA%B8%B4%EC%A4%91.jpg" alt="고구마 긴긴중" class="w-full h-full object-cover transform -rotate-90 group-hover:scale-105 transition-transform duration-500">
-                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-orange-600 shadow-md">꿀고구마</span>
+                    <div class="h-56 md:h-64 bg-stone-100 relative overflow-hidden">
+                        <!-- 이미지 회전 제거됨 -->
+                        <img src="https://oneapp2.godohosting.com/1211_%EA%B3%A0%EA%B5%AC%EB%A7%88%ED%96%89%EC%82%AC/%EA%B8%B4%EA%B8%B4%EC%A4%91.jpg" alt="고구마 긴긴중" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1 rounded z-10 bg-orange-600">꿀고구마</span>
                     </div>
-                    <div class="p-6 flex flex-col flex-1 justify-between bg-white">
+                    <div class="p-5 md:p-6 flex flex-col flex-1 justify-between bg-white">
                         <div>
                             <h4 class="text-lg md:text-xl font-bold text-stone-900 mb-6 flex items-baseline gap-2">
                                 고구마 긴긴중
@@ -223,11 +223,11 @@
                             <div class="flex flex-col mb-4">
                                 <span class="text-red-600 font-bold text-xs bg-red-50 px-2 py-0.5 rounded w-fit mb-1">경매 특가</span>
                                 <div class="flex items-end gap-1">
-                                    <span class="text-2xl font-extrabold text-stone-900">18,500</span>
-                                    <span class="text-base font-normal text-stone-500 mb-1">원</span>
+                                    <span class="text-xl md:text-2xl font-extrabold text-stone-900">18,500</span>
+                                    <span class="text-sm md:text-base font-normal text-stone-500 mb-1">원</span>
                                 </div>
                             </div>
-                            <a href="https://orderz.kr/shop/item.php?it_id=102012130" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-4 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-base cursor-pointer decoration-0">
+                            <a href="https://orderz.kr/shop/item.php?it_id=102012130" target="_blank" class="w-full bg-stone-900 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 text-sm md:text-base cursor-pointer decoration-0">
                                 주문하기 <i class="fa-solid fa-utensils"></i>
                             </a>
                         </div>
