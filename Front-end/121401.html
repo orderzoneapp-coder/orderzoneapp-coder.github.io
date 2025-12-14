@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas UI Prototype</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+        }
+        canvas {
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: default; /* 캔버스 기본 커서 */
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="appCanvas"></canvas>
+
+<script>
+    // --- 1. 설정 및 상태 관리 ---
+    const canvas = document.getElementById('appCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 모바일 해상도 시뮬레이션 설정
+    const config = {
+        width: 375,
+        height: 812,
+        headerHeight: 60,
+        tabHeight: 50,
+        listControlHeight: 40,
+        itemHeight: 90,
+        sheetHeight: 140,
+        colors: {
+            primary: '#27ae60',
+            textDark: '#333333',
+            textGray: '#888888',
+            bgLight: '#f9f9f9',
+            line: '#eeeeee',
+            selectedBg: '#e8f5e9'
+        },
+        fonts: {
+            bold16: 'bold 16px sans-serif',
+            bold14: 'bold 14px sans-serif',
+            reg14: '14px sans-serif',
+            reg12: '12px sans-serif'
+        }
+    };
+
+    // 앱 상태 (State)
+    let state = {
+        scrollY: 0,
+        maxScrollY: 0,
+        isSheetVisible: false,
+        selectedCount: 0,
+        // 샘플 데이터
+        products: [
+            { id: 1, name: "흙쪽파 (1kg)단", unit: "EA", price: "5,400원", selected: false },
+            { id: 2, name: "애호박 / 특 (8kg)", unit: "BOX", price: "17,800원", selected: false },
+            { id: 3, name: "건흑목이버섯(중국)", unit: "1kg", price: "18,200원", selected: false },
+            { id: 4, name: "계란(왕란/30알)", unit: "1판", price: "6,600원", selected: false },
+            { id: 5, name: "숙주 (3.5kg)", unit: "BOX", price: "5,800원", selected: false },
+            { id: 6, name: "다부리_배추_4포기", unit: "BOX", price: "14,500원", selected: false },
+            { id: 7, name: "양파_왕20kg망", unit: "망", price: "23,900원", selected: false },
+            { id: 8, name: "깐쪽파(서울)(1kg)단", unit: "단", price: "15,300원", selected: false },
+             { id: 9, name: "감자/상/대 (20kg)", unit: "박스", price: "17,400원", selected: false }
+        ]
+    };
+
+    // --- 2. 초기화 및 유틸리티 함수 ---
+    function initCanvas() {
+        // 고해상도 디스플레이(Retina) 대응
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = config.width * dpr;
+        canvas.height = config.height * dpr;
+        canvas.style.width = `${config.width}px`;
+        canvas.style.height = `${config.height}px`;
+        ctx.scale(dpr, dpr);
+
+        // 최대 스크롤 계산
+        const contentHeight = state.products.length * config.itemHeight;
+        const viewportHeight = config.height - (config.headerHeight + config.tabHeight + config.listControlHeight);
+        state.maxScrollY = Math.max(0, contentHeight - viewportHeight);
+
+        draw(); // 최초 렌더링
+    }
+
+    // 텍스트 그리기 헬퍼
+    function drawText(text, x, y, font, color, align = 'left', baseline = 'middle') {
+        ctx.font = font;
+        ctx.fillStyle = color;
+        ctx.textAlign = align;
+        ctx.textBaseline = baseline;
+        ctx.fillText(text, x, y);
+    }
+    
+    // 사각형 그리기 헬퍼 (채우기)
+    function fillRect(x, y, w, h, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, w, h);
+    }
+
+    // 선 그리기 헬퍼
+    function drawLine(x1, y1, x2, y2, color, width = 1) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.stroke();
+    }
+
+
+    // --- 3. 메인 그리기 루프 (Rendering Loop) ---
+    function draw() {
+        ctx.clearRect(0, 0, config.width, config.height); // 화면 지우기
+
+        drawHeader();
+        drawTabs();
+        drawListControl();
+        drawProductList(); // 스크롤 영역
+        drawBottomSheet(); // 오버레이
+    }
+
+    function drawHeader() {
+        fillRect(0, 0, config.width, config.headerHeight, '#fff');
+        drawText('☰', 20, config.headerHeight / 2, config.fonts.bold16, config.colors.textDark);
+        drawText('ODERZ (Canvas ver.)', config.width / 2, config.headerHeight / 2, config.fonts.bold16, config.colors.primary, 'center');
+        drawLine(0, config.headerHeight, config.width, config.headerHeight, config.colors.line);
+    }
+
+    function drawTabs() {
+        const y = config.headerHeight;
+        fillRect(0, y, config.width, config.tabHeight, '#fff');
+        
+        const tabWidth = config.width / 3;
+        drawText('List 1 (기본)', tabWidth / 2, y + config.tabHeight / 2, config.fonts.bold14, config.colors.primary, 'center');
+        drawText('List 2', tabWidth * 1.5, y + config.tabHeight / 2, config.fonts.reg14, config.colors.textGray, 'center');
+        drawText('List 3', tabWidth * 2.5, y + config.tabHeight / 2, config.fonts.reg14, config.colors.textGray, 'center');
+
+        // Active 탭 표시줄
+        fillRect(0, y + config.tabHeight - 3, tabWidth, 3, config.colors.primary);
+        drawLine(0, y + config.tabHeight, config.width, y + config.tabHeight, config.colors.line);
+    }
+
+    function drawListControl() {
+        const y = config.headerHeight + config.tabHeight;
+        fillRect(0, y, config.width, config.listControlHeight, config.colors.bgLight);
+        
+        // 체크박스 (전체 선택용 - 시각적 표시만)
+        ctx.strokeStyle = config.colors.textGray;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(20, y + 12, 16, 16);
+        
+        drawText(`전체 선택 (총 ${state.products.length}개)`, 45, y + config.listControlHeight / 2, config.fonts.reg12, config.colors.textGray);
+        drawLine(0, y + config.listControlHeight, config.width, y + config.listControlHeight, config.colors.line);
+    }
+
+    function drawProductList() {
+        const startY = config.headerHeight + config.tabHeight + config.listControlHeight;
+        const listAreaHeight = config.height - startY;
+        
+        // 클리핑(Clipping): 스크롤 영역 밖으로 그리지 않도록 설정
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, startY, config.width, listAreaHeight);
+        ctx.clip();
+
+        let currentY = startY - state.scrollY;
+
+        state.products.forEach((product, index) => {
+            // 화면 밖에 있는 아이템은 그리지 않음 (성능 최적화)
+            if (currentY + config.itemHeight < startY || currentY > config.height) {
+                currentY += config.itemHeight;
+                return;
+            }
+
+            // 배경 (선택 시 색상 변경)
+            if (product.selected) {
+                fillRect(0, currentY, config.width, config.itemHeight, config.colors.selectedBg);
+            }
+
+            // 체크박스 그리기
+            const chkX = 20;
+            const chkY = currentY + (config.itemHeight - 16) / 2;
+            ctx.lineWidth = 1.5;
+            if (product.selected) {
+                fillRect(chkX, chkY, 16, 16, config.colors.primary);
+                // 체크 표시 (v) 그리기
+                ctx.beginPath();
+                ctx.moveTo(chkX + 4, chkY + 8);
+                ctx.lineTo(chkX + 7, chkY + 11);
+                ctx.lineTo(chkX + 12, chkY + 4);
+                ctx.strokeStyle = '#fff';
+                ctx.stroke();
+            } else {
+                ctx.strokeStyle = '#ccc';
+                ctx.strokeRect(chkX, chkY, 16, 16);
+            }
+
+            // 이미지 플레이스홀더
+            fillRect(50, currentY + 20, 50, 50, '#eee');
+
+            // 텍스트 정보
+            const textX = 115;
+            drawText(product.name, textX, currentY + 30, config.fonts.bold14, config.colors.textDark);
+            drawText(product.unit, textX, currentY + 50, config.fonts.reg12, config.colors.textGray);
+            drawText(product.price, textX, currentY + 70, config.fonts.bold14, config.colors.primary);
+
+            // 핸들 아이콘
+            drawText('≡', config.width - 30, currentY + config.itemHeight / 2, config.fonts.bold16, '#ccc', 'center');
+            
+            // 하단 라인
+            drawLine(15, currentY + config.itemHeight, config.width - 15, currentY + config.itemHeight, config.colors.line);
+
+            currentY += config.itemHeight;
+        });
+
+        ctx.restore(); // 클리핑 해제
+    }
+
+    function drawBottomSheet() {
+        if (!state.isSheetVisible) return;
+
+        // 배경 어둡게 (Dimmed background)
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillRect(0, 0, config.width, config.height);
+
+        // 시트 본체 (아래에서 올라오는 애니메이션은 생략하고 바로 그림)
+        const sheetY = config.height - config.sheetHeight;
+        
+        // 둥근 모서리 배경
+        ctx.beginPath();
+        ctx.moveTo(0, sheetY + 16);
+        ctx.quadraticCurveTo(0, sheetY, 16, sheetY);
+        ctx.lineTo(config.width - 16, sheetY);
+        ctx.quadraticCurveTo(config.width, sheetY, config.width, sheetY + 16);
+        ctx.lineTo(config.width, config.height);
+        ctx.lineTo(0, config.height);
+        ctx.closePath();
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+
+        // 선택 개수 텍스트
+        drawText(`${state.selectedCount}개 선택됨`, 20, sheetY + 30, config.fonts.bold14, config.colors.textDark);
+
+        // 버튼 그리기
+        const btnY = sheetY + 60;
+        const btnHeight = 50;
+        const gap = 10;
+        const btnWidth = (config.width - 40 - (gap * 2)) / 3;
+
+        // 버튼 1: 삭제 (Outline)
+        ctx.strokeStyle = '#ddd';
+        ctx.strokeRect(20, btnY, btnWidth, btnHeight);
+        drawText('삭제', 20 + btnWidth/2, btnY + btnHeight/2, config.fonts.bold14, config.colors.textDark, 'center');
+        
+        // 버튼 2: List 2 추가 (Primary)
+        fillRect(20 + btnWidth + gap, btnY, btnWidth, btnHeight, config.colors.primary);
+        drawText('List 2 추가', 20 + btnWidth + gap + btnWidth/2, btnY + btnHeight/2, config.fonts.bold14, '#fff', 'center');
+
+        // 버튼 3: List 3 추가 (Secondary - 그냥 회색으로 표현)
+        fillRect(20 + (btnWidth + gap) * 2, btnY, btnWidth, btnHeight, config.colors.textDark);
+        drawText('List 3 추가', 20 + (btnWidth + gap) * 2 + btnWidth/2, btnY + btnHeight/2, config.fonts.bold14, '#fff', 'center');
+    }
+
+
+    // --- 4. 이벤트 핸들링 (인터랙션) ---
+
+    // 클릭 이벤트 (Hit Testing)
+    canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        // 캔버스 기준 상대 좌표 계산
+        const x = (e.clientX - rect.left) * (config.width / rect.width);
+        const y = (e.clientY - rect.top) * (config.height / rect.height);
+
+        // 1. 바텀 시트 버튼 클릭 체크 (시트가 열려있을 때만)
+        if (state.isSheetVisible) {
+             const sheetY = config.height - config.sheetHeight;
+             const btnY = sheetY + 60;
+             const btnHeight = 50;
+             const gap = 10;
+             const btnWidth = (config.width - 40 - (gap * 2)) / 3;
+
+            if (y >= btnY && y <= btnY + btnHeight) {
+                // 버튼 영역 클릭 시 액션 수행 (여기서는 초기화)
+                alert(`${state.selectedCount}개 항목을 이동/복사 처리했습니다.`);
+                resetSelection();
+                return; // 리스트 클릭으로 넘어가지 않도록 종료
+            }
+             // 바텀 시트 배경 클릭 시 닫기
+            if (y < sheetY) {
+                 // resetSelection(); // 배경 눌렀을 때 닫고 싶으면 주석 해제
+            }
+        }
+
+
+        // 2. 리스트 아이템 클릭 체크
+        const listStartY = config.headerHeight + config.tabHeight + config.listControlHeight;
+        // 클릭한 좌표에 스크롤 위치를 더해서 실제 컨텐츠 기준 Y좌표 계산
+        const adjustedY = y + state.scrollY - listStartY;
+
+        if (adjustedY > 0) {
+            const clickedIndex = Math.floor(adjustedY / config.itemHeight);
+            if (clickedIndex >= 0 && clickedIndex < state.products.length) {
+                // 아이템 토글
+                state.products[clickedIndex].selected = !state.products[clickedIndex].selected;
+                updateSelectionState();
+                draw(); // 상태 변경 후 다시 그리기
+            }
+        }
+    });
+
+    // 스크롤 이벤트 (마우스 휠)
+    canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        // 스크롤 방향과 속도 조절
+        state.scrollY += e.deltaY * 0.5;
+        // 스크롤 범위 제한 (바운스 효과 없이 딱 멈춤)
+        state.scrollY = Math.max(0, Math.min(state.scrollY, state.maxScrollY));
+        
+        if (!state.isSheetVisible) {
+             draw(); // 시트가 없을 때만 다시 그림 (시트 있으면 배경 스크롤 막음)
+        }
+    }, { passive: false });
+
+
+    // 상태 업데이트 유틸리티
+    function updateSelectionState() {
+        state.selectedCount = state.products.filter(p => p.selected).length;
+        state.isSheetVisible = state.selectedCount > 0;
+    }
+
+    function resetSelection() {
+        state.products.forEach(p => p.selected = false);
+        updateSelectionState();
+        draw();
+    }
+
+
+    // --- 실행 ---
+    initCanvas();
+
+</script>
+</body>
+</html>
