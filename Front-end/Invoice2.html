@@ -151,9 +151,9 @@
                         <span class="font-medium text-gray-600">2025-10-22 14:30</span>
                     </div>
                     <!-- 배송(예정)일: 강조 -->
-                    <div class="text-xs flex items-center mt-1 pt-1">
+                    <div class="text-xs flex items-center text-gray-500">
                         <span class="text-gray-800 w-20 inline-block font-bold">배송(예정)일</span>
-                        <span class="font-bold text-gray-900 bg-green-50 px-1.5 py-0.5 rounded text-green-800">2025-10-25</span>
+                        <span class="font-bold text-gray-900">2025-10-25</span>
                     </div>
                 </div>
                 <div class="flex-shrink-0">
@@ -164,7 +164,8 @@
             </div>
 
             <!-- 주문 내역 -->
-            <div class="p-5">
+            <!-- [수정] 헤더와 패딩을 맞추기 위해 p-5 -> p-4 로 변경 -->
+            <div class="p-4">
                 <h3 class="text-sm font-bold text-gray-800 mb-3">주문 상세 내역</h3>
 
                 <!-- 컬럼 헤더 -->
@@ -308,16 +309,18 @@
                 <!-- 배송 정보 (개선된 레이아웃: 박스형) -->
                 <div class="mt-5 bg-gray-50 rounded-lg p-4">
                     <h4 class="text-sm font-bold text-gray-800 mb-2 border-b border-gray-200 pb-1">배송지 정보</h4>
-                    <div class="grid grid-cols-[3.5rem_1fr] gap-2 text-sm">
+                    <!-- [수정] 라벨 너비 3.5rem -> 4rem ('요청사항' 4글자 대응) -->
+                    <div class="grid grid-cols-[4rem_1fr] gap-2 text-sm">
                         
                         <span class="text-gray-500 text-xs font-medium pt-0.5">받는 분</span>
-                        <span class="text-gray-800 font-medium">홍길동</span>
+                        <span class="text-gray-800 font-medium">우리농산</span>
                         
                         <span class="text-gray-500 text-xs font-medium pt-0.5">주소</span>
                         <span class="text-gray-800 break-all leading-snug">서울시 강남구 테헤란로 123, 456호 (역삼동, 오더즈빌딩)</span>
                         
-                        <span class="text-gray-500 text-xs font-medium pt-0.5">요청</span>
-                        <span class="text-gray-800 leading-snug text-gray-600">문 앞에 놓아주세요. 공동현관 비밀번호 1234#</span>
+                        <!-- [수정] 요청 -> 요청사항 -->
+                        <span class="text-gray-500 text-xs font-medium pt-0.5">요청사항</span>
+                        <span class="text-gray-800 leading-snug text-gray-600">냉동 식품은 냉동고에 넣어주세요</span>
                     </div>
                 </div>
 
