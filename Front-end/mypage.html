@@ -25,10 +25,11 @@
         /* 주문 상태별 색상 */
         .status-badge {
             display: inline-block;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
+            padding: 0.25rem 0.3rem; /* 좌우 패딩 미세 조정 */
+            font-size: 0.7rem; /* 폰트 사이즈 미세 조정 */
             font-weight: 600;
             border-radius: 0.25rem;
+            white-space: nowrap; /* 뱃지 줄바꿈 방지 */
         }
         .status-deposit-wait { background-color: #fff7ed; color: #c2410c; }
         .status-delivery-complete { background-color: #f0fdfa; color: #0f766e; }
@@ -40,7 +41,7 @@
 
         /* 메인 탭 버튼 크기 조정 */
         .filter-btn {
-            padding: 6px 12px;
+            padding: 6px 10px; /* 패딩 미세 축소 */
             font-size: 0.875rem;
             border-radius: 16px;
             border: 1px solid #D1D5DB;
@@ -48,8 +49,8 @@
             color: #374151;
             transition: all 0.2s;
             flex-shrink: 0; 
-            margin-right: 8px;
-            position: relative; /* 뱃지 위치를 잡기 위해 relative 추가 */
+            margin-right: 6px;
+            position: relative; 
         }
         .filter-btn:last-child { margin-right: 16px; }
         .filter-btn:hover { background-color: #F3F4F6; }
@@ -131,30 +132,32 @@
         .notice-col-date {
             width: 25%;
             text-align: center;
-            color: #6b7280; /* 날짜 색상 약간 연하게 */
+            color: #6b7280; 
             font-weight: 500;
-            padding: 0 4px;
-            padding-top: 2px; /* 날짜와 내용의 시각적 정렬 보정 */
+            padding: 0 2px; /* 패딩 축소 */
+            padding-top: 2px; 
+            white-space: nowrap; /* 날짜 줄바꿈 방지 */
+            letter-spacing: -0.025em; /* 자간 축소 */
         }
         .notice-col-content {
             width: 75%;
-            padding: 0 16px; /* 좌우 여백 */
+            padding: 0 8px; /* 좌우 여백 축소 */
             text-align: left;
             word-break: keep-all;
         }
         .notice-main-text {
-            font-size: 0.875rem; /* 14px */
+            font-size: 0.875rem; 
             font-weight: 700;
             margin-bottom: 2px;
         }
         .notice-sub-text {
-            font-size: 0.75rem; /* 12px */
-            color: #6B7280; /* gray-500 */
+            font-size: 0.75rem; 
+            color: #6B7280; 
         }
 
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 tracking-tight"> <!-- 전체적으로 자간을 좁게 설정 -->
 
     <div class="max-w-md mx-auto bg-white min-h-screen">
         
@@ -176,7 +179,8 @@
                     <div class="ml-4">
                         <p class="font-bold text-lg">꽃놀이식당</p>
                         <p class="text-sm text-gray-600 mt-1">경남 창원시 성산구 가양로 34</p>
-                        <div class="mt-3 flex items-center space-x-3 text-sm text-slate-600">
+                        <!-- 스크롤 제거 및 줄바꿈 허용 (flex-wrap, gap 사용) -->
+                        <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
                             <a href="#" class="hover:underline">정보수정</a>
                             <span class="text-gray-300">|</span>
                             <a href="#" class="hover:underline">로그아웃</a>
@@ -196,12 +200,12 @@
             <div class="mx-4 mb-4 p-0 border rounded-lg bg-white shadow-sm">
                 <!-- 잔액/결제 관리 -->
                 <section class="p-4 pt-3 pb-2"> 
-                    <div class="flex items-center justify-end">
-                        <div class="flex items-center">
-                            <span class="text-sm text-gray-600">입금 계좌:</span>
-                            <span id="accountNumber" class="text-xs font-semibold text-gray-800 ml-1 mr-2">농협 302-1586-5706-41 이무철</span>
+                    <div class="flex items-center justify-end flex-wrap">
+                        <div class="flex items-center mr-2">
+                            <span class="text-sm text-gray-600 whitespace-nowrap">입금 계좌:</span>
+                            <span id="accountNumber" class="text-xs font-semibold text-gray-800 ml-1 whitespace-nowrap">농협 302-1586-5706-41 이무철</span>
                         </div>
-                        <button id="copyAccountBtn" class="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-semibold rounded hover:bg-gray-300 relative flex-shrink-0">
+                        <button id="copyAccountBtn" class="px-2 py-1 bg-gray-200 text-gray-700 text-xs font-semibold rounded hover:bg-gray-300 relative flex-shrink-0 mt-1 sm:mt-0">
                             복사
                             <span id="copyMessage" class="absolute left-1/2 -top-8 -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded hidden whitespace-nowrap">복사되었습니다!</span>
                         </button>
@@ -221,7 +225,7 @@
                             </button>
                             <button class="main-tab-btn filter-btn" data-tab="settlements">정산내역</button>
                         </div>
-                        <div id="unpaid-balance-display" class="flex-shrink-0 text-right text-sm font-bold">
+                        <div id="unpaid-balance-display" class="flex-shrink-0 text-right text-sm font-bold whitespace-nowrap ml-2">
                             <span id="unpaid-balance-label" class="text-gray-600 mr-1">미수금:</span>
                             <span id="current-unpaid-amount" class="text-red-600">49,000원</span>
                         </div>
@@ -239,21 +243,21 @@
                 </section>
             </div>
 
-            <!-- 탭 컨텐츠 영역 -->
-            <div id="tab-contents" class="p-4 pt-0"> 
+            <!-- 탭 컨텐츠 영역 (모바일 여백 최적화: p-4 -> px-2 pt-0) -->
+            <div id="tab-contents" class="px-2 pt-0 pb-4"> 
                 
                 <!-- 최근 주문내역 탭 -->
                 <div id="orders" class="tab-content active">
                     <div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200">
                         <div class="flex">
-                            <div id="sort-order-date" class="w-1/4 text-center px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
+                            <div id="sort-order-date" class="w-[22%] text-center px-0.5 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-0.5 whitespace-nowrap">
                                 <span>일자</span>
                                 <span id="sort-order-arrow">▼</span>
                             </div>
-                            <div class="w-[45%] px-2 py-3 text-sm font-semibold text-gray-600 text-center">
+                            <div class="w-[48%] px-1 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">
                                 판매
                             </div>
-                            <div class="w-[30%] px-1 py-3 text-sm font-semibold text-gray-600 text-center">
+                            <div class="w-[30%] px-0.5 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">
                                 입금
                             </div>
                         </div>
@@ -261,121 +265,121 @@
                     <div id="order-list-container"> 
                         <!-- 1. 입금대기 -->
                         <div class="order-item-row border-b py-3 flex items-stretch">
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-26</p>
+                            <div class="w-[22%] text-center px-0.5">
+                                <p class="text-sm text-gray-700 whitespace-nowrap tracking-tighter">2025-08-26</p>
                                 <div class="mt-1"><span class="status-badge status-deposit-wait">입금대기</span></div>
                             </div>
-                            <div class="w-[45%] px-2 text-center">
+                            <div class="w-[48%] px-1 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">양파 20KG 외 2건</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문: 51,000원</p>
-                                    <p class="hide-if-zero">추가: 0원</p>
+                                <div class="text-[11px] text-gray-500 mt-1 space-y-0.5 tracking-tight"> <!-- 폰트 11px로 조정 -->
+                                    <p class="whitespace-nowrap">주문: 51,000원</p>
+                                    <p class="hide-if-zero whitespace-nowrap">추가: 0원</p>
                                     <!-- 취소금액 빨간색 적용 -->
-                                    <p class="text-red-600 font-medium">취소: -2,000원</p>
+                                    <p class="text-red-600 font-medium whitespace-nowrap">취소: -2,000원</p>
                                 </div>
                             </div>
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
-                                <div class="space-y-1 text-right">
-                                    <p>0원(입금)</p>
-                                    <p class="hide-if-zero">0원(포인트(쿠))</p>
-                                    <p class="hide-if-zero">0원(환불)</p>
+                            <div class="w-[30%] px-0.5 text-[11px] text-gray-500 flex flex-col justify-between"> <!-- 폰트 11px로 조정 -->
+                                <div class="space-y-1 text-right tracking-tighter">
+                                    <p class="whitespace-nowrap">0원(입금)</p>
+                                    <p class="hide-if-zero whitespace-nowrap">0원(포인트)</p>
+                                    <p class="hide-if-zero whitespace-nowrap">0원(환불)</p>
                                 </div>
-                                <div class="text-right"><p class="font-bold text-red-600">49,000원(잔액)</p></div>
+                                <div class="text-right"><p class="font-bold text-red-600 whitespace-nowrap tracking-tighter">49,000원(잔액)</p></div>
                             </div>
                         </div>
 
                         <!-- 2. 배송완료 -->
                         <div class="order-item-row border-b py-3 flex items-stretch cursor-pointer hover:bg-gray-50" onclick="window.location.href='https://orderz.co.kr/Front-end/Invoice2.html'">
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-25</p>
+                            <div class="w-[22%] text-center px-0.5">
+                                <p class="text-sm text-gray-700 whitespace-nowrap tracking-tighter">2025-08-25</p>
                                 <div class="mt-1"><span class="status-badge status-delivery-complete">배송완료</span></div>
                             </div>
-                            <div class="w-[45%] px-2 text-center">
+                            <div class="w-[48%] px-1 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">흙쪽파(1kg)단 외 1건</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문: 32,700원</p>
+                                <div class="text-[11px] text-gray-500 mt-1 space-y-0.5 tracking-tight">
+                                    <p class="whitespace-nowrap">주문: 32,700원</p>
                                     <!-- 취소금액 빨간색 적용 -->
-                                    <p class="text-red-600 font-medium">취소: -4,000원</p>
+                                    <p class="text-red-600 font-medium whitespace-nowrap">취소: -4,000원</p>
                                     <!-- 환불액 파란색 유지, '원' -> '+P'로 변경 -->
-                                    <p class="text-blue-600 font-medium">환불: +4,000P</p>
+                                    <p class="text-blue-600 font-medium whitespace-nowrap">환불: +4,000P</p>
                                 </div>
                             </div>
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
-                                <div class="space-y-1 text-right">
-                                    <p>24,700원(입금)</p>
-                                    <p>3,000원(포인트)</p>
-                                    <p>5,000원(쿠폰)</p>
+                            <div class="w-[30%] px-0.5 text-[11px] text-gray-500 flex flex-col justify-between">
+                                <div class="space-y-1 text-right tracking-tighter">
+                                    <p class="whitespace-nowrap">24,700원(입금)</p>
+                                    <p class="whitespace-nowrap">3,000원(포인트)</p>
+                                    <p class="whitespace-nowrap">5,000원(쿠폰)</p>
                                 </div>
-                                <div class="text-right"><p class="font-bold text-gray-500">0원(잔액)</p></div>
+                                <div class="text-right"><p class="font-bold text-gray-500 whitespace-nowrap tracking-tighter">0원(잔액)</p></div>
                             </div>
                         </div>
 
                         <!-- 3. 배송완료 (추가금액 색상 변경: 주황색) -->
                         <div class="order-item-row border-b py-3 flex items-stretch">
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-24</p>
+                            <div class="w-[22%] text-center px-0.5">
+                                <p class="text-sm text-gray-700 whitespace-nowrap tracking-tighter">2025-08-24</p>
                                 <div class="mt-1"><span class="status-badge status-delivery-complete">배송완료</span></div>
                             </div>
-                            <div class="w-[45%] px-2 text-center">
+                            <div class="w-[48%] px-1 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">배추_3입망 외 5건</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문: 16,700원</p>
+                                <div class="text-[11px] text-gray-500 mt-1 space-y-0.5 tracking-tight">
+                                    <p class="whitespace-nowrap">주문: 16,700원</p>
                                     <!-- 추가금액 주황색(orange-600) 적용 -->
-                                    <p class="text-orange-600 font-medium">추가: 3,000원</p>
+                                    <p class="text-orange-600 font-medium whitespace-nowrap">추가: 3,000원</p>
                                 </div>
                             </div>
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
-                                <div class="space-y-1 text-right">
+                            <div class="w-[30%] px-0.5 text-[11px] text-gray-500 flex flex-col justify-between">
+                                <div class="space-y-1 text-right tracking-tighter">
                                     <!-- 입금액을 추가금 포함 총액으로 수정 (16,700 + 3,000) -->
-                                    <p>19,700원(입금)</p>
+                                    <p class="whitespace-nowrap">19,700원(입금)</p>
                                 </div>
                                 <!-- 잔액 0원 처리 -->
-                                <div class="text-right"><p class="font-bold text-gray-500">0원(잔액)</p></div>
+                                <div class="text-right"><p class="font-bold text-gray-500 whitespace-nowrap tracking-tighter">0원(잔액)</p></div>
                             </div>
                         </div>
 
                         <!-- 4. 배송완료 (추가결제분) -->
                         <div class="order-item-row border-b py-3 flex items-stretch">
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-23</p>
+                            <div class="w-[22%] text-center px-0.5">
+                                <p class="text-sm text-gray-700 whitespace-nowrap tracking-tighter">2025-08-23</p>
                                 <div class="mt-1"><span class="status-badge status-delivery-complete">배송완료</span></div>
-                                <p class="text-xs text-blue-600 mt-1">(추가결제분)</p>
+                                <p class="text-[10px] text-blue-600 mt-0.5 whitespace-nowrap">(추가결제분)</p>
                             </div>
-                            <div class="w-[45%] px-2 text-center">
+                            <div class="w-[48%] px-1 text-center">
                                 <p class="text-sm text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">엄청나게 긴 상품명입니다. 레이아웃이 깨지지 않아야 합니다.</p>
-                                <div class="text-xs text-gray-500 mt-1 space-y-0.5">
-                                    <p>주문: 10,000원</p>
-                                    <p class="hide-if-zero">추가: 0원</p>
+                                <div class="text-[11px] text-gray-500 mt-1 space-y-0.5 tracking-tight">
+                                    <p class="whitespace-nowrap">주문: 10,000원</p>
+                                    <p class="hide-if-zero whitespace-nowrap">추가: 0원</p>
                                 </div>
                             </div>
-                            <div class="w-[30%] px-1 text-xs text-gray-500 flex flex-col justify-between">
-                                <div class="space-y-1 text-right">
-                                    <p>10,000원(입금)</p>
+                            <div class="w-[30%] px-0.5 text-[11px] text-gray-500 flex flex-col justify-between">
+                                <div class="space-y-1 text-right tracking-tighter">
+                                    <p class="whitespace-nowrap">10,000원(입금)</p>
                                 </div>
-                                <div class="text-right"><p class="font-bold text-gray-500">0원(잔액)</p></div>
+                                <div class="text-right"><p class="font-bold text-gray-500 whitespace-nowrap tracking-tighter">0원(잔액)</p></div>
                             </div>
                         </div>
 
                         <!-- 5. 주문취소 -->
                         <div class="order-item-row border-b py-3 flex items-stretch text-gray-400">
-                            <div class="w-1/4 text-center px-1">
-                                <p class="text-sm text-gray-700">2025-08-22</p>
+                            <div class="w-[22%] text-center px-0.5">
+                                <p class="text-sm text-gray-700 whitespace-nowrap tracking-tighter">2025-08-22</p>
                                 <div class="mt-1"><span class="status-badge status-cancel">주문취소</span></div>
                             </div>
-                            <div class="w-[45%] px-2 text-center">
+                            <div class="w-[48%] px-1 text-center">
                                 <p class="text-sm overflow-hidden text-ellipsis whitespace-nowrap">양파 10kg 박스</p>
-                                <div class="text-xs mt-1 space-y-0.5">
-                                    <p>주문: 41,300원</p>
+                                <div class="text-[11px] mt-1 space-y-0.5 tracking-tight">
+                                    <p class="whitespace-nowrap">주문: 41,300원</p>
                                     <!-- 취소금액 명칭 및 색상 통일 -->
-                                    <p class="text-red-600 font-medium">취소: -41,300원</p>
+                                    <p class="text-red-600 font-medium whitespace-nowrap">취소: -41,300원</p>
                                 </div>
                             </div>
-                            <div class="w-[30%] px-1 text-xs flex flex-col justify-between">
-                                <div class="space-y-1 text-right">
-                                    <p>41,300원(입금)</p>
-                                    <p class="text-red-500">-41,300원(승인취소)</p>
+                            <div class="w-[30%] px-0.5 text-[11px] flex flex-col justify-between">
+                                <div class="space-y-1 text-right tracking-tighter">
+                                    <p class="whitespace-nowrap">41,300원(입금)</p>
+                                    <p class="text-red-500 whitespace-nowrap">-41,300원(승인취소)</p>
                                 </div>
-                                <div class="text-right"><p class="font-bold text-gray-500">0원(잔액)</p></div>
+                                <div class="text-right"><p class="font-bold text-gray-500 whitespace-nowrap tracking-tighter">0원(잔액)</p></div>
                             </div>
                         </div>
                     </div>
@@ -428,7 +432,7 @@
                             <div class="notice-col-date">2025-08-24</div>
                             <div class="notice-col-content">
                                 <p class="notice-main-text text-gray-800">주문 변경</p>
-                                <p class="notice-sub-text">올리브오일 대체 배송으로 인한 추가금 3,000원 발생</p>
+                                <p class="notice-sub-text">올리브오일(엑스트라버진) 수량변경 1 -> 0</p>
                             </div>
                         </div>
 
@@ -449,46 +453,46 @@
                 <div id="settlements" class="tab-content">
                     <div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200">
                         <div class="flex">
-                            <div id="sort-settlement-date" class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1">
+                            <div id="sort-settlement-date" class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1 whitespace-nowrap">
                                 <span>일자</span>
                                 <span id="sort-settlement-arrow">▲</span> 
                             </div>
-                            <div class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 text-center">판매</div>
-                            <div class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 text-center">입금</div>
-                            <div class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 text-center">잔액</div>
+                            <div class="w-1/4 px-0.5 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">판매</div>
+                            <div class="w-1/4 px-0.5 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">입금</div>
+                            <div class="w-1/4 px-0.5 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">잔액</div>
                         </div>
                     </div>
                     <div id="settlement-list-container">
                         <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-23" data-sales="10000" data-deposit="10000">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-23</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+10,000</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-10,000</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div>
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-23</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+10,000</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">-10,000</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-gray-900 balance-amount whitespace-nowrap tracking-tighter" data-balance="0">0</div>
                         </div>
                         <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-24" data-sales="19700" data-deposit="19700">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-24</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+19,700</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-19,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div>
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-24</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+19,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">-19,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-gray-900 balance-amount whitespace-nowrap tracking-tighter" data-balance="0">0</div>
                         </div>
                         <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-25" data-sales="28700" data-deposit="28700">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-25</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+28,700</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">-28,700</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-gray-900 balance-amount" data-balance="0">0</div>
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-25</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+28,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">-28,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-gray-900 balance-amount whitespace-nowrap tracking-tighter" data-balance="0">0</div>
                         </div>
                         <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-26" data-sales="49000" data-deposit="0">
-                            <div class="w-1/4 text-center px-1 text-gray-700">2025-08-26</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-red-600">+49,000</div>
-                            <div class="w-1/4 px-1 text-right font-medium text-blue-600">0</div>
-                            <div class="w-1/4 px-1 text-right font-bold text-red-600 balance-amount" data-balance="49000">49,000</div>
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-26</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+49,000</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">0</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-red-600 balance-amount whitespace-nowrap tracking-tighter" data-balance="49000">49,000</div>
                         </div>
                     </div>
                     <div class="summary-row">
                         <div class="label">소계</div>
-                        <div id="summary-sales" class="value text-red-600">0</div> 
-                        <div id="summary-deposit" class="value text-blue-600">0</div>
-                        <div id="summary-balance" class="value font-extrabold text-red-600">0</div>
+                        <div id="summary-sales" class="value text-red-600 whitespace-nowrap tracking-tighter">0</div> 
+                        <div id="summary-deposit" class="value text-blue-600 whitespace-nowrap tracking-tighter">0</div>
+                        <div id="summary-balance" class="value font-extrabold text-red-600 whitespace-nowrap tracking-tighter">0</div>
                     </div>
                 </div>
             </div>
