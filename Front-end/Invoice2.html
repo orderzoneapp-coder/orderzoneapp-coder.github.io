@@ -130,26 +130,33 @@
         </button>
         
         <!-- 로고 섹션 -->
-        <div class="p-5 border-b border-gray-100 bg-white text-center flex-shrink-0">
-            <div class="text-2xl font-extrabold text-green-600 tracking-wider">ORDERZ</div>
+        <div class="p-4 border-b border-gray-100 bg-white text-center flex-shrink-0">
+            <div class="text-xl font-extrabold text-green-600 tracking-wider">ORDERZ</div>
         </div>
 
         <!-- 스크롤 가능한 본문 영역 -->
         <div class="scrollable-content">
             
-            <!-- 헤더: 주문번호, 배송일 -->
-            <div class="p-5 bg-gray-50 border-b border-gray-100 flex items-start justify-between">
-                <div class="flex-shrink-0">
-                    <div class="text-sm mb-1.5 flex items-center">
-                        <span class="text-gray-500 w-16 inline-block">주문번호</span>
-                        <span class="font-bold text-gray-800">20251022-1234567</span>
+            <!-- 헤더: 주문번호, 주문일시, 배송일 (콤팩트 스타일 적용) -->
+            <div class="p-4 bg-white border-b border-gray-100 flex items-start justify-between">
+                <div class="flex-shrink-0 space-y-0.5">
+                    <!-- 주문번호: 작게 -->
+                    <div class="text-xs flex items-center text-gray-500">
+                        <span class="w-20 inline-block">주문번호</span>
+                        <span class="font-medium text-gray-600">20251022-1234567</span>
                     </div>
-                    <div class="text-sm flex items-center">
-                        <span class="text-gray-500 w-16 inline-block">배송일</span>
-                        <span class="font-bold text-gray-800">2025-10-25</span>
+                    <!-- 주문일시: 작게 -->
+                    <div class="text-xs flex items-center text-gray-500">
+                        <span class="w-20 inline-block">주문일시</span>
+                        <span class="font-medium text-gray-600">2025-10-22 14:30</span>
+                    </div>
+                    <!-- 배송(예정)일: 강조 -->
+                    <div class="text-xs flex items-center mt-1 pt-1">
+                        <span class="text-gray-800 w-20 inline-block font-bold">배송(예정)일</span>
+                        <span class="font-bold text-gray-900 bg-green-50 px-1.5 py-0.5 rounded text-green-800">2025-10-25</span>
                     </div>
                 </div>
-                <div class="flex-shrink-0 mt-1">
+                <div class="flex-shrink-0">
                     <span class="status-badge status-delivery-complete">
                         배송 완료
                     </span>
@@ -158,11 +165,11 @@
 
             <!-- 주문 내역 -->
             <div class="p-5">
-                <h3 class="text-base font-bold text-gray-800 mb-3">주문 내역</h3>
+                <h3 class="text-sm font-bold text-gray-800 mb-3">주문 상세 내역</h3>
 
                 <!-- 컬럼 헤더 -->
                 <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-xs font-medium text-gray-400 border-b border-gray-200 pb-2 mb-2">
-                    <span>상품정보</span>
+                    <span>상품명</span>
                     <span class="text-center">수량</span>
                     <span class="text-right">단가</span>
                     <span class="text-right">합계</span>
@@ -170,12 +177,6 @@
 
                 <!-- 상품 리스트 -->
                 <div class="space-y-1" id="order-items-list">
-                    <!-- 
-                        [수정 사항] 
-                        1. py-2 -> py-1: 상하 여백을 다시 줄임 (간격 최소화)
-                        2. items-start: 텍스트가 길어도 상단 정렬 유지
-                    -->
-                    
                     <!-- 상품 1 -->
                     <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
                         <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">대파(단)</span>
@@ -303,9 +304,26 @@
                         <span class="text-red-500 font-bold text-lg price-cell" data-price="3000">-3,000</span>
                     </div>
                 </div>
+
+                <!-- 배송 정보 (개선된 레이아웃: 박스형) -->
+                <div class="mt-5 bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-bold text-gray-800 mb-2 border-b border-gray-200 pb-1">배송지 정보</h4>
+                    <div class="grid grid-cols-[3.5rem_1fr] gap-2 text-sm">
+                        
+                        <span class="text-gray-500 text-xs font-medium pt-0.5">받는 분</span>
+                        <span class="text-gray-800 font-medium">홍길동</span>
+                        
+                        <span class="text-gray-500 text-xs font-medium pt-0.5">주소</span>
+                        <span class="text-gray-800 break-all leading-snug">서울시 강남구 테헤란로 123, 456호 (역삼동, 오더즈빌딩)</span>
+                        
+                        <span class="text-gray-500 text-xs font-medium pt-0.5">요청</span>
+                        <span class="text-gray-800 leading-snug text-gray-600">문 앞에 놓아주세요. 공동현관 비밀번호 1234#</span>
+                    </div>
+                </div>
+
             </div>
             <!-- 영수증 끝 메시지 (캡처 시에만 보일 수 있음) -->
-            <div class="text-center pb-4 text-xs text-gray-300 tracking-widest uppercase">
+            <div class="text-center pb-4 text-xs text-gray-300 tracking-widest uppercase mt-4">
                 End of Receipt
             </div>
         </div>
