@@ -10,6 +10,15 @@
         body {
             font-family: 'Noto Sans KR', sans-serif;
         }
+        /* 스크롤바 숨기기 유틸리티 추가 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
         .tab-button.active {
             border-bottom: 2px solid #1f2937;
             color: #1f2937;
@@ -176,18 +185,18 @@
                     <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-4 flex-1 min-w-0"> <!-- min-w-0 추가로 자식 요소의 overflow-x 스크롤이 정상 작동하게 함 -->
                         <p class="font-bold text-lg">꽃놀이식당</p>
                         <p class="text-sm text-gray-600 mt-1">경남 창원시 성산구 가양로 34</p>
-                        <!-- 스크롤 제거 및 줄바꿈 허용 (flex-wrap, gap 사용) -->
-                        <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
-                            <a href="#" class="hover:underline">정보수정</a>
-                            <span class="text-gray-300">|</span>
-                            <a href="#" class="hover:underline">로그아웃</a>
-                            <span class="text-gray-300">|</span>
-                            <a href="#" class="hover:underline">자주찾는 질문</a>
-                            <span class="text-gray-300">|</span>
-                            <a href="#" id="notice-link" class="hover:underline relative inline-block">
+                        <!-- 한 줄 유지, 스크롤바 숨김, 가로 스크롤 허용 -->
+                        <div class="mt-3 flex items-center space-x-3 text-sm text-slate-600 overflow-x-auto whitespace-nowrap no-scrollbar">
+                            <a href="#" class="hover:underline flex-shrink-0">정보수정</a>
+                            <span class="text-gray-300 flex-shrink-0">|</span>
+                            <a href="#" class="hover:underline flex-shrink-0">로그아웃</a>
+                            <span class="text-gray-300 flex-shrink-0">|</span>
+                            <a href="#" class="hover:underline flex-shrink-0">자주찾는 질문</a>
+                            <span class="text-gray-300 flex-shrink-0">|</span>
+                            <a href="#" id="notice-link" class="hover:underline relative inline-block flex-shrink-0">
                                 공지사항
                                 <span id="notice-badge" class="absolute left-full top-0 -mt-1.5 ml-0.5 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold px-1 rounded-full min-w-[16px] h-[16px] leading-none hidden">N</span>
                             </a>
@@ -432,7 +441,7 @@
                             <div class="notice-col-date">2025-08-24</div>
                             <div class="notice-col-content">
                                 <p class="notice-main-text text-gray-800">주문 변경</p>
-                                <p class="notice-sub-text">올리브오일(엑스트라버진) 수량변경 1 -> 0</p>
+                                <p class="notice-sub-text">올리브오일 대체 배송으로 인한 추가금 3,000원 발생</p>
                             </div>
                         </div>
 
