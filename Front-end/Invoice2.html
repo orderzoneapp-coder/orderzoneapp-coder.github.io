@@ -94,6 +94,11 @@
         .popup-container.capture-mode .no-capture {
             display: none !important;
         }
+        
+        /* 캡처 시 모든 자식 요소의 오버플로우를 보이게 강제 */
+        .popup-container.capture-mode * {
+            overflow: visible !important;
+        }
 
         /* 공유 모달 스타일 */
         .modal-overlay {
@@ -164,104 +169,110 @@
                 </div>
 
                 <!-- 상품 리스트 -->
-                <div class="space-y-3" id="order-items-list">
-                    <!-- 상품 1: [수정] truncate 제거 및 줄바꿈 허용 (whitespace-normal break-keep) -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">대파(단)</span>
-                        <span class="text-center text-gray-600">700</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="3500">3,500</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="2450000">2,450,000</span>
+                <div class="space-y-1" id="order-items-list">
+                    <!-- 
+                        [수정 사항] 
+                        1. py-2 -> py-1: 상하 여백을 다시 줄임 (간격 최소화)
+                        2. items-start: 텍스트가 길어도 상단 정렬 유지
+                    -->
+                    
+                    <!-- 상품 1 -->
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">대파(단)</span>
+                        <span class="text-center text-gray-600 mt-0.5">700</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="3500">3,500</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="2450000">2,450,000</span>
                     </div>
                     <!-- 상품 2 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">깐양파_10kg</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="20600">20,600</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="20600">20,600</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">깐양파_10kg</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="20600">20,600</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="20600">20,600</span>
                     </div>
                     <!-- 상품 3 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">백다다기_5개입</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="3600">3,600</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="3600">3,600</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">백다다기_5개입</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="3600">3,600</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="3600">3,600</span>
                     </div>
                     <!-- 상품 4 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">양배추(대)</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="2700">2,700</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="2700">2,700</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">양배추(대)</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="2700">2,700</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="2700">2,700</span>
                     </div>
                     <!-- 상품 5 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">무순/중(150g)</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="1300">1,300</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="1300">1,300</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">무순/중(150g)</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="1300">1,300</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="1300">1,300</span>
                     </div>
                     <!-- 상품 6 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">가리비관자 500g</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="6800">6,800</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="6800">6,800</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">가리비관자 500g</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="6800">6,800</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="6800">6,800</span>
                     </div>
                     <!-- 상품 7 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">칵테일새우 31/50</span>
-                        <span class="text-center text-gray-600">2</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="4100">4,100</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="8200">8,200</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">칵테일새우 31/50</span>
+                        <span class="text-center text-gray-600 mt-0.5">2</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="4100">4,100</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="8200">8,200</span>
                     </div>
                     <!-- 상품 8 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">솔방울오징어</span>
-                        <span class="text-center text-gray-600">2</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="2100">2,100</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="4200">4,200</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">솔방울오징어</span>
+                        <span class="text-center text-gray-600 mt-0.5">2</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="2100">2,100</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="4200">4,200</span>
                     </div>
                     <!-- 상품 9 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">냉동자숙피홍합</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="3300">3,300</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="3300">3,300</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">냉동자숙피홍합</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="3300">3,300</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="3300">3,300</span>
                     </div>
                     <!-- 상품 10 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">성게알 A급</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="15100">15,100</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="15100">15,100</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">성게알 A급</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="15100">15,100</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="15100">15,100</span>
                     </div>
                     <!-- 상품 11 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">감자샐러드(MDS)</span>
-                        <span class="text-center text-gray-600">4</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="6500">6,500</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="26000">26,000</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">감자샐러드(MDS)</span>
+                        <span class="text-center text-gray-600 mt-0.5">4</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="6500">6,500</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="26000">26,000</span>
                     </div>
                      <!-- 상품 12 -->
-                     <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">올리브오일</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="18800">18,800</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="18800">18,800</span>
+                     <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">올리브오일</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="18800">18,800</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="18800">18,800</span>
                     </div>
                      <!-- 상품 13 -->
-                     <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">DB휘핑크림</span>
-                        <span class="text-center text-gray-600">2</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="5100">5,100</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="10200">10,200</span>
+                     <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b border-gray-50">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">DB휘핑크림</span>
+                        <span class="text-center text-gray-600 mt-0.5">2</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="5100">5,100</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="10200">10,200</span>
                     </div>
                     <!-- 상품 14 -->
-                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-center">
-                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-tight">레몬_10입</span>
-                        <span class="text-center text-gray-600">1</span>
-                        <span class="text-right text-gray-500 price-cell" data-price="3400">3,400</span>
-                        <span class="text-right font-bold text-gray-800 price-cell" data-price="3400">3,400</span>
+                    <div class="grid grid-cols-[5fr_1fr_2fr_3fr] gap-2 text-sm items-start py-1 border-b-0">
+                        <span class="text-gray-800 font-medium whitespace-normal break-keep leading-snug">레몬_10입</span>
+                        <span class="text-center text-gray-600 mt-0.5">1</span>
+                        <span class="text-right text-gray-500 price-cell mt-0.5" data-price="3400">3,400</span>
+                        <span class="text-right font-bold text-gray-800 price-cell mt-0.5" data-price="3400">3,400</span>
                     </div>
                 </div>
                 
@@ -403,14 +414,29 @@
             try {
                 // 3. html2canvas로 전체 캡처
                 // scale: 2 (고해상도), scrollY: 0 (스크롤 위치 초기화 상태에서 캡처)
-                // [수정] windowWidth를 넉넉하게 주어 모바일에서 잘림 방지
+                // [수정] onclone을 사용하여 캡처 대상 DOM의 스타일을 강제로 조작 (스크롤 제거 및 높이 확장)
                 const canvas = await html2canvas(popupElement, {
                     scale: 2, 
                     useCORS: true,
                     backgroundColor: '#ffffff', // 투명 배경 방지
                     scrollY: 0,
                     windowWidth: 1024, // 가상 브라우저 너비를 넓게 설정하여 레이아웃 깨짐 방지
-                    windowHeight: document.documentElement.scrollHeight
+                    onclone: (clonedDoc) => {
+                        const clonedPopup = clonedDoc.getElementById('receipt-popup');
+                        const clonedContent = clonedPopup.querySelector('.scrollable-content');
+                        
+                        // 캡처 시점에만 스크롤 영역 제한을 풀고 전체 높이를 다 보여주도록 설정
+                        if (clonedPopup) {
+                            clonedPopup.style.height = 'auto';
+                            clonedPopup.style.maxHeight = 'none';
+                            clonedPopup.style.overflow = 'visible';
+                        }
+                        if (clonedContent) {
+                            clonedContent.style.height = 'auto';
+                            clonedContent.style.maxHeight = 'none';
+                            clonedContent.style.overflow = 'visible';
+                        }
+                    }
                 });
 
                 capturedImageDataUrl = canvas.toDataURL('image/png');
