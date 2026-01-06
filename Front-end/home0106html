@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="ko" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="google" content="notranslate">
+    <title>ORDERZ - NH라인 주문 시뮬레이션</title>
+    <style>
+        /* --- Reset & Base Styles --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        .goog-te-banner-frame { display: none !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+        body { top: 0 !important; }
+        html { height: 100%; }
+
+        body { 
+            background-color: #f5f5f5; 
+            display: flex; 
+            justify-content: center; 
+            height: 100vh; 
+            height: 100dvh; 
+            min-height: -webkit-fill-available;
+            color: #222; 
+            font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+            overflow: hidden; 
+        }
+        
+        /* --- Mobile Container Layout --- */
+        .app-container {
+            width: 100%; 
+            max-width: 480px; 
+            background-color: #fff; 
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%; 
+        }
+
+        /* --- Colors & Vars --- */
+        :root { 
+            --primary: #1faa5e;        
+            --primary-dark: #179c54;
+            --primary-light: #e8f5e9; 
+            --text-main: #111111;
+            --text-sub: #767676;
+            --border: #ececec;
+            --bg-base: #fff;
+            --bg-gray: #f8f9fa;
+            --nav-height: 56px;
+            --unified-bar-height: 76px; 
+            --sidebar-width: 85%;
+            --highlight-bg: #fffce0; 
+        }
+
+        /* --- Icons (SVG) --- */
+        .icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* --- 1. Header (Store Name Left) --- */
+        header { 
+            height: 56px; padding: 0 16px; display: flex; justify-content: space-between; align-items: center; 
+            background: #fff; z-index: 100; border-bottom: 1px solid #f5f5f5;
+            position: relative; flex-shrink: 0;
+        }
+
+        /* Left: Store Selector */
+        .header-store-btn { 
+            background: none; border: none; padding: 8px 4px 8px 0; cursor: pointer; color: #222; 
+            display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 16px; letter-spacing: -0.5px;
+        }
+        .header-store-btn:active { opacity: 0.6; }
+        .header-store-btn svg { width: 16px; height: 16px; stroke-width: 2.5; color: #333; margin-top: 1px; }
+
+        /* Center: Logo */
+        .header-logo {
+            font-size: 18px; font-weight: 800; color: var(--text-main); 
+            letter-spacing: -0.5px; position: absolute; left: 50%; transform: translateX(-50%);
+            cursor: pointer; opacity: 0; pointer-events: none; /* Hide logo text if store name is prominent, or make small */
+        }
+        /* Alternative Center: Since Store is on Left, maybe Logo stays Center? 
+           If Store name is long, it might overlap. Let's keep Logo visible but flexible. */
+        .header-logo.visible { opacity: 1; pointer-events: auto; }
+
+        /* Right: My Page */
+        .header-mypage-btn {
+            background: none; border: none; padding: 8px; cursor: pointer; color: #222;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: -8px;
+        }
+        .header-mypage-btn:active { opacity: 0.6; }
+
+
+        /* --- 2. Utility Bar (Date Left / Sort Right) --- */
+        .utility-bar {
+            height: 44px; background: #fff; border-bottom: 1px solid #eee;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; flex-shrink: 0; z-index: 95;
+        }
+        
+        /* Left: Date Picker */
+        .util-date-btn {
+            display: flex; align-items: center; gap: 6px; 
+            font-size: 14px; font-weight: 600; color: #333;
+            cursor: pointer; padding: 4px 0;
+            background: #f7f8f9; padding: 6px 10px; border-radius: 6px; /* Box style for distinction */
+        }
+        .util-date-btn:active { background: #eee; }
+        .util-date-btn svg { width: 14px; height: 14px; color: #666; }
+        .util-date-btn span { letter-spacing: -0.3px; }
+
+        /* Right: Sort Trigger */
+        .util-sort-btn {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 13px; font-weight: 500; color: #666;
+            cursor: pointer; padding: 6px 4px;
+        }
+        .util-sort-btn.active { color: #111; font-weight: 700; }
+        .util-sort-btn:active { opacity: 0.6; }
+        .util-sort-btn svg { width: 16px; height: 16px; }
+
+
+        /* --- 3. Tab Bar (Clean) --- */
+        .tab-bar { 
+            display: flex; background: #fff; border-bottom: 1px solid var(--border); 
+            height: 44px; flex-shrink: 0; z-index: 90; position: relative;
+        }
+
+        .tab-scroll-area {
+            flex: 1; display: flex; overflow-x: auto; scrollbar-width: none;
+        }
+        .tab-scroll-area::-webkit-scrollbar { display: none; }
+
+        /* Special Tab (Icon Only) */
+        .tab-special-btn {
+            flex: 0 0 50px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #ccc; background: #fff; transition: all 0.2s;
+        }
+        .tab-special-btn.active { color: #ffca28; }
+        .tab-special-btn svg { width: 22px; height: 22px; fill: currentColor; stroke: none; }
+        .tab-special-btn.active svg { filter: drop-shadow(0 2px 4px rgba(255, 202, 40, 0.4)); }
+        
+        .tab { 
+            flex: 1; /* Changed to fill space evenly */
+            padding: 0 4px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 14px; color: #888; cursor: pointer; font-weight: 500; 
+            transition: all 0.2s; position: relative; letter-spacing: -0.3px;
+        }
+        .tab.active { color: var(--primary); font-weight: 800; background: #fff; }
+        .tab.active::after { 
+            content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 3px; 
+            background: var(--primary); 
+        }
+
+        /* --- Bottom Sheet Sort Menu --- */
+        .bottom-sheet-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 1500; opacity: 0; pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .bottom-sheet-overlay.show { opacity: 1; pointer-events: auto; }
+
+        /* Rename Sheet needs to be above Editor Modal (z-index 2000) */
+        #renameSheetOverlay {
+            z-index: 2500;
+        }
+
+        .bottom-sheet {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #fff;
+            border-radius: 20px 20px 0 0; z-index: 1501;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+            padding-bottom: env(safe-area-inset-bottom);
+            max-height: 85vh; display: flex; flex-direction: column;
+        }
+        .bottom-sheet-overlay.show .bottom-sheet { transform: translateY(0); }
+
+        .bs-header { padding: 20px 20px 10px; font-size: 16px; font-weight: 800; color: #111; flex-shrink: 0; }
+        
+        .bs-item {
+            padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+            font-size: 15px; color: #333; cursor: pointer; border-bottom: 1px solid #f5f5f5;
+        }
+        .bs-item:last-child { border-bottom: none; }
+        .bs-item:active { background: #f9f9f9; }
+        .bs-item.active { color: var(--primary); font-weight: 700; }
+        .bs-item.active::after { content: '✔'; }
+        
+        .bs-manage-item { background: #fafafa; color: #555; font-size: 14px; font-weight: 600; }
+
+
+        /* --- Content Area --- */
+        .content-scroll { 
+            flex: 1; overflow-y: auto; background: #fff; 
+            padding-bottom: calc(var(--unified-bar-height) + 30px + env(safe-area-inset-bottom)); 
+            -webkit-overflow-scrolling: touch; 
+        }
+        
+        /* Empty State for Custom Sort */
+        .empty-sort-msg {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 20px; text-align: center; color: #888; gap: 16px;
+        }
+        .empty-sort-btn {
+            padding: 10px 20px; background: #333; color: #fff; border-radius: 20px; 
+            font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+        }
+
+        /* --- Product List Item --- */
+        .product-item { 
+            display: flex; 
+            padding: 8px 16px; 
+            border-bottom: 1px solid #f0f0f0; align-items: flex-start; 
+            background: #fff; transition: background-color 0.2s;
+        }
+        .product-item.selected { background-color: #f0fdf4; }
+        .product-item.is-new-item { background-color: var(--highlight-bg); }
+
+        /* Checkbox Style for Search Selection */
+        .global-item-checkbox {
+            width: 24px; height: 24px; border: 2px solid #e0e0e0; border-radius: 50%;
+            margin-left: 12px; align-self: center; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0;
+        }
+        .product-item.selected .global-item-checkbox {
+            background-color: var(--primary); border-color: var(--primary);
+        }
+        .product-item.selected .global-item-checkbox::after {
+            content: ''; width: 6px; height: 10px;
+            border: solid #fff; border-width: 0 2px 2px 0;
+            transform: rotate(45deg) translateY(-1px);
+        }
+
+        /* Main List Section Header */
+        .main-section-header {
+            background: #f8f9fa;
+            color: #333;
+            font-size: 14px;
+            font-weight: 800;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            border-top: 1px solid #eee;
+            margin-top: -1px;
+            display: flex; align-items: center;
+        }
+        /* Special Tab Header Style */
+        .main-section-header.special-header {
+            background: #fff; 
+            color: #111;      
+            border-top: 8px solid #f1f3f5; 
+            padding: 16px;    
+            font-size: 15px;
+        }
+        .main-section-header::before {
+            content: ''; display: inline-block; width: 4px; height: 14px;
+            background: var(--primary); margin-right: 8px; border-radius: 2px;
+        }
+        /* Special header color is now dynamic via inline style var */
+        .main-section-header.special-header::before {
+            background: var(--header-point-color, #ffca28); 
+            width: 4px; height: 16px;
+        }
+
+        .prod-img { 
+            width: 64px; height: 64px; 
+            background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; 
+            margin-right: 16px; display: flex; align-items: center; justify-content: center; 
+            font-size: 28px; 
+            flex-shrink: 0; 
+        }
+
+        .prod-info { flex: 1; min-width: 0; display: flex; flex-direction: column; padding-top: 2px; }
+        .prod-name { 
+            font-size: 16px; font-weight: 600; color: #111; 
+            margin-bottom: 4px; line-height: 1.35; 
+            overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
+            letter-spacing: -0.5px;
+        }
+        .prod-unit { display: none; } 
+        .prod-bottom { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; }
+        .prod-price { font-size: 17px; font-weight: 500; color: var(--primary); letter-spacing: -0.5px; } 
+        .prod-tag { 
+            font-size: 11px; color: #f04452; background: #fff0f1; 
+            padding: 2px 5px; border-radius: 3px; margin-right: 4px; 
+            font-weight: 600; vertical-align: middle;
+        }
+
+        /* Quantity Control */
+        .qty-control { 
+            display: flex; align-items: center; border: 1px solid #e0e0e0; border-radius: 4px; 
+            height: 30px; background: #fff; margin-left: 12px; align-self: center; 
+        }
+        .qty-btn { 
+            width: 28px; height: 100%; border: none; background: #fff; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            color: #555; font-size: 16px;
+        }
+        .qty-btn:active { background-color: #f5f5f5; }
+        .qty-val { width: 32px; text-align: center; font-size: 14px; font-weight: 700; color: #111; }
+
+        /* --- Unified Bottom Bar --- */
+        .unified-bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            height: calc(var(--unified-bar-height) + env(safe-area-inset-bottom));
+            background: #fff; border-top: 1px solid #eee;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+            z-index: 1000; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 12px env(safe-area-inset-bottom); gap: 8px; 
+        }
+
+        .nav-side-btn {
+            flex: 1; height: 50px; border-radius: 12px; background: #fff; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #555; transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+        }
+        .nav-side-btn:active { background: #f5f5f5; transform: scale(0.97); }
+        .nav-side-btn svg { width: 24px; height: 24px; stroke-width: 1.8; } 
+
+        .center-main-btn {
+            flex: 1; height: 50px; background: #fff; border: none; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: not-allowed; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 0 4px; min-width: 0; position: relative;
+        }
+
+        .btn-brand-text {
+            color: var(--primary); font-family: Arial, sans-serif; font-weight: 900;
+            font-size: 10px; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 3px;
+        }
+        .btn-action-text {
+            color: #111; font-size: 13px; font-weight: 700;
+            letter-spacing: -0.8px; line-height: 1.1; white-space: nowrap; 
+        }
+
+        .center-main-btn.active {
+            background: #f0fdf4; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(31, 170, 94, 0.2);
+        }
+        .center-main-btn.active:active {
+            background: #dcfce7; transform: scale(0.98);
+        }
+
+        /* --- SEARCH MODAL STYLES --- */
+        .search-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #fff; z-index: 2000; 
+            display: flex; flex-direction: column; 
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .search-modal.open { transform: translateY(0); }
+
+        .search-header {
+            height: 60px; padding: 0 16px; display: flex; align-items: center;
+            border-bottom: 1px solid #f2f4f6; flex-shrink: 0;
+        }
+        .search-back-btn { background: none; border: none; padding: 10px; margin-left: -10px; cursor: pointer; color: #222; }
+        
+        .search-input-wrap {
+            flex: 1; height: 40px; background: #f5f5f5; border-radius: 6px; 
+            display: flex; align-items: center; padding: 0 12px; margin-left: 8px;
+        }
+        .search-input-wrap input {
+            flex: 1; border: none; background: transparent; font-size: 15px; 
+            outline: none; margin-left: 8px; color: #222; font-weight: 500;
+        }
+
+        .search-body { flex: 1; overflow-y: auto; position: relative; padding-bottom: var(--nav-height); }
+        .discovery-view { padding: 24px 0; }
+        .discovery-title { font-size: 15px; font-weight: 700; color: #111; margin: 0 16px 14px; letter-spacing: -0.5px; }
+
+        .category-scroll {
+            display: flex; overflow-x: auto; padding: 0 16px 10px; gap: 8px; scrollbar-width: none;
+        }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-chip {
+            flex-shrink: 0; padding: 9px 16px; background: #fff; border: 1px solid #eee; 
+            border-radius: 20px; font-size: 14px; font-weight: 500; color: #444; 
+            display: flex; align-items: center; gap: 6px; transition: all 0.2s; cursor: pointer;
+        }
+        .cat-chip:active { background: #f8f9fa; border-color: #ddd; }
+
+        .banner-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+        .mini-banner {
+            width: 100%; height: 74px; border-radius: 12px; background-color: #f0f0f0; 
+            display: flex; align-items: center; padding: 0 20px; overflow: hidden; position: relative;
+        }
+        .mini-banner-text { z-index: 1; font-weight: 700; color: #333; font-size: 15px; letter-spacing: -0.5px; }
+        .mini-banner-bg { position: absolute; right: -10px; bottom: -15px; font-size: 64px; opacity: 0.15; }
+
+        .search-result-view { display: none; padding-bottom: 40px; }
+        .empty-result-msg { padding: 60px 20px; text-align: center; color: #aaa; font-size: 14px; }
+        
+        .global-trigger-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px 16px; text-align: center;
+        }
+        .global-trigger-msg { font-size: 14px; color: #888; margin-bottom: 12px; font-weight: 500; }
+        .global-search-trigger {
+            margin: 0; padding: 15px 0; background: #fff; border: 1px solid var(--primary); 
+            border-radius: 8px; color: var(--primary); font-weight: 700; font-size: 15px; 
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            cursor: pointer; width: 100%; max-width: 100%; transition: background-color 0.2s;
+        }
+        .global-search-trigger:active { background-color: var(--primary-light); }
+
+        .global-divider {
+            display: flex; align-items: center; margin: 20px 16px 10px; color: #999; font-size: 12px; font-weight: 500;
+        }
+        .global-divider::before, .global-divider::after { content: ''; flex: 1; height: 1px; background: #eee; }
+        .global-divider span { padding: 0 10px; }
+
+        .global-add-btn-container {
+            position: fixed; bottom: 20px; left: 0; right: 0; padding: 0 20px; z-index: 2100; pointer-events: none;
+        }
+        .global-add-btn {
+            width: 100%; height: 52px; background: var(--primary); color: #fff;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+            box-shadow: 0 4px 12px rgba(31, 170, 94, 0.3);
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: auto; cursor: pointer;
+        }
+        .global-add-btn.visible { transform: translateY(0); opacity: 1; }
+
+        /* --- Editor Modal Styles --- */
+        .editor-modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #fff; z-index: 2000; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            display:flex; flex-direction:column;
+        }
+        .editor-modal.open { transform: translateY(0); }
+        
+        .editor-header { 
+            height: 56px; border-bottom:1px solid #eee; display:flex; align-items:center; 
+            justify-content:center;
+            font-weight:800; font-size: 18px; position:relative; color: #222;
+            background: #fff; z-index: 11;
+        }
+        
+        .editor-top-area { flex-shrink: 0; background: #fff; z-index: 10; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        
+        /* New Editor Tab Style */
+        .editor-tab-bar {
+            display: flex; padding: 10px 16px 0; gap: 8px;
+        }
+        .e-tab-btn {
+            flex: 1; padding: 12px 0; border-radius: 12px 12px 0 0;
+            background: #f5f5f5; color: #888; font-weight: 600; font-size: 15px;
+            border: none; cursor: pointer; text-align: center; border-bottom: 2px solid transparent;
+        }
+        .e-tab-btn.active {
+            background: #fff; color: var(--primary); font-weight: 800;
+            border: 2px solid var(--primary); border-bottom: none;
+            box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
+            z-index: 2; position: relative; top: 1px;
+        }
+
+        .editor-content-scroll { flex:1; overflow-y:auto; background: #fafafa; padding-top: 10px; }
+        
+        /* New Editor Row Style - Simplified */
+        .editor-card {
+            background: #fff; margin: 0 16px 12px; padding: 16px;
+            border-radius: 12px; border: 1px solid #eee;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            transition: border-color 0.2s;
+        }
+        .editor-card.checked { border-color: var(--primary); background-color: #fcfdfc; }
+        
+        /* Checkbox Style (Square) */
+        .e-card-check {
+            width: 24px; height: 24px; border: 2px solid #ddd; 
+            border-radius: 4px; /* Changed from 50% to 4px for square shape */
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0; transition: all 0.2s; background: #fff;
+        }
+        .e-card-check.checked {
+            background: var(--primary); border-color: var(--primary);
+        }
+        .e-card-check.checked::after {
+            content: ''; width: 6px; height: 10px; border: solid #fff;
+            border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-1px);
+        }
+        
+        .e-card-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+        .e-card-name-row { display: flex; align-items: center; gap: 6px; }
+        .e-card-badge { 
+            font-size: 11px; font-weight: 800; color: #fff; background: #bbb; 
+            padding: 2px 6px; border-radius: 4px; flex-shrink: 0;
+        }
+        /* Badge Colors */
+        .badge-list1 { background-color: #1faa5e; }
+        .badge-list2 { background-color: #3b82f6; }
+        .badge-list3 { background-color: #f59e0b; }
+
+        .e-card-name { font-size: 16px; font-weight: 700; color: #333; line-height: 1.3; }
+        .e-card-sub { font-size: 13px; color: #888; font-weight: 500; }
+        
+        /* Updated Order Layout: Input Wrapper + Handle */
+        .e-card-right-area {
+            display: flex; align-items: flex-end; gap: 8px; flex-shrink: 0;
+        }
+        
+        .e-card-input-group {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        
+        .e-card-label { font-size: 11px; font-weight: 600; color: #888; }
+        
+        .editor-input { 
+            width: 50px; height: 50px; /* Bigger Input */
+            border: 2px solid #e0e0e0; border-radius: 10px; 
+            text-align: center; font-size: 20px; font-weight: 800; color: #333; 
+            outline: none; padding: 0; background: #fff; transition: all 0.2s; 
+        }
+        .editor-input:focus { border-color: var(--primary); background: #f0fdf4; color: var(--primary); }
+        .editor-input::placeholder { color: #ddd; font-weight: 400; font-size: 16px; }
+
+        .e-card-drag-handle {
+            color: #ccc; cursor: grab; display: flex; align-items: center; justify-content: center;
+            padding: 0; touch-action: none; height: 50px; 
+        }
+        .e-card-drag-handle svg { width: 24px; height: 24px; } 
+
+        /* Editor Bottom Bar Restored */
+        .editor-bottom-bar { 
+            height: 70px; display: flex; padding: 10px 16px; gap: 10px; 
+            background: #fff; border-top: 1px solid #eee; flex-shrink: 0; 
+            z-index: 20; padding-bottom: env(safe-area-inset-bottom); box-sizing: content-box; 
+        }
+        .editor-btn-cancel { flex: 1; border: 1px solid #d1d6db; background: #fff; color: #333; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; }
+        .editor-btn-save { flex: 2; border: none; background: #333; color: #fff; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; }
+
+        /* Bulk Action Bar (Floating above bottom bar) */
+        .editor-bulk-bar {
+            position: absolute; 
+            bottom: 85px; /* Adjusted: Above the bottom bar (70px + padding) */
+            left: 16px; right: 16px;
+            background: #222; color: #fff; padding: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 8px; z-index: 25; border-radius: 16px;
+            /* Hidden State Default */
+            transform: translateY(20px); 
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            padding-bottom: 12px;
+        }
+        .editor-bulk-bar.visible { 
+            transform: translateY(0); 
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .bulk-info-text { font-size: 13px; font-weight: 700; color: #fff; margin-left: 4px; min-width: 40px; }
+        
+        .bulk-btn-group { display: flex; gap: 6px; flex: 1; justify-content: flex-end; overflow-x: auto; }
+        
+        .bulk-btn {
+            height: 40px; border-radius: 8px; border: none; padding: 0 12px;
+            font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap;
+        }
+        .bulk-btn-del { background: #ff5252; color: #fff; }
+        .bulk-btn-move { background: #fff; color: #222; }
+        .bulk-btn:active { transform: scale(0.96); opacity: 0.9; }
+
+        /* Rename Button (New) */
+        .rename-trigger-row {
+            padding: 12px 16px 4px; display:flex; justify-content:space-between; align-items:center;
+        }
+        .rename-trigger-btn {
+            background: #fff; border: 1px solid #ddd; border-radius: 14px;
+            padding: 4px 10px; font-size: 12px; font-weight: 600; color: #555;
+            display: flex; align-items: center; gap: 4px; cursor: pointer;
+        }
+        .rename-trigger-btn svg { width: 14px; height: 14px; }
+
+        /* Rename Bottom Sheet Styles (Modified for Mix & Match) */
+        .rename-sheet-body {
+            padding: 0; flex: 1; overflow-y: auto; background: #f8f9fa;
+            display: flex; flex-direction: column;
+        }
+        
+        /* Top Area: Target Inputs */
+        .rename-targets {
+            background: #fff; padding: 20px 16px; 
+            border-bottom: 1px solid #eee; flex-shrink: 0;
+            position: sticky; top: 0; z-index: 10;
+        }
+        
+        .target-row {
+            display: flex; align-items: center; margin-bottom: 12px;
+            background: #f8f9fa; border: 2px solid #eee; border-radius: 8px;
+            padding: 0 12px; height: 48px; transition: all 0.2s; cursor: pointer;
+        }
+        .target-row:last-child { margin-bottom: 0; }
+        
+        /* Active State: Green Border */
+        .target-row.active {
+            border-color: var(--primary); background: #fff;
+            box-shadow: 0 2px 8px rgba(31, 170, 94, 0.15);
+        }
+        
+        .target-label { 
+            width: 40px; font-size: 14px; font-weight: 800; color: #aaa; 
+        }
+        .target-row.active .target-label { color: var(--primary); }
+        
+        .target-value {
+            flex: 1; font-size: 16px; font-weight: 700; color: #333;
+        }
+        .target-indicator {
+            font-size: 12px; color: var(--primary); font-weight: 600; display: none;
+        }
+        .target-row.active .target-indicator { display: block; }
+
+        /* Bottom Area: Keywords Scroll */
+        .rename-keywords-area {
+            padding: 20px 16px;
+        }
+        
+        .keyword-section { margin-bottom: 24px; }
+        .keyword-section-title { 
+            font-size: 13px; font-weight: 700; color: #888; margin-bottom: 10px; 
+            display: flex; justify-content: space-between;
+        }
+        
+        .keyword-grid {
+            display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        
+        .keyword-chip {
+            padding: 8px 14px; background: #fff; border: 1px solid #ddd;
+            border-radius: 20px; font-size: 14px; font-weight: 600; color: #444;
+            cursor: pointer; transition: all 0.1s;
+        }
+        .keyword-chip:active { transform: scale(0.95); background: #eee; }
+        
+        /* Highlight applied keywords (Optional visual cue) */
+        .keyword-chip.used { color: var(--primary); border-color: var(--primary); background: #f0fdf4; }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 1. HEADER (Store Left / Logo Center / My Page Right) -->
+        <header>
+            <!-- Left: Store Selector (Moved here from Info Bar) -->
+            <button class="header-store-btn" onclick="showToast('매장/배송지 변경 팝업')">
+                <span>강남 1호점</span>
+                <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            
+            <!-- Center: Logo (Maintained) -->
+            <div class="header-logo visible" onclick="resetToHome()">NH라인</div>
+            
+            <!-- Right: My Page -->
+            <button class="header-mypage-btn" onclick="showToast('마이페이지로 이동')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </button>
+        </header>
+
+        <!-- 2. UTILITY BAR (Date Left / Sort Right) -->
+        <div class="utility-bar">
+            <!-- Left: Delivery Date -->
+            <div class="util-date-btn" onclick="showToast('배송일자 변경 팝업')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>10/20 (월) 배송 ▾</span>
+            </div>
+            
+            <!-- Right: Sort Trigger (Moved here from Tab Bar) -->
+            <div class="util-sort-btn" id="sortTriggerBtn" onclick="toggleSortMenu()">
+                <span id="currentSortLabel">최신순</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            </div>
+        </div>
+
+        <!-- 3. TAB BAR (Clean - Categories Only) -->
+        <div class="tab-bar">
+            <div class="tab-scroll-area">
+                <div class="tab-special-btn" onclick="switchTab('special')" id="tab-special">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                </div>
+                <div class="tab active" onclick="switchTab('list1')" id="tab-list1">LIST 1</div>
+                <div class="tab" onclick="switchTab('list2')" id="tab-list2">LIST 2</div>
+                <div class="tab" onclick="switchTab('list3')" id="tab-list3">LIST 3</div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-scroll" id="scrollContainer">
+            <div id="mainProductList">
+                </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="unified-bottom-bar">
+            <button class="nav-side-btn" onclick="openSearchModal()">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <button class="center-main-btn" id="mainOrderBtn" onclick="orderAction()">
+                <span class="btn-brand-text">ORDERZ</span>
+                <span class="btn-action-text" id="orderBtnText">상품을 담아주세요</span>
+            </button>
+            <button class="nav-side-btn" onclick="showToast('문의하기 연결')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </button>
+        </div>
+        
+    </div>
+
+    <!-- 4. BOTTOM SHEET SORT MENU -->
+    <div class="bottom-sheet-overlay" id="sortBottomSheetOverlay" onclick="toggleSortMenu()">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+            <div class="bs-header">정렬 기준 선택</div>
+            <div class="bs-item active" id="menu-sort-latest" onclick="selectSortMode('latest', '최신순')">최신순</div>
+            <div class="bs-item" id="menu-sort-category" onclick="selectSortMode('category', '카테고리순')">카테고리순</div>
+            <div class="bs-item" id="menu-sort-custom" onclick="selectSortMode('custom', '내 순서')">내 순서</div>
+            <div class="bs-item bs-manage-item" onclick="openEditorFromMenu()">
+                <span>리스트 관리</span>
+                <svg class="icon" style="width:16px;" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modals (Search, Editor) -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-header">
+            <button class="search-back-btn" onclick="closeSearchModal()">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <div class="search-input-wrap">
+                <svg class="icon" style="width:18px; color:#999;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="searchInput" placeholder="리스트 상품 & 단골특가 상품 검색" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="search-body">
+            <div class="discovery-view" id="discoveryView">
+                <div class="discovery-title">카테고리로 찾기</div>
+                <div class="category-scroll">
+                    <div class="cat-chip" onclick="showToast('채소/과일 이동')">🥬 채소/과일</div>
+                    <div class="cat-chip" onclick="showToast('수산/축산 이동')">🥩 수산/축산</div>
+                    <div class="cat-chip" onclick="showToast('식품/가공 이동')">🥫 식품/가공</div>
+                    <div class="cat-chip" onclick="showToast('양념/소스 이동')">🧂 양념/소스</div>
+                    <div class="cat-chip" onclick="showToast('주방/잡화 이동')">🥣 주방/잡화</div>
+                </div>
+
+                <div style="height:20px;"></div> <div class="discovery-title">진행 중인 행사</div>
+                <div class="banner-list">
+                    <!-- Icons removed from banners -->
+                    <div class="mini-banner" style="background:#e0f7fa;">
+                        <span class="mini-banner-text">🔥 사장님 베스트 상품</span>
+                    </div>
+                    <div class="mini-banner" style="background:#fff3e0;">
+                        <span class="mini-banner-text">⏰ 유통기한 임박! 최대 80%</span>
+                    </div>
+                    <div class="mini-banner" style="background:#f3e5f5;">
+                        <span class="mini-banner-text">🆕 신규 입점 브랜드 모음</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-result-view" id="searchResultView">
+                <div id="localResultContainer"></div>
+                
+                <div id="globalTriggerArea" style="display:none;" class="global-trigger-container">
+                    <div class="global-trigger-msg">찾으시는 상품이 없나요?</div>
+                    <button class="global-search-trigger" onclick="executeGlobalSearch()">
+                        <svg class="icon" style="width:16px;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        전체 상품에서 '<span id="queryText"></span>' 검색하기
+                    </button>
+                </div>
+
+                <div id="globalResultContainer" style="display:none; padding-bottom:80px;">
+                    <div class="global-divider">
+                        <span>전체 상품 검색 결과</span>
+                    </div>
+                    <div id="globalList"></div>
+                    
+                    <!-- Load More Button -->
+                    <div class="global-trigger-container" style="padding:20px 16px;">
+                        <button id="globalLoadMoreBtn" class="global-search-trigger" style="background:#f9f9f9; border-color:#eee; color:#666;" onclick="showToast('더보기 API 호출')">
+                            더보기 ∨
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Select Floating Button -->
+        <div class="global-add-btn-container">
+            <button class="global-add-btn" id="globalAddBtn" onclick="confirmGlobalAdd()">
+                0개 상품 리스트 추가하기
+            </button>
+        </div>
+    </div>
+
+    <!-- Editor Modal -->
+    <div class="editor-modal" id="editorModal">
+        <div class="editor-header">
+            순서 설정 및 관리
+        </div>
+        
+        <div class="editor-top-area">
+            <div class="rename-trigger-row">
+                <span style="font-size:14px; font-weight:600; color:#666;">리스트 선택</span>
+                <button class="rename-trigger-btn" onclick="openRenameSheet()">
+                    리스트명 변경
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+            </div>
+            <div class="editor-tab-bar">
+                <button class="e-tab-btn" id="et-all" onclick="focusEditorList('all')">전체</button>
+                <button class="e-tab-btn" id="et-list1" onclick="focusEditorList('list1')">LIST 1</button>
+                <button class="e-tab-btn" id="et-list2" onclick="focusEditorList('list2')">LIST 2</button>
+                <button class="e-tab-btn" id="et-list3" onclick="focusEditorList('list3')">LIST 3</button>
+            </div>
+        </div>
+
+        <div class="editor-content-scroll" id="editorList"></div>
+
+        <!-- Bulk Action Floating Bar -->
+        <div class="editor-bulk-bar" id="editorBulkBar">
+            <div class="bulk-info-text" id="bulkCountText">0개 선택</div>
+            <div class="bulk-btn-group" id="bulkBtnGroup">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+
+        <div class="editor-bottom-bar">
+            <button class="editor-btn-cancel" onclick="closeEditor()">되돌아가기</button>
+            <button class="editor-btn-save" onclick="saveSort()">저장하기</button>
+        </div>
+    </div>
+
+    <!-- Rename Bottom Sheet -->
+    <div class="bottom-sheet-overlay" id="renameSheetOverlay" onclick="closeRenameSheet()">
+        <!-- height changed from 80vh to 95vh for nearly full-screen view -->
+        <div class="bottom-sheet" onclick="event.stopPropagation()" style="height: 95vh;">
+            <div class="bs-header">리스트 이름 설정</div>
+            
+            <div class="rename-sheet-body">
+                <!-- 1. Target Selection Area -->
+                <div class="rename-targets">
+                    <div class="target-row active" id="targetRow1" onclick="setRenameFocus(1)">
+                        <span class="target-label">L1</span>
+                        <span class="target-value" id="displayVal1">LIST 1</span>
+                        <span class="target-indicator">선택중</span>
+                    </div>
+                    <div class="target-row" id="targetRow2" onclick="setRenameFocus(2)">
+                        <span class="target-label">L2</span>
+                        <span class="target-value" id="displayVal2">LIST 2</span>
+                        <span class="target-indicator">선택중</span>
+                    </div>
+                    <div class="target-row" id="targetRow3" onclick="setRenameFocus(3)">
+                        <span class="target-label">L3</span>
+                        <span class="target-value" id="displayVal3">LIST 3</span>
+                        <span class="target-indicator">선택중</span>
+                    </div>
+                </div>
+
+                <!-- 2. Keyword Selection Area -->
+                <div class="rename-keywords-area" id="keywordListArea">
+                    <!-- Keywords injected via JS -->
+                </div>
+            </div>
+
+            <div class="editor-bottom-bar" style="border-top:1px solid #eee;">
+                <button class="editor-btn-cancel" onclick="closeRenameSheet()">취소</button>
+                <button class="editor-btn-save" onclick="applyRename()">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Helper: Toast Message ---
+        function showToast(msg) {
+            let toast = document.createElement('div');
+            toast.className = 'toast-msg show';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(()=>toast.remove(), 300); }, 2000);
+        }
+        
+        // --- Category Definitions (Code Sort) ---
+        const CATEGORY_CODES = {
+            "채소.과일": 10,
+            "수산.축산": 20,
+            "식품.음료": 30,
+            "양념.소스": 40,
+            "주방.잡화": 50,
+            "기타": 99
+        };
+
+        // --- Theme Color Mapping ---
+        const THEME_COLORS = {
+            "농산행사": "#ff9800",   // 주황
+            "매장행사": "#d63031",   // 빨강
+            "경매행사": "#4caf50",   // 초록
+            "식자재행사": "#795548", // 갈색
+            "수산물 행사": "#2196f3" // 파랑
+        };
+
+        // --- Naming Presets (Keywords) ---
+        const namingPresets = [
+            { 
+                title: "기본", 
+                desc: "초기화", 
+                names: ["LIST 1", "LIST 2", "LIST 3"] 
+            },
+            { 
+                title: "공간형 (관리 주체)", 
+                desc: "동선 최적화", 
+                names: ["주방", "홀/바", "창고", "테라스", "2층"] 
+            },
+            { 
+                title: "물성/보관형", 
+                desc: "유통기한/온도", 
+                names: ["신선/냉장", "냉동", "상온/공산", "주류/음료"] 
+            },
+            { 
+                title: "메뉴/용도형", 
+                desc: "조리 목적", 
+                names: ["메인재료", "부재료", "양념/소스", "가니쉬"] 
+            },
+            { 
+                title: "발주 주기형", 
+                desc: "구매 빈도", 
+                names: ["매일발주", "정기발주", "긴급/기타"] 
+            },
+            { 
+                title: "사용 주체형", 
+                desc: "식단 관리", 
+                names: ["판매용", "소모품", "직원식"] 
+            }
+        ];
+
+        // --- State Management ---
+        let userSortData = { 'list1': {}, 'list2': {}, 'list3': {}, 'special': {} };
+        let tabViewModes = { 'list1': 'category', 'list2': 'category', 'list3': 'category', 'special': 'manual' };
+        let currentListNames = { list1: "LIST 1", list2: "LIST 2", list3: "LIST 3" };
+        let tempNames = { 1: "", 2: "", 3: "" }; // Temp storage for editing
+        let activeFocusIndex = 1; // 1, 2, 3
+        
+        let allEditorItems = []; 
+        let currentTab = 'list1';
+        let currentList = []; 
+        let cart = {}; 
+        let editorActiveTab = 'list1'; 
+        let editorSortMode = 'manual'; 
+        let editorFocusList = 'list1'; // Can be 'all', 'list1', 'list2', 'list3'
+        let editorSelectedIds = new Set(); // Track selected items for bulk action
+        let isGuideOpen = false; 
+        let viewerSortMode = 'latest'; 
+        let inputTriggerShown = false; 
+        let isMovingItem = false; 
+        
+        // Search State
+        let currentSearchQuery = '';
+        let selectedGlobalIds = new Set(); 
+
+        // --- Data Mockup (5 Special Themes) ---
+        const productsData = {
+            'special': [
+                { id: 1001, name: "[특가] 다부리 배추 4포기", unit: "BOX", price: 12500, img: "🥬", tag: null, theme: "농산행사" },
+                { id: 1002, name: "[특가] 햇감자 10kg", unit: "BOX", price: 18000, img: "🥔", tag: null, theme: "농산행사" },
+                { id: 1003, name: "청양고추 (특) 10kg", unit: "BOX", price: 45000, img: "🌶️", tag: null, theme: "경매행사" },
+                { id: 1004, name: "노르웨이 고등어 10kg", unit: "BOX", price: 32000, img: "🐟", tag: null, theme: "수산물 행사" },
+                { id: 1005, name: "업소용 식용유 18L", unit: "EA", price: 38000, img: "🌻", tag: null, theme: "식자재행사" },
+                { id: 1006, name: "냉동 볶음밥 모음전", unit: "EA", price: 2500, img: "🍛", tag: null, theme: "매장행사" },
+            ],
+            'list1': [
+                { id: 1, name: "양배추(대) 42망(3입)", unit: "BOX", price: 10900, img: "🥦", tag: null, category: "채소.과일" },
+                { id: 2, name: "양파 왕 20kg망", unit: "BOX", price: 22000, img: "🧅", tag: null, category: "채소.과일" },
+                { id: 3, name: "깐양파 10kg", unit: "BOX", price: 20500, img: "🧅", tag: null, category: "채소.과일" },
+                { id: 3001, name: "CJ 햇반 210g x 24", unit: "BOX", price: 21900, img: "🍚", tag: null, category: "식품.음료" },
+                { id: 3003, name: "동원 참치 150g x 10", unit: "EA", price: 19800, img: "🐟", tag: null, category: "수산.축산" },
+                { id: 5, name: "청양고추 10kg", unit: "BOX", price: 45000, img: "🌶️", tag: null, category: "채소.과일" },
+                { id: 6, name: "애호박 인큐 20개", unit: "BOX", price: 18500, img: "🥒", tag: null, category: "채소.과일" },
+                { id: 3004, name: "해표 식용유 1.8L", unit: "EA", price: 6500, img: "🌻", tag: null, category: "양념.소스" },
+                { id: 9, name: "깐마늘 1kg", unit: "EA", price: 8500, img: "🧄", tag: null, category: "채소.과일" },
+                { id: 10, name: "적상추 4kg", unit: "BOX", price: 12000, img: "🥗", tag: null, category: "채소.과일" },
+                { id: 11, name: "시금치 4kg", unit: "BOX", price: 15000, img: "🥬", tag: null, category: "채소.과일" },
+            ],
+            'list2': [
+                { id: 2001, name: "사과(부사) 10kg 32과", unit: "BOX", price: 42000, img: "🍎", tag: null, category: "채소.과일" },
+                { id: 2003, name: "제주 감귤 10kg", unit: "BOX", price: 25000, img: "🍊", tag: null, category: "채소.과일" },
+                { id: 2004, name: "바나나 13kg", unit: "BOX", price: 28000, img: "🍌", tag: null, category: "채소.과일" },
+            ],
+            'list3': [
+                { id: 3002, name: "신라면 30입", unit: "BOX", price: 24500, img: "🍜", tag: null, category: "식품.음료" },
+                { id: 3005, name: "곰표 밀가루 20kg", unit: "EA", price: 22000, img: "🌾", tag: null, category: "양념.소스" },
+                { id: 3006, name: "백설 설탕 15kg", unit: "EA", price: 18000, img: "🧂", tag: null, category: "양념.소스" },
+            ]
+        };
+
+        // --- Global Search Simulation Data ---
+        const globalDatabase = [
+            { id: 9101, name: "무우 특박스 10입", unit: "BOX", price: 22800, img: "📦", tag: null, category: "채소.과일" },
+            { id: 9102, name: "무우 상박스", unit: "BOX", price: 17000, img: "📦", tag: null, category: "채소.과일" },
+            { id: 9103, name: "무우 (낱개)", unit: "EA", price: 2800, img: "🥣", tag: null, category: "채소.과일" },
+        ];
+
+        // --- Elements ---
+        const mainListEl = document.getElementById('mainProductList');
+        const orderBtn = document.getElementById('mainOrderBtn');
+        const editorModal = document.getElementById('editorModal');
+        const editorListEl = document.getElementById('editorList');
+        // Sort Elements updated
+        const sortBottomSheetOverlay = document.getElementById('sortBottomSheetOverlay');
+        const sortTriggerBtn = document.getElementById('sortTriggerBtn');
+        const currentSortLabel = document.getElementById('currentSortLabel');
+        
+        // Search Elements
+        const searchModal = document.getElementById('searchModal');
+        const searchInput = document.getElementById('searchInput');
+        const discoveryView = document.getElementById('discoveryView');
+        const searchResultView = document.getElementById('searchResultView');
+        const localResultContainer = document.getElementById('localResultContainer');
+        const globalTriggerArea = document.getElementById('globalTriggerArea');
+        const queryTextEl = document.getElementById('queryText');
+        const globalResultContainer = document.getElementById('globalResultContainer');
+        const globalListEl = document.getElementById('globalList');
+        const globalAddBtn = document.getElementById('globalAddBtn');
+        const globalLoadMoreBtn = document.getElementById('globalLoadMoreBtn');
+
+        // --- Init ---
+        function init() {
+            initSortData(); 
+            currentList = getExtendedList('list1'); 
+            switchViewerSort('latest');
+            updateOrderBarState(); 
+        }
+
+        function initSortData() {
+            let baseTime = Date.now() - 1000000;
+            ['list1', 'list2', 'list3'].forEach(listKey => {
+                productsData[listKey].forEach((p, idx) => {
+                    userSortData[listKey][p.id] = { order: null, isNew: false, addedAt: baseTime + idx * 1000 };
+                });
+            });
+            productsData['special'].forEach((p, idx) => {
+                userSortData['special'][p.id] = { order: null, isNew: false, addedAt: baseTime + idx * 1000 };
+            });
+        }
+
+        function getExtendedList(tabName) {
+            const sortInfoMap = userSortData[tabName] || {};
+            let items = [];
+            Object.keys(sortInfoMap).forEach(pidStr => {
+                const pid = parseInt(pidStr);
+                const sortInfo = sortInfoMap[pid];
+                let product = null;
+                // Check local data first
+                for (const key of ['special', 'list1', 'list2', 'list3']) {
+                    const found = productsData[key].find(p => p.id === pid);
+                    if (found) { product = found; break; }
+                }
+                // If not found in local, check global (simulating added items)
+                if (!product) {
+                    product = globalDatabase.find(p => p.id === pid);
+                }
+
+                if(product) {
+                    items.push({ ...product, order: sortInfo.order, isNew: sortInfo.isNew, addedAt: sortInfo.addedAt || 0 });
+                }
+            });
+            return items;
+        }
+
+        // --- Tab & List Functions ---
+        function switchTab(tabName, initialSort = 'latest') {
+            // Update active styles
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-special').classList.remove('active');
+            
+            if (tabName === 'special') {
+                document.getElementById('tab-special').classList.add('active');
+                // Disable sort button for special tab
+                sortTriggerBtn.style.opacity = '0.3';
+                sortTriggerBtn.style.pointerEvents = 'none';
+            } else {
+                document.getElementById(`tab-${tabName}`).classList.add('active');
+                // Enable sort button
+                sortTriggerBtn.style.opacity = '1';
+                sortTriggerBtn.style.pointerEvents = 'auto';
+            }
+            
+            currentTab = tabName;
+            currentList = getExtendedList(tabName);
+            
+            // Re-render
+            renderMainList();
+            
+            document.getElementById('scrollContainer').scrollTop = 0;
+        }
+
+        // New Sort Menu Logic (Bottom Sheet)
+        function toggleSortMenu() {
+            const overlay = document.getElementById('sortBottomSheetOverlay');
+            if(overlay.classList.contains('show')) {
+                overlay.classList.remove('show');
+            } else {
+                overlay.classList.add('show');
+            }
+        }
+
+        function selectSortMode(mode, label) {
+            switchViewerSort(mode);
+            toggleSortMenu();
+            
+            // visual feedback on trigger button
+            const btn = document.getElementById('sortTriggerBtn');
+            const labelEl = document.getElementById('currentSortLabel');
+            
+            if (labelEl) labelEl.innerText = label;
+
+            if (mode !== 'latest') {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            
+            showToast(`${label}으로 정렬되었습니다.`);
+        }
+
+        function openEditorFromMenu() {
+            openEditor();
+            toggleSortMenu();
+        }
+
+        function switchViewerSort(type) {
+            viewerSortMode = type;
+            // Update Menu UI
+            document.querySelectorAll('.bs-item').forEach(btn => btn.classList.remove('active'));
+            const activeItem = document.getElementById(`menu-sort-${type}`);
+            if(activeItem) activeItem.classList.add('active');
+            
+            renderMainList();
+        }
+
+        function resetToHome() {
+            document.getElementById('scrollContainer').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function compareItems(a, b) {
+            // New Main Sort Logic
+            if (a.isNew && !b.isNew) return -1;
+            if (!a.isNew && b.isNew) return 1;
+
+            const orderA = (a.order !== null && a.order !== '') ? parseInt(a.order) : Infinity;
+            const orderB = (b.order !== null && b.order !== '') ? parseInt(b.order) : Infinity;
+            
+            if (orderA !== Infinity && orderB === Infinity) return -1;
+            if (orderA === Infinity && orderB !== Infinity) return 1;
+
+            if (orderA !== Infinity && orderB !== Infinity) {
+                if (orderA !== orderB) return orderA - orderB;
+            }
+
+            return (b.addedAt || 0) - (a.addedAt || 0);
+        }
+        
+        function compareEditorItems(a, b) {
+            const aIsFocused = (a.tempListId === editorFocusList);
+            const bIsFocused = (b.tempListId === editorFocusList);
+            if (aIsFocused && !bIsFocused) return -1;
+            if (!aIsFocused && bIsFocused) return 1;
+
+            if (a.tempListId !== b.tempListId) return a.tempListId.localeCompare(b.tempListId);
+
+            const aIsMovedOrNew = a.isNew || (a.listId !== a.tempListId);
+            const bIsMovedOrNew = b.isNew || (b.listId !== b.tempListId);
+
+            if (editorSortMode === 'category') {
+                const catA = a.category || "기타";
+                const catB = b.category || "기타";
+                const codeA = CATEGORY_CODES[catA] || 99;
+                const codeB = CATEGORY_CODES[catB] || 99;
+
+                if (codeA !== codeB) return codeA - codeB;
+                if (aIsMovedOrNew && !bIsMovedOrNew) return -1;
+                if (!aIsMovedOrNew && bIsMovedOrNew) return 1;
+            } else {
+                if (aIsMovedOrNew && !bIsMovedOrNew) return -1;
+                if (!aIsMovedOrNew && bIsMovedOrNew) return 1;
+            }
+
+            const orderA = (a.tempOrder === null || a.tempOrder === '' || a.tempOrder === undefined) ? Infinity : parseInt(a.tempOrder);
+            const orderB = (b.tempOrder === null || b.tempOrder === '' || b.tempOrder === undefined) ? Infinity : parseInt(b.tempOrder);
+
+            if (orderA !== orderB) return orderA - orderB;
+            return (b.addedAt || 0) - (a.addedAt || 0);
+        }
+
+        function renderMainList() {
+            let displayList = [...currentList];
+            
+            if(currentTab === 'special') {
+                // Special Tab: No sorting, just grouping by theme
+                const themeOrder = [
+                    "농산행사", 
+                    "매장행사", 
+                    "경매행사", 
+                    "식자재행사", 
+                    "수산물 행사"
+                ];
+                
+                displayList.sort((a, b) => {
+                    const idxA = themeOrder.indexOf(a.theme);
+                    const idxB = themeOrder.indexOf(b.theme);
+                    return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
+                });
+                renderProductList(displayList, mainListEl, true, 'theme');
+                return;
+            }
+
+            if(viewerSortMode === 'latest') {
+                displayList.sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+                renderProductList(displayList, mainListEl, false);
+            } else if (viewerSortMode === 'category') {
+                // Explicit category sort
+                displayList.sort((a, b) => {
+                    const catA = a.category || "기타";
+                    const catB = b.category || "기타";
+                    const codeA = CATEGORY_CODES[catA] || 99;
+                    const codeB = CATEGORY_CODES[catB] || 99;
+                    
+                    if (codeA !== codeB) return codeA - codeB;
+                    return compareItems(a, b);
+                });
+                renderProductList(displayList, mainListEl, true, 'category'); // Show headers
+            } else {
+                // Custom sort - Check if any order is set
+                const hasCustomOrder = displayList.some(item => item.order !== null && item.order !== '');
+                
+                if (!hasCustomOrder) {
+                    mainListEl.innerHTML = `
+                        <div class="empty-sort-msg">
+                            <div>설정된 '내 순서'가 없습니다.</div>
+                            <button class="empty-sort-btn" onclick="openEditor()">리스트 관리에서 순서 설정하기</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                displayList.sort(compareItems);
+                renderProductList(displayList, mainListEl, false);
+            }
+        }
+
+        function renderProductList(items, container, showHeaders = false, groupBy = 'category') {
+            container.innerHTML = '';
+            if(items.length === 0) {
+                container.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-size:14px;">상품이 없습니다.</div>`;
+                return;
+            }
+            let lastGroup = null;
+            items.forEach(item => {
+                if (showHeaders) {
+                    const currentGroup = item[groupBy] || "기타";
+                    if (currentGroup !== lastGroup) {
+                        const headerDiv = document.createElement('div');
+                        // Special styling for special tab headers
+                        headerDiv.className = (groupBy === 'theme') ? 'main-section-header special-header' : 'main-section-header';
+                        
+                        // Apply dynamic color for theme headers
+                        if (groupBy === 'theme') {
+                            const pointColor = THEME_COLORS[currentGroup] || '#ffca28';
+                            headerDiv.style.setProperty('--header-point-color', pointColor);
+                        }
+
+                        headerDiv.innerText = currentGroup;
+                        container.appendChild(headerDiv);
+                        lastGroup = currentGroup;
+                    }
+                }
+                const qty = cart[item.id] || 0;
+                const div = document.createElement('div');
+                div.className = `product-item ${qty > 0 ? 'selected' : ''} ${item.isNew ? 'is-new-item' : ''}`;
+                
+                div.innerHTML = `
+                    <div class="prod-img">${item.img}</div>
+                    <div class="prod-info">
+                        <div class="prod-name">
+                             ${item.tag ? `<span class="prod-tag">${item.tag}</span>` : ''} 
+                             ${item.name}
+                        </div>
+                        <div class="prod-bottom"><div class="prod-price">${item.price.toLocaleString()}원</div></div>
+                    </div>
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                        <div class="qty-val" id="qty-${item.id}">${qty}</div>
+                        <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateQty(id, delta) {
+            if(!cart[id]) cart[id] = 0;
+            cart[id] += delta;
+            if(cart[id] < 0) cart[id] = 0;
+            document.querySelectorAll(`[id^="qty-${id}"]`).forEach(el => el.innerText = cart[id]);
+            updateOrderBarState();
+        }
+
+        function updateOrderBarState() {
+            let totalCount = 0;
+            Object.values(cart).forEach(count => { if(count > 0) totalCount += 1; });
+            if (totalCount > 0) {
+                orderBtn.classList.add('active');
+                orderBtn.innerHTML = `<span class="btn-brand-text">ORDERZ</span><span class="btn-action-text">담은 상품 확인하기 (${totalCount})</span>`;
+            } else {
+                orderBtn.classList.remove('active');
+                orderBtn.innerHTML = `<span class="btn-brand-text">ORDERZ</span><span class="btn-action-text">상품을 담아주세요</span>`;
+            }
+        }
+        
+        function orderAction() {
+            if(orderBtn.classList.contains('active')) {
+                showToast('주문서 확인 페이지로 이동');
+            } else {
+                showToast('상품을 담아주세요');
+            }
+        }
+
+        // --- SEARCH LOGIC ---
+        function openSearchModal() {
+            searchModal.classList.add('open');
+            searchInput.value = '';
+            toggleSearchState(false);
+            setTimeout(() => { searchInput.focus(); }, 300);
+        }
+
+        function closeSearchModal() {
+            searchModal.classList.remove('open');
+            searchInput.blur();
+            if(currentTab !== 'special') currentList = getExtendedList(currentTab);
+            renderMainList();
+        }
+        
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            currentSearchQuery = val;
+            if(val.length > 0) {
+                toggleSearchState(true);
+                doLocalSearch(val);
+            } else {
+                toggleSearchState(false);
+            }
+        });
+
+        function toggleSearchState(isTyping) {
+            if(isTyping) {
+                discoveryView.style.display = 'none';
+                searchResultView.style.display = 'block';
+            } else {
+                discoveryView.style.display = 'block';
+                searchResultView.style.display = 'none';
+                localResultContainer.innerHTML = '';
+                globalResultContainer.style.display = 'none';
+                globalTriggerArea.style.display = 'none';
+                selectedGlobalIds.clear();
+                updateGlobalActionBtn();
+            }
+        }
+
+        function doLocalSearch(query) {
+            const filtered = currentList.filter(p => p.name.includes(query));
+            if(filtered.length > 0) {
+                renderProductList(filtered, localResultContainer, false);
+            } else {
+                localResultContainer.innerHTML = `<div class="empty-result-msg">리스트에 검색 결과가 없습니다.</div>`;
+            }
+            queryTextEl.innerText = query;
+            localResultContainer.style.display = 'block';
+            globalTriggerArea.style.display = 'block';
+            globalResultContainer.style.display = 'none';
+        }
+
+        function executeGlobalSearch() {
+            globalTriggerArea.style.display = 'none';
+            localResultContainer.style.display = 'none'; // Hide local results
+            globalResultContainer.style.display = 'block';
+            selectedGlobalIds.clear();
+            updateGlobalActionBtn();
+            
+            const results = globalDatabase.filter(p => p.name.includes(currentSearchQuery));
+            
+            if(results.length > 30) {
+                globalLoadMoreBtn.style.display = 'block';
+            } else {
+                globalLoadMoreBtn.style.display = 'none';
+            }
+
+            if(results.length > 0) {
+                globalListEl.innerHTML = '';
+                results.forEach(item => {
+                    const alreadyIn = currentList.find(c => c.id === item.id);
+                    const div = document.createElement('div');
+                    
+                    div.className = 'product-item';
+                    if (!alreadyIn) {
+                        div.style.cursor = 'pointer';
+                        div.onclick = () => toggleGlobalSelection(item.id, div);
+                    }
+                    div.innerHTML = `
+                        <div class="prod-img">${item.img}</div>
+                        <div class="prod-info">
+                            <div class="prod-name">${item.name}</div>
+                            <div class="prod-price">${item.price.toLocaleString()}원</div>
+                            ${alreadyIn ? '<div style="color:var(--primary); font-size:12px; margin-top:4px;">이미 리스트에 있음</div>' : ''}
+                        </div>
+                        ${!alreadyIn ? '<div class="global-item-checkbox"></div>' : ''}
+                    `;
+                    globalListEl.appendChild(div);
+                });
+            } else {
+                globalListEl.innerHTML = `<div class="empty-result-msg">전체 상품에도 결과가 없습니다.</div>`;
+            }
+        }
+
+        function toggleGlobalSelection(id, element) {
+            if(selectedGlobalIds.has(id)) {
+                selectedGlobalIds.delete(id);
+                element.classList.remove('selected');
+            } else {
+                selectedGlobalIds.add(id);
+                element.classList.add('selected');
+            }
+            updateGlobalActionBtn();
+        }
+
+        function updateGlobalActionBtn() {
+            const count = selectedGlobalIds.size;
+            if(count > 0) {
+                globalAddBtn.classList.add('visible');
+                globalAddBtn.innerText = `${count}개 상품 리스트 추가하기`;
+            } else {
+                globalAddBtn.classList.remove('visible');
+            }
+        }
+
+        function confirmGlobalAdd() {
+            if(currentTab === 'special') { showToast('특가 탭에는 상품을 추가할 수 없습니다.'); return; }
+            
+            let addedCount = 0;
+            selectedGlobalIds.forEach(id => {
+                if(!userSortData[currentTab][id]) {
+                    userSortData[currentTab][id] = { order: null, isNew: true, addedAt: Date.now() };
+                    addedCount++;
+                }
+            });
+            
+            showToast(`${addedCount}개 상품이 추가되었습니다.`);
+            closeSearchModal();
+        }
+
+        // --- EDITOR LOGIC ---
+        
+        function openEditor() {
+            if(currentTab === 'special') { showToast('단골특가 리스트는 관리할 수 없습니다.'); return; }
+            
+            allEditorItems = [];
+            editorSelectedIds.clear(); // Clear selections on open
+
+            // Load all items
+            ['list1', 'list2', 'list3'].forEach(listId => {
+                const listItems = getExtendedList(listId);
+                listItems.forEach(item => {
+                    allEditorItems.push({ 
+                        ...item, 
+                        listId: listId, 
+                        tempOrder: item.order, 
+                        tempListId: listId 
+                    });
+                });
+            });
+            
+            // Set initial focus to current tab (or 'all' if preferred, but let's stick to current)
+            editorFocusList = (currentTab === 'special') ? 'list1' : currentTab;
+            
+            allEditorItems.sort(compareEditorItems);
+            
+            updateEditorHeaderState();
+            renderEditorList();
+            updateBulkBar(); 
+            
+            editorModal.classList.add('open');
+        }
+
+        function closeEditor() { editorModal.classList.remove('open'); }
+        
+        function focusEditorList(listId) {
+            editorFocusList = listId;
+            editorSelectedIds.clear(); 
+            updateEditorHeaderState();
+            renderEditorList();
+            updateBulkBar();
+            editorListEl.scrollTop = 0;
+        }
+
+        function updateEditorHeaderState() {
+            document.querySelectorAll('.e-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`et-${editorFocusList}`);
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+
+        function updateEditorOrder(id, newVal) {
+            const item = allEditorItems.find(i => i.id === id);
+            if (!item) return;
+            if (newVal === '' || newVal === null || isNaN(newVal)) {
+                item.tempOrder = null;
+            } else {
+                item.tempOrder = parseInt(newVal);
+            }
+        }
+
+        // Toggle Selection
+        function toggleEditorSelection(id) {
+            if (editorSelectedIds.has(id)) {
+                editorSelectedIds.delete(id);
+            } else {
+                editorSelectedIds.add(id);
+            }
+            renderEditorList(); 
+            updateBulkBar();
+        }
+
+        // Update Floating Bar UI (Smart Filtering)
+        function updateBulkBar() {
+            const bar = document.getElementById('editorBulkBar');
+            const countText = document.getElementById('bulkCountText');
+            const btnGroup = document.getElementById('bulkBtnGroup');
+            
+            const count = editorSelectedIds.size;
+            
+            if (count > 0) {
+                bar.classList.add('visible');
+                countText.innerText = `${count}개 선택`;
+                
+                // Regenerate buttons based on context
+                btnGroup.innerHTML = `<button class="bulk-btn bulk-btn-del" onclick="executeBulkDelete()">삭제</button>`;
+                
+                const allLists = ['list1', 'list2', 'list3'];
+                let targets = [];
+                
+                // Smart Filter Logic
+                // 1. Get List IDs of all selected items
+                const selectedListIds = new Set();
+                allEditorItems.forEach(item => {
+                    if(editorSelectedIds.has(item.id)) selectedListIds.add(item.tempListId);
+                });
+
+                if (selectedListIds.size === 1) {
+                    // Case A: All selected items are from the SAME list (e.g., all from LIST 1)
+                    // -> Show remaining lists (LIST 2, LIST 3)
+                    const currentListId = [...selectedListIds][0];
+                    targets = allLists.filter(l => l !== currentListId);
+                } else {
+                    // Case B: Mixed selection or 'All' view with mixed items
+                    // -> Show ALL target options (safest option)
+                    targets = allLists;
+                }
+                
+                targets.forEach(t => {
+                    const btn = document.createElement('button');
+                    btn.className = 'bulk-btn bulk-btn-move';
+                    btn.innerText = `${currentListNames[t]} 이동`;
+                    btn.onclick = () => executeBulkMove(t);
+                    btnGroup.appendChild(btn);
+                });
+                
+            } else {
+                bar.classList.remove('visible');
+            }
+        }
+
+        // Bulk Actions
+        function executeBulkDelete() {
+            if (editorSelectedIds.size === 0) return;
+            if (!confirm(`선택한 ${editorSelectedIds.size}개 상품을 삭제하시겠습니까?`)) return;
+            
+            allEditorItems = allEditorItems.filter(item => !editorSelectedIds.has(item.id));
+            editorSelectedIds.clear();
+            renderEditorList();
+            updateBulkBar();
+            showToast('삭제되었습니다.');
+        }
+
+        function executeBulkMove(targetList) {
+            if (editorSelectedIds.size === 0) return;
+            
+            let count = 0;
+            allEditorItems.forEach(item => {
+                if (editorSelectedIds.has(item.id)) {
+                    item.tempListId = targetList;
+                    count++;
+                }
+            });
+            
+            editorSelectedIds.clear();
+            renderEditorList(); 
+            updateBulkBar();
+            showToast(`${count}개 상품을 ${currentListNames[targetList]}로 이동했습니다.`);
+        }
+
+        function renderEditorList() {
+            editorListEl.innerHTML = '';
+            
+            let displayItems = [];
+            if (editorFocusList === 'all') {
+                displayItems = allEditorItems;
+            } else {
+                displayItems = allEditorItems.filter(item => item.tempListId === editorFocusList);
+            }
+            
+            // Sort Logic for Editor
+            displayItems.sort((a, b) => {
+                // 1. If 'All' view, group by List ID first for sanity, or keep mixed?
+                // Let's sort by List ID so it's not a mess
+                if (editorFocusList === 'all' && a.tempListId !== b.tempListId) {
+                    return a.tempListId.localeCompare(b.tempListId);
+                }
+                
+                // 2. Order
+                const orderA = (a.tempOrder !== null && a.tempOrder !== '') ? parseInt(a.tempOrder) : Infinity;
+                const orderB = (b.tempOrder !== null && b.tempOrder !== '') ? parseInt(b.tempOrder) : Infinity;
+                
+                if (orderA !== orderB) return orderA - orderB;
+                return (b.addedAt || 0) - (a.addedAt || 0);
+            });
+
+            if (displayItems.length === 0) {
+                editorListEl.innerHTML = `<div style="padding:60px 20px; text-align:center; color:#ccc;">
+                    <div>리스트에 상품이 없습니다.</div>
+                </div>`;
+                return;
+            }
+
+            displayItems.forEach((item) => {
+                const row = document.createElement('div');
+                const isChecked = editorSelectedIds.has(item.id);
+                row.className = `editor-card ${isChecked ? 'checked' : ''}`;
+                
+                const displayVal = (item.tempOrder === Infinity || item.tempOrder === null) ? '' : item.tempOrder;
+                
+                // Click on card toggles selection
+                row.onclick = (e) => {
+                    if (e.target.tagName !== 'INPUT' && !e.target.closest('.e-card-drag-handle')) {
+                        toggleEditorSelection(item.id);
+                    }
+                };
+
+                // Badge Logic
+                let badgeHtml = '';
+                if (editorFocusList === 'all') {
+                    const badgeClass = `badge-${item.tempListId}`; // e.g. badge-list1
+                    badgeHtml = `<span class="e-card-badge ${badgeClass}">${currentListNames[item.tempListId]}</span>`;
+                }
+
+                row.innerHTML = `
+                    <div class="e-card-check ${isChecked ? 'checked' : ''}"></div>
+                    <div class="e-card-info">
+                        <div class="e-card-name-row">
+                            ${badgeHtml}
+                            <div class="e-card-name">${item.name}</div>
+                        </div>
+                        <div class="e-card-sub">${item.price.toLocaleString()}원</div>
+                    </div>
+                    
+                    <div class="e-card-right-area">
+                        <div class="e-card-input-group">
+                            <span class="e-card-label">순번</span>
+                            <input type="number" class="editor-input" value="${displayVal}" placeholder="0" 
+                                onfocus="this.select()" 
+                                onchange="updateEditorOrder(${item.id}, this.value)"
+                                onclick="event.stopPropagation()">
+                        </div>
+                        <div class="e-card-drag-handle">
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        </div>
+                    </div>
+                `;
+                editorListEl.appendChild(row);
+            });
+        }
+
+        function saveSort() {
+            let hasManualInput = false;
+
+            ['list1', 'list2', 'list3'].forEach(key => userSortData[key] = {});
+            
+            // Rebuild userSortData from allEditorItems
+            allEditorItems.forEach((item) => {
+                let isNewlyMoved = (item.listId !== item.tempListId); 
+                const finalIsNew = item.isNew || isNewlyMoved;
+                const finalAddedAt = isNewlyMoved ? Date.now() : item.addedAt;
+                
+                // Ensure target list exists
+                if(!userSortData[item.tempListId]) userSortData[item.tempListId] = {};
+                
+                userSortData[item.tempListId][item.id] = { 
+                    order: item.tempOrder, 
+                    isNew: finalIsNew, 
+                    addedAt: finalAddedAt 
+                };
+                
+                // If any order is set, switch that tab to manual mode
+                if(item.tempOrder !== null && item.tempOrder !== '') {
+                    tabViewModes[item.tempListId] = 'manual';
+                }
+            });
+
+            // Refresh current view
+            if(currentTab !== 'special') {
+                currentList = getExtendedList(currentTab);
+                // If current tab was sorted manually, reflect it
+                if(viewerSortMode === 'custom') switchViewerSort('custom');
+                else renderMainList(); // Refresh just in case
+            }
+            
+            showToast('저장되었습니다.');
+            closeEditor();
+        }
+
+        // --- Rename Sheet Functions ---
+        
+        function openRenameSheet() {
+            // Load current names into temp
+            tempNames[1] = currentListNames.list1;
+            tempNames[2] = currentListNames.list2;
+            tempNames[3] = currentListNames.list3;
+            
+            updateTargetDisplay();
+            setRenameFocus(1); // Reset focus to first item
+            renderKeywords();
+            
+            document.getElementById('renameSheetOverlay').classList.add('show');
+        }
+
+        function closeRenameSheet() {
+            document.getElementById('renameSheetOverlay').classList.remove('show');
+        }
+
+        function setRenameFocus(idx) {
+            activeFocusIndex = idx;
+            // UI Update
+            for(let i=1; i<=3; i++) {
+                const row = document.getElementById(`targetRow${i}`);
+                if(i === idx) row.classList.add('active');
+                else row.classList.remove('active');
+            }
+        }
+
+        function updateTargetDisplay() {
+            document.getElementById('displayVal1').innerText = tempNames[1];
+            document.getElementById('displayVal2').innerText = tempNames[2];
+            document.getElementById('displayVal3').innerText = tempNames[3];
+        }
+
+        function renderKeywords() {
+            const area = document.getElementById('keywordListArea');
+            area.innerHTML = '';
+            
+            namingPresets.forEach((preset) => {
+                const section = document.createElement('div');
+                section.className = 'keyword-section';
+                
+                const title = document.createElement('div');
+                title.className = 'keyword-section-title';
+                title.innerHTML = `<span>${preset.title}</span> <span style="font-weight:400; font-size:11px;">${preset.desc}</span>`;
+                section.appendChild(title);
+                
+                const grid = document.createElement('div');
+                grid.className = 'keyword-grid';
+                
+                preset.names.forEach(name => {
+                    const chip = document.createElement('div');
+                    chip.className = 'keyword-chip';
+                    chip.innerText = name;
+                    chip.onclick = () => applyKeywordToActive(name);
+                    grid.appendChild(chip);
+                });
+                
+                section.appendChild(grid);
+                area.appendChild(section);
+            });
+        }
+
+        function applyKeywordToActive(name) {
+            // Set value
+            tempNames[activeFocusIndex] = name;
+            updateTargetDisplay();
+            
+            // Auto-advance focus (UX Convenience)
+            // If user sets L1, move to L2. If L2, move to L3. If L3, stay.
+            if(activeFocusIndex < 3) {
+                setRenameFocus(activeFocusIndex + 1);
+            }
+        }
+
+        function applyRename() {
+            // Apply temp to real
+            currentListNames = { 
+                list1: tempNames[1] || "LIST 1", 
+                list2: tempNames[2] || "LIST 2", 
+                list3: tempNames[3] || "LIST 3" 
+            };
+            
+            // Update Main UI
+            document.getElementById('tab-list1').innerText = currentListNames.list1;
+            document.getElementById('tab-list2').innerText = currentListNames.list2;
+            document.getElementById('tab-list3').innerText = currentListNames.list3;
+            
+            document.getElementById('et-list1').innerText = currentListNames.list1;
+            document.getElementById('et-list2').innerText = currentListNames.list2;
+            document.getElementById('et-list3').innerText = currentListNames.list3;
+            
+            closeRenameSheet();
+            showToast('리스트 이름이 변경되었습니다.');
+            
+            // Re-render editor list to update badges
+            if(document.getElementById('editorModal').classList.contains('open')) {
+                renderEditorList();
+                updateBulkBar();
+            }
+        }
+
+        // Scroll listener simplified (removed old sort bar logic)
+        const scrollContainer = document.getElementById('scrollContainer');
+        // No specific scroll logic needed for header hiding anymore in this version, kept simple.
+
+        init();
+    </script>
+</body>
+</html>
