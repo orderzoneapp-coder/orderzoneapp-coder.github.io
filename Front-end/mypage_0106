@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 (오류 수정 및 완성)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        /* 스크롤바 숨기기 유틸리티 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* 주문 상태별 색상 */
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.3rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            border-radius: 0.25rem;
+            white-space: nowrap;
+        }
+        .status-deposit-wait { background-color: #fff7ed; color: #c2410c; }
+        .status-delivery-complete { background-color: #f0fdfa; color: #0f766e; }
+        .status-cancel { background-color: #fef2f2; color: #dc2626; }
+        
+        /* 메인 탭 스타일 (밑줄형) */
+        .main-tab-container {
+            display: flex;
+            width: 100%;
+            border-bottom: 1px solid #E5E7EB;
+            background-color: white;
+        }
+        .main-tab-btn {
+            flex: 1; 
+            text-align: center;
+            padding: 14px 0;
+            font-size: 0.95rem;
+            color: #9CA3AF; 
+            position: relative;
+            background: transparent;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .main-tab-btn:hover { color: #4B5563; }
+        .main-tab-btn.active { color: #111827; font-weight: 700; }
+        .main-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; 
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #111827;
+        }
+        
+        /* 필터 칩 스타일 */
+        .filter-chip {
+            padding: 6px 12px; 
+            font-size: 0.8rem;
+            border-radius: 9999px; 
+            border: 1px solid #E5E7EB;
+            background-color: #FFFFFF;
+            color: #6B7280;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .filter-chip:hover { background-color: #F9FAFB; color: #374151; }
+        .filter-chip.active {
+            background-color: #1F2937; 
+            color: #FFFFFF; 
+            border-color: #1F2937;
+            font-weight: 600;
+        }
+
+        .filter-chip-container {
+            display: flex;
+            padding: 12px 16px;
+            gap: 8px;
+            flex-wrap: wrap; 
+        }
+
+        /* 아코디언 관련 스타일 */
+        .arrow-icon { transition: transform 0.2s ease-in-out; }
+        .arrow-icon.rotate-180 { transform: rotate(180deg); }
+        .order-details { transition: all 0.3s ease-in-out; }
+
+        /* 소계 탭 스타일 */
+        .summary-row {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            border-top: 2px solid #374151;
+            background-color: #F3F4F6;
+            padding: 12px 4px;
+            margin-top: 4px;
+        }
+        .summary-row .label { width: 25%; text-align: center; font-size: 0.875rem; color: #374151; }
+        .summary-row .value { width: 25%; text-align: right; padding: 0 4px; font-size: 0.875rem; }
+
+        /* 알림내역 스타일 */
+        .notice-table-header {
+            border-top: 2px solid #000;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .notice-row {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+        }
+        .notice-col-date {
+            width: 25%;
+            text-align: center;
+            color: #6b7280; 
+            font-weight: 500;
+            padding: 0 2px;
+            padding-top: 2px; 
+            white-space: nowrap;
+            letter-spacing: -0.025em;
+        }
+        .notice-col-content {
+            width: 75%;
+            padding: 0 8px;
+            text-align: left;
+            word-break: keep-all;
+        }
+        .notice-main-text {
+            font-size: 0.875rem; 
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        .notice-sub-text {
+            font-size: 0.75rem; 
+            color: #6B7280; 
+        }
+
+        /* 팝업(모달) 애니메이션 */
+        .modal-fade-in {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 tracking-tight flex flex-col min-h-screen">
+
+    <div class="max-w-md w-full mx-auto bg-white flex-grow flex flex-col relative">
+        
+        <!-- 헤더 -->
+        <header class="flex justify-between items-center px-4 py-3 border-b sticky top-0 bg-white z-10 h-14">
+            <div class="flex items-center space-x-2">
+                <svg class="cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                <h1 class="text-lg font-bold">마이페이지</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-gray-600 hover:text-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                </a>
+                <a href="#" id="header-notice-link" class="text-gray-600 hover:text-black relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span id="header-notice-badge" class="absolute top-0 right-0 flex h-2 w-2 rounded-full bg-red-500 ring-1 ring-white hidden"></span>
+                </a>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <!-- 프로필 섹션 -->
+            <section class="px-4 py-4">
+                <div class="flex items-center">
+                    <div class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div class="ml-3 flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <p class="font-bold text-lg leading-tight text-gray-900">꽃놀이식당</p>
+                            <a href="#" class="px-2 py-1 text-xs text-gray-500 border border-gray-300 rounded hover:bg-gray-50 transition-colors flex items-center whitespace-nowrap">
+                                정보수정
+                            </a>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">경남 창원시 성산구 가양로 34</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 포인트 및 쿠폰 요약 -->
+            <section class="px-4 mb-3">
+                <div class="flex bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="flex-1 flex items-center justify-center py-3 cursor-pointer hover:bg-gray-50 transition-colors active:bg-gray-100 border-r border-gray-100" onclick="alert('포인트 상세 내역 페이지로 이동합니다.')">
+                        <div class="bg-blue-100 text-blue-600 rounded-full p-1.5 mr-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <span class="text-sm font-bold text-gray-800">3,000 P</span>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center py-3 cursor-pointer hover:bg-gray-50 transition-colors active:bg-gray-100" onclick="openCouponModal()">
+                        <div class="bg-red-100 text-red-600 rounded-full p-1.5 mr-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+                        </div>
+                        <span class="text-sm font-bold text-gray-800">2 장</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 금융 정보 카드 -->
+            <section class="px-4 mb-5">
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 shadow-sm">
+                    <div class="flex flex-col space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center overflow-hidden mr-2">
+                                <span class="text-xs text-slate-500 font-medium mr-1.5 whitespace-nowrap flex-shrink-0">입금계좌:</span>
+                                <span id="accountNumber" class="text-sm font-bold text-gray-800 tracking-tight truncate">농협 302-1586-5706-41 이무철</span>
+                            </div>
+                            <button id="copyAccountBtn" class="flex-shrink-0 text-xs bg-white border border-slate-300 text-slate-600 px-2.5 py-1 rounded shadow-sm hover:bg-gray-50 active:bg-gray-100 relative transition-colors font-medium">
+                                복사
+                                <span id="copyMessage" class="absolute left-1/2 -top-8 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded hidden whitespace-nowrap z-50 shadow-md">복사완료</span>
+                            </button>
+                        </div>
+                        <div class="h-px bg-slate-200 w-full border-t border-dashed border-slate-300"></div>
+                        <div class="flex justify-between items-end">
+                            <span id="unpaid-balance-label" class="text-sm text-gray-600 font-medium pb-0.5">총 미수금</span>
+                            <span id="current-unpaid-amount" class="text-xl font-bold text-red-600 tracking-tight leading-none">49,000원</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 탭 및 필터 영역 -->
+            <section class="mb-2">
+                <!-- 메인 탭 (밑줄형) -->
+                <div class="main-tab-container">
+                    <button class="main-tab-btn active" data-tab="orders">주문내역</button>
+                    <button class="main-tab-btn" data-tab="notifications">
+                        알림내역
+                        <span id="notification-count-badge" class="absolute top-3 right-4 lg:right-8 flex h-1.5 w-1.5 rounded-full bg-red-600 z-10 ring-2 ring-white"></span>
+                    </button>
+                    <button class="main-tab-btn" data-tab="settlements">정산내역</button>
+                </div>
+            </section>
+
+            <!-- 탭 컨텐츠 영역 -->
+            <div id="tab-contents" class="px-2 pt-0 pb-4 border-t border-gray-100 mt-0"> 
+                
+                <!-- [1] 최근 주문내역 탭 -->
+                <div id="orders" class="tab-content active pt-4">
+                    <div class="flex justify-between items-center mb-3 px-2">
+                        <div class="flex space-x-1 filter-group" data-target="orders">
+                            <button class="filter-chip active" data-filter="7days">최근 7일</button>
+                            <button class="filter-chip" data-filter="currentMonth">당월</button>
+                            <button class="filter-chip" data-filter="lastMonth">전월</button>
+                            <button class="filter-chip" data-filter="all">전체</button>
+                        </div>
+                        <label class="flex items-center space-x-1.5 cursor-pointer select-none">
+                            <div class="relative">
+                                <input type="checkbox" id="unpaid-only-toggle" class="sr-only peer">
+                                <div class="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-red-500 transition-colors"></div>
+                                <div class="absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-all peer-checked:left-5"></div>
+                            </div>
+                            <span class="text-xs font-medium text-gray-600">미입금만</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-3 px-2">
+                        <div id="sort-order-date" class="text-sm font-bold text-gray-800 cursor-pointer flex items-center space-x-1">
+                            <span>일자</span>
+                            <span id="sort-order-arrow" class="text-xs text-gray-500">▼</span>
+                        </div>
+                        <div class="text-xs text-gray-400 font-normal">* 항목 클릭 시 상세내역 확인</div>
+                    </div>
+
+                    <div id="order-list-container" class="space-y-3"> 
+                        <!-- 1. 입금대기 (미입금) -->
+                        <div class="order-item bg-white border border-red-200 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-26">
+                            <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                    <span class="text-xs text-gray-400 mb-1">25.08.26</span>
+                                    <span class="status-badge status-deposit-wait">입금대기</span>
+                                </div>
+                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                    <p class="text-sm font-bold text-gray-800 truncate">양파 20KG 외 2건</p>
+                                    <p class="text-[10px] text-red-600 mt-0.5 font-medium flex items-center">
+                                        ⚠️ 주문금액 변경됨
+                                    </p>
+                                </div>
+                                <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
+                                    <p class="text-base font-bold text-red-600 tracking-tight">49,000원</p>
+                                    <p class="text-[10px] text-red-500 font-medium">(미입금)</p>
+                                    <div class="text-[10px] text-gray-400 mt-1 flex justify-end items-center space-x-0.5 opacity-50">
+                                        <svg class="w-3 h-3 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-details hidden bg-slate-50 border-t border-gray-100 p-4 text-xs">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center text-gray-500">
+                                        <span>최초주문</span>
+                                        <span>51,000원</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-red-600 font-medium bg-red-50 rounded px-2 py-1 -mx-2">
+                                        <span>취소</span>
+                                        <span>-2,000원</span>
+                                    </div>
+                                    <div class="border-t border-gray-200 my-2"></div>
+                                    <div class="flex justify-between items-center text-sm font-bold text-gray-900">
+                                        <span>최종 결제 예정 금액</span>
+                                        <span>49,000원</span>
+                                    </div>
+                                    <div class="mt-2 text-right text-gray-400 text-[10px]">
+                                        * 현재 미수금 상태입니다.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. 배송완료 -->
+                        <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-25">
+                            <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                    <span class="text-xs text-gray-400 mb-1">25.08.25</span>
+                                    <span class="status-badge status-delivery-complete">배송완료</span>
+                                </div>
+                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                    <p class="text-sm font-bold text-gray-800 truncate">흙쪽파(1kg)단 외 1건</p>
+                                    <p class="text-[10px] text-blue-600 mt-0.5 font-medium">
+                                        포인트 환불 완료
+                                    </p>
+                                </div>
+                                <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
+                                    <p class="text-base font-bold text-gray-900 tracking-tight">24,700원</p>
+                                    <div class="text-[10px] text-gray-400 mt-1 flex justify-end items-center space-x-0.5 opacity-50">
+                                        <svg class="w-3 h-3 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-details hidden bg-slate-50 border-t border-gray-100 p-4 text-xs">
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between items-center text-gray-500">
+                                        <span>주문금액</span>
+                                        <span>32,700원</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-gray-600">
+                                        <span>포인트 사용</span>
+                                        <span>-3,000P</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-gray-600">
+                                        <span>쿠폰 사용</span>
+                                        <span>-5,000원</span>
+                                    </div>
+                                    <div class="border-t border-gray-200 my-2"></div>
+                                    <div class="flex justify-between items-center text-sm font-bold text-gray-900">
+                                        <span>총 결제금액</span>
+                                        <span>24,700원</span>
+                                    </div>
+                                    <div class="border-t border-dotted border-gray-300 my-2"></div>
+                                    <div class="flex justify-between items-center text-red-600 font-medium bg-red-50 rounded px-2 py-1 -mx-2">
+                                        <span>취소금액</span>
+                                        <span>-4,000원</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-blue-600">
+                                        <span>환불 (포인트)</span>
+                                        <span>+4,000P</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. 배송완료 (추가금) -->
+                        <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-24">
+                            <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                    <span class="text-xs text-gray-400 mb-1">25.08.24</span>
+                                    <span class="status-badge status-delivery-complete">배송완료</span>
+                                </div>
+                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                    <p class="text-sm font-bold text-gray-800 truncate">배추_3입망 외 5건</p>
+                                    <p class="text-[10px] text-orange-600 mt-0.5 font-medium">
+                                        ⚠️ 추가금 발생
+                                    </p>
+                                </div>
+                                <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
+                                    <p class="text-base font-bold text-gray-900 tracking-tight">19,700원</p>
+                                    <div class="text-[10px] text-gray-400 mt-1 flex justify-end items-center space-x-0.5 opacity-50">
+                                        <svg class="w-3 h-3 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-details hidden bg-slate-50 border-t border-gray-100 p-4 text-xs">
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between items-center text-gray-500">
+                                        <span>기존 주문금액</span>
+                                        <span>16,700원</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-orange-600 font-medium">
+                                        <span>추가금액</span>
+                                        <span>+3,000원</span>
+                                    </div>
+                                    <div class="border-t border-gray-200 my-2"></div>
+                                    <div class="flex justify-between items-center text-sm font-bold text-gray-900">
+                                        <span>총 주문금액</span>
+                                        <span>19,700원</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. 배송완료 -->
+                        <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-23">
+                            <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                    <span class="text-xs text-gray-400 mb-1">25.08.23</span>
+                                    <span class="status-badge status-delivery-complete">배송완료</span>
+                                </div>
+                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                    <p class="text-sm font-bold text-gray-800 truncate">긴 상품명의 경우 말줄임표...</p>
+                                    <p class="text-[10px] text-blue-500 mt-0.5">(추가결제건)</p>
+                                </div>
+                                <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
+                                    <p class="text-base font-bold text-gray-900 tracking-tight">10,000원</p>
+                                    <div class="text-[10px] text-gray-400 mt-1 flex justify-end items-center space-x-0.5 opacity-50">
+                                        <svg class="w-3 h-3 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-details hidden bg-slate-50 border-t border-gray-100 p-4 text-xs">
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between items-center text-gray-500">
+                                        <span>주문금액</span>
+                                        <span>10,000원</span>
+                                    </div>
+                                    <div class="border-t border-gray-200 my-2"></div>
+                                    <div class="flex justify-between items-center text-sm font-bold text-gray-900">
+                                        <span>최종 입금액</span>
+                                        <span>10,000원</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. 주문취소 -->
+                        <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-22">
+                            <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
+                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                    <span class="text-xs text-gray-400 mb-1">25.08.22</span>
+                                    <span class="status-badge status-cancel">주문취소</span>
+                                </div>
+                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                    <p class="text-sm font-bold text-gray-800 truncate">양파 10kg 박스</p>
+                                </div>
+                                <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
+                                    <p class="text-base font-bold text-gray-900 tracking-tight">0원</p>
+                                    <div class="text-[10px] text-gray-400 mt-1 flex justify-end items-center space-x-0.5 opacity-50">
+                                        <svg class="w-3 h-3 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-details hidden bg-slate-50 border-t border-gray-100 p-4 text-xs">
+                                <div class="space-y-1.5">
+                                    <div class="flex justify-between items-center text-gray-500">
+                                        <span>주문금액</span>
+                                        <span>41,300원</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-red-600 bg-red-50 rounded px-2 py-1 -mx-2">
+                                        <span>전체취소</span>
+                                        <span>-41,300원</span>
+                                    </div>
+                                    <div class="border-t border-gray-200 my-2"></div>
+                                    <div class="flex justify-between items-center text-sm font-bold text-gray-500">
+                                        <span>결제 금액</span>
+                                        <span>0원</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
+                        내역 더보기
+                    </button>
+                </div>
+                
+                <!-- [2] 알림내역 탭 -->
+                <div id="notifications" class="tab-content pt-4">
+                    <div class="flex space-x-1 mb-3 px-2 overflow-x-auto no-scrollbar filter-group" data-target="notifications">
+                        <button class="filter-chip active" data-filter="all">전체</button>
+                        <button class="filter-chip" data-filter="order">주문변경</button>
+                        <button class="filter-chip" data-filter="point">포인트</button>
+                        <button class="filter-chip" data-filter="coupon">쿠폰</button>
+                    </div>
+
+                    <div class="sticky top-[61px] z-[9] notice-table-header">
+                        <div class="flex py-3 items-center">
+                            <div id="sort-notification-date" class="w-[25%] text-center cursor-pointer select-none flex items-center justify-center space-x-1">
+                                <span>일자</span>
+                                <span id="sort-notification-arrow" class="text-xs">▼</span>
+                            </div>
+                            <div class="w-[75%] px-4 text-left">
+                                알림 내용
+                            </div>
+                        </div>
+                    </div>
+                    <div id="notification-list-container">
+                        <div class="notice-row" data-date="2025-08-25">
+                            <div class="notice-col-date">2025-08-25</div>
+                            <div class="notice-col-content">
+                                <p class="notice-main-text text-blue-600">포인트 +4,000P</p>
+                                <p class="notice-sub-text">무우 상박스 결품 포인트 지급</p>
+                            </div>
+                        </div>
+                        <div class="notice-row" data-date="2025-08-25">
+                            <div class="notice-col-date">2025-08-25</div>
+                            <div class="notice-col-content">
+                                <p class="notice-main-text text-red-600">포인트 -3,000P</p>
+                                <p class="notice-sub-text">주문번호 20250826-001 결제</p>
+                            </div>
+                        </div>
+                        <div class="notice-row" data-date="2025-08-25">
+                            <div class="notice-col-date">2025-08-25</div>
+                            <div class="notice-col-content">
+                                <p class="notice-main-text text-red-600">쿠폰 사용 -5,000원</p>
+                                <p class="notice-sub-text">주문번호 20250826-001 결제</p>
+                            </div>
+                        </div>
+                        <div class="notice-row" data-date="2025-08-24">
+                            <div class="notice-col-date">2025-08-24</div>
+                            <div class="notice-col-content">
+                                <p class="notice-main-text text-gray-800">주문 변경</p>
+                                <p class="notice-sub-text">올리브오일(엑스트라버진) 수량변경 1-> 0</p>
+                            </div>
+                        </div>
+                        <div class="notice-row" data-date="2025-08-20">
+                            <div class="notice-col-date">2025-08-20</div>
+                            <div class="notice-col-content">
+                                <p class="notice-main-text text-gray-800">쿠폰 지급</p>
+                                <p class="notice-sub-text">
+                                    신규 회원가입 축하 쿠폰 5,000원<br>
+                                    (최소주문금액 50,000원, ~09.19)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
+                        내역 더보기
+                    </button>
+                </div>
+
+                <!-- [3] 정산내역 탭 -->
+                <div id="settlements" class="tab-content pt-4">
+                    <!-- 정산내역 맞춤 필터 -->
+                    <div class="flex flex-col space-y-2 mb-3 px-2">
+                        <!-- 기간 필터 (사장님 니즈 반영: 월별 마감 기준) -->
+                        <div class="flex space-x-1 overflow-x-auto no-scrollbar filter-group" data-target="settlements">
+                            <button class="filter-chip" data-filter="today">오늘</button>
+                            <button class="filter-chip active" data-filter="thisMonth">당월</button>
+                            <button class="filter-chip" data-filter="lastMonth">전월</button>
+                            <button class="filter-chip flex items-center text-blue-600 border-blue-200 bg-blue-50" data-filter="custom">
+                                <span>기간설정</span>
+                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200">
+                        <div class="flex">
+                            <div id="sort-settlement-date" class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1 whitespace-nowrap">
+                                <span>일자</span>
+                                <span id="sort-settlement-arrow">▲</span> 
+                            </div>
+                            <div class="w-1/4 px-0.5 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">판매</div>
+                            <div class="w-1/4 px-0.5 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">입금</div>
+                            <div class="w-1/4 px-0.5 py-3 text-sm font-semibold text-gray-600 text-center whitespace-nowrap">잔액</div>
+                        </div>
+                    </div>
+                    <div id="settlement-list-container">
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-23" data-sales="10000" data-deposit="10000">
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-23</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+10,000</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">-10,000</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-gray-900 balance-amount whitespace-nowrap tracking-tighter" data-balance="0">0</div>
+                        </div>
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-24" data-sales="19700" data-deposit="19700">
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-24</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+19,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">-19,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-gray-900 balance-amount whitespace-nowrap tracking-tighter" data-balance="0">0</div>
+                        </div>
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-25" data-sales="28700" data-deposit="28700">
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-25</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+28,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">-28,700</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-gray-900 balance-amount whitespace-nowrap tracking-tighter" data-balance="0">0</div>
+                        </div>
+                        <div class="border-b py-3 flex items-center text-sm settlement-item" data-date="2025-08-26" data-sales="49000" data-deposit="0">
+                            <div class="w-1/4 text-center px-0.5 text-gray-700 whitespace-nowrap tracking-tighter">2025-08-26</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-red-600 whitespace-nowrap tracking-tighter">+49,000</div>
+                            <div class="w-1/4 px-0.5 text-right font-medium text-blue-600 whitespace-nowrap tracking-tighter">0</div>
+                            <div class="w-1/4 px-0.5 text-right font-bold text-red-600 balance-amount whitespace-nowrap tracking-tighter" data-balance="49000">49,000</div>
+                        </div>
+                    </div>
+                    <div class="summary-row">
+                        <div class="label">소계</div>
+                        <div id="summary-sales" class="value text-red-600 whitespace-nowrap tracking-tighter">0</div> 
+                        <div id="summary-deposit" class="value text-blue-600 whitespace-nowrap tracking-tighter">0</div>
+                        <div id="summary-balance" class="value font-extrabold text-red-600 whitespace-nowrap tracking-tighter">0</div>
+                    </div>
+                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
+                        내역 더보기
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer (로그아웃) -->
+        <footer class="p-6 bg-gray-50 border-t border-gray-100 flex justify-center">
+            <a href="#" class="text-sm text-gray-400 hover:text-gray-600 underline">로그아웃</a>
+        </footer>
+
+        <!-- 쿠폰 팝업 (모달) -->
+        <div id="coupon-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+            <div class="bg-white w-full max-w-sm mx-4 rounded-xl shadow-lg overflow-hidden transform scale-95 opacity-0 transition-all duration-200" id="coupon-modal-content">
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h3 class="font-bold text-lg text-gray-800">보유 쿠폰</h3>
+                    <button onclick="closeCouponModal()" class="text-gray-400 hover:text-gray-600 p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="p-4 space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar">
+                    <div class="border border-red-100 bg-red-50 rounded-lg p-4 relative overflow-hidden shadow-sm">
+                        <div class="absolute top-0 right-0 bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-bl-lg">D-5</div>
+                        <div class="flex justify-between items-end mb-1">
+                            <span class="text-2xl font-bold text-red-600">5,000원</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 mb-1">신규 회원가입 축하 쿠폰</p>
+                        <p class="text-xs text-gray-500">50,000원 이상 구매 시 사용 가능</p>
+                        <div class="mt-2 pt-2 border-t border-red-100 text-xs text-gray-400 flex justify-between">
+                            <span>~ 2025.09.19 까지</span>
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 bg-white rounded-lg p-4 shadow-sm">
+                        <div class="flex justify-between items-end mb-1">
+                            <span class="text-2xl font-bold text-gray-800">3,000원</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 mb-1">첫 구매 감사 쿠폰</p>
+                        <p class="text-xs text-gray-500">30,000원 이상 구매 시 사용 가능</p>
+                        <div class="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-400 flex justify-between">
+                            <span>~ 2025.09.30 까지</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-gray-50 border-t">
+                    <button onclick="closeCouponModal()" class="w-full bg-gray-900 text-white py-3 rounded-lg font-bold text-sm hover:bg-gray-800 transition-colors">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 기간 설정 모달 -->
+        <div id="date-range-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+            <div class="bg-white w-full max-w-xs mx-4 rounded-xl shadow-lg p-5">
+                <h3 class="font-bold text-lg text-gray-800 mb-4">기간 설정</h3>
+                <div class="flex flex-col space-y-3">
+                    <div class="flex flex-col">
+                        <label class="text-xs text-gray-500 mb-1">시작일</label>
+                        <input type="date" id="start-date" class="border border-gray-300 rounded px-2 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-xs text-gray-500 mb-1">종료일</label>
+                        <input type="date" id="end-date" class="border border-gray-300 rounded px-2 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div class="flex space-x-2 mt-5">
+                    <button onclick="closeDateRangeModal()" class="flex-1 py-2 text-sm text-gray-600 border border-gray-300 rounded hover:bg-gray-50">취소</button>
+                    <button onclick="applyDateRange()" class="flex-1 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 font-bold">조회</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const currencyFormatter = new Intl.NumberFormat('ko-KR');
+        // 가상 현재 날짜 설정 (2025년 8월 27일)
+        const MOCK_TODAY = new Date('2025-08-27');
+
+        // [신규] 쿠폰 모달 제어 함수
+        function openCouponModal() {
+            const modal = document.getElementById('coupon-modal');
+            const content = document.getElementById('coupon-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeCouponModal() {
+            const modal = document.getElementById('coupon-modal');
+            const content = document.getElementById('coupon-modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200); 
+        }
+
+        // [신규] 기간 설정 모달 제어
+        function openDateRangeModal() {
+            const modal = document.getElementById('date-range-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeDateRangeModal() {
+            const modal = document.getElementById('date-range-modal');
+            modal.classList.add('hidden');
+        }
+
+        function applyDateRange() {
+            const chips = document.querySelectorAll('#settlements .filter-chip');
+            chips.forEach(c => c.classList.remove('active'));
+            const customChip = document.querySelector('#settlements .filter-chip[data-filter="custom"]');
+            if(customChip) customChip.classList.add('active');
+
+            closeDateRangeModal();
+            filterSettlements(); 
+        }
+
+        function toggleAccordion(headerElement) {
+            const itemContainer = headerElement.parentElement;
+            const details = itemContainer.querySelector('.order-details');
+            const arrow = headerElement.querySelector('.arrow-icon');
+            
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                arrow.classList.add('rotate-180');
+                headerElement.classList.add('bg-gray-50'); 
+            } else {
+                details.classList.add('hidden');
+                arrow.classList.remove('rotate-180');
+                headerElement.classList.remove('bg-gray-50');
+            }
+        }
+
+        function hideZeroValues() {
+            const candidates = document.querySelectorAll('.hide-if-zero');
+            candidates.forEach(el => {
+                if (el.innerText.includes('0원(') || el.innerText.includes(': 0원')) { 
+                    el.classList.add('hidden'); 
+                } else {
+                    el.classList.remove('hidden'); 
+                }
+            });
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            let fullDateStr = dateStr;
+            if (dateStr.match(/^\d{2}\.\d{2}\.\d{2}$/)) {
+                fullDateStr = '20' + dateStr; 
+            }
+            fullDateStr = fullDateStr.replace(/\./g, '-');
+            return new Date(fullDateStr);
+        }
+
+        // --- 필터링 로직 ---
+
+        // 1. 주문내역 필터링
+        function filterOrders() {
+            const activePeriod = document.querySelector('#orders .filter-chip.active')?.dataset.filter || 'all';
+            const unpaidOnly = document.getElementById('unpaid-only-toggle').checked;
+            
+            const items = document.querySelectorAll('#order-list-container .order-item');
+            
+            items.forEach(item => {
+                const dateStr = item.dataset.date;
+                const itemDate = new Date(dateStr);
+                const itemText = item.innerText;
+                let show = true;
+
+                // 기간 필터
+                if (activePeriod === '7days') {
+                    const diffTime = Math.abs(MOCK_TODAY - itemDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    if (diffDays > 7) show = false;
+                } else if (activePeriod === 'currentMonth') {
+                    if (itemDate.getMonth() !== MOCK_TODAY.getMonth() || itemDate.getFullYear() !== MOCK_TODAY.getFullYear()) show = false;
+                } else if (activePeriod === 'lastMonth') {
+                    const lastMonthDate = new Date(MOCK_TODAY);
+                    lastMonthDate.setMonth(MOCK_TODAY.getMonth() - 1);
+                    if (itemDate.getMonth() !== lastMonthDate.getMonth() || itemDate.getFullYear() !== lastMonthDate.getFullYear()) show = false;
+                }
+
+                // 미입금 필터
+                if (show && unpaidOnly) {
+                    if (!itemText.includes('(미입금)')) show = false;
+                }
+
+                if (show) item.classList.remove('hidden');
+                else item.classList.add('hidden');
+            });
+        }
+
+        // 2. 알림내역 필터링
+        function filterNotifications() {
+            const activeFilter = document.querySelector('#notifications .filter-chip.active')?.dataset.filter || 'all';
+            const items = document.querySelectorAll('#notification-list-container .notice-row');
+
+            items.forEach(item => {
+                const content = item.innerText;
+                let show = true;
+
+                if (activeFilter === 'order') {
+                    const isOrderChange = content.includes('주문 변경') || content.includes('배송') || content.includes('수량변경') || content.includes('취소');
+                    if (!isOrderChange) show = false;
+                } else if (activeFilter === 'point') {
+                    if (!content.includes('포인트')) show = false;
+                } else if (activeFilter === 'coupon') {
+                    if (!content.includes('쿠폰')) show = false;
+                }
+
+                if (show) item.classList.remove('hidden');
+                else item.classList.add('hidden');
+            });
+        }
+
+        // 3. 정산내역 필터링
+        function filterSettlements() {
+            const activePeriod = document.querySelector('#settlements .filter-chip.active')?.dataset.filter || 'thisMonth'; 
+            const items = document.querySelectorAll('#settlement-list-container .settlement-item');
+            
+            items.forEach(item => {
+                const dateStr = item.dataset.date;
+                const itemDate = new Date(dateStr);
+                let show = true;
+
+                if (activePeriod === 'today') {
+                    const todayStr = MOCK_TODAY.toISOString().split('T')[0];
+                    if (dateStr !== todayStr) show = false; 
+                } else if (activePeriod === 'thisMonth') {
+                    if (itemDate.getMonth() !== MOCK_TODAY.getMonth() || itemDate.getFullYear() !== MOCK_TODAY.getFullYear()) {
+                        show = false;
+                    }
+                } else if (activePeriod === 'lastMonth') {
+                    const lastMonthDate = new Date(MOCK_TODAY);
+                    lastMonthDate.setMonth(MOCK_TODAY.getMonth() - 1);
+                    if (itemDate.getMonth() !== lastMonthDate.getMonth() || itemDate.getFullYear() !== lastMonthDate.getFullYear()) {
+                        show = false;
+                    }
+                } else if (activePeriod === 'custom') {
+                    // show = true;
+                }
+
+                if (show) item.classList.remove('hidden');
+                else item.classList.add('hidden');
+            });
+
+            calculateSettlementSummary(); 
+        }
+
+        function calculateSettlementSummary() {
+            const items = document.querySelectorAll('#settlement-list-container .settlement-item:not(.hidden)');
+            let totalSales = 0;
+            let totalDeposit = 0;
+            let currentBalance = 0; 
+            items.forEach(item => {
+                const sales = parseInt(item.dataset.sales || 0);
+                const deposit = parseInt(item.dataset.deposit || 0);
+                totalSales += sales;
+                totalDeposit += deposit;
+            });
+            currentBalance = totalSales - totalDeposit;
+
+            const summarySalesEl = document.getElementById('summary-sales');
+            const summaryDepositEl = document.getElementById('summary-deposit');
+            const summaryBalanceEl = document.getElementById('summary-balance');
+
+            if (summarySalesEl) summarySalesEl.innerText = currencyFormatter.format(totalSales);
+            if (summaryDepositEl) summaryDepositEl.innerText = currencyFormatter.format(totalDeposit);
+            
+            if (summaryBalanceEl) {
+                summaryBalanceEl.innerText = currencyFormatter.format(Math.abs(currentBalance));
+                summaryBalanceEl.classList.remove('text-red-600', 'text-blue-600', 'text-gray-900');
+                if (currentBalance > 0) summaryBalanceEl.classList.add('text-red-600');
+                else if (currentBalance < 0) summaryBalanceEl.classList.add('text-blue-600');
+                else summaryBalanceEl.classList.add('text-gray-900');
+            }
+        }
+
+        function sortItems(container, itemSelector, dateAttribute, direction) {
+            if (!container) return; 
+            const items = Array.from(container.querySelectorAll(itemSelector));
+            items.sort((a, b) => {
+                const dateA = a.getAttribute(dateAttribute) || '';
+                const dateB = b.getAttribute(dateAttribute) || '';
+                if (direction === 'asc') return dateA.localeCompare(dateB);
+                else return dateB.localeCompare(dateA);
+            });
+            items.forEach(item => container.appendChild(item));
+        }
+
+        function sortItemsByText(container, itemSelector, dateSelector, direction) {
+            if (!container) return; 
+            const items = Array.from(container.querySelectorAll(itemSelector));
+            items.sort((a, b) => {
+                const dateTextA = a.querySelector(dateSelector)?.innerText || '';
+                const dateTextB = b.querySelector(dateSelector)?.innerText || '';
+                if (direction === 'asc') return dateTextA.localeCompare(dateTextB);
+                else return dateTextB.localeCompare(dateTextA);
+            });
+            items.forEach(item => container.appendChild(item));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainTabs = document.querySelectorAll('.main-tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+
+            mainTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    mainTabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    const contentId = tab.dataset.tab;
+                    const contentElement = document.getElementById(contentId);
+                    if(contentElement) {
+                        contentElement.classList.add('active');
+                        if (contentId === 'settlements') filterSettlements();
+                        if (contentId === 'orders') filterOrders();
+                        if (contentId === 'notifications') filterNotifications();
+                    }
+
+                    if (tab.dataset.tab === 'notifications') {
+                        const notiBadge = document.getElementById('notification-count-badge');
+                        if (notiBadge) {
+                            notiBadge.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+            
+            const filterChips = document.querySelectorAll('.filter-chip');
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    if (this.dataset.filter === 'custom') {
+                        openDateRangeModal();
+                        return; 
+                    }
+
+                    const siblings = this.parentElement.querySelectorAll('.filter-chip');
+                    siblings.forEach(sib => sib.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const group = this.parentElement.dataset.target;
+                    if (group === 'orders') filterOrders();
+                    else if (group === 'notifications') filterNotifications();
+                    else if (group === 'settlements') filterSettlements();
+                });
+            });
+
+            const unpaidToggle = document.getElementById('unpaid-only-toggle');
+            if (unpaidToggle) {
+                unpaidToggle.addEventListener('change', filterOrders);
+            }
+
+            const copyBtn = document.getElementById('copyAccountBtn');
+            const accountSpan = document.getElementById('accountNumber'); 
+            const copyMsg = document.getElementById('copyMessage');
+
+            if (copyBtn && accountSpan && copyMsg) {
+                copyBtn.addEventListener('click', () => {
+                    const accountNumText = accountSpan.innerText; 
+                    const tempTextarea = document.createElement('textarea');
+                    tempTextarea.value = accountNumText; 
+                    document.body.appendChild(tempTextarea);
+                    tempTextarea.select();
+                    try {
+                        document.execCommand('copy');
+                        copyMsg.classList.remove('hidden');
+                        setTimeout(() => { copyMsg.classList.add('hidden'); }, 1500);
+                    } catch (err) { console.error('계좌번호 복사 실패:', err); }
+                    document.body.removeChild(tempTextarea);
+                });
+            }
+
+            hideZeroValues();
+            
+            filterOrders();
+            filterNotifications();
+            filterSettlements();
+
+            const sortOrderButton = document.getElementById('sort-order-date');
+            const sortOrderArrow = document.getElementById('sort-order-arrow');
+            const orderContainer = document.getElementById('order-list-container');
+            let orderSortDirection = 'desc'; 
+            if (sortOrderButton && orderContainer) {
+                sortOrderButton.addEventListener('click', () => {
+                    orderSortDirection = orderSortDirection === 'desc' ? 'asc' : 'desc';
+                    sortOrderArrow.innerText = orderSortDirection === 'desc' ? '▼' : '▲';
+                    sortItems(orderContainer, '.order-item', 'data-date', orderSortDirection);
+                });
+            }
+
+            const sortSettlementButton = document.getElementById('sort-settlement-date');
+            const sortSettlementArrow = document.getElementById('sort-settlement-arrow');
+            const settlementContainer = document.getElementById('settlement-list-container');
+            let settlementSortDirection = 'asc'; 
+            if (sortSettlementButton && settlementContainer) {
+                sortSettlementButton.addEventListener('click', () => {
+                    settlementSortDirection = settlementSortDirection === 'asc' ? 'desc' : 'asc';
+                    sortSettlementArrow.innerText = settlementSortDirection === 'asc' ? '▲' : '▼';
+                    sortItems(settlementContainer, '.settlement-item', 'data-date', settlementSortDirection);
+                });
+            }
+
+            const sortNotificationButton = document.getElementById('sort-notification-date');
+            const sortNotificationArrow = document.getElementById('sort-notification-arrow');
+            const notificationContainer = document.getElementById('notification-list-container');
+            let notificationSortDirection = 'desc'; 
+
+            if (sortNotificationButton && notificationContainer) {
+                sortNotificationButton.addEventListener('click', () => {
+                    notificationSortDirection = notificationSortDirection === 'desc' ? 'asc' : 'desc';
+                    sortNotificationArrow.innerText = notificationSortDirection === 'desc' ? '▼' : '▲';
+                    sortItemsByText(notificationContainer, '.notice-row', 'data-date', notificationSortDirection);
+                });
+            }
+
+            const noticeLink = document.getElementById('header-notice-link');
+            const noticeBadge = document.getElementById('header-notice-badge');
+            const LATEST_NOTICE_ID = 'notice_2025_11_27_update';
+            const lastReadNoticeId = localStorage.getItem('lastReadNoticeId');
+
+            if (lastReadNoticeId !== LATEST_NOTICE_ID) {
+                if (noticeBadge) noticeBadge.classList.remove('hidden');
+            } else {
+                if (noticeBadge) noticeBadge.classList.add('hidden');
+            }
+
+            if (noticeLink) {
+                noticeLink.addEventListener('click', (e) => {
+                    if (noticeBadge) noticeBadge.classList.add('hidden');
+                    localStorage.setItem('lastReadNoticeId', LATEST_NOTICE_ID);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
