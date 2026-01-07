@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이페이지 (오류 수정 및 완성)</title>
+    <title>마이페이지 (전체 정렬 최적화)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -80,13 +80,6 @@
             color: #FFFFFF; 
             border-color: #1F2937;
             font-weight: 600;
-        }
-
-        .filter-chip-container {
-            display: flex;
-            padding: 12px 16px;
-            gap: 8px;
-            flex-wrap: wrap; 
         }
 
         /* 아코디언 관련 스타일 */
@@ -242,9 +235,8 @@
                 </div>
             </section>
 
-            <!-- 탭 및 필터 영역 -->
-            <section class="mb-2">
-                <!-- 메인 탭 (밑줄형) -->
+            <!-- 탭 네비게이션 -->
+            <section class="mb-0">
                 <div class="main-tab-container">
                     <button class="main-tab-btn active" data-tab="orders">주문내역</button>
                     <button class="main-tab-btn" data-tab="notifications">
@@ -256,11 +248,11 @@
             </section>
 
             <!-- 탭 컨텐츠 영역 -->
-            <div id="tab-contents" class="px-2 pt-0 pb-4 border-t border-gray-100 mt-0"> 
+            <div id="tab-contents" class="px-4 pt-0 pb-6 border-t border-gray-100 mt-0"> 
                 
                 <!-- [1] 최근 주문내역 탭 -->
-                <div id="orders" class="tab-content active pt-4">
-                    <div class="flex justify-between items-center mb-3 px-2">
+                <div id="orders" class="tab-content active pt-5">
+                    <div class="flex justify-between items-center mb-4">
                         <div class="flex space-x-1 filter-group" data-target="orders">
                             <button class="filter-chip active" data-filter="7days">최근 7일</button>
                             <button class="filter-chip" data-filter="currentMonth">당월</button>
@@ -270,34 +262,35 @@
                         <label class="flex items-center space-x-1.5 cursor-pointer select-none">
                             <div class="relative">
                                 <input type="checkbox" id="unpaid-only-toggle" class="sr-only peer">
-                                <div class="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-red-500 transition-colors"></div>
-                                <div class="absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-all peer-checked:left-5"></div>
+                                <div class="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-red-500 transition-all duration-200"></div>
+                                <div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-all peer-checked:left-4.5 peer-checked:translate-x-full"></div>
                             </div>
-                            <span class="text-xs font-medium text-gray-600">미입금만</span>
+                            <span class="text-[11px] font-medium text-gray-600">미입금만</span>
                         </label>
                     </div>
 
-                    <div class="flex items-center justify-between mb-3 px-2">
-                        <div id="sort-order-date" class="text-sm font-bold text-gray-800 cursor-pointer flex items-center space-x-1">
-                            <span>일자</span>
-                            <span id="sort-order-arrow" class="text-xs text-gray-500">▼</span>
+                    <!-- [수정됨] 주문내역 헤더: 일자/상태 중앙 정렬 적용 -->
+                    <div class="flex items-center px-1 py-2 border-b border-gray-50 text-[11px] text-gray-400 font-medium mb-1">
+                        <div id="sort-order-date" class="w-[25%] flex items-center justify-center cursor-pointer select-none">
+                            <span>일자/상태</span>
+                            <span id="sort-order-arrow" class="ml-0.5 text-[8px]">▼</span>
                         </div>
-                        <div class="text-xs text-gray-400 font-normal">* 항목 클릭 시 상세내역 확인</div>
+                        <div class="w-[45%] text-center">주문상품</div>
+                        <div class="w-[30%] text-right pr-4">결제금액</div>
                     </div>
 
                     <div id="order-list-container" class="space-y-3"> 
-                        <!-- 1. 입금대기 (미입금) -->
+                        <!-- 1. 입금대기 -->
                         <div class="order-item bg-white border border-red-200 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-26">
                             <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
-                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                <!-- [수정됨] 일자/상태 본문: 중앙 정렬 적용 -->
+                                <div class="w-[25%] flex flex-col items-center justify-center pr-2">
                                     <span class="text-xs text-gray-400 mb-1">25.08.26</span>
                                     <span class="status-badge status-deposit-wait">입금대기</span>
                                 </div>
-                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                <div class="w-[45%] px-2 flex flex-col justify-center border-l border-r border-gray-100 text-center">
                                     <p class="text-sm font-bold text-gray-800 truncate">양파 20KG 외 2건</p>
-                                    <p class="text-[10px] text-red-600 mt-0.5 font-medium flex items-center">
-                                        ⚠️ 주문금액 변경됨
-                                    </p>
+                                    <p class="text-[10px] text-red-600 mt-0.5 font-medium">⚠️ 주문금액 변경</p>
                                 </div>
                                 <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
                                     <p class="text-base font-bold text-red-600 tracking-tight">49,000원</p>
@@ -322,9 +315,6 @@
                                         <span>최종 결제 예정 금액</span>
                                         <span>49,000원</span>
                                     </div>
-                                    <div class="mt-2 text-right text-gray-400 text-[10px]">
-                                        * 현재 미수금 상태입니다.
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -332,15 +322,13 @@
                         <!-- 2. 배송완료 -->
                         <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-25">
                             <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
-                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                <div class="w-[25%] flex flex-col items-center justify-center pr-2">
                                     <span class="text-xs text-gray-400 mb-1">25.08.25</span>
                                     <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
-                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                <div class="w-[45%] px-2 flex flex-col justify-center border-l border-r border-gray-100 text-center">
                                     <p class="text-sm font-bold text-gray-800 truncate">흙쪽파(1kg)단 외 1건</p>
-                                    <p class="text-[10px] text-blue-600 mt-0.5 font-medium">
-                                        포인트 환불 완료
-                                    </p>
+                                    <p class="text-[10px] text-blue-600 mt-0.5 font-medium">포인트 환불 완료</p>
                                 </div>
                                 <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
                                     <p class="text-base font-bold text-gray-900 tracking-tight">24,700원</p>
@@ -368,15 +356,6 @@
                                         <span>총 결제금액</span>
                                         <span>24,700원</span>
                                     </div>
-                                    <div class="border-t border-dotted border-gray-300 my-2"></div>
-                                    <div class="flex justify-between items-center text-red-600 font-medium bg-red-50 rounded px-2 py-1 -mx-2">
-                                        <span>취소금액</span>
-                                        <span>-4,000원</span>
-                                    </div>
-                                    <div class="flex justify-between items-center text-blue-600">
-                                        <span>환불 (포인트)</span>
-                                        <span>+4,000P</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -384,15 +363,13 @@
                         <!-- 3. 배송완료 (추가금) -->
                         <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-24">
                             <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
-                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                <div class="w-[25%] flex flex-col items-center justify-center pr-2">
                                     <span class="text-xs text-gray-400 mb-1">25.08.24</span>
                                     <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
-                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                <div class="w-[45%] px-2 flex flex-col justify-center border-l border-r border-gray-100 text-center">
                                     <p class="text-sm font-bold text-gray-800 truncate">배추_3입망 외 5건</p>
-                                    <p class="text-[10px] text-orange-600 mt-0.5 font-medium">
-                                        ⚠️ 추가금 발생
-                                    </p>
+                                    <p class="text-[10px] text-orange-600 mt-0.5 font-medium">⚠️ 추가금 발생</p>
                                 </div>
                                 <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
                                     <p class="text-base font-bold text-gray-900 tracking-tight">19,700원</p>
@@ -423,12 +400,12 @@
                         <!-- 4. 배송완료 -->
                         <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-23">
                             <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
-                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                <div class="w-[25%] flex flex-col items-center justify-center pr-2">
                                     <span class="text-xs text-gray-400 mb-1">25.08.23</span>
                                     <span class="status-badge status-delivery-complete">배송완료</span>
                                 </div>
-                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
-                                    <p class="text-sm font-bold text-gray-800 truncate">긴 상품명의 경우 말줄임표...</p>
+                                <div class="w-[45%] px-2 flex flex-col justify-center border-l border-r border-gray-100 text-center">
+                                    <p class="text-sm font-bold text-gray-800 truncate">긴 상품명 말줄임 테스트...</p>
                                     <p class="text-[10px] text-blue-500 mt-0.5">(추가결제건)</p>
                                 </div>
                                 <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
@@ -456,11 +433,11 @@
                         <!-- 5. 주문취소 -->
                         <div class="order-item bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden" data-date="2025-08-22">
                             <div class="order-header flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors" onclick="toggleAccordion(this)">
-                                <div class="w-[20%] flex flex-col items-start justify-center pr-2">
+                                <div class="w-[25%] flex flex-col items-center justify-center pr-2">
                                     <span class="text-xs text-gray-400 mb-1">25.08.22</span>
                                     <span class="status-badge status-cancel">주문취소</span>
                                 </div>
-                                <div class="w-[50%] px-2 flex flex-col justify-center border-l border-gray-100 pl-3">
+                                <div class="w-[45%] px-2 flex flex-col justify-center border-l border-r border-gray-100 text-center">
                                     <p class="text-sm font-bold text-gray-800 truncate">양파 10kg 박스</p>
                                 </div>
                                 <div class="w-[30%] text-right pl-1 flex flex-col justify-center">
@@ -490,22 +467,22 @@
                         </div>
                     </div>
                     
-                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
+                    <button class="w-full mt-6 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
                         내역 더보기
                     </button>
                 </div>
                 
                 <!-- [2] 알림내역 탭 -->
-                <div id="notifications" class="tab-content pt-4">
-                    <div class="flex space-x-1 mb-3 px-2 overflow-x-auto no-scrollbar filter-group" data-target="notifications">
+                <div id="notifications" class="tab-content pt-5">
+                    <div class="flex space-x-1 mb-4 filter-group overflow-x-auto no-scrollbar" data-target="notifications">
                         <button class="filter-chip active" data-filter="all">전체</button>
                         <button class="filter-chip" data-filter="order">주문변경</button>
                         <button class="filter-chip" data-filter="point">포인트</button>
                         <button class="filter-chip" data-filter="coupon">쿠폰</button>
                     </div>
 
-                    <div class="sticky top-[61px] z-[9] notice-table-header">
-                        <div class="flex py-3 items-center">
+                    <div class="sticky top-[61px] z-[9] notice-table-header -mx-4">
+                        <div class="flex py-3 px-4 items-center">
                             <div id="sort-notification-date" class="w-[25%] text-center cursor-pointer select-none flex items-center justify-center space-x-1">
                                 <span>일자</span>
                                 <span id="sort-notification-arrow" class="text-xs">▼</span>
@@ -555,16 +532,14 @@
                             </div>
                         </div>
                     </div>
-                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
+                    <button class="w-full mt-6 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
                         내역 더보기
                     </button>
                 </div>
 
                 <!-- [3] 정산내역 탭 -->
-                <div id="settlements" class="tab-content pt-4">
-                    <!-- 정산내역 맞춤 필터 -->
-                    <div class="flex flex-col space-y-2 mb-3 px-2">
-                        <!-- 기간 필터 (사장님 니즈 반영: 월별 마감 기준) -->
+                <div id="settlements" class="tab-content pt-5">
+                    <div class="flex flex-col space-y-2 mb-4">
                         <div class="flex space-x-1 overflow-x-auto no-scrollbar filter-group" data-target="settlements">
                             <button class="filter-chip" data-filter="today">오늘</button>
                             <button class="filter-chip active" data-filter="thisMonth">당월</button>
@@ -576,8 +551,8 @@
                         </div>
                     </div>
 
-                    <div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200">
-                        <div class="flex">
+                    <div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200 -mx-4">
+                        <div class="flex px-4">
                             <div id="sort-settlement-date" class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1 whitespace-nowrap">
                                 <span>일자</span>
                                 <span id="sort-settlement-arrow">▲</span> 
@@ -613,25 +588,26 @@
                             <div class="w-1/4 px-0.5 text-right font-bold text-red-600 balance-amount whitespace-nowrap tracking-tighter" data-balance="49000">49,000</div>
                         </div>
                     </div>
-                    <div class="summary-row">
+                    <div class="summary-row -mx-4">
                         <div class="label">소계</div>
                         <div id="summary-sales" class="value text-red-600 whitespace-nowrap tracking-tighter">0</div> 
                         <div id="summary-deposit" class="value text-blue-600 whitespace-nowrap tracking-tighter">0</div>
                         <div id="summary-balance" class="value font-extrabold text-red-600 whitespace-nowrap tracking-tighter">0</div>
                     </div>
-                    <button class="w-full mt-4 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
+                    <button class="w-full mt-6 text-center p-3 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200">
                         내역 더보기
                     </button>
                 </div>
             </div>
         </main>
 
-        <!-- Footer (로그아웃) -->
-        <footer class="p-6 bg-gray-50 border-t border-gray-100 flex justify-center">
+        <!-- Footer -->
+        <footer class="p-8 bg-gray-50 border-t border-gray-100 flex justify-center">
             <a href="#" class="text-sm text-gray-400 hover:text-gray-600 underline">로그아웃</a>
         </footer>
 
-        <!-- 쿠폰 팝업 (모달) -->
+        <!-- 모달들 -->
+        <!-- 쿠폰 모달 -->
         <div id="coupon-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
             <div class="bg-white w-full max-w-sm mx-4 rounded-xl shadow-lg overflow-hidden transform scale-95 opacity-0 transition-all duration-200" id="coupon-modal-content">
                 <div class="flex justify-between items-center p-4 border-b">
@@ -643,24 +619,10 @@
                 <div class="p-4 space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar">
                     <div class="border border-red-100 bg-red-50 rounded-lg p-4 relative overflow-hidden shadow-sm">
                         <div class="absolute top-0 right-0 bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded-bl-lg">D-5</div>
-                        <div class="flex justify-between items-end mb-1">
-                            <span class="text-2xl font-bold text-red-600">5,000원</span>
-                        </div>
+                        <p class="text-2xl font-bold text-red-600 mb-1">5,000원</p>
                         <p class="text-sm font-bold text-gray-800 mb-1">신규 회원가입 축하 쿠폰</p>
                         <p class="text-xs text-gray-500">50,000원 이상 구매 시 사용 가능</p>
-                        <div class="mt-2 pt-2 border-t border-red-100 text-xs text-gray-400 flex justify-between">
-                            <span>~ 2025.09.19 까지</span>
-                        </div>
-                    </div>
-                    <div class="border border-gray-200 bg-white rounded-lg p-4 shadow-sm">
-                        <div class="flex justify-between items-end mb-1">
-                            <span class="text-2xl font-bold text-gray-800">3,000원</span>
-                        </div>
-                        <p class="text-sm font-bold text-gray-800 mb-1">첫 구매 감사 쿠폰</p>
-                        <p class="text-xs text-gray-500">30,000원 이상 구매 시 사용 가능</p>
-                        <div class="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-400 flex justify-between">
-                            <span>~ 2025.09.30 까지</span>
-                        </div>
+                        <div class="mt-2 pt-2 border-t border-red-100 text-xs text-gray-400">~ 2025.09.19 까지</div>
                     </div>
                 </div>
                 <div class="p-4 bg-gray-50 border-t">
@@ -694,10 +656,9 @@
 
     <script>
         const currencyFormatter = new Intl.NumberFormat('ko-KR');
-        // 가상 현재 날짜 설정 (2025년 8월 27일)
         const MOCK_TODAY = new Date('2025-08-27');
 
-        // [신규] 쿠폰 모달 제어 함수
+        // 모달 제어
         function openCouponModal() {
             const modal = document.getElementById('coupon-modal');
             const content = document.getElementById('coupon-modal-content');
@@ -713,20 +674,15 @@
             const content = document.getElementById('coupon-modal-content');
             content.classList.remove('scale-100', 'opacity-100');
             content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200); 
+            setTimeout(() => { modal.classList.add('hidden'); }, 200); 
         }
 
-        // [신규] 기간 설정 모달 제어
         function openDateRangeModal() {
-            const modal = document.getElementById('date-range-modal');
-            modal.classList.remove('hidden');
+            document.getElementById('date-range-modal').classList.remove('hidden');
         }
 
         function closeDateRangeModal() {
-            const modal = document.getElementById('date-range-modal');
-            modal.classList.add('hidden');
+            document.getElementById('date-range-modal').classList.add('hidden');
         }
 
         function applyDateRange() {
@@ -734,16 +690,14 @@
             chips.forEach(c => c.classList.remove('active'));
             const customChip = document.querySelector('#settlements .filter-chip[data-filter="custom"]');
             if(customChip) customChip.classList.add('active');
-
             closeDateRangeModal();
             filterSettlements(); 
         }
 
+        // 아코디언
         function toggleAccordion(headerElement) {
-            const itemContainer = headerElement.parentElement;
-            const details = itemContainer.querySelector('.order-details');
+            const details = headerElement.parentElement.querySelector('.order-details');
             const arrow = headerElement.querySelector('.arrow-icon');
-            
             if (details.classList.contains('hidden')) {
                 details.classList.remove('hidden');
                 arrow.classList.add('rotate-180');
@@ -755,306 +709,147 @@
             }
         }
 
-        function hideZeroValues() {
-            const candidates = document.querySelectorAll('.hide-if-zero');
-            candidates.forEach(el => {
-                if (el.innerText.includes('0원(') || el.innerText.includes(': 0원')) { 
-                    el.classList.add('hidden'); 
-                } else {
-                    el.classList.remove('hidden'); 
-                }
-            });
-        }
-
-        function parseDate(dateStr) {
-            if (!dateStr) return null;
-            let fullDateStr = dateStr;
-            if (dateStr.match(/^\d{2}\.\d{2}\.\d{2}$/)) {
-                fullDateStr = '20' + dateStr; 
-            }
-            fullDateStr = fullDateStr.replace(/\./g, '-');
-            return new Date(fullDateStr);
-        }
-
-        // --- 필터링 로직 ---
-
-        // 1. 주문내역 필터링
+        // 필터링 로직
         function filterOrders() {
             const activePeriod = document.querySelector('#orders .filter-chip.active')?.dataset.filter || 'all';
             const unpaidOnly = document.getElementById('unpaid-only-toggle').checked;
-            
             const items = document.querySelectorAll('#order-list-container .order-item');
             
             items.forEach(item => {
-                const dateStr = item.dataset.date;
-                const itemDate = new Date(dateStr);
-                const itemText = item.innerText;
+                const itemDate = new Date(item.dataset.date);
                 let show = true;
-
-                // 기간 필터
                 if (activePeriod === '7days') {
-                    const diffTime = Math.abs(MOCK_TODAY - itemDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                    if (diffDays > 7) show = false;
+                    if (Math.ceil(Math.abs(MOCK_TODAY - itemDate) / (1000*60*60*24)) > 7) show = false;
                 } else if (activePeriod === 'currentMonth') {
-                    if (itemDate.getMonth() !== MOCK_TODAY.getMonth() || itemDate.getFullYear() !== MOCK_TODAY.getFullYear()) show = false;
+                    if (itemDate.getMonth() !== MOCK_TODAY.getMonth()) show = false;
                 } else if (activePeriod === 'lastMonth') {
-                    const lastMonthDate = new Date(MOCK_TODAY);
-                    lastMonthDate.setMonth(MOCK_TODAY.getMonth() - 1);
-                    if (itemDate.getMonth() !== lastMonthDate.getMonth() || itemDate.getFullYear() !== lastMonthDate.getFullYear()) show = false;
+                    const lastMonth = new Date(MOCK_TODAY);
+                    lastMonth.setMonth(MOCK_TODAY.getMonth() - 1);
+                    if (itemDate.getMonth() !== lastMonth.getMonth()) show = false;
                 }
-
-                // 미입금 필터
-                if (show && unpaidOnly) {
-                    if (!itemText.includes('(미입금)')) show = false;
-                }
-
-                if (show) item.classList.remove('hidden');
-                else item.classList.add('hidden');
+                if (show && unpaidOnly && !item.innerText.includes('(미입금)')) show = false;
+                item.style.display = show ? 'block' : 'none';
             });
         }
 
-        // 2. 알림내역 필터링
         function filterNotifications() {
-            const activeFilter = document.querySelector('#notifications .filter-chip.active')?.dataset.filter || 'all';
+            const filter = document.querySelector('#notifications .filter-chip.active')?.dataset.filter || 'all';
             const items = document.querySelectorAll('#notification-list-container .notice-row');
-
             items.forEach(item => {
-                const content = item.innerText;
+                const text = item.innerText;
                 let show = true;
-
-                if (activeFilter === 'order') {
-                    const isOrderChange = content.includes('주문 변경') || content.includes('배송') || content.includes('수량변경') || content.includes('취소');
-                    if (!isOrderChange) show = false;
-                } else if (activeFilter === 'point') {
-                    if (!content.includes('포인트')) show = false;
-                } else if (activeFilter === 'coupon') {
-                    if (!content.includes('쿠폰')) show = false;
-                }
-
-                if (show) item.classList.remove('hidden');
-                else item.classList.add('hidden');
+                if (filter === 'order' && !text.match(/주문 변경|배송|수량변경|취소/)) show = false;
+                else if (filter === 'point' && !text.includes('포인트')) show = false;
+                else if (filter === 'coupon' && !text.includes('쿠폰')) show = false;
+                item.style.display = show ? 'flex' : 'none';
             });
         }
 
-        // 3. 정산내역 필터링
         function filterSettlements() {
-            const activePeriod = document.querySelector('#settlements .filter-chip.active')?.dataset.filter || 'thisMonth'; 
+            const filter = document.querySelector('#settlements .filter-chip.active')?.dataset.filter || 'thisMonth';
             const items = document.querySelectorAll('#settlement-list-container .settlement-item');
-            
             items.forEach(item => {
-                const dateStr = item.dataset.date;
-                const itemDate = new Date(dateStr);
+                const itemDate = new Date(item.dataset.date);
                 let show = true;
-
-                if (activePeriod === 'today') {
-                    const todayStr = MOCK_TODAY.toISOString().split('T')[0];
-                    if (dateStr !== todayStr) show = false; 
-                } else if (activePeriod === 'thisMonth') {
-                    if (itemDate.getMonth() !== MOCK_TODAY.getMonth() || itemDate.getFullYear() !== MOCK_TODAY.getFullYear()) {
-                        show = false;
-                    }
-                } else if (activePeriod === 'lastMonth') {
-                    const lastMonthDate = new Date(MOCK_TODAY);
-                    lastMonthDate.setMonth(MOCK_TODAY.getMonth() - 1);
-                    if (itemDate.getMonth() !== lastMonthDate.getMonth() || itemDate.getFullYear() !== lastMonthDate.getFullYear()) {
-                        show = false;
-                    }
-                } else if (activePeriod === 'custom') {
-                    // show = true;
+                if (filter === 'today') {
+                    if (item.dataset.date !== MOCK_TODAY.toISOString().split('T')[0]) show = false;
+                } else if (filter === 'thisMonth') {
+                    if (itemDate.getMonth() !== MOCK_TODAY.getMonth()) show = false;
+                } else if (filter === 'lastMonth') {
+                    const lastMonth = new Date(MOCK_TODAY);
+                    lastMonth.setMonth(MOCK_TODAY.getMonth() - 1);
+                    if (itemDate.getMonth() !== lastMonth.getMonth()) show = false;
                 }
-
-                if (show) item.classList.remove('hidden');
-                else item.classList.add('hidden');
+                item.style.display = show ? 'flex' : 'none';
             });
-
-            calculateSettlementSummary(); 
+            calculateSettlementSummary();
         }
 
         function calculateSettlementSummary() {
-            const items = document.querySelectorAll('#settlement-list-container .settlement-item:not(.hidden)');
-            let totalSales = 0;
-            let totalDeposit = 0;
-            let currentBalance = 0; 
+            const items = document.querySelectorAll('#settlement-list-container .settlement-item');
+            let tSales = 0, tDeposit = 0;
             items.forEach(item => {
-                const sales = parseInt(item.dataset.sales || 0);
-                const deposit = parseInt(item.dataset.deposit || 0);
-                totalSales += sales;
-                totalDeposit += deposit;
+                if (item.style.display !== 'none') {
+                    tSales += parseInt(item.dataset.sales || 0);
+                    tDeposit += parseInt(item.dataset.deposit || 0);
+                }
             });
-            currentBalance = totalSales - totalDeposit;
-
-            const summarySalesEl = document.getElementById('summary-sales');
-            const summaryDepositEl = document.getElementById('summary-deposit');
-            const summaryBalanceEl = document.getElementById('summary-balance');
-
-            if (summarySalesEl) summarySalesEl.innerText = currencyFormatter.format(totalSales);
-            if (summaryDepositEl) summaryDepositEl.innerText = currencyFormatter.format(totalDeposit);
-            
-            if (summaryBalanceEl) {
-                summaryBalanceEl.innerText = currencyFormatter.format(Math.abs(currentBalance));
-                summaryBalanceEl.classList.remove('text-red-600', 'text-blue-600', 'text-gray-900');
-                if (currentBalance > 0) summaryBalanceEl.classList.add('text-red-600');
-                else if (currentBalance < 0) summaryBalanceEl.classList.add('text-blue-600');
-                else summaryBalanceEl.classList.add('text-gray-900');
-            }
+            const diff = tSales - tDeposit;
+            document.getElementById('summary-sales').innerText = currencyFormatter.format(tSales);
+            document.getElementById('summary-deposit').innerText = currencyFormatter.format(tDeposit);
+            const balEl = document.getElementById('summary-balance');
+            balEl.innerText = currencyFormatter.format(Math.abs(diff));
+            balEl.className = 'value font-extrabold whitespace-nowrap tracking-tighter ' + (diff > 0 ? 'text-red-600' : 'text-blue-600');
         }
 
-        function sortItems(container, itemSelector, dateAttribute, direction) {
-            if (!container) return; 
-            const items = Array.from(container.querySelectorAll(itemSelector));
-            items.sort((a, b) => {
-                const dateA = a.getAttribute(dateAttribute) || '';
-                const dateB = b.getAttribute(dateAttribute) || '';
-                if (direction === 'asc') return dateA.localeCompare(dateB);
-                else return dateB.localeCompare(dateA);
-            });
-            items.forEach(item => container.appendChild(item));
-        }
-
-        function sortItemsByText(container, itemSelector, dateSelector, direction) {
-            if (!container) return; 
-            const items = Array.from(container.querySelectorAll(itemSelector));
-            items.sort((a, b) => {
-                const dateTextA = a.querySelector(dateSelector)?.innerText || '';
-                const dateTextB = b.querySelector(dateSelector)?.innerText || '';
-                if (direction === 'asc') return dateTextA.localeCompare(dateTextB);
-                else return dateTextB.localeCompare(dateTextA);
-            });
-            items.forEach(item => container.appendChild(item));
+        function sortItems(container, selector, attr, dir) {
+            const items = Array.from(container.querySelectorAll(selector));
+            items.sort((a, b) => dir === 'asc' ? a.getAttribute(attr).localeCompare(b.getAttribute(attr)) : b.getAttribute(attr).localeCompare(a.getAttribute(attr)));
+            items.forEach(i => container.appendChild(i));
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const mainTabs = document.querySelectorAll('.main-tab-btn');
-            const contents = document.querySelectorAll('.tab-content');
-
-            mainTabs.forEach(tab => {
+            // 탭 전환
+            document.querySelectorAll('.main-tab-btn').forEach(tab => {
                 tab.addEventListener('click', () => {
-                    mainTabs.forEach(t => t.classList.remove('active'));
-                    contents.forEach(c => c.classList.remove('active'));
+                    document.querySelectorAll('.main-tab-btn').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     tab.classList.add('active');
-                    const contentId = tab.dataset.tab;
-                    const contentElement = document.getElementById(contentId);
-                    if(contentElement) {
-                        contentElement.classList.add('active');
-                        if (contentId === 'settlements') filterSettlements();
-                        if (contentId === 'orders') filterOrders();
-                        if (contentId === 'notifications') filterNotifications();
-                    }
-
-                    if (tab.dataset.tab === 'notifications') {
-                        const notiBadge = document.getElementById('notification-count-badge');
-                        if (notiBadge) {
-                            notiBadge.classList.add('hidden');
-                        }
-                    }
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                    if (tab.dataset.tab === 'notifications') document.getElementById('notification-count-badge')?.classList.add('hidden');
                 });
             });
-            
-            const filterChips = document.querySelectorAll('.filter-chip');
-            filterChips.forEach(chip => {
+
+            // 필터 칩 클릭
+            document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.addEventListener('click', function() {
-                    if (this.dataset.filter === 'custom') {
-                        openDateRangeModal();
-                        return; 
-                    }
-
-                    const siblings = this.parentElement.querySelectorAll('.filter-chip');
-                    siblings.forEach(sib => sib.classList.remove('active'));
+                    if (this.dataset.filter === 'custom') { openDateRangeModal(); return; }
+                    this.parentElement.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
                     this.classList.add('active');
-
-                    const group = this.parentElement.dataset.target;
-                    if (group === 'orders') filterOrders();
-                    else if (group === 'notifications') filterNotifications();
-                    else if (group === 'settlements') filterSettlements();
+                    const target = this.closest('.filter-group').dataset.target;
+                    if (target === 'orders') filterOrders();
+                    else if (target === 'notifications') filterNotifications();
+                    else if (target === 'settlements') filterSettlements();
                 });
             });
 
-            const unpaidToggle = document.getElementById('unpaid-only-toggle');
-            if (unpaidToggle) {
-                unpaidToggle.addEventListener('change', filterOrders);
-            }
+            document.getElementById('unpaid-only-toggle').addEventListener('change', filterOrders);
 
-            const copyBtn = document.getElementById('copyAccountBtn');
-            const accountSpan = document.getElementById('accountNumber'); 
-            const copyMsg = document.getElementById('copyMessage');
+            // 계좌 복사
+            document.getElementById('copyAccountBtn').addEventListener('click', () => {
+                const txt = document.getElementById('accountNumber').innerText;
+                const el = document.createElement('textarea');
+                el.value = txt; document.body.appendChild(el); el.select();
+                document.execCommand('copy'); document.body.removeChild(el);
+                const msg = document.getElementById('copyMessage');
+                msg.classList.remove('hidden'); setTimeout(() => msg.classList.add('hidden'), 1500);
+            });
 
-            if (copyBtn && accountSpan && copyMsg) {
-                copyBtn.addEventListener('click', () => {
-                    const accountNumText = accountSpan.innerText; 
-                    const tempTextarea = document.createElement('textarea');
-                    tempTextarea.value = accountNumText; 
-                    document.body.appendChild(tempTextarea);
-                    tempTextarea.select();
-                    try {
-                        document.execCommand('copy');
-                        copyMsg.classList.remove('hidden');
-                        setTimeout(() => { copyMsg.classList.add('hidden'); }, 1500);
-                    } catch (err) { console.error('계좌번호 복사 실패:', err); }
-                    document.body.removeChild(tempTextarea);
-                });
-            }
+            // 정렬
+            document.getElementById('sort-order-date').addEventListener('click', () => {
+                const arrow = document.getElementById('sort-order-arrow');
+                const isDesc = arrow.innerText === '▼';
+                arrow.innerText = isDesc ? '▲' : '▼';
+                sortItems(document.getElementById('order-list-container'), '.order-item', 'data-date', isDesc ? 'asc' : 'desc');
+            });
 
-            hideZeroValues();
-            
-            filterOrders();
-            filterNotifications();
-            filterSettlements();
+            document.getElementById('sort-settlement-date').addEventListener('click', () => {
+                const arrow = document.getElementById('sort-settlement-arrow');
+                const isDesc = arrow.innerText === '▼';
+                arrow.innerText = isDesc ? '▲' : '▼';
+                sortItems(document.getElementById('settlement-list-container'), '.settlement-item', 'data-date', isDesc ? 'asc' : 'desc');
+            });
 
-            const sortOrderButton = document.getElementById('sort-order-date');
-            const sortOrderArrow = document.getElementById('sort-order-arrow');
-            const orderContainer = document.getElementById('order-list-container');
-            let orderSortDirection = 'desc'; 
-            if (sortOrderButton && orderContainer) {
-                sortOrderButton.addEventListener('click', () => {
-                    orderSortDirection = orderSortDirection === 'desc' ? 'asc' : 'desc';
-                    sortOrderArrow.innerText = orderSortDirection === 'desc' ? '▼' : '▲';
-                    sortItems(orderContainer, '.order-item', 'data-date', orderSortDirection);
-                });
-            }
+            // 초기 실행
+            filterOrders(); filterNotifications(); filterSettlements();
 
-            const sortSettlementButton = document.getElementById('sort-settlement-date');
-            const sortSettlementArrow = document.getElementById('sort-settlement-arrow');
-            const settlementContainer = document.getElementById('settlement-list-container');
-            let settlementSortDirection = 'asc'; 
-            if (sortSettlementButton && settlementContainer) {
-                sortSettlementButton.addEventListener('click', () => {
-                    settlementSortDirection = settlementSortDirection === 'asc' ? 'desc' : 'asc';
-                    sortSettlementArrow.innerText = settlementSortDirection === 'asc' ? '▲' : '▼';
-                    sortItems(settlementContainer, '.settlement-item', 'data-date', settlementSortDirection);
-                });
-            }
-
-            const sortNotificationButton = document.getElementById('sort-notification-date');
-            const sortNotificationArrow = document.getElementById('sort-notification-arrow');
-            const notificationContainer = document.getElementById('notification-list-container');
-            let notificationSortDirection = 'desc'; 
-
-            if (sortNotificationButton && notificationContainer) {
-                sortNotificationButton.addEventListener('click', () => {
-                    notificationSortDirection = notificationSortDirection === 'desc' ? 'asc' : 'desc';
-                    sortNotificationArrow.innerText = notificationSortDirection === 'desc' ? '▼' : '▲';
-                    sortItemsByText(notificationContainer, '.notice-row', 'data-date', notificationSortDirection);
-                });
-            }
-
-            const noticeLink = document.getElementById('header-notice-link');
-            const noticeBadge = document.getElementById('header-notice-badge');
-            const LATEST_NOTICE_ID = 'notice_2025_11_27_update';
-            const lastReadNoticeId = localStorage.getItem('lastReadNoticeId');
-
-            if (lastReadNoticeId !== LATEST_NOTICE_ID) {
-                if (noticeBadge) noticeBadge.classList.remove('hidden');
-            } else {
-                if (noticeBadge) noticeBadge.classList.add('hidden');
-            }
-
-            if (noticeLink) {
-                noticeLink.addEventListener('click', (e) => {
-                    if (noticeBadge) noticeBadge.classList.add('hidden');
-                    localStorage.setItem('lastReadNoticeId', LATEST_NOTICE_ID);
-                });
-            }
+            // 공지 배지
+            const lastId = localStorage.getItem('lastReadNoticeId');
+            if (lastId !== 'notice_2025_11_27_update') document.getElementById('header-notice-badge').classList.remove('hidden');
+            document.getElementById('header-notice-link').addEventListener('click', () => {
+                document.getElementById('header-notice-badge').classList.add('hidden');
+                localStorage.setItem('lastReadNoticeId', 'notice_2025_11_27_update');
+            });
         });
     </script>
 </body>
