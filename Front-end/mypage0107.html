@@ -264,7 +264,7 @@
                     </div>
 
                     <div class="flex items-center px-1 py-2 border-b border-gray-50 text-[11px] text-gray-400 font-medium mb-1">
-                        <div id="sort-order-date" class="w-[25%] flex items-center justify-center cursor-pointer select-none">
+                        <div id="sort-order-date" class="w-[25%] flex items-center justify-center cursor-pointer select-none hover:bg-gray-50 rounded">
                             <span>일자/상태</span>
                             <span id="sort-order-arrow" class="ml-0.5 text-[8px]">▼</span>
                         </div>
@@ -295,7 +295,7 @@
                             <div class="order-details hidden bg-slate-50 border-t border-gray-100 p-4 text-xs">
                                 <div class="space-y-2">
                                     <div class="flex justify-between items-center text-gray-500">
-                                        <span>최초주문</span>
+                                        <span>주문금액</span>
                                         <span>51,000원</span>
                                     </div>
                                     <div class="flex justify-between items-center text-red-600 font-medium bg-red-50 rounded px-2 py-1 -mx-2">
@@ -304,7 +304,7 @@
                                     </div>
                                     <div class="border-t border-gray-200 my-2"></div>
                                     <div class="flex justify-between items-center text-sm font-bold text-gray-900">
-                                        <span>최종 결제 예정 금액</span>
+                                        <span>총 결제금액</span>
                                         <span>49,000원</span>
                                     </div>
                                 </div>
@@ -348,6 +348,15 @@
                                         <span>총 결제금액</span>
                                         <span>24,700원</span>
                                     </div>
+                                    <!-- [수정] 취소 및 포인트 환불 내역 추가 -->
+                                    <div class="flex justify-between items-center text-red-600 font-medium mt-1">
+                                        <span>취소</span>
+                                        <span>-3,000원</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-blue-600 font-medium mt-0.5">
+                                        <span>포인트 환불</span>
+                                        <span>+3,000P</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -373,7 +382,7 @@
                             <div class="order-details hidden bg-slate-50 border-t border-gray-100 p-4 text-xs">
                                 <div class="space-y-1.5">
                                     <div class="flex justify-between items-center text-gray-500">
-                                        <span>기존 주문금액</span>
+                                        <span>주문금액</span>
                                         <span>16,700원</span>
                                     </div>
                                     <div class="flex justify-between items-center text-orange-600 font-medium">
@@ -382,7 +391,7 @@
                                     </div>
                                     <div class="border-t border-gray-200 my-2"></div>
                                     <div class="flex justify-between items-center text-sm font-bold text-gray-900">
-                                        <span>총 주문금액</span>
+                                        <span>총 결제금액</span>
                                         <span>19,700원</span>
                                     </div>
                                 </div>
@@ -415,7 +424,7 @@
                                     </div>
                                     <div class="border-t border-gray-200 my-2"></div>
                                     <div class="flex justify-between items-center text-sm font-bold text-gray-900">
-                                        <span>최종 입금액</span>
+                                        <span>총 결제금액</span>
                                         <span>10,000원</span>
                                     </div>
                                 </div>
@@ -446,12 +455,12 @@
                                         <span>41,300원</span>
                                     </div>
                                     <div class="flex justify-between items-center text-red-600 bg-red-50 rounded px-2 py-1 -mx-2">
-                                        <span>전체취소</span>
+                                        <span>취소</span>
                                         <span>-41,300원</span>
                                     </div>
                                     <div class="border-t border-gray-200 my-2"></div>
                                     <div class="flex justify-between items-center text-sm font-bold text-gray-500">
-                                        <span>결제 금액</span>
+                                        <span>총 결제금액</span>
                                         <span>0원</span>
                                     </div>
                                 </div>
@@ -485,7 +494,7 @@
 
                     <div class="sticky top-[61px] z-[9] notice-table-header -mx-4">
                         <div class="flex py-3 px-4 items-center">
-                            <div id="sort-notification-date" class="w-[25%] text-center cursor-pointer select-none flex items-center justify-center space-x-1">
+                            <div id="sort-notification-date" class="w-[25%] text-center cursor-pointer select-none flex items-center justify-center space-x-1 hover:bg-gray-100 rounded py-1">
                                 <span>일자</span>
                                 <span id="sort-notification-arrow" class="text-xs">▼</span>
                             </div>
@@ -500,7 +509,7 @@
                             <div class="notice-col-content">
                                 <div class="flex justify-between items-baseline">
                                     <p class="notice-main-text text-blue-600">포인트 +4,000P</p>
-                                    <span class="text-xs text-gray-500 font-medium">잔액 54,000P</span>
+                                    <span class="text-xs text-gray-500 font-medium">보유 54,000P</span>
                                 </div>
                                 <p class="notice-sub-text">무우 상박스 결품 포인트 지급</p>
                             </div>
@@ -510,7 +519,7 @@
                             <div class="notice-col-content">
                                 <div class="flex justify-between items-baseline">
                                     <p class="notice-main-text text-red-600">포인트 -3,000P</p>
-                                    <span class="text-xs text-gray-500 font-medium">잔액 50,000P</span>
+                                    <span class="text-xs text-gray-500 font-medium">보유 50,000P</span>
                                 </div>
                                 <p class="notice-sub-text">주문번호 20250826-001 결제</p>
                             </div>
@@ -570,7 +579,7 @@
 
                     <div class="sticky top-[61px] z-[9] bg-gray-50 border-b border-gray-200 -mx-4">
                         <div class="flex px-4">
-                            <div id="sort-settlement-date" class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1 whitespace-nowrap">
+                            <div id="sort-settlement-date" class="w-1/4 px-1 py-3 text-sm font-semibold text-gray-600 cursor-pointer select-none flex items-center justify-center space-x-1 whitespace-nowrap hover:bg-gray-100 rounded">
                                 <span>일자</span>
                                 <span id="sort-settlement-arrow">▲</span> 
                             </div>
@@ -758,6 +767,26 @@
 
         // 아코디언
         function toggleAccordion(headerElement) {
+            const currentItem = headerElement.parentElement;
+            const allItems = document.querySelectorAll('.order-item');
+
+            // [추가] 클릭한 아이템을 제외한 다른 모든 아이템 닫기
+            allItems.forEach(item => {
+                if (item !== currentItem) {
+                    const details = item.querySelector('.order-details');
+                    const arrow = item.querySelector('.arrow-icon');
+                    const header = item.querySelector('.order-header');
+                    
+                    // 열려있는 경우 닫기
+                    if (details && !details.classList.contains('hidden')) {
+                        details.classList.add('hidden');
+                        if (arrow) arrow.classList.remove('rotate-180');
+                        if (header) header.classList.remove('bg-gray-50');
+                    }
+                }
+            });
+
+            // 현재 아이템 토글
             const details = headerElement.parentElement.querySelector('.order-details');
             const arrow = headerElement.querySelector('.arrow-icon');
             if (details.classList.contains('hidden')) {
@@ -940,7 +969,7 @@
                 msg.classList.remove('hidden'); setTimeout(() => msg.classList.add('hidden'), 1500);
             });
 
-            // 정렬
+            // 정렬 (주문내역)
             document.getElementById('sort-order-date').addEventListener('click', () => {
                 const arrow = document.getElementById('sort-order-arrow');
                 const isDesc = arrow.innerText === '▼';
@@ -948,6 +977,20 @@
                 sortItems(document.getElementById('order-list-container'), '.order-item', 'data-date', isDesc ? 'asc' : 'desc');
             });
 
+            // 정렬 (알림내역) - [추가됨]
+            document.getElementById('sort-notification-date').addEventListener('click', () => {
+                const arrow = document.getElementById('sort-notification-arrow');
+                const isDesc = arrow.innerText === '▼';
+                arrow.innerText = isDesc ? '▲' : '▼';
+                sortItems(
+                    document.getElementById('notification-list-container'), 
+                    '.notice-row', 
+                    'data-date', 
+                    isDesc ? 'asc' : 'desc'
+                );
+            });
+
+            // 정렬 (정산내역)
             document.getElementById('sort-settlement-date').addEventListener('click', () => {
                 const arrow = document.getElementById('sort-settlement-arrow');
                 const isDesc = arrow.innerText === '▼';
