@@ -449,12 +449,16 @@
             height: 56px; display: flex; align-items: center; justify-content: space-between;
             border-bottom: 1px solid #eee; padding: 0 16px; flex-shrink: 0;
         }
-        .lem-back-btn { background: none; border: none; padding: 0; width: 24px; height: 24px; color: #333; cursor: pointer; }
+        .lem-header-left { display: flex; align-items: center; gap: 8px; }
+        .lem-header-right { display: flex; align-items: center; gap: 12px; }
+        .lem-back-btn { background: none; border: none; padding: 0; width: 24px; height: 24px; color: #333; cursor: pointer; display: flex; align-items: center; }
         .lem-title-text { font-size: 18px; font-weight: 800; color: #111; }
+        .lem-icon-btn { background: none; border: none; color: #767676; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+        .lem-icon-btn:active { color: #222; }
 
         .lem-tabs-wrapper { display: flex; align-items: center; border-bottom: 1px solid #eee; padding-right: 16px; flex-shrink: 0; }
         .lem-tabs { flex: 1; border-bottom: none; display: flex; overflow-x: auto; height: 48px; }
-        .lem-tab { flex: 1; min-width: 80px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+        .lem-tab { flex: 1; min-width: 80px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; padding: 0 10px; }
         .lem-tab.active { color: #111; border-bottom-color: #111; font-weight: 800; }
         
         .lem-save-mini-btn { padding: 6px 14px; background: #222; color: #fff; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
@@ -483,6 +487,39 @@
         .lem-btn.delete { background: #fff0f6; color: #d6336c; }
         .lem-btn.move { background: #e3f2fd; color: #1565c0; }
 
+        /* --- Overlay Modals (Sub Modals) --- */
+        .sub-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .sub-modal-overlay.open { display: flex; }
+        .sub-modal-content { background: #fff; width: 100%; max-width: 400px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .sub-modal-header { padding: 16px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .sub-modal-title { font-size: 16px; font-weight: 800; color: #111; }
+        .sub-modal-body { padding: 16px; overflow-y: auto; }
+        .sub-modal-close { background: none; border: none; font-size: 20px; color: #999; cursor: pointer; }
+
+        /* Guide UI */
+        .guide-section { margin-bottom: 24px; }
+        .guide-subtitle { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .guide-subtitle::before { content: ''; width: 3px; height: 12px; background: var(--primary); border-radius: 2px; }
+        .guide-item { font-size: 13px; line-height: 1.6; color: #444; margin-bottom: 6px; display: flex; gap: 8px; }
+        .guide-dot { color: #888; flex-shrink: 0; }
+        .color-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-right: 6px; }
+        .color-badge.green { background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); }
+        .color-badge.gray { background: #f1f3f5; color: #868e96; border: 1px solid #dee2e6; }
+
+        /* Integrated Rename UI */
+        .rename-all-lists { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .rename-row { display: flex; align-items: center; gap: 10px; }
+        .rename-num-tag { width: 32px; height: 32px; background: #eee; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #555; flex-shrink: 0; }
+        .rename-input { flex: 1; height: 40px; border: 1px solid #ddd; border-radius: 8px; padding: 0 12px; font-size: 14px; font-weight: 600; }
+        .rename-input:focus { border-color: var(--primary); background: #f8fcf9; }
+        
+        .rename-keyword-group { margin-bottom: 16px; }
+        .keyword-title { font-size: 12px; font-weight: 700; color: #111; margin-bottom: 8px; }
+        .keyword-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .keyword-btn { background: #f8f9fa; border: 1px solid #eee; border-radius: 20px; padding: 6px 12px; font-size: 12px; color: #555; cursor: pointer; font-weight: 600; }
+        .keyword-btn:active { background: #e9ecef; }
+        .rename-save-btn { width: 100%; height: 48px; background: #222; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+
         .lem-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index: 2550; display: none; opacity: 0; transition: opacity 0.2s; }
         .lem-overlay.show { display: block; opacity: 1; }
         
@@ -494,7 +531,7 @@
         .lem-move-list button:active { background: #e9ecef; }
         .lem-move-cancel { width: 100%; height: 48px; border-radius: 8px; border: none; background: #222; color: #fff; font-weight: 700; font-size: 14px; margin-top: 4px; cursor: pointer; }
 
-        .toast-msg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.85); color: white; padding: 14px 24px; border-radius: 30px; font-size: 14px; z-index: 3000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .toast-msg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.85); color: white; padding: 14px 24px; border-radius: 30px; font-size: 14px; z-index: 4000; opacity: 0; transition: opacity 0.3s; pointer-events: none; text-align: center; }
         .toast-msg.show { opacity: 1; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -507,8 +544,8 @@
             
             <div class="header-center-switch">
                 <div class="switch-bg" id="modeSwitchBg"></div>
-                <div class="switch-btn" id="switchMall" onclick="setAppMode('mall')">상품보기</div>
-                <div class="switch-btn" id="switchOrder" onclick="setAppMode('order')">주문하기</div>
+                <div class="switch-btn" id="switchMall" onclick="setAppMode('mall')">쇼핑몰</div>
+                <div class="switch-btn" id="switchOrder" onclick="setAppMode('order')">주문서</div>
             </div>
 
             <button class="header-profile-group" onclick="showToast('매장 변경 팝업')">
@@ -530,7 +567,6 @@
             </div>
 
             <div class="content-scroll" id="orderScrollContainer">
-                <!-- 통합된 배송바 및 정렬 버튼 -->
                 <div id="listDeliveryInfo" class="list-top-delivery">
                     <div class="ltd-left" onclick="openDateModal()">
                         <span class="ltd-icon-wrap" style="color:var(--primary);"><svg class="icon" style="width:20px;height:20px;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
@@ -551,12 +587,11 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="mainProductList"></div>
             </div>
         </div>
 
-        <!-- Modals -->
+        <!-- Date Picker Modal -->
         <div id="datePickerModal" class="date-picker-modal" onclick="closeDateModal()">
             <div class="date-picker-sheet" onclick="event.stopPropagation()">
                 <div class="dp-title">배송일 선택</div>
@@ -564,21 +599,26 @@
             </div>
         </div>
 
+        <!-- List Editor Modal -->
         <div id="listEditorModal" class="list-editor-modal">
             <div class="lem-header">
-                <button class="lem-back-btn" onclick="closeListEditorModal()">
-                    <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <span class="lem-title-text">리스트 관리</span>
-                <div style="width: 24px;"></div>
+                <div class="lem-header-left">
+                    <button class="lem-back-btn" onclick="closeListEditorModal()">
+                        <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <span class="lem-title-text">리스트 관리</span>
+                </div>
+                <div class="lem-header-right">
+                    <button class="lem-icon-btn" onclick="openGuideModal()">
+                        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+                    <button class="lem-icon-btn" id="lemRenameIcon" onclick="openRenameModal()">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </button>
+                </div>
             </div>
             <div class="lem-tabs-wrapper">
-                <div class="lem-tabs">
-                    <div class="lem-tab active" id="lemTab-all" onclick="switchLemTab('all')">전체</div>
-                    <div class="lem-tab" id="lemTab-list1" onclick="switchLemTab('list1')">LIST 1</div>
-                    <div class="lem-tab" id="lemTab-list2" onclick="switchLemTab('list2')">LIST 2</div>
-                    <div class="lem-tab" id="lemTab-list3" onclick="switchLemTab('list3')">LIST 3</div>
-                </div>
+                <div class="lem-tabs" id="lemTabsContainer"></div>
                 <button class="lem-save-mini-btn" onclick="saveListChanges()">저장</button>
             </div>
             <div class="lem-content" id="lemContent"></div>
@@ -587,15 +627,96 @@
                 <button class="lem-btn delete" id="lemDeleteBtn" onclick="deleteSelectedInEditor()">삭제</button>
                 <button class="lem-btn move" onclick="openMoveMenu()">이동</button>
             </div>
+            
+            <!-- Move Menu Overlay -->
             <div id="lemOverlay" class="lem-overlay" onclick="closeMoveMenu()"></div>
             <div id="lemMoveMenu" class="lem-move-menu">
                 <div class="lem-move-header">이동할 리스트 선택</div>
-                <div class="lem-move-list">
-                    <button onclick="confirmMove('list1')">LIST 1</button>
-                    <button onclick="confirmMove('list2')">LIST 2</button>
-                    <button onclick="confirmMove('list3')">LIST 3</button>
-                </div>
+                <div class="lem-move-list" id="lemMoveListContainer"></div>
                 <button class="lem-move-cancel" onclick="closeMoveMenu()">취소</button>
+            </div>
+        </div>
+
+        <!-- [Sub Modal] 이용 가이드 -->
+        <div id="guideModal" class="sub-modal-overlay" onclick="closeGuideModal()">
+            <div class="sub-modal-content" onclick="event.stopPropagation()">
+                <div class="sub-modal-header">
+                    <div class="sub-modal-title">이용 가이드</div>
+                    <button class="sub-modal-close" onclick="closeGuideModal()">×</button>
+                </div>
+                <div class="sub-modal-body">
+                    <div class="guide-section">
+                        <div class="guide-subtitle">버튼 색상 의미</div>
+                        <div class="guide-item">
+                            <span class="color-badge green">1</span> 
+                            <span><b>녹색 (활성)</b> : 해당 리스트에 상품이 포함됨</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="color-badge gray">1</span> 
+                            <span><b>회색 (비활성)</b> : 리스트에 포함되지 않음</span>
+                        </div>
+                    </div>
+                    <div class="guide-section">
+                        <div class="guide-subtitle">사용 팁</div>
+                        <div class="guide-item">
+                            <div class="guide-dot">•</div>
+                            <span>하나의 상품을 여러 리스트(예: L1, L3 동시)에 담을 수 있습니다.</span>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-dot">•</div>
+                            <span>하단 '이동' 버튼을 사용하면 선택한 상품들을 한 번에 다른 리스트로 옮길 수 있습니다.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- [Sub Modal] 통합 이름 변경 -->
+        <div id="renameModal" class="sub-modal-overlay" onclick="closeRenameModal()">
+            <div class="sub-modal-content" onclick="event.stopPropagation()">
+                <div class="sub-modal-header">
+                    <div class="sub-modal-title">리스트 이름 통합 설정</div>
+                    <button class="sub-modal-close" onclick="closeRenameModal()">×</button>
+                </div>
+                <div class="sub-modal-body">
+                    <div class="guide-subtitle" style="margin-bottom:12px;">각 리스트의 이름을 입력하세요.</div>
+                    <div class="rename-all-lists">
+                        <div class="rename-row">
+                            <div class="rename-num-tag">L1</div>
+                            <input type="text" id="renameInput1" class="rename-input" placeholder="L1 이름" onfocus="setLastRenFocus(1)">
+                        </div>
+                        <div class="rename-row">
+                            <div class="rename-num-tag">L2</div>
+                            <input type="text" id="renameInput2" class="rename-input" placeholder="L2 이름" onfocus="setLastRenFocus(2)">
+                        </div>
+                        <div class="rename-row">
+                            <div class="rename-num-tag">L3</div>
+                            <input type="text" id="renameInput3" class="rename-input" placeholder="L3 이름" onfocus="setLastRenFocus(3)">
+                        </div>
+                    </div>
+                    
+                    <div class="rename-keyword-group">
+                        <div class="keyword-title">직접 입력하거나 키워드를 선택하세요.</div>
+                        <div class="keyword-list" style="margin-top:8px;">
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('초기화')">초기화</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('주방')">주방</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('홀/바')">홀/바</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('창고')">창고</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('냉장고')">냉장고</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('신선/냉장')">신선/냉장</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('냉동')">냉동</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('상온')">상온</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('매일발주')">매일발주</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('정기발주')">정기발주</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('긴급')">긴급</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('메인재료')">메인재료</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('소모품')">소모품</button>
+                            <button class="keyword-btn" onclick="applyKeywordToFocused('직원식')">직원식</button>
+                        </div>
+                    </div>
+
+                    <button class="rename-save-btn" onclick="saveAllListNames()">설정된 이름으로 저장</button>
+                </div>
             </div>
         </div>
 
@@ -650,18 +771,23 @@
 
     <script>
         // --- State ---
-        let currentAppMode = 'order'; 
+        let currentAppMode = 'mall'; 
         let currentTab = 'all'; 
         let currentMallTab = 'today'; 
         let masterSortMode = 'latest'; 
         let mallCategoryFilter = null;
         let selectedIds = new Set();
-        let userLists = []; 
+        let userLists = [
+            { id: 'list1', name: 'LIST 1' },
+            { id: 'list2', name: 'LIST 2' },
+            { id: 'list3', name: 'LIST 3' }
+        ]; 
         let orderQuantities = {}; 
         let deliveryDateOffset = 1; 
         
         let lemCurrentTab = 'all';
         let lemCheckedIds = new Set();
+        let lastRenameFocus = 1; // 포커스된 인풋 추적용
 
         const CATEGORY_CODES = { "채소.과일": 10, "수산.축산": 20, "식품.음료": 30, "양념.소스": 40, "주방.잡화": 50, "기타": 99 };
         const SORT_LABELS = { "latest": "최신순", "category": "카테고리순", "frequent": "자주쓰는순" };
@@ -685,11 +811,8 @@
             const savedMode = localStorage.getItem('nh_sim_mode');
             if(savedMode) currentAppMode = savedMode;
             else currentAppMode = 'mall'; 
-
-            rebuildUserLists();
             setDeliveryDate(); 
             updateModeUI();
-
             document.addEventListener('click', (e) => {
                 const wrapper = document.querySelector('.sort-dropdown-wrapper');
                 if (wrapper && !wrapper.contains(e.target)) {
@@ -699,237 +822,165 @@
             });
         }
 
-        function rebuildUserLists() {
-            userLists = [];
-            rawDB.forEach(p => {
-                if(p.lists) {
-                    p.lists.forEach(lid => {
-                        if(!userLists.some(u=>u.id===lid)) userLists.push({id:lid, name: lid.replace('list', 'LIST ')});
-                    });
-                }
-            });
-            userLists.sort((a,b) => parseInt(a.id.replace('list','')) - parseInt(b.id.replace('list','')));
-        }
-
         function setDeliveryDate() {
             const days = ['일', '월', '화', '수', '목', '금', '토'];
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + deliveryDateOffset);
-            
-            const month = targetDate.getMonth() + 1;
-            const date = targetDate.getDate();
-            const dayName = days[targetDate.getDay()];
-            
-            const dateStr = `${month}월 ${date}일 (${dayName})`;
+            const targetDate = new Date(); targetDate.setDate(targetDate.getDate() + deliveryDateOffset);
+            const dateStr = `${targetDate.getMonth()+1}월 ${targetDate.getDate()}일 (${days[targetDate.getDay()]})`;
             const el = document.getElementById('bdbDateText');
             if(el) el.innerText = dateStr;
             updateModeUI();
         }
 
         function openDateModal() {
-            const modal = document.getElementById('datePickerModal');
-            const list = document.getElementById('datePickerList');
+            const modal = document.getElementById('datePickerModal'); const list = document.getElementById('datePickerList');
             modal.classList.add('open');
-            
             const days = ['일', '월', '화', '수', '목', '금', '토'];
             let html = '';
-            
-            const d1 = new Date(); d1.setDate(d1.getDate() + 1);
-            const str1 = `${d1.getMonth()+1}월 ${d1.getDate()}일 (${days[d1.getDay()]})`;
-            
-            const d2 = new Date(); d2.setDate(d2.getDate() + 2);
-            const str2 = `${d2.getMonth()+1}월 ${d2.getDate()}일 (${days[d2.getDay()]})`;
-
-            html += `
-                <div class="dp-item ${deliveryDateOffset === 1 ? 'active' : ''}" onclick="selectDate(1)">
-                    <span>${str1}</span>
-                    <svg class="icon dp-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                <div class="dp-item ${deliveryDateOffset === 2 ? 'active' : ''}" onclick="selectDate(2)">
-                    <span>${str2}</span>
-                    <svg class="icon dp-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-            `;
+            for(let i=1; i<=2; i++) {
+                const d = new Date(); d.setDate(d.getDate() + i);
+                const str = `${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+                html += `<div class="dp-item ${deliveryDateOffset === i ? 'active' : ''}" onclick="selectDate(${i})"><span>${str}</span><svg class="icon dp-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`;
+            }
             list.innerHTML = html;
         }
-
         function closeDateModal() { document.getElementById('datePickerModal').classList.remove('open'); }
-
-        function selectDate(offset) {
-            deliveryDateOffset = offset;
-            setDeliveryDate();
-            closeDateModal();
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + offset);
-            showToast(`${targetDate.getMonth()+1}월 ${targetDate.getDate()}일로 배송일이 변경되었습니다.`);
-        }
+        function selectDate(offset) { deliveryDateOffset = offset; setDeliveryDate(); closeDateModal(); const d = new Date(); d.setDate(d.getDate() + offset); showToast(`${d.getMonth()+1}월 ${d.getDate()}일로 배송일이 변경되었습니다.`); }
 
         function renderTabs() {
             const container = document.getElementById('dynamicTabBar');
             container.style.justifyContent = 'flex-start';
             let html = `<div class="tab-scroll-area">`;
-            const hideSpecialText = userLists.length >= 3;
-
-            if (hideSpecialText) {
-                html += `<div class="tab special-pill ${currentTab === 'special' ? 'active' : ''}" onclick="switchTab('special')" style="padding: 0 12px;"><svg class="icon" style="width:20px;height:20px; fill:currentColor; stroke:none;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg> </div>`;
-            } else {
-                html += `<div class="tab special-pill ${currentTab === 'special' ? 'active' : ''}" onclick="switchTab('special')"><span class="tab-with-icon" style="display:flex;align-items:center;"><svg class="icon" style="width:18px;height:18px;margin-right:4px;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>단골특가</span></div>`;
-            }
-
+            html += `<div class="tab special-pill ${currentTab === 'special' ? 'active' : ''}" onclick="switchTab('special')"><span class="tab-with-icon" style="display:flex;align-items:center;"><svg class="icon" style="width:18px;height:18px;margin-right:4px;" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>단골특가</span></div>`;
             html += `<div class="tab ${currentTab === 'all' ? 'active master-tab' : ''}" onclick="handleMasterTabClick()">찜한상품</div>`;
-            userLists.forEach(list => { html += `<div class="tab ${currentTab === list.id ? 'active' : ''}" onclick="switchTab('${list.id}')">${list.name}</div>`; });
+            userLists.forEach(list => {
+                if (rawDB.some(p => p.lists && p.lists.includes(list.id))) {
+                    html += `<div class="tab ${currentTab === list.id ? 'active' : ''}" onclick="switchTab('${list.id}')">${list.name}</div>`;
+                }
+            });
             html += `<div class="tab-add-btn icon-mode" onclick="addListSimulation()"><svg class="icon" viewBox="0 0 24 24"><path d="M16 6H3"></path><path d="M16 12H3"></path><path d="M10 18H3"></path><path d="M19 14v8"></path><path d="M15 18h8"></path></svg></div></div>`;
             container.innerHTML = html;
         }
         
         function addListSimulation() { openListEditorModal(); }
         function openListEditorModal() { document.getElementById('listEditorModal').classList.add('open'); lemCurrentTab = 'all'; switchLemTab('all'); }
-        function closeListEditorModal() { document.getElementById('listEditorModal').classList.remove('open'); closeMoveMenu(); if (currentTab !== 'all' && currentTab !== 'special' && !userLists.find(l => l.id === currentTab)) { currentTab = 'all'; } renderTabs(); renderMainList(); }
-        function switchLemTab(tab) { lemCurrentTab = tab; lemCheckedIds.clear(); updateLemUI(); document.querySelectorAll('.lem-tab').forEach(el => el.classList.remove('active')); document.getElementById(`lemTab-${tab}`).classList.add('active'); renderEditorItems(); }
+        function closeListEditorModal() { document.getElementById('listEditorModal').classList.remove('open'); closeMoveMenu(); renderTabs(); renderMainList(); }
+        function switchLemTab(tab) { lemCurrentTab = tab; lemCheckedIds.clear(); updateLemUI(); renderLemTabs(); renderEditorItems(); }
+
+        function renderLemTabs() {
+            const container = document.getElementById('lemTabsContainer');
+            let html = `<div class="lem-tab ${lemCurrentTab === 'all' ? 'active' : ''}" onclick="switchLemTab('all')">전체</div>`;
+            userLists.forEach(list => { html += `<div class="lem-tab ${lemCurrentTab === list.id ? 'active' : ''}" onclick="switchLemTab('${list.id}')">${list.name}</div>`; });
+            container.innerHTML = html;
+        }
         
         function renderEditorItems() {
             const container = document.getElementById('lemContent');
             let items = rawDB.filter(p => (p.lists && p.lists.length > 0) || p.isWished === true);
-            if (lemCurrentTab !== 'all') { items = items.filter(p => p.lists && p.lists.includes(lemCurrentTab)); }
-            let html = '';
-            if (items.length === 0) { html = '<div style="text-align:center; padding:40px; color:#999;">상품이 없습니다.</div>'; } 
-            else {
-                items.forEach(p => {
-                    const isChecked = lemCheckedIds.has(p.id);
-                    const l1 = p.lists && p.lists.includes('list1') ? 'active' : '';
-                    const l2 = p.lists && p.lists.includes('list2') ? 'active' : '';
-                    const l3 = p.lists && p.lists.includes('list3') ? 'active' : '';
-                    html += `<div class="lem-item"><div class="lem-chk ${isChecked?'checked':''}" onclick="toggleEditorCheck(${p.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="lem-img">${p.img}</div><div class="lem-info"><div class="lem-name">${p.name}</div><div class="lem-price">${p.price.toLocaleString()}원</div></div><div class="lem-actions"><div class="lem-btn-num ${l1}" onclick="toggleListAssign(${p.id}, 'list1')">1</div><div class="lem-btn-num ${l2}" onclick="toggleListAssign(${p.id}, 'list2')">2</div><div class="lem-btn-num ${l3}" onclick="toggleListAssign(${p.id}, 'list3')">3</div><div class="lem-drag" draggable="true"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div></div></div>`;
-                });
-            }
+            if (lemCurrentTab !== 'all') items = items.filter(p => p.lists && p.lists.includes(lemCurrentTab));
+            let html = items.length === 0 ? '<div style="text-align:center; padding:40px; color:#999;">상품이 없습니다.</div>' : '';
+            items.forEach(p => {
+                const isChecked = lemCheckedIds.has(p.id);
+                const l1 = p.lists && p.lists.includes('list1') ? 'active' : '';
+                const l2 = p.lists && p.lists.includes('list2') ? 'active' : '';
+                const l3 = p.lists && p.lists.includes('list3') ? 'active' : '';
+                html += `<div class="lem-item"><div class="lem-chk ${isChecked?'checked':''}" onclick="toggleEditorCheck(${p.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="lem-img">${p.img}</div><div class="lem-info"><div class="lem-name">${p.name}</div><div class="lem-price">${p.price.toLocaleString()}원</div></div><div class="lem-actions"><div class="lem-btn-num ${l1}" onclick="toggleListAssign(${p.id}, 'list1')">1</div><div class="lem-btn-num ${l2}" onclick="toggleListAssign(${p.id}, 'list2')">2</div><div class="lem-btn-num ${l3}" onclick="toggleListAssign(${p.id}, 'list3')">3</div><div class="lem-drag" draggable="true"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div></div></div>`;
+            });
             container.innerHTML = html;
         }
 
+        // --- 이용 가이드 & 통합 이름 변경 ---
+        function openGuideModal() { document.getElementById('guideModal').classList.add('open'); }
+        function closeGuideModal() { document.getElementById('guideModal').classList.remove('open'); }
+
+        function openRenameModal() {
+            document.getElementById('renameInput1').value = userLists[0].name;
+            document.getElementById('renameInput2').value = userLists[1].name;
+            document.getElementById('renameInput3').value = userLists[2].name;
+            document.getElementById('renameModal').classList.add('open');
+        }
+        function closeRenameModal() { document.getElementById('renameModal').classList.remove('open'); }
+        
+        function setLastRenFocus(idx) { lastRenameFocus = idx; }
+        
+        function applyKeywordToFocused(keyword) {
+            const input = document.getElementById(`renameInput${lastRenameFocus}`);
+            if(keyword === '초기화') input.value = `LIST ${lastRenameFocus}`;
+            else input.value = keyword;
+        }
+
+        function saveAllListNames() {
+            userLists[0].name = document.getElementById('renameInput1').value.trim() || 'LIST 1';
+            userLists[1].name = document.getElementById('renameInput2').value.trim() || 'LIST 2';
+            userLists[2].name = document.getElementById('renameInput3').value.trim() || 'LIST 3';
+            showToast(`리스트 이름이 저장되었습니다.`);
+            closeRenameModal(); renderLemTabs(); renderEditorItems();
+        }
+
         function toggleEditorCheck(id) { if(lemCheckedIds.has(id)) lemCheckedIds.delete(id); else lemCheckedIds.add(id); renderEditorItems(); updateLemUI(); }
-        function updateLemUI() { const count = lemCheckedIds.size; const delBtn = document.getElementById('lemDeleteBtn'); delBtn.innerText = count > 0 ? `삭제 (${count})` : `삭제`; }
-        function toggleListAssign(id, listId) { const item = rawDB.find(p=>p.id===id); if(!item) return; if(!item.lists) item.lists = []; if(item.lists.includes(listId)) { item.lists = item.lists.filter(l => l !== listId); } else { item.lists.push(listId); } rebuildUserLists(); renderEditorItems(); }
-        function deleteSelectedInEditor() { if(lemCheckedIds.size === 0) return showToast('선택된 상품이 없습니다.'); lemCheckedIds.forEach(id => { const item = rawDB.find(p=>p.id===id); if(item) { if (lemCurrentTab === 'all') { item.lists = []; item.isWished = false; } else if (item.lists) { item.lists = item.lists.filter(l => l !== lemCurrentTab); } } }); lemCheckedIds.clear(); rebuildUserLists(); renderEditorItems(); renderMainList(); if (currentTab !== 'all' && currentTab !== 'special' && !userLists.find(l => l.id === currentTab)) { currentTab = 'all'; } renderTabs(); updateLemUI(); showToast('삭제되었습니다.'); }
+        function updateLemUI() { const count = lemCheckedIds.size; document.getElementById('lemDeleteBtn').innerText = count > 0 ? `삭제 (${count})` : `삭제`; }
+        function toggleListAssign(id, listId) { const item = rawDB.find(p=>p.id===id); if(!item) return; if(!item.lists) item.lists = []; if(item.lists.includes(listId)) item.lists = item.lists.filter(l => l !== listId); else item.lists.push(listId); renderEditorItems(); }
+        function deleteSelectedInEditor() { if(lemCheckedIds.size === 0) return showToast('선택된 상품이 없습니다.'); lemCheckedIds.forEach(id => { const item = rawDB.find(p=>p.id===id); if(item) { if (lemCurrentTab === 'all') { item.lists = []; item.isWished = false; } else if (item.lists) item.lists = item.lists.filter(l => l !== lemCurrentTab); } }); lemCheckedIds.clear(); renderEditorItems(); renderMainList(); renderTabs(); updateLemUI(); showToast('삭제되었습니다.'); }
         function saveListChanges() { closeListEditorModal(); showToast('리스트가 저장되었습니다.'); }
 
-        function openMoveMenu() { if(lemCheckedIds.size === 0) return showToast('이동할 상품을 선택해주세요.'); document.getElementById('lemOverlay').classList.add('show'); document.getElementById('lemMoveMenu').classList.add('show'); }
+        function openMoveMenu() { 
+            if(lemCheckedIds.size === 0) return showToast('이동할 상품을 선택해주세요.'); 
+            const container = document.getElementById('lemMoveListContainer');
+            let html = ''; userLists.forEach(list => { html += `<button onclick="confirmMove('${list.id}')">${list.name}</button>`; });
+            container.innerHTML = html; document.getElementById('lemOverlay').classList.add('show'); document.getElementById('lemMoveMenu').classList.add('show'); 
+        }
         function closeMoveMenu() { document.getElementById('lemOverlay').classList.remove('show'); document.getElementById('lemMoveMenu').classList.remove('show'); }
-        function confirmMove(targetListId) { let movedCount = 0; lemCheckedIds.forEach(id => { const item = rawDB.find(p => p.id === id); if (item) { if (!item.lists) item.lists = []; if (lemCurrentTab !== 'all' && item.lists.includes(lemCurrentTab)) { item.lists = item.lists.filter(l => l !== lemCurrentTab); } if (!item.lists.includes(targetListId)) { item.lists.push(targetListId); } movedCount++; } }); lemCheckedIds.clear(); closeMoveMenu(); rebuildUserLists(); renderEditorItems(); updateLemUI(); showToast(`${movedCount}개 상품을 ${targetListId.replace('list', 'LIST ')}로 이동했습니다.`); }
+        function confirmMove(targetListId) { let movedCount = 0; lemCheckedIds.forEach(id => { const item = rawDB.find(p => p.id === id); if (item) { if (!item.lists) item.lists = []; if (lemCurrentTab !== 'all' && item.lists.includes(lemCurrentTab)) item.lists = item.lists.filter(l => l !== lemCurrentTab); if (!item.lists.includes(targetListId)) item.lists.push(targetListId); movedCount++; } }); lemCheckedIds.clear(); closeMoveMenu(); renderEditorItems(); updateLemUI(); showToast(`${movedCount}개 상품을 ${userLists.find(l=>l.id===targetListId).name}로 이동했습니다.`); }
 
         function setAppMode(mode) { currentAppMode = mode; localStorage.setItem('nh_sim_mode', currentAppMode); updateModeUI(); }
 
         function updateModeUI() {
-            const orderView = document.getElementById('orderModeElements');
-            const mallView = document.getElementById('mallModeElements');
-            const switchBg = document.getElementById('modeSwitchBg');
-            const btnMall = document.getElementById('switchMall');
-            const btnOrder = document.getElementById('switchOrder');
-            
+            const orderView = document.getElementById('orderModeElements'); const mallView = document.getElementById('mallModeElements');
+            const switchBg = document.getElementById('modeSwitchBg'); const btnMall = document.getElementById('switchMall'); const btnOrder = document.getElementById('switchOrder');
             if (currentAppMode === 'mall') {
-                switchBg.style.transform = 'translateX(0)';
-                btnMall.classList.add('active'); btnOrder.classList.remove('active');
-                orderView.style.display = 'none'; mallView.style.display = 'flex';
-                renderMallList();
+                switchBg.style.transform = 'translateX(0)'; btnMall.classList.add('active'); btnOrder.classList.remove('active');
+                orderView.style.display = 'none'; mallView.style.display = 'flex'; renderMallList();
             } else {
-                switchBg.style.transform = 'translateX(100%)';
-                btnMall.classList.remove('active'); btnOrder.classList.add('active');
-                orderView.style.display = 'flex'; mallView.style.display = 'none';
-                document.getElementById('orderSearchBar').classList.remove('show');
-                if (currentTab !== 'all' && currentTab !== 'special' && !userLists.find(l => l.id === currentTab)) { currentTab = 'all'; }
-                switchTab(currentTab);
+                switchBg.style.transform = 'translateX(100%)'; btnMall.classList.remove('active'); btnOrder.classList.add('active');
+                orderView.style.display = 'flex'; mallView.style.display = 'none'; document.getElementById('orderSearchBar').classList.remove('show'); switchTab(currentTab);
             }
             updateBottomButton();
         }
 
         function updateBottomButton() {
-            const mainBtn = document.getElementById('mainOrderBtn');
-            
-            // 초기화 (인라인 스타일 우선순위 문제 해결을 위해 스타일 제거)
-            mainBtn.style.backgroundColor = '';
-            mainBtn.style.cursor = '';
-
+            const mainBtn = document.getElementById('mainOrderBtn'); mainBtn.style.backgroundColor = ''; mainBtn.style.cursor = '';
             if (currentAppMode === 'mall') {
-                mainBtn.className = 'center-main-btn mall-mode-btn';
-                if (selectedIds.size > 0) {
-                    mainBtn.classList.add('has-selection');
-                    mainBtn.innerHTML = `
-                        <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-                            <div style="background:#fff; color:var(--primary); width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; box-shadow:0 1px 2px rgba(0,0,0,0.1);">${selectedIds.size}</div>
-                            <span class="btn-action-text" style="font-size:15px; color:#fff; font-weight:700;">상품 담기</span>
-                        </div>
-                    `;
-                } else {
-                    mainBtn.innerHTML = `<span class="btn-action-text" style="color:#fff; font-size:15px; font-weight:600;">주문하러 가기</span>`;
-                }
+                mainBtn.className = 'center-main-btn mall-mode-btn' + (selectedIds.size > 0 ? ' has-selection' : '');
+                mainBtn.innerHTML = selectedIds.size > 0 ? `<div style="display:flex; align-items:center; justify-content:center; gap:6px;"><div style="background:#fff; color:var(--primary); width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; box-shadow:0 1px 2px rgba(0,0,0,0.1);">${selectedIds.size}</div><span class="btn-action-text" style="font-size:15px; color:#fff; font-weight:700;">상품 담기</span></div>` : `<span class="btn-action-text" style="color:#fff; font-size:15px; font-weight:600;">발주 시작하기</span>`;
             } else {
-                let totalQty = 0;
-                if (orderQuantities[currentTab]) {
-                    Object.values(orderQuantities[currentTab]).forEach(q => totalQty += q);
-                }
-
-                if (totalQty > 0) {
-                    mainBtn.className = 'center-main-btn active';
-                    mainBtn.innerHTML = `
-                        <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-                            <div style="background:#fff; color:var(--primary); width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; box-shadow:0 1px 2px rgba(0,0,0,0.1);">${totalQty}</div>
-                            <span class="btn-action-text" style="font-size:16px; color:#fff; font-weight:700;">담은 상품 확인하기</span>
-                        </div>
-                    `;
-                } else {
-                    mainBtn.className = 'center-main-btn';
-                    mainBtn.innerHTML = `
-                        <span class="btn-brand-text">ORDERZ</span>
-                        <span class="btn-action-text" id="orderBtnText">상품을 담아주세요</span>
-                    `;
-                }
+                let totalQty = 0; if (orderQuantities[currentTab]) Object.values(orderQuantities[currentTab]).forEach(q => totalQty += q);
+                mainBtn.className = 'center-main-btn' + (totalQty > 0 ? ' active' : '');
+                mainBtn.innerHTML = totalQty > 0 ? `<div style="display:flex; align-items:center; justify-content:center; gap:6px;"><div style="background:#fff; color:var(--primary); width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; box-shadow:0 1px 2px rgba(0,0,0,0.1);">${totalQty}</div><span class="btn-action-text" style="font-size:16px; color:#fff; font-weight:700;">담은 상품 확인하기</span></div>` : `<span class="btn-brand-text">ORDERZ</span><span class="btn-action-text" id="orderBtnText">상품을 담아주세요</span>`;
             }
         }
 
-        function handleMainBtnClick() { if (currentAppMode === 'mall') { if(selectedIds.size > 0) { selectedIds.forEach(id => { const item = rawDB.find(p => p.id === id); if(item) item.isWished = true; }); showToast(`${selectedIds.size}개 상품이 찜한상품에 담겼습니다.`); selectedIds.clear(); currentAppMode = 'order'; updateModeUI(); } else { currentAppMode = 'order'; updateModeUI(); } } else { showToast('주문서 이동'); } }
+        function handleMainBtnClick() { if (currentAppMode === 'mall') { if(selectedIds.size > 0) { selectedIds.forEach(id => { const item = rawDB.find(p => p.id === id); if(item) item.isWished = true; }); showToast(`${selectedIds.size}개 상품이 찜한상품에 담겼습니다.`); selectedIds.clear(); currentAppMode = 'order'; updateModeUI(); } else { currentAppMode = 'order'; updateModeUI(); } } else showToast('주문서 이동'); }
         function handleMasterTabClick() { switchTab('all'); }
-        function switchTab(tabId) { currentTab = tabId; renderTabs(); const scrollContainer = document.getElementById('orderScrollContainer'); if (tabId === 'all') scrollContainer.classList.add('master-view'); else scrollContainer.classList.remove('master-view'); renderMainList(); updateBottomButton(); }
+        function switchTab(tabId) { currentTab = tabId; renderTabs(); document.getElementById('orderScrollContainer').classList.toggle('master-view', tabId === 'all'); renderMainList(); updateBottomButton(); }
         function getItemsForTab(tabId) { if (tabId === 'special') return rawDB.filter(p => p.theme === 'special'); if (tabId === 'all') return rawDB.filter(p => p.isWished === true || (p.lists && p.lists.length > 0)); return rawDB.filter(p => p.lists && p.lists.includes(tabId)); }
-        function getOrderQty(itemId) { if (!orderQuantities[currentTab]) return 0; return orderQuantities[currentTab][itemId] || 0; }
+        function getOrderQty(itemId) { return (orderQuantities[currentTab] && orderQuantities[currentTab][itemId]) || 0; }
+        function changeOrderQty(event, itemId, delta) { event.stopPropagation(); if (currentAppMode === 'mall') return; if (!orderQuantities[currentTab]) orderQuantities[currentTab] = {}; let n = (orderQuantities[currentTab][itemId] || 0) + delta; if (n < 0) n = 0; orderQuantities[currentTab][itemId] = n; const el = document.getElementById(`qty-${itemId}`); if (el) el.innerText = n; const itemEl = el ? el.closest('.product-item') : null; if (itemEl) itemEl.classList.toggle('selected', n > 0); updateBottomButton(); }
 
-        function changeOrderQty(event, itemId, delta) {
-            event.stopPropagation(); if (currentAppMode === 'mall') return; 
-            if (!orderQuantities[currentTab]) orderQuantities[currentTab] = {};
-            let newQty = (orderQuantities[currentTab][itemId] || 0) + delta;
-            if (newQty < 0) newQty = 0;
-            orderQuantities[currentTab][itemId] = newQty;
-            const qtyEl = document.getElementById(`qty-${itemId}`);
-            if (qtyEl) qtyEl.innerText = newQty;
-            const itemEl = qtyEl ? qtyEl.closest('.product-item') : null;
-            if (itemEl) { if (newQty > 0) itemEl.classList.add('selected'); else itemEl.classList.remove('selected'); }
-            updateBottomButton();
-        }
-
-        function toggleSortMenu(e) { e.stopPropagation(); const menu = document.getElementById('sortDropdownMenu'); const btn = document.getElementById('sortTriggerBtn'); if (menu.classList.contains('show')) { menu.classList.remove('show'); btn.classList.remove('open'); } else { menu.classList.add('show'); btn.classList.add('open'); } }
-        function setMasterSort(mode) { masterSortMode = mode; document.getElementById('sortCurrentText').innerText = SORT_LABELS[mode]; document.querySelectorAll('.sort-option-item').forEach(el => el.classList.remove('selected')); document.getElementById(`opt-${mode}`).classList.add('selected'); document.getElementById('sortDropdownMenu').classList.remove('show'); document.getElementById('sortTriggerBtn').classList.remove('open'); renderMainList(); }
+        function toggleSortMenu(e) { e.stopPropagation(); const m = document.getElementById('sortDropdownMenu'); const b = document.getElementById('sortTriggerBtn'); m.classList.toggle('show'); b.classList.toggle('open'); }
+        function setMasterSort(mode) { masterSortMode = mode; document.getElementById('sortCurrentText').innerText = SORT_LABELS[mode]; document.querySelectorAll('.sort-option-item').forEach(el => el.classList.toggle('selected', el.id === `opt-${mode}`)); document.getElementById('sortDropdownMenu').classList.remove('show'); document.getElementById('sortTriggerBtn').classList.remove('open'); renderMainList(); }
 
         function renderMainList() {
-            const container = document.getElementById('mainProductList');
-            const sortBtn = document.getElementById('sortTriggerBtn');
-            container.innerHTML = '';
-            let list = getItemsForTab(currentTab);
-            const query = document.getElementById('orderSearchInput').value.toLowerCase();
+            const container = document.getElementById('mainProductList'); const sortBtn = document.getElementById('sortTriggerBtn'); container.innerHTML = '';
+            let list = getItemsForTab(currentTab); const query = document.getElementById('orderSearchInput').value.toLowerCase();
             const isOrderSearchActive = document.getElementById('orderSearchBar').classList.contains('show');
-            if (isOrderSearchActive && query) { list = list.filter(p => p.name.toLowerCase().includes(query)); }
-
+            if (isOrderSearchActive && query) list = list.filter(p => p.name.toLowerCase().includes(query));
             if (currentTab === 'all') {
                 sortBtn.style.visibility = 'visible';
                 if (masterSortMode === 'category') list.sort((a,b) => (CATEGORY_CODES[a.category] || 99) - (CATEGORY_CODES[b.category] || 99));
                 else if (masterSortMode === 'frequent') list.sort((a,b) => (b.purchaseCount || 0) - (a.purchaseCount || 0));
                 else list.sort((a,b) => b.id - a.id);
-            } else {
-                sortBtn.style.visibility = 'hidden';
-                list.sort((a,b) => b.id - a.id);
-            }
-
-            if(list.length === 0) {
-                let msg = isOrderSearchActive ? '현재 리스트에는 없는 상품입니다.' : (currentTab === 'all' ? '아직 담은 상품이 없습니다.' : '리스트가 비어있습니다.');
-                container.innerHTML = `<div style="padding:60px 20px; text-align:center; color:#999; font-size:14px;">${msg}</div>`;
-            } else { renderItems(list, container); }
-
+            } else { sortBtn.style.visibility = 'hidden'; list.sort((a,b) => b.id - a.id); }
+            if(list.length === 0) container.innerHTML = `<div style="padding:60px 20px; text-align:center; color:#999; font-size:14px;">${isOrderSearchActive ? '현재 리스트에는 없는 상품입니다.' : (currentTab === 'all' ? '아직 담은 상품이 없습니다.' : '리스트가 비어있습니다.')}</div>`;
+            else renderItems(list, container);
             if (isOrderSearchActive && query) {
                 const footer = document.createElement('div'); footer.className = 'search-fallback-area';
                 footer.innerHTML = `<div class="fallback-text">찾으시는 상품이 없으신가요?</div><button class="fallback-btn" onclick="searchInMall('${query}')"><svg class="icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>전체 상품 목록에서 검색하기</button>`;
@@ -937,7 +988,7 @@
             }
         }
 
-        function searchInMall(query) { currentAppMode = 'mall'; localStorage.setItem('nh_sim_mode', currentAppMode); updateModeUI(); toggleMallSearch(true); const input = document.getElementById('mallSearchInput'); input.value = query; renderMallList(); }
+        function searchInMall(query) { currentAppMode = 'mall'; localStorage.setItem('nh_sim_mode', currentAppMode); updateModeUI(); toggleMallSearch(true); document.getElementById('mallSearchInput').value = query; renderMallList(); }
 
         function renderItems(items, container) {
             let lastGroup = null; const showHeader = (currentTab === 'all' && masterSortMode === 'category') || currentTab === 'special'; const groupKey = currentTab === 'special' ? 'theme' : 'category'; const isMallMode = currentAppMode === 'mall';
@@ -946,9 +997,9 @@
                     const h = document.createElement('div'); h.className = currentTab === 'special' ? 'main-section-header special-header' : 'main-section-header'; h.innerText = currentTab === 'special' ? "🔥 사장님 추천" : item[groupKey];
                     container.appendChild(h); lastGroup = item[groupKey];
                 }
-                const isInList = item.lists && item.lists.length > 0; const currentQty = !isMallMode ? getOrderQty(item.id) : 0; const isSelected = isMallMode ? (selectedIds.has(item.id) || isInList) : (currentQty > 0);
+                const currentQty = !isMallMode ? getOrderQty(item.id) : 0; const isSelected = isMallMode ? (selectedIds.has(item.id) || (item.lists && item.lists.length > 0)) : (currentQty > 0);
                 const div = document.createElement('div'); div.className = `product-item ${isSelected ? 'selected' : ''} ${isMallMode ? 'mall-mode-item' : 'order-mode-item'}`;
-                let badgeHtml = (item.lists && item.lists.length > 0) ? `<div class="list-badges">${item.lists.map(lid => `<span class="list-badge">${lid.replace('list', 'L')}</span>`).join('')}</div>` : '';
+                let badgeHtml = (item.lists && item.lists.length > 0) ? `<div class="list-badges">${item.lists.map(lid => { const listObj = userLists.find(l=>l.id===lid); return `<span class="list-badge">${listObj ? listObj.name.substring(0,2) : lid}</span>`; }).join('')}</div>` : '';
                 let checkboxHtml = isMallMode ? `<div class="prod-chk-area" onclick="toggleSelect(${item.id})"><div class="prod-chk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div>` : '';
                 let qtyHtml = !isMallMode ? `<div class="qty-controls ${currentTab!=='all'&&currentTab!=='special'?'order-view':''}"><div class="qty-btn" onclick="changeOrderQty(event, ${item.id}, -1)">-</div><div class="qty-val" id="qty-${item.id}">${currentQty}</div><div class="qty-btn" onclick="changeOrderQty(event, ${item.id}, 1)">+</div></div>` : '';
                 div.innerHTML = `${checkboxHtml}<div class="prod-img">${item.img}</div><div class="prod-info"><div class="prod-name-row"><div class="prod-name">${item.name}</div>${badgeHtml}</div><div class="prod-unit">${item.unit}</div><div class="prod-bottom"><div class="prod-price">${item.price.toLocaleString()}원</div>${qtyHtml}</div></div>`;
@@ -956,32 +1007,25 @@
             });
         }
 
-        function toggleSelect(id) { const item = rawDB.find(p => p.id === id); const isInList = item && item.lists && item.lists.length > 0; if (isInList) { const idx = item.lists.findIndex(l => userLists.some(ul => ul.id === l)); if (idx > -1) { item.lists.splice(idx, 1); showToast('리스트에서 제외되었습니다.'); } } else { if (selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id); } updateModeUI(); if(currentAppMode === 'order') renderMainList(); else renderMallList(); }
+        function toggleSelect(id) { const item = rawDB.find(p => p.id === id); if (item && item.lists && item.lists.length > 0) { const idx = item.lists.findIndex(l => userLists.some(ul => ul.id === l)); if (idx > -1) { item.lists.splice(idx, 1); showToast('리스트에서 제외되었습니다.'); } } else { if (selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id); } updateModeUI(); if(currentAppMode === 'order') renderMainList(); else renderMallList(); }
         function toggleMallSearch(show) { const row = document.getElementById('mallCategoryRow'); const box = document.getElementById('mallRealSearchBox'); if(show) { row.classList.add('hidden'); box.classList.add('show'); document.getElementById('mallSearchInput').focus(); renderMallList(); } else { row.classList.remove('hidden'); box.classList.remove('show'); renderMallList(); } }
         function filterMallByCategory(cat) { mallCategoryFilter = cat; document.querySelectorAll('.mall-cat-item').forEach(el => el.classList.remove('active')); if(cat) { const targets = document.querySelectorAll('.mall-cat-item'); for(let t of targets) if(t.innerText.includes(cat)) t.classList.add('active'); } switchMallTab('today', false); }
-        function switchMallTab(tabName, resetCategory=true) { currentMallTab = tabName; document.querySelectorAll('.mall-sub-tab').forEach(el => el.classList.remove('active')); document.getElementById(`mallTab-${tabName}`).classList.add('active'); if(resetCategory) { mallCategoryFilter = null; document.querySelectorAll('.mall-cat-item').forEach(el => el.classList.remove('active')); } renderMallList(); }
+        function switchMallTab(tabName, resetCategory=true) { currentMallTab = tabName; document.querySelectorAll('.mall-sub-tab').forEach(el => el.classList.toggle('active', el.id === `mallTab-${tabName}`)); if(resetCategory) { mallCategoryFilter = null; document.querySelectorAll('.mall-cat-item').forEach(el => el.classList.remove('active')); } renderMallList(); }
 
         function renderMallList() {
-            const container = document.getElementById('mallProductList');
-            const homeContent = document.getElementById('mallHomeContent');
-            const resultHeader = document.getElementById('mallSearchResultHeader');
-            container.innerHTML = '';
-            let list = [...rawDB];
-            const query = document.getElementById('mallSearchInput').value.toLowerCase();
+            const container = document.getElementById('mallProductList'); const homeContent = document.getElementById('mallHomeContent'); const resultHeader = document.getElementById('mallSearchResultHeader'); container.innerHTML = '';
+            let list = [...rawDB]; const query = document.getElementById('mallSearchInput').value.toLowerCase();
             const isSearchOpen = document.getElementById('mallRealSearchBox').classList.contains('show');
             if (isSearchOpen && query) {
-                homeContent.style.display = 'none'; resultHeader.style.display = 'block';
-                list = list.filter(p => p.name.toLowerCase().includes(query));
+                homeContent.style.display = 'none'; resultHeader.style.display = 'block'; list = list.filter(p => p.name.toLowerCase().includes(query));
                 resultHeader.innerHTML = `<div class="search-keyword-row">'<span class="search-keyword-highlight">${query}</span>' <span class="search-count">검색결과 ${list.length}</span></div>`;
-                if (list.length === 0) container.innerHTML = '<div style="padding:40px; text-align:center; color:#999;">상품이 없습니다.</div>';
-                else renderItems(list, container);
+                if (list.length === 0) container.innerHTML = '<div style="padding:40px; text-align:center; color:#999;">상품이 없습니다.</div>'; else renderItems(list, container);
             } else {
                 homeContent.style.display = 'block'; resultHeader.style.display = 'none';
                 if (mallCategoryFilter) list = list.filter(p => p.category === mallCategoryFilter);
                 if (currentMallTab === 'today') list = list.filter(p => p.isEvent === true);
                 else if (currentMallTab === 'store') list.sort((a,b) => (CATEGORY_CODES[a.category] || 99) - (CATEGORY_CODES[b.category] || 99));
-                if (list.length === 0) container.innerHTML = '<div style="padding:40px; text-align:center; color:#999;">상품이 없습니다.</div>';
-                else renderItems(list, container);
+                renderItems(list, container);
             }
         }
         function toggleOrderSearch() { const bar = document.getElementById('orderSearchBar'); const input = document.getElementById('orderSearchInput'); if(bar.classList.contains('show')) { bar.classList.remove('show'); input.value=''; } else { bar.classList.add('show'); input.focus(); } renderMainList(); }
