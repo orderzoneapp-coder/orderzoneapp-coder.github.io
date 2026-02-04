@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>오더즈 - 빠른주문 (고도화)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap'); /* For ORDERZ Logo */
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            overscroll-behavior-y: contain;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;ㅁ
+            -webkit-tap-highlight-color: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 탭 스타일 */
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            min-width: 0;
+            padding: 0 1rem;
+            flex-shrink: 0;
+        }
+        .tab-active {
+            border-bottom-color: #22c55e;
+            color: #16a34a;
+            font-weight: 700;
+        }
+        .tab-inactive {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Create List Tab Style */
+        .cl-tab-btn {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem 0;
+            font-size: 0.875rem;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cl-tab-btn.active {
+            color: #16a34a;
+            border-bottom-color: #16a34a;
+            font-weight: 700;
+        }
+
+        /* Grid Layout */
+        .cl-grid-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 36px 36px 36px 30px;
+            gap: 4px;
+            padding: 12px 4px;
+            background: #fff;
+            border-bottom: 1px solid #f3f4f6;
+            align-items: center;
+        }
+        .cl-grid-row.checked { background-color: #f0fdf4; }
+
+        .cl-checkbox {
+            width: 20px; height: 20px;
+            border-radius: 4px;
+            color: #16a34a;
+            border: 1px solid #d1d5db;
+            accent-color: #16a34a;
+        }
+
+        .cl-info {
+            display: flex; flex-direction: column; justify-content: center;
+            overflow: hidden; padding-right: 4px;
+        }
+        .cl-name {
+            font-size: 13px; font-weight: 600; color: #1f2937;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .cl-price { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+
+        .cl-toggle-btn {
+            width: 30px; height: 30px; margin: 0 auto;
+            border-radius: 6px; border: 1px solid #e5e7eb;
+            background: #fff; color: #d1d5db;
+            font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.1s;
+        }
+        .cl-toggle-btn.active {
+            background: #22c55e; border-color: #22c55e; color: white;
+        }
+        
+        .cl-drag-handle {
+            display: flex; align-items: center; justify-content: center;
+            color: #e5e7eb; cursor: grab;
+        }
+
+        .cl-select-bar {
+            display: flex; align-items: center; justify-content: space-between; padding: 10px 14px;
+            background: #f9fafb; border-bottom: 1px solid #eee;
+            font-size: 12px; color: #6b7280; font-weight: 600;
+            position: sticky; top: 0; z-index: 10;
+        }
+
+        /* Guide & Accordion */
+        .guide-btn {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 11px; color: #6b7280; background: #fff;
+            padding: 4px 10px; border: 1px solid #e5e7eb; border-radius: 12px;
+        }
+
+        /* FAQ Accordion Styles */
+        .faq-item {
+            border-bottom: 1px solid #f3f4f6;
+            background-color: white;
+        }
+        .faq-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .faq-header:active { background-color: #f9fafb; }
+        .faq-question {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #374151;
+            display: flex; align-items: center;
+        }
+        .faq-content {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+            background-color: #f9fafb;
+        }
+        .faq-item.active .faq-content {
+            max-height: 500px;
+            transition: max-height 0.4s cubic-bezier(1, 0, 1, 0);
+        }
+        .faq-item.active .faq-chevron { transform: rotate(180deg); }
+        .faq-chevron { transition: transform 0.2s; color: #9ca3af; }
+        
+        .faq-answer-box {
+            padding: 1.25rem;
+            font-size: 0.8rem;
+            color: #4b5563;
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        /* Modal Tabs */
+        .guide-tab-btn {
+            flex: 1; text-align: center; padding: 0.875rem 0;
+            font-size: 0.875rem; font-weight: 500; color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .guide-tab-btn.active {
+            color: #16a34a; font-weight: 700; border-bottom-color: #22c55e;
+        }
+
+        /* Keyword Pool */
+        .keyword-chip {
+            font-size: 11px; padding: 6px 12px; border-radius: 8px;
+            background-color: #fff; color: #4b5563; border: 1px solid #e5e7eb;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .keyword-chip:active { background-color: #e5e7eb; transform: scale(0.96); }
+
+        .list-input-group {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px 12px;
+            transition: all 0.2s; background-color: #fff;
+        }
+        .list-input-group.active {
+            border-color: #22c55e; background-color: #f0fdf4; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+        }
+
+        /* Search Animations */
+        #search-container, #home-search-container {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s, padding 0.3s;
+            overflow: hidden;
+        }
+        .search-hidden {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            pointer-events: none;
+        }
+
+        /* Move Sheet */
+        #move-sheet-overlay { background-color: rgba(0,0,0,0.4); transition: opacity 0.2s; }
+        #move-sheet { transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
+        #move-sheet.visible { transform: translateY(0); }
+        
+        /* Delivery Date Sheet */
+        #delivery-sheet-overlay { background-color: rgba(0,0,0,0.4); transition: opacity 0.2s; }
+        #delivery-sheet { transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
+        #delivery-sheet.visible { transform: translateY(0); }
+
+        /* Add List Btn */
+        .add-list-btn-wide {
+            font-size: 0.75rem;
+            color: #22c55e;
+            font-weight: 700;
+            border: 1px solid #22c55e;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: white;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Category Bar Styles */
+        .category-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            width: 100%; padding: 4px 0;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .category-btn:active { background-color: #f3f4f6; }
+        .category-btn.active { background-color: #f0fdf4; }
+        .category-btn.active span { color: #16a34a; font-weight: 700; }
+
+        /* Sub Section Bar Styles & Animation */
+        .sub-section-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: #fff;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 13px;
+        }
+        
+        .sort-bar-transition {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease;
+            max-height: 60px; /* Approximate height */
+            opacity: 1;
+            overflow: hidden; /* 애니메이션 중에는 숨김 */
+        }
+        
+        .sort-bar-overflow-visible {
+            overflow: visible !important; /* 드롭다운 표시를 위해 visible */
+        }
+        
+        .sort-bar-collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            border-bottom: none;
+            overflow: hidden !important; /* 접혔을 때는 숨김 */
+        }
+
+        .delivery-btn {
+            display: flex; align-items: center; gap: 4px;
+            color: #374151; font-weight: 600;
+            cursor: pointer;
+        }
+        .sort-dropdown-container {
+            position: relative;
+        }
+        .sort-btn {
+            display: flex; align-items: center; gap: 4px;
+            color: #4b5563; font-weight: 500; cursor: pointer;
+        }
+        .sort-dropdown-menu {
+            position: absolute;
+            top: 100%; right: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 140px;
+            z-index: 50; /* Dropdown z-index increased */
+            display: none;
+        }
+        .sort-dropdown-menu.active { display: block; }
+        .sort-option {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #374151;
+            cursor: pointer;
+            border-bottom: 1px solid #f9fafb;
+        }
+        .sort-option:last-child { border-bottom: none; }
+        .sort-option:hover { background-color: #f9fafb; }
+        .sort-option.selected { color: #16a34a; font-weight: 700; }
+
+        /* List Section Header */
+        .list-section-header {
+            background-color: #f9fafb;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #4b5563;
+            border-bottom: 1px solid #f3f4f6;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        /* Mode Toggle Switch - New Design */
+        .mode-toggle-group {
+            display: flex;
+            background-color: #f3f4f6;
+            border-radius: 20px;
+            padding: 2px;
+            width: 104px;
+            height: 32px;
+            position: relative;
+            cursor: pointer;
+        }
+        .mode-toggle-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #9ca3af;
+            border-radius: 18px;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+        .mode-toggle-option.active {
+            background-color: #0C5608; /* Brand Color */
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        /* Navigation Badge Style */
+        .nav-badge {
+            background-color: #FFD000; /* Requested Badge Color */
+            color: #374151; /* Dark gray text for visibility on yellow */
+            font-size: 11px;
+            font-weight: 900;
+            height: 18px;
+            min-width: 18px;
+            padding: 0 5px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-badge.hidden-badge {
+            display: none;
+        }
+        
+        /* Stepper Style in Cart */
+        .cart-stepper-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f3f4f6;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #4b5563;
+        }
+        .cart-stepper-val {
+            width: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Safe area bottom fix */
+        .safe-pb { 
+            padding-bottom: env(safe-area-inset-bottom);
+            min-height: calc(70px + env(safe-area-inset-bottom));
+            height: auto;
+        }
+        
+        /* Order Button States (Rounded Button Style) */
+        .footer-order-btn-base {
+            flex: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin: 8px 6px;
+            border-radius: 12px; /* Slightly less rounded for professional look */
+            height: 48px; /* Slightly smaller than footer height */
+        }
+
+        /* Default (Nav Icon) Style */
+        .footer-order-default {
+            background-color: transparent;
+            color: #374151;
+            flex-direction: column;
+            border-radius: 0;
+            margin: 0;
+            height: 60px;
+            flex: 1;
+        }
+        .footer-order-default i { color: #0C5608; } /* Brand Color */
+        
+        /* Active (Brand Color Button) Style */
+        .footer-order-active {
+            background-color: #63BF86; /* Requested Color */
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(99, 191, 134, 0.25);
+        }
+        .footer-order-active i { display: none; } /* Hide icon in button mode */
+        
+        /* Empty (Gray Button) Style */
+        .footer-order-empty {
+            background-color: #f3f4f6;
+            color: #9ca3af !important;
+            border: 1px solid #e5e7eb;
+        }
+        .footer-order-empty i { display: none; }
+
+        /* Watermark Font */
+        .watermark-font {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-20 relative overflow-hidden">
+
+        <!-- HEADER -->
+        <header class="sticky top-0 bg-white z-40 shadow-sm border-b">
+            <div class="relative flex justify-between items-center p-3 h-[57px]">
+                
+                <!-- Mode Switch Button (New Design: Toggle Switch) -->
+                <div id="mode-switch-group" class="mode-toggle-group">
+                    <div id="mode-opt-home" class="mode-toggle-option active">상품</div>
+                    <div id="mode-opt-order" class="mode-toggle-option">주문</div>
+                </div>
+                
+                <!-- Logo: 홈으로 이동 및 상단 스크롤 -->
+                <h1 id="header-title" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-gray-600 cursor-pointer">NH라인</h1>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-semibold">OP</span>
+                    <i class="fas fa-user-circle text-2xl text-gray-400"></i>
+                </div>
+            </div>
+            <!-- Old Nav (Hidden) -->
+            <nav id="home-category-nav" class="flex justify-around items-center p-2 border-t hidden">
+            </nav>
+        </header>
+
+        <!-- HOME MAIN (MALL MODE) -->
+        <main id="home-view" class="hidden">
+             <!-- Category Bar -->
+             <div id="category-bar" class="flex justify-around items-center bg-white py-2 px-1 border-b sticky top-[57px] z-30">
+                <button class="category-btn" onclick="filterByCategory('vegetable')">
+                    <span class="text-2xl">🥬</span>
+                    <span class="text-[10px] font-medium text-gray-600">채소.과일</span>
+                </button>
+                <button class="category-btn" onclick="filterByCategory('seafood')">
+                    <span class="text-2xl">🥩</span>
+                    <span class="text-[10px] font-medium text-gray-600">수산.축산</span>
+                </button>
+                <button class="category-btn" onclick="filterByCategory('processed')">
+                    <span class="text-2xl">🥤</span>
+                    <span class="text-[10px] font-medium text-gray-600">식품.음료</span>
+                </button>
+                <button class="category-btn" onclick="filterByCategory('sauce')">
+                    <span class="text-2xl">🧂</span>
+                    <span class="text-[10px] font-medium text-gray-600">양념.소스</span>
+                </button>
+                <button class="category-btn" onclick="filterByCategory('kitchen')">
+                    <span class="text-2xl">🥣</span>
+                    <span class="text-[10px] font-medium text-gray-600">주방.잡화</span>
+                </button>
+             </div>
+
+             <!-- Event Theme Bar -->
+             <div class="flex justify-around items-center px-4 py-2 border-b bg-white">
+                <button class="py-2 text-sm font-semibold border-b-2 border-green-500 text-green-500">타임세일</button>
+                <button class="py-2 text-sm text-gray-500">경매상품</button>
+                <button class="py-2 text-sm text-gray-500">할인상품</button>
+                <button class="py-2 text-sm text-gray-500">마감임박</button>
+             </div>
+
+             <!-- Home Search Box -->
+             <div id="home-search-container" class="p-3 border-b bg-white search-hidden shadow-inner sticky top-[125px] z-30">
+                <div class="flex items-center w-full">
+                    <div class="relative flex-grow">
+                        <input type="text" id="home-search-input" placeholder="전체 상품 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             
+             <!-- INCREASED PADDING BOTTOM -->
+             <div id="home-product-list" class="divide-y pb-24"></div>
+        </main>
+
+        <!-- QUICK ORDER MAIN (ORDER MODE) -->
+        <main id="quick-order-view" class="hidden">
+            <!-- Sub Header (Sticky) -->
+            <div id="sub-header" class="sticky top-[57px] z-30 shadow-md bg-gray-100 relative">
+                <!-- 리스트 바 -->
+                <div id="my-list-container" class="flex justify-between items-center px-0 bg-white border-b h-[40px] overflow-hidden">
+                    <div id="my-list-tabs" class="flex flex-1 items-center h-full no-scrollbar"></div>
+                </div>
+                
+                <!-- Sub Section Bar (Sort & Delivery) with Animation -->
+                <div id="sub-section-bar" class="sub-section-bar hidden sort-bar-transition">
+                    <!-- Left: Delivery Date -->
+                    <div id="delivery-date-btn" class="delivery-btn" onclick="openDeliverySheet()">
+                        <i class="far fa-calendar-alt text-lg text-green-600 mr-1"></i>
+                        <span id="current-delivery-date">1월 12일(월) 도착</span>
+                    </div>
+
+                    <!-- Right: Sort Dropdown -->
+                    <div class="sort-dropdown-container">
+                        <div class="sort-btn" onclick="toggleSortDropdown(event)">
+                            <span id="current-sort-label">최신순</span>
+                            <i class="fas fa-caret-down text-gray-400"></i>
+                        </div>
+                        <div id="sort-dropdown-menu" class="sort-dropdown-menu">
+                            <div class="sort-option" onclick="changeSort('latest')">최신순</div>
+                            <div class="sort-option" onclick="changeSort('category')">카테고리순</div>
+                            <div class="sort-option" onclick="changeSort('frequency')">자주 쓰는 상품순</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Box (Initially Hidden) -->
+                <div id="search-container" class="p-3 border-b bg-white search-hidden shadow-inner">
+                    <div class="flex items-center w-full">
+                        <div class="relative flex-grow">
+                            <input type="text" id="product-search-input" placeholder="담은 상품 내 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product List - INCREASED PADDING BOTTOM -->
+            <div id="product-list-container" class="pb-24">
+                <div id="product-list" class="bg-white border-t"></div>
+            </div>
+        </main>
+
+        <!-- CART VIEW (NEW) -->
+        <main id="cart-view" class="hidden bg-gray-50 min-h-screen pb-24">
+            <!-- Header Area with Back Button Removed, Buttons Removed -->
+            <div class="bg-white px-4 py-3 border-b flex justify-between items-center sticky top-[57px] z-30 shadow-sm">
+                <h2 class="text-lg font-bold text-gray-800">담은 상품 <span class="text-[#0C5608] text-base ml-1" id="cart-total-count-header">총 0개</span></h2>
+            </div>
+            
+            <!-- Default Label -->
+            <div class="px-4 py-2 text-xs text-gray-400 font-bold mt-2">단골특가 및 일반상품</div>
+            
+            <!-- Cart List -->
+            <div id="cart-list-items" class="bg-white border-t border-b divide-y divide-gray-100">
+                <!-- Items will be rendered here -->
+            </div>
+        </main>
+
+        <!-- CREATE LIST VIEW -->
+        <div id="create-list-view" class="hidden absolute inset-0 bg-white z-50 flex flex-col">
+            <!-- Header -->
+            <header class="flex-none flex justify-between items-center px-4 h-[57px] border-b bg-white shadow-sm z-20">
+                <button id="create-list-close-icon" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <h1 class="text-lg font-bold text-gray-800">리스트 만들기</h1>
+                <button id="create-list-save-btn" class="text-green-600 font-bold text-sm">저장</button>
+            </header>
+            
+            <!-- Tabs -->
+            <div class="flex-none flex border-b bg-white z-20">
+                <button class="cl-tab-btn active" data-tab="all">전체</button>
+                <button class="cl-tab-btn cl-tab-l1" data-tab="1">L1</button>
+                <button class="cl-tab-btn cl-tab-l2" data-tab="2">L2</button>
+                <button class="cl-tab-btn cl-tab-l3" data-tab="3">L3</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24">
+                <!-- Select All Bar -->
+                <div class="cl-select-bar">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="cl-select-all" class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-2 accent-green-600">
+                        <label for="cl-select-all" class="cursor-pointer">전체 선택 <span id="cl-selected-count" class="text-green-600 font-bold ml-1">(0)</span></label>
+                    </div>
+                    <button class="guide-btn shadow-sm" onclick="openGuide()">
+                        <i class="fas fa-cog"></i> 이용안내 및 설정
+                    </button>
+                </div>
+                
+                <div id="create-list-items" class="divide-y divide-gray-100">
+                    <!-- Items -->
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-30 safe-pb">
+                <div class="flex p-3 gap-2">
+                    <button id="cl-bottom-back" class="flex-1 py-3 border border-gray-300 rounded-lg text-gray-600 font-bold bg-white">뒤로가기</button>
+                    <button id="cl-bottom-delete" class="flex-1 py-3 border border-red-200 rounded-lg text-red-500 font-bold bg-red-50 disabled:opacity-50" disabled>삭제</button>
+                    <button id="cl-bottom-move" class="flex-[1.5] py-3 rounded-lg text-white font-bold bg-green-600 disabled:bg-gray-300" disabled>이동</button>
+                </div>
+            </div>
+
+            <!-- Move Sheet (Modal) -->
+            <div id="move-sheet-overlay" class="hidden absolute inset-0 z-40"></div>
+            <div id="move-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.15)] z-50">
+                <div class="p-5">
+                    <h3 class="font-bold text-lg mb-4 text-center">선택한 상품 이동</h3>
+                    <div class="space-y-2">
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l1" onclick="applyBatchMove(1)">L1으로 이동</button>
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l2" onclick="applyBatchMove(2)">L2으로 이동</button>
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l3" onclick="applyBatchMove(3)">L3으로 이동</button>
+                    </div>
+                    <button id="move-sheet-cancel" class="w-full mt-4 py-3 text-gray-500 font-medium">취소</button>
+                </div>
+                <div class="h-6 bg-white w-full"></div>
+            </div>
+            
+            <!-- Delivery Date Sheet (Modal) -->
+            <div id="delivery-sheet-overlay" class="hidden absolute inset-0 z-40"></div>
+            <div id="delivery-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.15)] z-50">
+                <div class="p-5">
+                    <h3 class="font-bold text-lg mb-4 text-center">배송일 변경</h3>
+                    <div class="space-y-2">
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50" onclick="updateDeliveryDate('1월 12일(월) 도착')">1월 12일(월) 도착 (기본)</button>
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50" onclick="updateDeliveryDate('1월 13일(화) 도착')">1월 13일(화) 도착</button>
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50" onclick="updateDeliveryDate('1월 14일(수) 도착')">1월 14일(수) 도착</button>
+                    </div>
+                    <button id="delivery-sheet-cancel" class="w-full mt-4 py-3 text-gray-500 font-medium">닫기</button>
+                </div>
+                <div class="h-6 bg-white w-full"></div>
+            </div>
+
+            <!-- Guide & Setting Modal (FIXED HEIGHT) -->
+            <div id="guide-modal-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity opacity-0">
+                <div class="flex items-center justify-center min-h-screen px-4">
+                    <!-- Added fixed height h-[70vh] here -->
+                    <div class="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-sm h-[70vh] overflow-hidden transform transition-transform scale-95 flex flex-col" id="guide-modal-content">
+                        <!-- Header -->
+                        <div class="flex justify-between items-center p-5 bg-white border-b sticky top-0 z-10 flex-none">
+                            <h3 class="text-lg font-bold text-gray-900">이용 안내 및 설정</h3>
+                            <button onclick="closeGuide()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
+                        </div>
+                        
+                        <!-- Tabs -->
+                        <div class="flex border-b bg-white z-10 sticky top-[68px] flex-none">
+                            <button id="tab-faq" class="guide-tab-btn active" onclick="switchGuideTab('faq')">이용안내</button>
+                            <button id="tab-rename" class="guide-tab-btn" onclick="switchGuideTab('rename')">이름설정</button>
+                            <button id="tab-start" class="guide-tab-btn" onclick="switchGuideTab('start')">시작화면</button>
+                        </div>
+                        
+                        <!-- Content Area (Scrollable) -->
+                        <div class="flex-grow overflow-y-auto bg-gray-50">
+                            <!-- Section: FAQ -->
+                            <div id="guide-section-faq" class="block">
+                                <!-- FAQ 1 -->
+                                <div class="faq-item" id="faq-1">
+                                    <div class="faq-header" onclick="toggleFaq('faq-1')">
+                                        <div class="faq-question">
+                                            <i class="fas fa-list-ul text-green-500 mr-2"></i> 나만의 리스트 생성
+                                        </div>
+                                        <i class="fas fa-chevron-down faq-chevron"></i>
+                                    </div>
+                                    <div class="faq-content">
+                                        <div class="faq-answer-box">
+                                            상품 목록 우측의 <span class="text-green-600 font-bold">[1], [2], [3] 버튼</span>을 누르면 해당 리스트로 분류됩니다. 상단의 리스트 탭명을 누르면 해당 리스트에 담긴 상품만 모아서 확인할 수 있습니다.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- FAQ 2 -->
+                                <div class="faq-item" id="faq-2">
+                                    <div class="faq-header" onclick="toggleFaq('faq-2')">
+                                        <div class="faq-question">
+                                            <i class="fas fa-sort text-green-500 mr-2"></i> 상품 순서 변경
+                                        </div>
+                                        <i class="fas fa-chevron-down faq-chevron"></i>
+                                    </div>
+                                    <div class="faq-content">
+                                        <div class="faq-answer-box">
+                                            전체보기에서는 불가능하며, <span class="text-green-600 font-bold">개별 리스트 탭</span>(L1 등)을 눌러 들어갔을 때만 상품 우측에 <span class="text-green-600 font-bold">드래그 핸들(≡)</span>이 나타납니다. 핸들을 잡고 위아래로 움직여 순서를 바꿔보세요.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- FAQ 3 -->
+                                <div class="faq-item" id="faq-3">
+                                    <div class="faq-header" onclick="toggleFaq('faq-3')">
+                                        <div class="faq-question">
+                                            <i class="fas fa-edit text-green-500 mr-2"></i> 리스트 이름 변경
+                                        </div>
+                                        <i class="fas fa-chevron-down faq-chevron"></i>
+                                    </div>
+                                    <div class="faq-content">
+                                        <div class="faq-answer-box">
+                                            상단의 <span class="text-green-600 font-bold">'이름설정' 탭</span>으로 이동하여 L1, L2, L3의 이름을 변경할 수 있습니다. 자주 쓰는 키워드를 선택하거나 직접 입력하여 저장하세요.
+                                            <div class="mt-3 text-right">
+                                                <button onclick="switchGuideTab('rename')" class="text-xs text-green-600 underline font-bold">이름설정 바로가기</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- FAQ 4 -->
+                                <div class="faq-item" id="faq-4">
+                                    <div class="faq-header" onclick="toggleFaq('faq-4')">
+                                        <div class="faq-question">
+                                            <i class="fas fa-home text-green-500 mr-2"></i> 시작화면 설정
+                                        </div>
+                                        <i class="fas fa-chevron-down faq-chevron"></i>
+                                    </div>
+                                    <div class="faq-content">
+                                        <div class="faq-answer-box">
+                                            앱을 실행할 때 처음 보여지는 화면을 고정하고 싶다면 상단의 <span class="text-green-600 font-bold">'시작화면' 탭</span>에서 설정해주세요. 빠른 주문이 필요하다면 '주문하기'를 추천합니다.
+                                            <div class="mt-3 text-right">
+                                                <button onclick="switchGuideTab('start')" class="text-xs text-green-600 underline font-bold">시작화면 설정 바로가기</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- FAQ 5 -->
+                                <div class="faq-item" id="faq-5">
+                                    <div class="faq-header" onclick="toggleFaq('faq-5')">
+                                        <div class="faq-question">
+                                            <i class="fas fa-question-circle text-green-500 mr-2"></i> 기타 가이드
+                                        </div>
+                                        <i class="fas fa-chevron-down faq-chevron"></i>
+                                    </div>
+                                    <div class="faq-content">
+                                        <div class="faq-answer-box">
+                                            하나의 상품을 여러 리스트에 <span class="text-green-600 font-bold">중복</span>해서 담을 수 있습니다. 리스트에 상품이 0개라면 탭이 자동으로 숨겨집니다. '전체' 탭에서의 순서는 '주문하기' 메인 화면의 정렬 설정과 연동됩니다.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: Rename -->
+                            <div id="guide-section-rename" class="hidden">
+                                <div class="p-5">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <p class="text-[11px] text-gray-400 italic">터치하여 포커스 후 아래 키워드를 선택하세요.</p>
+                                        <button onclick="resetListNames()" class="text-xs text-gray-400 underline">초기화</button>
+                                    </div>
+
+                                    <!-- Custom Inputs -->
+                                    <div class="space-y-2 mb-4">
+                                        <div class="list-input-group flex items-center active" id="group-l1" onclick="focusInput(1)">
+                                            <span class="text-xs font-bold text-gray-400 w-8">L1</span>
+                                            <input type="text" id="input-list1-name" placeholder="L1 명칭" class="outline-none" readonly>
+                                        </div>
+                                        <div class="list-input-group flex items-center" id="group-l2" onclick="focusInput(2)">
+                                            <span class="text-xs font-bold text-gray-400 w-8">L2</span>
+                                            <input type="text" id="input-list2-name" placeholder="L2 명칭" class="outline-none" readonly>
+                                        </div>
+                                        <div class="list-input-group flex items-center" id="group-l3" onclick="focusInput(3)">
+                                            <span class="text-xs font-bold text-gray-400 w-8">L3</span>
+                                            <input type="text" id="input-list3-name" placeholder="L3 명칭" class="outline-none" readonly>
+                                        </div>
+                                    </div>
+
+                                    <!-- Multi-Category Keyword Pool -->
+                                    <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-inner h-56 overflow-y-auto mb-6">
+                                        <div class="mb-4">
+                                            <div class="text-[10px] font-bold text-gray-400 mb-2">공간 / 관리 주체</div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button class="keyword-chip" onclick="applyKeyword('주방')">주방</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('홀/바')">홀/바</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('창고')">창고</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('매장')">매장</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('냉장고')">냉장고</button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div class="text-[10px] font-bold text-gray-400 mb-2">보관 / 온도</div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button class="keyword-chip" onclick="applyKeyword('신선/냉장')">신선/냉장</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('냉동')">냉동</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('상온/공산')">상온/공산</button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div class="text-[10px] font-bold text-gray-400 mb-2">목적 / 용도</div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button class="keyword-chip" onclick="applyKeyword('메인재료')">메인재료</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('부재료')">부재료</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('양념/소스')">양념/소스</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('소모품')">소모품</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('직원식')">직원식</button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="text-[10px] font-bold text-gray-400 mb-2">발주 주기</div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button class="keyword-chip" onclick="applyKeyword('매일발주')">매일발주</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('정기발주')">정기발주</button>
+                                                <button class="keyword-chip" onclick="applyKeyword('긴급/기타')">긴급/기타</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button onclick="saveListNames()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl text-sm shadow-lg shadow-blue-100 transition-colors">
+                                        설정된 이름으로 변경하기
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Section: Start Screen -->
+                            <div id="guide-section-start" class="hidden">
+                                <div class="p-5">
+                                    <div class="text-sm text-gray-600 mb-4 font-bold">
+                                        앱 실행(접속)시 가장 먼저 보일 화면을 선택하세요.
+                                    </div>
+
+                                    <div class="space-y-3">
+                                        <!-- Home Option -->
+                                        <div class="bg-white rounded-xl border-2 p-5 flex items-center justify-between cursor-pointer transition-colors hover:bg-gray-50" 
+                                             id="option-home" onclick="setStartScreen('home')">
+                                            <div>
+                                                <div class="font-bold text-gray-800 text-sm flex items-center">
+                                                    <i class="fas fa-shopping-bag mr-2 text-gray-400"></i> 상품목록 (홈)
+                                                </div>
+                                                <div class="text-[11px] text-gray-400 mt-1 pl-6">
+                                                    다양한 상품을 둘러보고 검색할 때 적합합니다.
+                                                </div>
+                                            </div>
+                                            <div class="text-gray-300 transition-colors" id="check-icon-home"><i class="fas fa-circle text-xl"></i></div>
+                                        </div>
+
+                                        <!-- Order Option -->
+                                        <div class="bg-white rounded-xl border-2 p-5 flex items-center justify-between cursor-pointer transition-colors hover:bg-gray-50" 
+                                             id="option-quick-order" onclick="setStartScreen('quick-order')">
+                                            <div>
+                                                <div class="font-bold text-gray-800 text-sm flex items-center">
+                                                    <i class="fas fa-clipboard-check mr-2 text-gray-400"></i> 주문하기
+                                                </div>
+                                                <div class="text-[11px] text-gray-400 mt-1 pl-6">
+                                                    자주 시키는 상품을 빠르게 주문할 때 적합합니다.
+                                                </div>
+                                            </div>
+                                            <div class="text-gray-300 transition-colors" id="check-icon-quick-order"><i class="fas fa-circle text-xl"></i></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6 p-4 bg-green-50 rounded-xl border border-green-100">
+                                        <div class="text-[10px] text-green-700 font-bold mb-1">
+                                            <i class="fas fa-check-circle mr-1"></i> 설정 팁
+                                        </div>
+                                        <div class="text-[10px] text-gray-600">
+                                            선택하신 설정은 자동으로 저장되며, 다음 앱 실행 시부터 즉시 반영됩니다.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER (Main) - Integrated Navigation -->
+        <footer id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white z-40 flex shadow-[0_-5px_15px_rgba(0,0,0,0.1)] safe-pb">
+            <!-- 1. Search -->
+            <button id="footer-search-btn" class="flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-green-600 transition-colors bg-white h-[60px]">
+                <i class="fas fa-search text-xl mb-1"></i>
+                <span class="text-[10px] font-medium">검색</span>
+            </button>
+            
+            <!-- 2. Order Button (Center - Resizable & Rounded) -->
+            <button id="footer-order-btn" class="footer-order-btn-base footer-order-default" onclick="handleCenterBtnClick()">
+                <div class="relative w-full h-full flex items-center justify-center" id="footer-order-content">
+                    
+                    <!-- Content Layer -->
+                    <div class="relative z-10 flex flex-col items-center justify-center h-full w-full">
+                        <!-- Icon & Badge Container (For Default State) -->
+                        <div id="footer-icon-container" class="relative flex items-center justify-center">
+                            <span class="watermark-font text-[10px] font-bold mb-0.5" style="color: #0C5608;">ORDERZ</span>
+                        </div>
+                        
+                        <!-- Text & Badge Container (For Button State) -->
+                        <div class="flex items-center justify-center gap-2" id="footer-text-wrapper" style="display: none;">
+                            <span id="nav-cart-badge" class="nav-badge hidden-badge">0</span>
+                            <span id="footer-order-text" class="text-[10px] font-bold">주문하기</span>
+                        </div>
+                    </div>
+                </div>
+            </button>
+            
+            <!-- 3. Inquiry -->
+            <button id="footer-inquiry-btn" class="flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-green-600 transition-colors bg-white h-[60px]">
+                <i class="fas fa-comment-dots text-xl mb-1"></i>
+                <span class="text-[10px] font-medium">문의</span>
+            </button>
+        </footer>
+
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const appState = {
+            products: { 
+                vegetable: [
+                    { id: 1, name: '흙쪽파(1kg)단', spec: '판매처: a유통', price: 9800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=쪽파', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '쪽파', liked: true, myList: [], deliveryDate: '2025-10-21', likedTimestamp: 1729770000000, orderCount: 50 },
+                    { id: 2, name: '깐양파_10kg', spec: '판매처: a유통', price: 19500, img: 'https://placehold.co/80x80/d1e7dd/333333?text=양파', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', liked: false, myList: [], deliveryDate: '2025-10-22', likedTimestamp: 1729760000000, orderCount: 120 },
+                    { id: 3, name: '무우 (낱개)', spec: '판매처: a유통', price: 2800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=무', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '무우', liked: true, myList: [], likedTimestamp: 1729750000000, orderCount: 30 },
+                    { id: 12, name: '백다다기_5개입', price: 3500, spec: '판매처: a유통', category: 'vegetable', subCategory: '오이/호박/고추/피망', thirdCategory: '오이', myList: [], liked: false, likedTimestamp: 1729780000000, orderCount: 200 },
+                    { id: 52, name: '베이컨(알찬)', price: 11500, spec: '판매처: a유통', category: 'seafood', subCategory: '돼지고기', thirdCategory: '가공육', myList: [], liked: true, likedTimestamp: 1729740000000, orderCount: 15 },
+                    { id: 63, name: '식용유(말)쉐프원', price: 47800, spec: '판매처: a유통', category: 'sauce', subCategory: '기름', thirdCategory: '식용유', myList: [], liked: false, likedTimestamp: 1729730000000, orderCount: 80 },
+                ],
+            },
+            cart: {},
+            listNames: { 1: '리스트1', 2: '리스트2', 3: '리스트3' },
+            currentView: 'home', // Default: Home
+            currentMyList: -1,
+            clTab: 'all',
+            tempChanges: {},
+            hasChanges: false,
+            activeListInputId: 1,
+            isSearching: false,
+            tooltipTimeout: null,
+            currentSort: 'latest', // latest, category, frequency
+            deliveryDate: '1월 12일(월) 도착',
+            selectedCategory: null, // New State
+            homeSearchText: ''
+        };
+
+        const homeView = document.getElementById('home-view');
+        const quickOrderView = document.getElementById('quick-order-view');
+        const createListView = document.getElementById('create-list-view');
+        const cartView = document.getElementById('cart-view');
+        const homeProductListEl = document.getElementById('home-product-list');
+        const modeSwitchGroup = document.getElementById('mode-switch-group');
+        const modeOptHome = document.getElementById('mode-opt-home');
+        const modeOptOrder = document.getElementById('mode-opt-order');
+        
+        const headerTitle = document.getElementById('header-title');
+        
+        // Footer Elements
+        const footerSearchBtn = document.getElementById('footer-search-btn');
+        const footerOrderBtn = document.getElementById('footer-order-btn');
+        const footerOrderIcon = document.getElementById('footer-order-icon');
+        const footerOrderText = document.getElementById('footer-order-text');
+        const navCartBadge = document.getElementById('nav-cart-badge');
+        const mainNavFooter = document.getElementById('main-nav-footer');
+        const footerIconContainer = document.getElementById('footer-icon-container');
+        const footerTextWrapper = document.getElementById('footer-text-wrapper');
+
+        const myListTabsContainer = document.getElementById('my-list-tabs');
+        const clTabs = document.querySelectorAll('.cl-tab-btn');
+        const clItemsEl = document.getElementById('create-list-items');
+        const clSaveBtn = document.getElementById('create-list-save-btn');
+        const clSelectAll = document.getElementById('cl-select-all');
+        const clSelectedCount = document.getElementById('cl-selected-count');
+        const clBottomDelete = document.getElementById('cl-bottom-delete');
+        const clBottomMove = document.getElementById('cl-bottom-move');
+        const moveSheet = document.getElementById('move-sheet');
+        const moveSheetOverlay = document.getElementById('move-sheet-overlay');
+        const moveSheetCancel = document.getElementById('move-sheet-cancel');
+        const guideModalOverlay = document.getElementById('guide-modal-overlay');
+        const guideModalContent = document.getElementById('guide-modal-content');
+        const searchContainer = document.getElementById('search-container');
+        const productSearchInput = document.getElementById('product-search-input');
+        const homeSearchContainer = document.getElementById('home-search-container');
+        const homeSearchInput = document.getElementById('home-search-input');
+        
+        // New Elements
+        const subSectionBar = document.getElementById('sub-section-bar');
+        const currentDeliveryDateEl = document.getElementById('current-delivery-date');
+        const currentSortLabelEl = document.getElementById('current-sort-label');
+        const sortDropdownMenu = document.getElementById('sort-dropdown-menu');
+        const sortContainer = document.querySelector('.sort-dropdown-container');
+        const deliverySheet = document.getElementById('delivery-sheet');
+        const deliverySheetOverlay = document.getElementById('delivery-sheet-overlay');
+        const deliverySheetCancel = document.getElementById('delivery-sheet-cancel');
+        
+        // Cart View Elements
+        const cartListItemsEl = document.getElementById('cart-list-items');
+        const cartTotalCountHeader = document.getElementById('cart-total-count-header');
+
+        function getAllProducts() {
+            return Object.values(appState.products).flat();
+        }
+
+        function getActiveLists() {
+            const activeSet = new Set();
+            getAllProducts().forEach(p => (p.myList || []).forEach(id => activeSet.add(id)));
+            // Return only lists that have items
+            return [1, 2, 3].filter(id => activeSet.has(id));
+        }
+
+        function showHomeView(saveToStorage = false) {
+            appState.currentView = 'home';
+            homeView.classList.remove('hidden');
+            quickOrderView.classList.add('hidden');
+            createListView.classList.add('hidden');
+            cartView.classList.add('hidden');
+            updateFooterUI();
+            updateHeaderUI();
+            renderHomeView();
+            if(saveToStorage) saveDefaultView('home');
+        }
+
+        function showQuickOrderView(saveToStorage = false) {
+            appState.currentView = 'quick-order';
+            homeView.classList.add('hidden');
+            quickOrderView.classList.remove('hidden');
+            createListView.classList.add('hidden');
+            cartView.classList.add('hidden');
+            
+            // 페이지 접속 시 기본 탭을 찜한상품(-1)으로 설정
+            if(saveToStorage) {
+                appState.currentMyList = -1;
+            }
+            
+            renderListTabs();
+            renderSubSectionBar();
+            updateFooterUI();
+            updateHeaderUI();
+            renderProducts();
+            if(saveToStorage) saveDefaultView('quick-order');
+        }
+        
+        window.showQuickOrderView = showQuickOrderView; // Make global
+
+        window.showConfirmationView = function() {
+            // Cart View
+            appState.currentView = 'cart';
+            homeView.classList.add('hidden');
+            quickOrderView.classList.add('hidden');
+            createListView.classList.add('hidden');
+            cartView.classList.remove('hidden');
+            
+            updateHeaderUI(); // To update toggle state if needed, though header is static
+            renderCartView();
+            updateFooterUI();
+        }
+        
+        // Central Button Click Handler
+        window.handleCenterBtnClick = function() {
+            if (appState.currentView === 'home') {
+                showQuickOrderView();
+            } else if (appState.currentView === 'quick-order') {
+                if (Object.keys(appState.cart).length > 0) showConfirmationView();
+                else alert("주문할 상품을 담아주세요.");
+            } else if (appState.currentView === 'cart') {
+                const totalQty = Object.values(appState.cart).reduce((a,b)=>a+b,0);
+                if(totalQty > 0) {
+                    alert("주문이 완료되었습니다!");
+                } else {
+                    alert("상품을 담아주세요.");
+                    showQuickOrderView();
+                }
+            } else {
+                showConfirmationView();
+            }
+        }
+
+        function saveDefaultView(view) {
+            localStorage.setItem('orderz_start_mode', view);
+        }
+
+        function updateHeaderUI() {
+            if (appState.currentView === 'home') {
+                // Home Active (Mall)
+                modeOptHome.classList.add('active');
+                modeOptOrder.classList.remove('active');
+            } else {
+                // Order Active (includes Quick Order & Cart)
+                modeOptHome.classList.remove('active');
+                modeOptOrder.classList.add('active');
+            }
+        }
+
+        // Mode Switch Logic: New Toggle Group
+        modeSwitchGroup.onclick = function() {
+            if (appState.isSearching) {
+                closeSearch();
+            }
+            // Toggle Logic
+            if (appState.currentView === 'home') {
+                showQuickOrderView(true);
+            } else {
+                showHomeView(true);
+            }
+        };
+        
+        // Logo Click Logic
+        headerTitle.onclick = function() {
+            if (appState.isSearching) {
+                closeSearch();
+            }
+            
+            if (appState.currentView !== 'home') {
+                showHomeView(true);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // --- Sub Section Bar Logic ---
+        function renderSubSectionBar() {
+            if (appState.currentView !== 'quick-order') return;
+            
+            subSectionBar.classList.remove('hidden');
+            
+            if (appState.currentMyList === -1) {
+                sortContainer.style.display = 'block';
+            } else {
+                sortContainer.style.display = 'none';
+            }
+            
+            const subSectionBarEl = document.getElementById('sub-section-bar');
+            if (!subSectionBarEl.classList.contains('sort-bar-collapsed')) {
+                 subSectionBarEl.classList.add('sort-bar-overflow-visible');
+            }
+
+            currentDeliveryDateEl.textContent = appState.deliveryDate;
+            
+            const sortMap = { 'latest': '최신순', 'category': '카테고리순', 'frequency': '자주 쓰는 상품순' };
+            currentSortLabelEl.textContent = sortMap[appState.currentSort];
+            
+            document.querySelectorAll('.sort-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+        }
+        
+        window.toggleSortDropdown = function(e) {
+            e.stopPropagation();
+            sortDropdownMenu.classList.toggle('active');
+        };
+
+        window.changeSort = function(sortType) {
+            appState.currentSort = sortType;
+            renderSubSectionBar();
+            renderProducts();
+            sortDropdownMenu.classList.remove('active');
+            window.scrollTo(0, 0);
+            document.getElementById('product-list-container').scrollTop = 0;
+        };
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.sort-dropdown-container')) {
+                sortDropdownMenu.classList.remove('active');
+            }
+        });
+
+        // Delivery Modal Logic
+        window.openDeliverySheet = function() {
+            deliverySheetOverlay.classList.remove('hidden');
+            setTimeout(() => deliverySheet.classList.add('visible'), 10);
+        };
+        
+        window.closeDeliverySheet = function() {
+            deliverySheet.classList.remove('visible');
+            setTimeout(() => deliverySheetOverlay.classList.add('hidden'), 300);
+        };
+        
+        window.updateDeliveryDate = function(newDate) {
+            appState.deliveryDate = newDate;
+            renderSubSectionBar();
+            closeDeliverySheet();
+        };
+
+        deliverySheetCancel.onclick = deliverySheetOverlay.onclick = closeDeliverySheet;
+
+
+        // --- Existing Functions ---
+
+        window.openCreateListView = function() {
+            appState.tempChanges = {};
+            appState.hasChanges = false;
+            appState.clTab = 'all';
+            getAllProducts().filter(p => p.liked).forEach(p => appState.tempChanges[p.id] = [...(p.myList || [])]);
+            clTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === 'all'));
+            syncCreateListTabNames();
+            clSelectAll.checked = false;
+            createListView.classList.remove('hidden');
+            renderCreateList();
+        };
+
+        function closeCreateListView() {
+            if (appState.hasChanges && !confirm("저장하지 않은 변경사항이 있습니다. 나가시겠습니까?")) return;
+            createListView.classList.add('hidden');
+            renderListTabs();
+            if (appState.currentView === 'quick-order') renderProducts();
+        }
+
+        function saveCreateListChanges() {
+            const allProducts = getAllProducts();
+            for (const [idStr, listIds] of Object.entries(appState.tempChanges)) {
+                const id = parseInt(idStr);
+                const p = allProducts.find(prod => prod.id === id);
+                if (p) {
+                    p.myList = [...listIds];
+                }
+            }
+            alert("저장되었습니다.");
+            appState.hasChanges = false;
+            createListView.classList.add('hidden');
+            renderListTabs();
+            renderProducts();
+        }
+
+        function syncCreateListTabNames() {
+            document.querySelector('.cl-tab-l1').textContent = appState.listNames[1];
+            document.querySelector('.cl-tab-l2').textContent = appState.listNames[2];
+            document.querySelector('.cl-tab-l3').textContent = appState.listNames[3];
+            document.querySelector('.btn-move-l1').textContent = `${appState.listNames[1]}으로 이동`;
+            document.querySelector('.btn-move-l2').textContent = `${appState.listNames[2]}으로 이동`;
+            document.querySelector('.btn-move-l3').textContent = `${appState.listNames[3]}으로 이동`;
+        }
+
+        function renderCreateList() {
+            const currentTab = appState.clTab;
+            const liked = getAllProducts().filter(p => p.liked);
+            let filtered = (currentTab === 'all') ? liked : liked.filter(p => (appState.tempChanges[p.id] || []).includes(parseInt(currentTab)));
+
+            filtered = getSortedList(filtered, appState.currentSort);
+
+            if (filtered.length === 0) {
+                clItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-sm">표시할 상품이 없습니다.</div>`;
+            } else {
+                clItemsEl.innerHTML = filtered.map(p => {
+                    const currentLists = appState.tempChanges[p.id] || [];
+                    const getBtn = (id) => `<button class="cl-toggle-btn ${currentLists.includes(id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleListMember(${p.id}, ${id})">${id}</button>`;
+                    return `
+                    <div class="cl-grid-row" onclick="toggleRowCheck(this, ${p.id})">
+                        <div class="cl-checkbox-wrapper flex items-center justify-center">
+                            <input type="checkbox" class="cl-checkbox row-checkbox" value="${p.id}" onclick="event.stopPropagation(); updateBottomActions()">
+                        </div>
+                        <div class="cl-info">
+                            <div class="cl-name">${p.name}</div>
+                            <div class="cl-price">${p.price.toLocaleString()}원</div>
+                        </div>
+                        <div>${getBtn(1)}</div><div>${getBtn(2)}</div><div>${getBtn(3)}</div>
+                        <div class="cl-drag-handle"><i class="fas fa-bars"></i></div>
+                    </div>`;
+                }).join('');
+            }
+            updateBottomActions();
+        }
+
+        // New Guide & FAQ Logic
+        window.openGuide = function() {
+            guideModalOverlay.classList.remove('hidden');
+            document.getElementById('input-list1-name').value = appState.listNames[1];
+            document.getElementById('input-list2-name').value = appState.listNames[2];
+            document.getElementById('input-list3-name').value = appState.listNames[3];
+            switchGuideTab('faq');
+            updateStartScreenUI();
+            setTimeout(() => {
+                guideModalOverlay.classList.remove('opacity-0');
+                guideModalContent.classList.remove('scale-95');
+            }, 10);
+        };
+
+        window.closeGuide = function() {
+            guideModalOverlay.classList.add('opacity-0');
+            guideModalContent.classList.add('scale-95');
+            setTimeout(() => guideModalOverlay.classList.add('hidden'), 200);
+        };
+
+        window.switchGuideTab = function(tab) {
+            document.querySelectorAll('.guide-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById('guide-section-faq').classList.add('hidden');
+            document.getElementById('guide-section-rename').classList.add('hidden');
+            document.getElementById('guide-section-start').classList.add('hidden');
+            document.getElementById(`guide-section-${tab}`).classList.remove('hidden');
+            if (tab === 'rename') {
+                focusInput(1);
+            }
+        };
+
+        window.toggleFaq = function(id) {
+            const el = document.getElementById(id);
+            const isActive = el.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+            if (!isActive) el.classList.add('active');
+        };
+
+        window.setStartScreen = function(mode) {
+            localStorage.setItem('orderz_start_mode', mode);
+            updateStartScreenUI();
+        };
+
+        function updateStartScreenUI() {
+            const currentMode = localStorage.getItem('orderz_start_mode') || 'home';
+            ['home', 'quick-order'].forEach(m => {
+                const el = document.getElementById(`option-${m}`);
+                const icon = document.getElementById(`check-icon-${m}`);
+                el.classList.remove('border-green-500', 'bg-green-50');
+                el.classList.add('border-gray-200');
+                icon.className = "text-gray-300 transition-colors";
+                icon.innerHTML = '<i class="fas fa-circle text-xl"></i>';
+            });
+            const activeEl = document.getElementById(`option-${currentMode}`);
+            const activeIcon = document.getElementById(`check-icon-${currentMode}`);
+            activeEl.classList.remove('border-gray-200');
+            activeEl.classList.add('border-green-500', 'bg-green-50');
+            activeIcon.className = "text-green-600 transition-colors";
+            activeIcon.innerHTML = '<i class="fas fa-check-circle text-xl"></i>';
+        }
+
+        window.focusInput = function(id) {
+            appState.activeListInputId = id;
+            document.querySelectorAll('.list-input-group').forEach(el => el.classList.remove('active'));
+            document.getElementById(`group-l${id}`).classList.add('active');
+        };
+
+        window.applyKeyword = function(kw) {
+            document.getElementById(`input-list${appState.activeListInputId}-name`).value = kw;
+        };
+
+        window.saveListNames = function() {
+            appState.listNames[1] = document.getElementById('input-list1-name').value || '리스트1';
+            appState.listNames[2] = document.getElementById('input-list2-name').value || '리스트2';
+            appState.listNames[3] = document.getElementById('input-list3-name').value || '리스트3';
+            syncCreateListTabNames();
+            renderCreateList();
+            alert("이름이 변경되었습니다.");
+        };
+
+        window.resetListNames = function() {
+            document.getElementById('input-list1-name').value = '리스트1';
+            document.getElementById('input-list2-name').value = '리스트2';
+            document.getElementById('input-list3-name').value = '리스트3';
+            focusInput(1);
+        };
+
+        window.toggleRowCheck = function(row) {
+            const cb = row.querySelector('.row-checkbox');
+            if (cb) {
+                cb.checked = !cb.checked;
+                updateBottomActions();
+            }
+        };
+
+        window.updateBottomActions = function() {
+            const checkboxes = clItemsEl.querySelectorAll('.row-checkbox');
+            const checked = Array.from(checkboxes).filter(cb => cb.checked);
+            clSelectedCount.textContent = `(${checked.length})`;
+            clSelectAll.checked = checkboxes.length > 0 && checked.length === checkboxes.length;
+            checkboxes.forEach(cb => cb.closest('.cl-grid-row').classList.toggle('checked', cb.checked));
+            clBottomDelete.disabled = clBottomMove.disabled = checked.length === 0;
+            clBottomDelete.textContent = checked.length > 0 ? `삭제 (${checked.length})` : '삭제';
+            clBottomMove.textContent = checked.length > 0 ? `이동 (${checked.length})` : '이동';
+        };
+
+        window.toggleListMember = function(pid, lid) {
+            let list = appState.tempChanges[pid] || [];
+            appState.tempChanges[pid] = list.includes(lid) ? list.filter(i => i !== lid) : [...list, lid].sort();
+            appState.hasChanges = true;
+            renderCreateList();
+        };
+
+        window.applyBatchMove = function(targetLid) {
+            const checked = clItemsEl.querySelectorAll('.row-checkbox:checked');
+            checked.forEach(cb => {
+                const pid = parseInt(cb.value);
+                let list = appState.tempChanges[pid] || [];
+                if (!list.includes(targetLid)) list.push(targetLid);
+                if (appState.clTab !== 'all') list = list.filter(i => i !== parseInt(appState.clTab));
+                appState.tempChanges[pid] = list.sort();
+            });
+            appState.hasChanges = true;
+            moveSheetOverlay.classList.add('hidden');
+            moveSheet.classList.remove('visible');
+            renderCreateList();
+        };
+
+        document.getElementById('create-list-close-icon').onclick = document.getElementById('cl-bottom-back').onclick = closeCreateListView;
+        document.getElementById('create-list-save-btn').onclick = saveCreateListChanges;
+        clSelectAll.onchange = (e) => {
+            clItemsEl.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked);
+            updateBottomActions();
+        };
+        clBottomMove.onclick = () => { moveSheetOverlay.classList.remove('hidden'); moveSheet.classList.add('visible'); };
+        moveSheetCancel.onclick = moveSheetOverlay.onclick = () => { moveSheetOverlay.classList.add('hidden'); moveSheet.classList.remove('visible'); };
+        clBottomDelete.onclick = () => {
+            if(!confirm("선택한 상품을 리스트에서 제외할까요?")) return;
+            clItemsEl.querySelectorAll('.row-checkbox:checked').forEach(cb => {
+                const pid = parseInt(cb.value);
+                if(appState.clTab === 'all') appState.tempChanges[pid] = [];
+                else appState.tempChanges[pid] = (appState.tempChanges[pid] || []).filter(i => i !== parseInt(appState.clTab));
+            });
+            appState.hasChanges = true;
+            renderCreateList();
+        };
+
+        clTabs.forEach(btn => btn.onclick = () => {
+            clTabs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            appState.clTab = btn.dataset.tab;
+            clSelectAll.checked = false;
+            renderCreateList();
+        });
+
+        // Updated Search Click Logic for Cart View
+        footerSearchBtn.onclick = function() {
+            // Special Case: In Cart View -> Go Home + Open Search
+            if (appState.currentView === 'cart') {
+                showHomeView();
+                appState.isSearching = true;
+                updateHeaderUI();
+                homeSearchContainer.classList.remove('search-hidden');
+                setTimeout(() => homeSearchInput.focus(), 300);
+                return;
+            }
+
+            // Normal Toggle Logic
+            appState.isSearching = !appState.isSearching;
+            updateHeaderUI();
+
+            if (appState.currentView === 'home') {
+                homeSearchContainer.classList.toggle('search-hidden', !appState.isSearching);
+                if(appState.isSearching) setTimeout(() => homeSearchInput.focus(), 300);
+                else {
+                    homeSearchInput.value = '';
+                    appState.homeSearchText = '';
+                    renderHomeView();
+                }
+            } else {
+                searchContainer.classList.toggle('search-hidden', !appState.isSearching);
+                if(appState.isSearching) setTimeout(() => productSearchInput.focus(), 300);
+                else {
+                    productSearchInput.value = '';
+                    renderProducts();
+                }
+            }
+        };
+
+        window.closeSearch = function() {
+            appState.isSearching = false;
+            searchContainer.classList.add('search-hidden');
+            homeSearchContainer.classList.add('search-hidden');
+            productSearchInput.value = '';
+            homeSearchInput.value = '';
+            appState.homeSearchText = '';
+            updateHeaderUI();
+            renderProducts();
+            renderHomeView();
+        };
+
+        productSearchInput.oninput = function(e) {
+            const term = e.target.value.toLowerCase();
+            const list = getAllProducts().filter(p => p.liked && p.name.toLowerCase().includes(term));
+            
+            // Append "Expand Search" button logic
+            let html = renderItemsHTML(list);
+            if (term.length > 0) {
+                html += `
+                <div class="p-4 text-center text-blue-600 font-bold border-t cursor-pointer hover:bg-blue-50 transition-colors" onclick="expandSearchToHome()">
+                    상품목록에서 전체 상품 검색하기 <i class="fas fa-arrow-right ml-1"></i>
+                </div>`;
+            }
+            
+            document.getElementById('product-list').innerHTML = html;
+        };
+
+        homeSearchInput.oninput = function(e) {
+            const term = e.target.value.toLowerCase();
+            appState.homeSearchText = term;
+            renderHomeView();
+        }
+
+        window.expandSearchToHome = function() {
+            const query = productSearchInput.value;
+            appState.homeSearchText = query.toLowerCase();
+            
+            // Switch View, Keep Search Active
+            appState.isSearching = true; 
+            searchContainer.classList.add('search-hidden');
+            productSearchInput.value = '';
+            
+            showHomeView();
+            updateHeaderUI();
+            
+            // Setup Home Search
+            homeSearchContainer.classList.remove('search-hidden');
+            homeSearchInput.value = query;
+            homeSearchInput.focus();
+            
+            renderHomeView();
+        };
+
+        function renderProductListWithItemsHelper(items) {
+             document.getElementById('product-list').innerHTML = renderItemsHTML(items);
+        }
+        
+        // Helper to render items HTML
+        function renderItemsHTML(items) {
+            return items.map(p => {
+                const qty = appState.cart[p.id] || 0;
+                const rowBg = qty > 0 ? 'bg-green-50' : 'bg-white';
+                
+                return `
+            <div class="product-item flex items-center p-3 ${rowBg} border-b">
+                <img src="${p.img}" class="w-12 h-12 rounded mr-3">
+                <div class="flex-grow"><div class="text-sm font-bold">${p.name}</div><div class="text-xs text-gray-500">${p.price.toLocaleString()}원</div></div>
+                <div class="flex items-center border rounded bg-white"><button class="w-8 h-8" onclick="updateQty(${p.id},-1)">-</button><div class="w-8 text-center text-sm font-bold">${qty}</div><button class="w-8 h-8" onclick="updateQty(${p.id},1)">+</button></div>
+            </div>`;
+            }).join('');
+        }
+
+        window.deleteProduct = function(id) {
+            if(!confirm("목록에서 삭제하시겠습니까?")) return;
+            const p = getAllProducts().find(x => x.id === id);
+            if(!p) return;
+
+            if(appState.currentMyList === -1) {
+                p.liked = false;
+            } else if(appState.currentMyList > 0) {
+                p.myList = p.myList.filter(lid => lid !== appState.currentMyList);
+            }
+            renderProducts();
+        };
+
+        // NEW: Render Cart View Function
+        function renderCartView() {
+            const cartProductIds = Object.keys(appState.cart);
+            const cartProducts = getAllProducts().filter(p => cartProductIds.includes(String(p.id)));
+            
+            const totalCount = Object.values(appState.cart).reduce((a, b) => a + b, 0);
+            cartTotalCountHeader.textContent = `총 ${totalCount}개`;
+
+            if (cartProducts.length === 0) {
+                cartListItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-sm">담은 상품이 없습니다.</div>`;
+                return;
+            }
+
+            cartListItemsEl.innerHTML = cartProducts.map(p => {
+                const qty = appState.cart[p.id] || 0;
+                // Using the specific design from image
+                return `
+                <div class="p-3 bg-white flex items-center gap-3">
+                    <img src="${p.img}" class="w-14 h-14 rounded object-cover flex-shrink-0">
+                    <div class="flex-grow overflow-hidden">
+                        <div class="font-bold text-sm text-gray-800 truncate">${p.name}</div>
+                        <div class="text-green-600 font-bold text-sm mt-0.5">${p.price.toLocaleString()}원</div>
+                    </div>
+                    <div class="flex items-center border border-gray-300 rounded overflow-hidden flex-shrink-0 bg-white">
+                        <button class="cart-stepper-btn" onclick="updateQty(${p.id}, -1)">−</button>
+                        <div class="cart-stepper-val">${qty}</div>
+                        <button class="cart-stepper-btn" onclick="updateQty(${p.id}, 1)">+</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Updated Footer UI Logic with Integrated Navigation
+        function updateFooterUI() {
+            const hasItems = Object.keys(appState.cart).length > 0;
+            
+            // Calculate totals
+            const totalQty = Object.values(appState.cart).reduce((a,b)=>a+b,0);
+            let totalPrice = 0;
+            Object.entries(appState.cart).forEach(([pid, qty]) => {
+                const p = getAllProducts().find(x => x.id == pid);
+                if(p) totalPrice += p.price * qty;
+            });
+
+            // Update Badge
+            if (hasItems) {
+                navCartBadge.textContent = totalQty;
+                navCartBadge.classList.remove('hidden-badge');
+            } else {
+                navCartBadge.classList.add('hidden-badge');
+            }
+            
+            const textContainer = document.getElementById('footer-text-wrapper');
+
+            // Center Button Mode Switch
+            if (appState.currentView === 'cart') {
+                // CART MODE: CTA Button
+                footerIconContainer.className = "hidden"; // Hide default icon container
+                navCartBadge.classList.add('hidden-badge'); // Hide badge inside button as text changes
+                textContainer.style.display = 'flex'; // Ensure text is visible
+                
+                // Clear and rebuild button classes
+                footerOrderBtn.className = "footer-order-btn-base";
+                
+                if (hasItems) {
+                    footerOrderBtn.classList.add("footer-order-active");
+                    footerOrderText.innerHTML = `
+                        <span class="bg-[#FFD000] text-[#374151] text-[11px] font-extrabold rounded-full w-5 h-5 flex items-center justify-center mr-1.5">${totalQty}</span>
+                        ${totalPrice.toLocaleString()}원 주문하기
+                    `;
+                    footerOrderText.className = "text-sm font-bold text-white relative z-10 flex items-center";
+                } else {
+                    footerOrderBtn.classList.add("footer-order-empty");
+                    footerOrderText.textContent = "상품을 담아주세요";
+                    footerOrderText.className = "text-xs font-bold text-gray-400 relative z-10";
+                }
+            } else if (appState.currentView === 'quick-order') {
+                // QUICK ORDER MODE
+                footerOrderBtn.className = "footer-order-btn-base";
+                textContainer.style.display = 'flex'; // Ensure text is visible
+
+                if (hasItems) {
+                    // Items added: Show Button Style
+                    footerIconContainer.className = "hidden";
+                    navCartBadge.classList.add('hidden-badge');
+                    
+                    footerOrderBtn.classList.add("footer-order-active");
+                    footerOrderText.innerHTML = `
+                        <span class="bg-[#FFD000] text-[#374151] text-[11px] font-extrabold rounded-full w-5 h-5 flex items-center justify-center mr-1.5">${totalQty}</span>
+                        ${totalPrice.toLocaleString()}원 주문확인
+                    `;
+                    footerOrderText.className = "text-sm font-bold text-white relative z-10 flex items-center";
+                } else {
+                    // No items: Gray Button Style
+                    footerIconContainer.className = "hidden";
+                    navCartBadge.classList.add('hidden-badge');
+                    
+                    footerOrderBtn.classList.add("footer-order-empty");
+                    footerOrderText.textContent = "상품을 담아주세요";
+                    footerOrderText.className = "text-xs font-bold text-gray-400 relative z-10";
+                }
+            } else {
+                // NORMAL MODE (Home): Nav Button Style
+                textContainer.style.display = 'none'; // Hide text container to show icon container
+                
+                // Reset to Home style (Not a rounded button, but a nav item)
+                // Use footer-order-btn-base style but look like a button with text
+                footerOrderBtn.className = "footer-order-btn-base bg-white border border-gray-200 shadow-sm";
+                footerIconContainer.className = "flex flex-col items-center justify-center leading-tight";
+                footerIconContainer.innerHTML = `
+                    <span class="watermark-font text-[10px] font-bold text-[#0C5608]">ORDERZ</span>
+                    <span class="text-[13px] font-extrabold text-gray-800">주문하기</span>
+                `;
+                
+                // Hide default text container logic handled above
+
+                // Ensure Icon is visible
+                const icon = document.getElementById('footer-order-icon');
+                // No icon element to set class on, it's text now.
+                
+                footerOrderText.textContent = "주문하기";
+                footerOrderText.className = "text-[10px] font-bold text-gray-900";
+                
+                // Show badge if items exist
+                if (hasItems) {
+                    navCartBadge.textContent = totalQty;
+                    navCartBadge.classList.remove('hidden-badge');
+                    // Positioning for badge in new layout
+                    navCartBadge.style.position = 'absolute';
+                    navCartBadge.style.top = '-5px';
+                    navCartBadge.style.right = '-5px';
+                    footerOrderBtn.appendChild(navCartBadge);
+                } else {
+                    navCartBadge.classList.add('hidden-badge');
+                }
+            }
+            
+            // Ensure footer is always visible
+            mainNavFooter.classList.remove('hidden');
+        }
+
+        function renderHomeView() {
+            // Updated to support category filtering AND Search Text
+            let list = getAllProducts(); 
+            
+            // 1. Category Filter
+            if (appState.selectedCategory) {
+                list = list.filter(p => p.category === appState.selectedCategory);
+            }
+
+            // 2. Search Text Filter
+            if (appState.homeSearchText) {
+                list = list.filter(p => p.name.toLowerCase().includes(appState.homeSearchText));
+            }
+
+            homeProductListEl.innerHTML = list.map(p => `
+            <div class="flex items-center p-4 bg-white border-b">
+                <img src="${p.img}" class="w-16 h-16 rounded mr-4">
+                <div class="flex-grow">
+                    <div class="font-bold">${p.name}</div>
+                    <div class="text-green-600 font-bold">${p.price.toLocaleString()}원</div>
+                </div>
+                <input type="checkbox" class="w-6 h-6 rounded text-green-600 border-gray-300 accent-green-600" ${p.liked?'checked':''} onchange="toggleLike(${p.id}, this.checked)">
+            </div>`).join('');
+        }
+
+        window.toggleLike = function(id, val) {
+            const p = getAllProducts().find(x => x.id === id);
+            if(p) {
+                p.liked = val;
+                // If unchecking, and view is home, re-render to update select all state
+                if (appState.currentView === 'home') renderHomeView();
+            }
+        };
+
+        function renderListTabs() {
+            const active = getActiveLists();
+            const isSpecialActive = appState.currentMyList === 0;
+            const starColor = isSpecialActive ? 'text-yellow-400' : 'text-gray-300';
+
+            myListTabsContainer.innerHTML = `<button class="tab-btn ${isSpecialActive?'tab-active':'tab-inactive'} px-4" onclick="switchMainList(0)">
+            <i class="fas fa-star mr-1 ${starColor}"></i>단골특가</button>
+            <button class="tab-btn ${appState.currentMyList===-1?'tab-active':'tab-inactive'} px-4" onclick="switchMainList(-1)">찜한상품</button>` +
+            active.map(id => `<button class="tab-btn ${appState.currentMyList===id?'tab-active':'tab-inactive'} px-4" onclick="switchMainList(${id})">${appState.listNames[id]}</button>`).join('') +
+            `<div class="flex-grow"></div><button class="add-list-btn-wide ml-2" onclick="openCreateListView()">+ 리스트 만들기</button>`;
+
+            // Dynamic Scroll Control Logic (Dev Spec)
+            setTimeout(() => {
+                const container = myListTabsContainer;
+                // 만약 탭들의 총 너비가 컨테이너 너비보다 크면 스크롤 허용
+                if (container.scrollWidth > container.clientWidth) {
+                    container.classList.remove('overflow-hidden', 'justify-start');
+                    container.classList.add('overflow-x-auto');
+                } else {
+                    // 아니면 스크롤 막고 좌측 정렬
+                    container.classList.remove('overflow-x-auto');
+                    container.classList.add('overflow-hidden', 'justify-start');
+                }
+            }, 0);
+        }
+
+        window.switchMainList = function(id) { 
+            appState.currentMyList = id; 
+            renderListTabs(); 
+            renderSubSectionBar(); 
+            renderProducts(); 
+        };
+
+        // --- New Category Filter Logic (Updated for Home View) ---
+        window.filterByCategory = function(category) {
+            // Toggle logic
+            if (appState.selectedCategory === category) {
+                appState.selectedCategory = null;
+            } else {
+                appState.selectedCategory = category;
+            }
+            updateCategoryBarUI();
+            
+            // Re-render based on current view
+            if (appState.currentView === 'home') {
+                renderHomeView();
+            } else {
+                renderProducts();
+            }
+        };
+
+        function updateCategoryBarUI() {
+            const btns = document.querySelectorAll('#category-bar .category-btn');
+            btns.forEach(btn => {
+                const onclickVal = btn.getAttribute('onclick');
+                if (appState.selectedCategory && onclickVal.includes(`'${appState.selectedCategory}'`)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Helper function for sorting products
+        function getSortedList(list, sortType) {
+            // Category Mapping (English -> Korean) for sort
+            const categoryMap = {
+                'vegetable': '채소/과일',
+                'seafood': '수산/축산',
+                'processed': '식품/가공',
+                'sauce': '양념/소스',
+                'kitchen': '주방/잡화'
+            };
+
+            const sortedList = [...list]; // Create a copy
+
+            if (sortType === 'latest') {
+                sortedList.sort((a, b) => (b.likedTimestamp || 0) - (a.likedTimestamp || 0));
+            } else if (sortType === 'category') {
+                // Custom Category Order
+                const catOrder = ['vegetable', 'seafood', 'sauce', 'processed', 'kitchen'];
+                
+                sortedList.sort((a, b) => {
+                    const catA = a.category || '';
+                    const catB = b.category || '';
+                    
+                    let idxA = catOrder.indexOf(catA);
+                    let idxB = catOrder.indexOf(catB);
+                    
+                    if (idxA === -1) idxA = 999;
+                    if (idxB === -1) idxB = 999;
+                    
+                    if (idxA !== idxB) return idxA - idxB;
+                    
+                    return (a.name || '').localeCompare(b.name || '');
+                });
+            } else if (sortType === 'frequency') {
+                sortedList.sort((a, b) => (b.orderCount || 0) - (a.orderCount || 0));
+            }
+            return sortedList;
+        }
+
+        function renderProducts() {
+            const list = getAllProducts().filter(p => p.liked);
+            let filtered = [];
+            
+            // 1. List Filter
+            if(appState.currentMyList === 0) filtered = getAllProducts().slice(0,2);
+            else if(appState.currentMyList === -1) filtered = list;
+            else filtered = list.filter(p => (p.myList||[]).includes(appState.currentMyList));
+            
+            // 3. Sort Logic using Helper
+            filtered = getSortedList(filtered, appState.currentSort);
+            
+            // 4. Grouping & Rendering
+            let html = '';
+            
+            if (filtered.length === 0) {
+                 html = `<div class="p-8 text-center text-gray-400 text-sm">해당 상품이 없습니다.</div>`;
+            }
+            // Case A: Regular Special
+            else if (appState.currentMyList === 0) {
+                 html += `<div class="list-section-header">🔥 한정수량 타임특가</div>`;
+                 html += renderItemsHTML(filtered);
+            } 
+            // Case B: Category Sort
+            else if (appState.currentSort === 'category') {
+                const categories = [...new Set(filtered.map(p => p.category))];
+                categories.forEach(catKey => {
+                    // Simple map for display
+                    const categoryMap = {
+                        'vegetable': '채소/과일',
+                        'seafood': '수산/축산',
+                        'processed': '식품/가공',
+                        'sauce': '양념/소스',
+                        'kitchen': '주방/잡화'
+                    };
+                    const catName = categoryMap[catKey] || catKey;
+                    html += `<div class="list-section-header">${catName}</div>`;
+                    const catItems = filtered.filter(p => p.category === catKey);
+                    html += renderItemsHTML(catItems);
+                });
+            } 
+            // Case C: Default
+            else {
+                html = renderItemsHTML(filtered);
+            }
+
+            document.getElementById('product-list').innerHTML = html;
+        }
+
+        window.updateQty = function(id, d) {
+            const newQty = Math.max(0, (appState.cart[id]||0) + d);
+            appState.cart[id] = newQty;
+            if(appState.cart[id] === 0) delete appState.cart[id];
+
+            // Auto Like Logic
+            if (newQty > 0) {
+                const p = getAllProducts().find(x => x.id === id);
+                if (p && !p.liked) {
+                    p.liked = true;
+                }
+            }
+
+            updateFooterUI();
+            
+            // Re-render based on current view
+            if (appState.currentView === 'home') {
+                renderHomeView();
+            } else if (appState.currentView === 'cart') {
+                renderCartView(); // Re-render cart view to reflect changes
+            } else {
+                renderProducts();
+            }
+        };
+
+        // Start Logic: Check LocalStorage
+        const savedMode = localStorage.getItem('orderz_start_mode');
+        if (savedMode === 'quick-order') {
+            showQuickOrderView(); // Only if explicitly saved as quick-order
+        } else {
+            showHomeView(); // Default is home
+        }
+
+        // Scroll Event Listener for Sort Bar Interaction
+        let lastScrollY = window.scrollY;
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            if (appState.currentView !== 'quick-order') return;
+            
+            const currentScrollY = window.scrollY;
+            const subSectionBar = document.getElementById('sub-section-bar');
+            
+            if (Math.abs(currentScrollY - lastScrollY) < 10) return;
+
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                // Down -> Collapse
+                clearTimeout(scrollTimeout);
+                subSectionBar.classList.remove('sort-bar-overflow-visible');
+                subSectionBar.classList.add('sort-bar-collapsed');
+            } else {
+                // Up -> Expand
+                subSectionBar.classList.remove('sort-bar-collapsed');
+                
+                // Add visible overflow after animation ends to allow dropdown
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    if(!subSectionBar.classList.contains('sort-bar-collapsed')) {
+                        subSectionBar.classList.add('sort-bar-overflow-visible');
+                    }
+                }, 300);
+            }
+            lastScrollY = currentScrollY;
+        });
+    });
+</script>
+</body>
+</html>
