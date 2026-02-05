@@ -1631,8 +1631,10 @@
             let html = renderItemsHTML(list);
             if (term.length > 0) {
                 html += `
-                <div class="p-4 text-center text-blue-600 font-bold border-t cursor-pointer hover:bg-blue-50 transition-colors" onclick="expandSearchToHome()">
-                    상품목록에서 전체 상품 검색하기 <i class="fas fa-arrow-right ml-1"></i>
+                <div class="p-3 bg-white flex justify-center">
+                    <button class="bg-[#22c55e] text-white font-bold py-2 px-5 rounded shadow-sm hover:bg-green-600 transition-colors text-sm" onclick="expandSearchToHome()">
+                        전체 상품에서 검색하기
+                    </button>
                 </div>`;
             }
             
@@ -1771,7 +1773,7 @@
                     btnLine1.style.color = '#14682A';
                     // Text: Dark Green
                     // Use Custom Badge
-                    btnLine2.innerHTML = `<span class="count-badge-custom">${totalQty}</span>주문하러 가기`;
+                    btnLine2.innerHTML = `<span class="count-badge-custom">${totalQty}</span>담은 상품 확인하기`;
                     btnLine2.className = "btn-line-2 text-[#14682A] flex items-center justify-center";
                 } else {
                     footerOrderBtn.classList.add('footer-btn-empty');
