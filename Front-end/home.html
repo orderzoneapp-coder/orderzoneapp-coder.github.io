@@ -14,7 +14,7 @@
             font-family: 'Noto Sans KR', sans-serif;
             overscroll-behavior-y: contain;
             -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;ㅁ
+            text-size-adjust: 100%;
             -webkit-tap-highlight-color: transparent;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -317,36 +317,6 @@
             z-index: 5;
         }
 
-        /* Mode Toggle Switch - New Design */
-        .mode-toggle-group {
-            display: flex;
-            background-color: #f3f4f6;
-            border-radius: 20px;
-            padding: 2px;
-            width: 104px;
-            height: 32px;
-            position: relative;
-            cursor: pointer;
-        }
-        .mode-toggle-option {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #9ca3af;
-            border-radius: 18px;
-            transition: all 0.2s;
-            z-index: 2;
-        }
-        .mode-toggle-option.active {
-            background-color: #0C5608; /* Brand Color */
-            color: white;
-            font-weight: 800;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
         /* Navigation Badge Style */
         .nav-badge {
             background-color: #FFD000; /* Requested Badge Color */
@@ -392,66 +362,119 @@
             height: auto;
         }
         
-        /* Order Button States (Rounded Button Style) */
+        /* --- Order Button States --- */
         .footer-order-btn-base {
             flex: 2;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             margin: 8px 6px;
-            border-radius: 12px; /* Slightly less rounded for professional look */
-            height: 48px; /* Slightly smaller than footer height */
+            border-radius: 14px;
+            height: 52px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* Default (Nav Icon) Style */
-        .footer-order-default {
-            background-color: transparent;
-            color: #374151;
-            flex-direction: column;
-            border-radius: 0;
-            margin: 0;
-            height: 60px;
-            flex: 1;
-        }
-        .footer-order-default i { color: #0C5608; } /* Brand Color */
-        
-        /* Active (Brand Color Button) Style */
-        .footer-order-active {
-            background-color: #63BF86; /* Requested Color */
-            color: white !important;
-            box-shadow: 0 4px 12px rgba(99, 191, 134, 0.25);
-        }
-        .footer-order-active i { display: none; } /* Hide icon in button mode */
-        
-        /* Empty (Gray Button) Style */
-        .footer-order-empty {
-            background-color: #f3f4f6;
-            color: #9ca3af !important;
+        /* State 1: Default (Home/Nav) - White Bg */
+        .footer-btn-home {
+            background-color: #FFFFFF;
             border: 1px solid #e5e7eb;
         }
-        .footer-order-empty i { display: none; }
+        .footer-btn-home:active { transform: scale(0.98); background-color: #f9fafb; }
+
+        /* State 2 & 3: Active (Picking & Cart) - Custom Green Bg (#BCE0C5) */
+        .footer-btn-active {
+            background-color: #BCE0C5 !important; /* Slightly Darker Sage Green */
+            border: none; /* Border Removed */
+            box-shadow: 0 4px 12px rgba(20, 104, 42, 0.15);
+            color: #14682A !important;
+        }
+        .footer-btn-active:active { transform: scale(0.98); filter: brightness(0.95); }
+        
+        /* State 4: Empty (Disabled) */
+        .footer-btn-empty {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Typography Helper for Button */
+        /* Line 1: Brand Stamp */
+        .btn-line-1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 10px;
+            margin-bottom: 0px;
+            letter-spacing: 0.5px;
+            /* Colors set in JS */
+        }
+
+        /* Line 2: Action Hero */
+        .btn-line-2 {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 900;
+            font-size: 15px;
+            line-height: 1.1;
+            /* Flex layout added for badge alignment */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        /* Custom Badge for Footer Button (Peach bg, Dark Green text) */
+        .count-badge-custom {
+            background-color: #FFB67A; /* Peach/Apricot */
+            color: #14682A; /* Dark Green Text */
+            border-radius: 99px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
 
         /* Watermark Font */
         .watermark-font {
             font-family: 'Montserrat', sans-serif;
         }
+        
+        /* Order Form Styles */
+        .order-table-header {
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            padding: 10px;
+            text-align: center;
+        }
+        .order-table-cell {
+            padding: 12px 10px;
+            font-size: 13px;
+            color: #1f2937;
+            border-bottom: 1px solid #f3f4f6;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
 
-    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-20 relative overflow-hidden">
+    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-0 relative overflow-hidden">
 
         <!-- HEADER -->
         <header class="sticky top-0 bg-white z-40 shadow-sm border-b">
             <div class="relative flex justify-between items-center p-3 h-[57px]">
                 
-                <!-- Mode Switch Button (New Design: Toggle Switch) -->
-                <div id="mode-switch-group" class="mode-toggle-group">
-                    <div id="mode-opt-home" class="mode-toggle-option active">상품</div>
-                    <div id="mode-opt-order" class="mode-toggle-option">주문</div>
+                <!-- Modified: Text Tab Style Toggle (Size Reduced) -->
+                <div class="flex items-center cursor-pointer" id="header-mode-toggle" onclick="toggleAppMode()">
+                    <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
+                    <span id="header-mode-title" class="text-sm font-bold text-gray-800">상품목록</span>
                 </div>
                 
                 <!-- Logo: 홈으로 이동 및 상단 스크롤 -->
@@ -570,15 +593,124 @@
         <main id="cart-view" class="hidden bg-gray-50 min-h-screen pb-24">
             <!-- Header Area with Back Button Removed, Buttons Removed -->
             <div class="bg-white px-4 py-3 border-b flex justify-between items-center sticky top-[57px] z-30 shadow-sm">
-                <h2 class="text-lg font-bold text-gray-800">담은 상품 <span class="text-[#0C5608] text-base ml-1" id="cart-total-count-header">총 0개</span></h2>
+                <h2 class="text-lg font-bold text-gray-800">담은 상품 확인 <span class="text-[#0C5608] text-base ml-1" id="cart-total-count-header">총 0개</span></h2>
             </div>
             
             <!-- Default Label -->
-            <div class="px-4 py-2 text-xs text-gray-400 font-bold mt-2">단골특가 및 일반상품</div>
+            <div class="px-4 py-2 text-xs text-gray-400 font-bold mt-2">담은 상품 목록</div>
             
             <!-- Cart List -->
             <div id="cart-list-items" class="bg-white border-t border-b divide-y divide-gray-100">
                 <!-- Items will be rendered here -->
+            </div>
+        </main>
+
+        <!-- ORDER FORM VIEW (NEW SIMULATION) -->
+        <main id="order-form-view" class="hidden bg-white min-h-screen z-50 absolute inset-0 overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center p-3 border-b bg-white sticky top-0 z-10">
+                <button onclick="showConfirmationView()" class="p-2 text-gray-600"><i class="fas fa-chevron-left text-lg"></i></button>
+                <h2 class="text-lg font-bold text-gray-800 ml-2">주문서 작성</h2>
+            </div>
+
+            <div class="pb-20">
+                <!-- Order Table -->
+                <div class="border-b-4 border-gray-100">
+                    <div class="grid grid-cols-[1fr_50px_80px] bg-white">
+                        <div class="order-table-header text-left">품명 (규격) 단가</div>
+                        <div class="order-table-header">총수량</div>
+                        <div class="order-table-header text-right">소계</div>
+                    </div>
+                    <div id="order-form-list">
+                        <!-- List Items -->
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="bg-gray-700 text-white p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium">주문</span>
+                        <span class="font-bold" id="order-summ-price">0 원</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium">배송비</span>
+                        <span class="font-bold">0 원</span>
+                    </div>
+                    <div class="border-t border-gray-600 my-2"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold">총계</span>
+                        <span class="text-xl font-bold text-blue-300" id="order-total-price">0 원</span>
+                    </div>
+                </div>
+                <div class="bg-gray-600 text-gray-300 text-xs p-3">
+                    반환 예정 배송비<br>(TEST) <span class="float-right text-white font-bold">0 원</span>
+                </div>
+
+                <!-- Delivery Info -->
+                <div class="p-4 border-t-4 border-gray-100">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-gray-200 text-xs px-2 py-1 rounded mr-2 font-bold text-gray-600">배송지정보 ▼</span>
+                    </div>
+                    <div class="flex">
+                        <div class="w-20 text-sm font-bold text-gray-600 pt-2">전하실 말씀</div>
+                        <textarea class="flex-grow border border-gray-300 rounded p-2 text-sm h-20 resize-none" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="p-4 border-t-4 border-gray-100">
+                    <div class="border border-gray-300 rounded p-4 mb-4">
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-green-600 focus:ring-green-500" checked>
+                                <span class="font-bold text-sm text-gray-700">간편결제하기</span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
+                                <span class="text-sm text-gray-600">무통장입금</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
+                                <span class="text-sm text-gray-600">신용카드 (기타)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-bold text-gray-700">사용 포인트(1점 단위)</span>
+                        <div class="flex items-center">
+                            <input type="text" value="0" class="border border-gray-300 rounded p-1 text-right w-24 mr-1 text-sm">
+                            <span class="text-sm">점</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>보유포인트</span>
+                        <span>25,400점</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>최대사용가능포인트</span>
+                        <span>25,400점</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="p-4 mt-4">
+                    <button class="w-full bg-[#63BF86] text-white font-bold py-3 rounded-lg shadow-md text-lg mb-3" onclick="alert('결제가 완료되었습니다!'); showHomeView(true);">간편결제하기</button>
+                    <button class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 rounded-lg" onclick="showConfirmationView()">취소</button>
+                </div>
+                
+                <!-- Footer Info -->
+                <div class="bg-gray-800 text-gray-400 text-[10px] p-6 leading-relaxed">
+                    <div class="flex space-x-3 mb-4 text-gray-300">
+                        <span>회사소개</span> <span>개인정보</span> <span>이용약관</span> <span>사업자정보확인</span>
+                    </div>
+                    회사명 원앱 주소 서울특별시 송파구 양재대로 932<br>
+                    사업자 등록번호 380-14-01523<br>
+                    대표 이무철 전화 02-6959-1374<br>
+                    통신판매업신고번호 제2021-서울송파-2063호
+                </div>
             </div>
         </main>
 
@@ -882,35 +1014,24 @@
         </div>
 
         <!-- FOOTER (Main) - Integrated Navigation -->
-        <footer id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white z-40 flex shadow-[0_-5px_15px_rgba(0,0,0,0.1)] safe-pb">
+        <footer id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white z-40 flex shadow-[0_-5px_15px_rgba(0,0,0,0.1)] safe-pb items-center">
             <!-- 1. Search -->
-            <button id="footer-search-btn" class="flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-green-600 transition-colors bg-white h-[60px]">
+            <button id="footer-search-btn" class="flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-green-600 transition-colors bg-white">
                 <i class="fas fa-search text-xl mb-1"></i>
                 <span class="text-[10px] font-medium">검색</span>
             </button>
             
-            <!-- 2. Order Button (Center - Resizable & Rounded) -->
-            <button id="footer-order-btn" class="footer-order-btn-base footer-order-default" onclick="handleCenterBtnClick()">
-                <div class="relative w-full h-full flex items-center justify-center" id="footer-order-content">
-                    
-                    <!-- Content Layer -->
-                    <div class="relative z-10 flex flex-col items-center justify-center h-full w-full">
-                        <!-- Icon & Badge Container (For Default State) -->
-                        <div id="footer-icon-container" class="relative flex items-center justify-center">
-                            <span class="watermark-font text-[10px] font-bold mb-0.5" style="color: #0C5608;">ORDERZ</span>
-                        </div>
-                        
-                        <!-- Text & Badge Container (For Button State) -->
-                        <div class="flex items-center justify-center gap-2" id="footer-text-wrapper" style="display: none;">
-                            <span id="nav-cart-badge" class="nav-badge hidden-badge">0</span>
-                            <span id="footer-order-text" class="text-[10px] font-bold">주문하기</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- 2. Order Button (Stateful Action Button with Fixed Logo) -->
+            <button id="footer-order-btn" class="footer-order-btn-base footer-btn-home" onclick="handleCenterBtnClick()">
+                <span id="btn-line-1" class="btn-line-1">ORDERZ</span>
+                <span id="btn-line-2" class="btn-line-2">주문하러 가기</span>
+                
+                <!-- Optional Floating Badge (Only for Home State if needed) -->
+                <span id="nav-cart-badge" class="nav-badge hidden-badge absolute top-1 right-1 shadow-sm">0</span>
             </button>
             
             <!-- 3. Inquiry -->
-            <button id="footer-inquiry-btn" class="flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-green-600 transition-colors bg-white h-[60px]">
+            <button id="footer-inquiry-btn" class="flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-green-600 transition-colors bg-white">
                 <i class="fas fa-comment-dots text-xl mb-1"></i>
                 <span class="text-[10px] font-medium">문의</span>
             </button>
@@ -944,29 +1065,27 @@
             currentSort: 'latest', // latest, category, frequency
             deliveryDate: '1월 12일(월) 도착',
             selectedCategory: null, // New State
-            homeSearchText: ''
+            homeSearchText: '',
+            searchSource: null // Track where search started
         };
 
         const homeView = document.getElementById('home-view');
         const quickOrderView = document.getElementById('quick-order-view');
         const createListView = document.getElementById('create-list-view');
         const cartView = document.getElementById('cart-view');
+        const orderFormView = document.getElementById('order-form-view');
         const homeProductListEl = document.getElementById('home-product-list');
-        const modeSwitchGroup = document.getElementById('mode-switch-group');
-        const modeOptHome = document.getElementById('mode-opt-home');
-        const modeOptOrder = document.getElementById('mode-opt-order');
+        const headerModeTitle = document.getElementById('header-mode-title');
         
         const headerTitle = document.getElementById('header-title');
         
         // Footer Elements
         const footerSearchBtn = document.getElementById('footer-search-btn');
         const footerOrderBtn = document.getElementById('footer-order-btn');
-        const footerOrderIcon = document.getElementById('footer-order-icon');
-        const footerOrderText = document.getElementById('footer-order-text');
+        const btnLine1 = document.getElementById('btn-line-1');
+        const btnLine2 = document.getElementById('btn-line-2');
         const navCartBadge = document.getElementById('nav-cart-badge');
         const mainNavFooter = document.getElementById('main-nav-footer');
-        const footerIconContainer = document.getElementById('footer-icon-container');
-        const footerTextWrapper = document.getElementById('footer-text-wrapper');
 
         const myListTabsContainer = document.getElementById('my-list-tabs');
         const clTabs = document.querySelectorAll('.cl-tab-btn');
@@ -1017,6 +1136,7 @@
             quickOrderView.classList.add('hidden');
             createListView.classList.add('hidden');
             cartView.classList.add('hidden');
+            orderFormView.classList.add('hidden');
             updateFooterUI();
             updateHeaderUI();
             renderHomeView();
@@ -1029,6 +1149,7 @@
             quickOrderView.classList.remove('hidden');
             createListView.classList.add('hidden');
             cartView.classList.add('hidden');
+            orderFormView.classList.add('hidden');
             
             // 페이지 접속 시 기본 탭을 찜한상품(-1)으로 설정
             if(saveToStorage) {
@@ -1045,15 +1166,56 @@
         
         window.showQuickOrderView = showQuickOrderView; // Make global
 
+        // NEW: Show Order Form View
+        window.showOrderFormView = function() {
+            appState.currentView = 'order-form';
+            homeView.classList.add('hidden');
+            quickOrderView.classList.add('hidden');
+            createListView.classList.add('hidden');
+            cartView.classList.add('hidden');
+            orderFormView.classList.remove('hidden');
+            
+            // Hide Footer on Order Form
+            mainNavFooter.classList.add('hidden');
+            
+            renderOrderForm();
+        }
+
+        function renderOrderForm() {
+            const cartProductIds = Object.keys(appState.cart);
+            const cartProducts = getAllProducts().filter(p => cartProductIds.includes(String(p.id)));
+            let totalPrice = 0;
+            
+            const listHtml = cartProducts.map(p => {
+                const qty = appState.cart[p.id];
+                const subTotal = p.price * qty;
+                totalPrice += subTotal;
+                return `
+                <div class="grid grid-cols-[1fr_50px_80px] bg-white">
+                    <div class="order-table-cell">${p.name} (규격외) ${p.price.toLocaleString()}</div>
+                    <div class="order-table-cell text-center">${qty}</div>
+                    <div class="order-table-cell text-right">${subTotal.toLocaleString()}원</div>
+                </div>`;
+            }).join('');
+            
+            document.getElementById('order-form-list').innerHTML = listHtml;
+            document.getElementById('order-summ-price').textContent = `${totalPrice.toLocaleString()} 원`;
+            document.getElementById('order-total-price').textContent = `${totalPrice.toLocaleString()} 원`;
+        }
+
         window.showConfirmationView = function() {
-            // Cart View
+            // Cart View (Actually redirects to Order Form based on new flow, but keeping code if needed)
             appState.currentView = 'cart';
             homeView.classList.add('hidden');
             quickOrderView.classList.add('hidden');
             createListView.classList.add('hidden');
             cartView.classList.remove('hidden');
+            orderFormView.classList.add('hidden');
             
-            updateHeaderUI(); // To update toggle state if needed, though header is static
+            // Footer is visible in Cart
+            mainNavFooter.classList.remove('hidden');
+
+            updateHeaderUI(); 
             renderCartView();
             updateFooterUI();
         }
@@ -1063,18 +1225,13 @@
             if (appState.currentView === 'home') {
                 showQuickOrderView();
             } else if (appState.currentView === 'quick-order') {
-                if (Object.keys(appState.cart).length > 0) showConfirmationView();
-                else alert("주문할 상품을 담아주세요.");
-            } else if (appState.currentView === 'cart') {
-                const totalQty = Object.values(appState.cart).reduce((a,b)=>a+b,0);
-                if(totalQty > 0) {
-                    alert("주문이 완료되었습니다!");
+                if (Object.keys(appState.cart).length > 0) {
+                    showConfirmationView(); // FIXED: Restore Cart View Step
                 } else {
-                    alert("상품을 담아주세요.");
-                    showQuickOrderView();
+                    alert("주문할 상품을 담아주세요.");
                 }
-            } else {
-                showConfirmationView();
+            } else if (appState.currentView === 'cart') {
+                showOrderFormView();
             }
         }
 
@@ -1084,22 +1241,17 @@
 
         function updateHeaderUI() {
             if (appState.currentView === 'home') {
-                // Home Active (Mall)
-                modeOptHome.classList.add('active');
-                modeOptOrder.classList.remove('active');
+                headerModeTitle.textContent = '상품목록';
             } else {
-                // Order Active (includes Quick Order & Cart)
-                modeOptHome.classList.remove('active');
-                modeOptOrder.classList.add('active');
+                // For quick-order, cart, order-form (though order form hides footer)
+                headerModeTitle.textContent = '주문하기';
             }
         }
 
-        // Mode Switch Logic: New Toggle Group
-        modeSwitchGroup.onclick = function() {
-            if (appState.isSearching) {
-                closeSearch();
-            }
-            // Toggle Logic
+        // Toggle App Mode (Header Left)
+        window.toggleAppMode = function() {
+            // Reset search source when switching manually
+            appState.searchSource = null;
             if (appState.currentView === 'home') {
                 showQuickOrderView(true);
             } else {
@@ -1109,6 +1261,8 @@
         
         // Logo Click Logic
         headerTitle.onclick = function() {
+            // Reset search source
+            appState.searchSource = null;
             if (appState.isSearching) {
                 closeSearch();
             }
@@ -1421,18 +1575,21 @@
 
         // Updated Search Click Logic for Cart View
         footerSearchBtn.onclick = function() {
-            // Special Case: In Cart View -> Go Home + Open Search
+            // Special Case: In Cart View -> Go Quick Order + Open Search
             if (appState.currentView === 'cart') {
-                showHomeView();
+                appState.searchSource = 'cart'; // Set source to 'cart'
+                showQuickOrderView();
                 appState.isSearching = true;
                 updateHeaderUI();
-                homeSearchContainer.classList.remove('search-hidden');
-                setTimeout(() => homeSearchInput.focus(), 300);
+                searchContainer.classList.remove('search-hidden'); // Show Quick Order Search
+                setTimeout(() => productSearchInput.focus(), 300);
                 return;
             }
 
             // Normal Toggle Logic
             appState.isSearching = !appState.isSearching;
+            // Clear source if searching normally
+            appState.searchSource = null;
             updateHeaderUI();
 
             if (appState.currentView === 'home') {
@@ -1455,6 +1612,7 @@
 
         window.closeSearch = function() {
             appState.isSearching = false;
+            appState.searchSource = null; // Reset source on close
             searchContainer.classList.add('search-hidden');
             homeSearchContainer.classList.add('search-hidden');
             productSearchInput.value = '';
@@ -1571,11 +1729,9 @@
             }).join('');
         }
 
-        // Updated Footer UI Logic with Integrated Navigation
+        // --- ENHANCED: Footer UI with State Management (Color: White, Dark Green, Black, Light Pink) ---
         function updateFooterUI() {
             const hasItems = Object.keys(appState.cart).length > 0;
-            
-            // Calculate totals
             const totalQty = Object.values(appState.cart).reduce((a,b)=>a+b,0);
             let totalPrice = 0;
             Object.entries(appState.cart).forEach(([pid, qty]) => {
@@ -1583,100 +1739,63 @@
                 if(p) totalPrice += p.price * qty;
             });
 
-            // Update Badge
-            if (hasItems) {
-                navCartBadge.textContent = totalQty;
-                navCartBadge.classList.remove('hidden-badge');
-            } else {
-                navCartBadge.classList.add('hidden-badge');
-            }
+            // Reset Classes
+            footerOrderBtn.className = "footer-order-btn-base";
+            navCartBadge.classList.add('hidden-badge');
             
-            const textContainer = document.getElementById('footer-text-wrapper');
-
-            // Center Button Mode Switch
+            // Re-apply ORDERZ Logo (Fixed) + Variable Second Line
+            // btnLine1 is ALWAYS ORDERZ. Color changes by state.
+            
             if (appState.currentView === 'cart') {
-                // CART MODE: CTA Button
-                footerIconContainer.className = "hidden"; // Hide default icon container
-                navCartBadge.classList.add('hidden-badge'); // Hide badge inside button as text changes
-                textContainer.style.display = 'flex'; // Ensure text is visible
-                
-                // Clear and rebuild button classes
-                footerOrderBtn.className = "footer-order-btn-base";
-                
+                // STATE 3: Cart (Confirm) - Custom Green Bg / Green Text
                 if (hasItems) {
-                    footerOrderBtn.classList.add("footer-order-active");
-                    footerOrderText.innerHTML = `
-                        <span class="bg-[#FFD000] text-[#374151] text-[11px] font-extrabold rounded-full w-5 h-5 flex items-center justify-center mr-1.5">${totalQty}</span>
-                        ${totalPrice.toLocaleString()}원 주문하기
-                    `;
-                    footerOrderText.className = "text-sm font-bold text-white relative z-10 flex items-center";
+                    footerOrderBtn.classList.add('footer-btn-active');
+                    // Logo: Dark Green
+                    btnLine1.style.color = '#14682A';
+                    // Text: Dark Green
+                    // Use Custom Badge
+                    btnLine2.innerHTML = `<span class="count-badge-custom">${totalQty}</span> 총 ${totalPrice.toLocaleString()}원 주문하기`;
+                    btnLine2.className = "btn-line-2 text-[#14682A] flex items-center justify-center"; 
                 } else {
-                    footerOrderBtn.classList.add("footer-order-empty");
-                    footerOrderText.textContent = "상품을 담아주세요";
-                    footerOrderText.className = "text-xs font-bold text-gray-400 relative z-10";
+                    footerOrderBtn.classList.add('footer-btn-empty');
+                    btnLine1.style.color = '#0C5608'; // Default
+                    btnLine2.textContent = "상품을 담아주세요";
+                    btnLine2.className = "btn-line-2 text-gray-400";
                 }
-            } else if (appState.currentView === 'quick-order') {
-                // QUICK ORDER MODE
-                footerOrderBtn.className = "footer-order-btn-base";
-                textContainer.style.display = 'flex'; // Ensure text is visible
-
+            } 
+            else if (appState.currentView === 'quick-order') {
+                // STATE 2: Picking (Active) - Custom Green Bg / Green Text
                 if (hasItems) {
-                    // Items added: Show Button Style
-                    footerIconContainer.className = "hidden";
-                    navCartBadge.classList.add('hidden-badge');
-                    
-                    footerOrderBtn.classList.add("footer-order-active");
-                    footerOrderText.innerHTML = `
-                        <span class="bg-[#FFD000] text-[#374151] text-[11px] font-extrabold rounded-full w-5 h-5 flex items-center justify-center mr-1.5">${totalQty}</span>
-                        ${totalPrice.toLocaleString()}원 주문확인
-                    `;
-                    footerOrderText.className = "text-sm font-bold text-white relative z-10 flex items-center";
+                    footerOrderBtn.classList.add('footer-btn-active');
+                    // Logo: Dark Green
+                    btnLine1.style.color = '#14682A';
+                    // Text: Dark Green
+                    // Use Custom Badge
+                    btnLine2.innerHTML = `<span class="count-badge-custom">${totalQty}</span>주문하러 가기`;
+                    btnLine2.className = "btn-line-2 text-[#14682A] flex items-center justify-center";
                 } else {
-                    // No items: Gray Button Style
-                    footerIconContainer.className = "hidden";
-                    navCartBadge.classList.add('hidden-badge');
-                    
-                    footerOrderBtn.classList.add("footer-order-empty");
-                    footerOrderText.textContent = "상품을 담아주세요";
-                    footerOrderText.className = "text-xs font-bold text-gray-400 relative z-10";
+                    footerOrderBtn.classList.add('footer-btn-empty');
+                    btnLine1.style.color = '#0C5608';
+                    btnLine2.textContent = "상품을 담아주세요";
+                    btnLine2.className = "btn-line-2 text-gray-400";
                 }
-            } else {
-                // NORMAL MODE (Home): Nav Button Style
-                textContainer.style.display = 'none'; // Hide text container to show icon container
+            } 
+            else {
+                // STATE 1: Home (Default) - White Bg / Black Text / Black Border
+                footerOrderBtn.classList.add('footer-btn-home');
+                // Logo: Dark Green
+                btnLine1.style.color = '#0C5608';
+                // Text: Black
+                btnLine2.textContent = "주문하러 가기";
+                btnLine2.className = "btn-line-2 text-[#111827]"; // Black
                 
-                // Reset to Home style (Not a rounded button, but a nav item)
-                // Use footer-order-btn-base style but look like a button with text
-                footerOrderBtn.className = "footer-order-btn-base bg-white border border-gray-200 shadow-sm";
-                footerIconContainer.className = "flex flex-col items-center justify-center leading-tight";
-                footerIconContainer.innerHTML = `
-                    <span class="watermark-font text-[10px] font-bold text-[#0C5608]">ORDERZ</span>
-                    <span class="text-[13px] font-extrabold text-gray-800">주문하기</span>
-                `;
-                
-                // Hide default text container logic handled above
-
-                // Ensure Icon is visible
-                const icon = document.getElementById('footer-order-icon');
-                // No icon element to set class on, it's text now.
-                
-                footerOrderText.textContent = "주문하기";
-                footerOrderText.className = "text-[10px] font-bold text-gray-900";
-                
-                // Show badge if items exist
+                // Show badge on Home only if items exist
                 if (hasItems) {
                     navCartBadge.textContent = totalQty;
                     navCartBadge.classList.remove('hidden-badge');
-                    // Positioning for badge in new layout
-                    navCartBadge.style.position = 'absolute';
-                    navCartBadge.style.top = '-5px';
-                    navCartBadge.style.right = '-5px';
-                    footerOrderBtn.appendChild(navCartBadge);
-                } else {
-                    navCartBadge.classList.add('hidden-badge');
                 }
             }
             
-            // Ensure footer is always visible
             mainNavFooter.classList.remove('hidden');
         }
 
@@ -1876,6 +1995,16 @@
                 if (p && !p.liked) {
                     p.liked = true;
                 }
+            }
+
+            // REDIRECT LOGIC for search from cart
+            if (d > 0 && appState.searchSource === 'cart') {
+                appState.searchSource = null;
+                appState.isSearching = false;
+                searchContainer.classList.add('search-hidden');
+                
+                showConfirmationView(); // Go to Cart
+                return;
             }
 
             updateFooterUI();
