@@ -525,13 +525,14 @@
 
              <!-- Home Search Box -->
              <div id="home-search-container" class="p-3 border-b bg-white search-hidden shadow-inner sticky top-[125px] z-30">
-                <div class="flex items-center w-full">
+                <div class="flex items-center w-full gap-2">
                     <div class="relative flex-grow">
                         <input type="text" id="home-search-input" placeholder="전체 상품 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
                     </div>
+                    <button onclick="closeSearch()" class="text-sm font-bold text-gray-500 whitespace-nowrap px-1">닫기</button>
                 </div>
             </div>
              
@@ -572,13 +573,14 @@
 
                 <!-- Search Box (Initially Hidden) -->
                 <div id="search-container" class="p-3 border-b bg-white search-hidden shadow-inner">
-                    <div class="flex items-center w-full">
+                    <div class="flex items-center w-full gap-2">
                         <div class="relative flex-grow">
                             <input type="text" id="product-search-input" placeholder="담은 상품 내 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
                         </div>
+                        <button onclick="closeSearch()" class="text-sm font-bold text-gray-500 whitespace-nowrap px-1">닫기</button>
                     </div>
                 </div>
             </div>
@@ -698,7 +700,7 @@
                 <!-- Action Buttons -->
                 <div class="p-4 mt-4">
                     <button class="w-full bg-[#63BF86] text-white font-bold py-3 rounded-lg shadow-md text-lg mb-3" onclick="alert('결제가 완료되었습니다!'); showHomeView(true);">간편결제하기</button>
-                    <button class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 rounded-lg" onclick="showConfirmationView()">취소</button>
+                    <button class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 rounded-lg" onclick="showQuickOrderView()">취소</button>
                 </div>
                 
                 <!-- Footer Info -->
@@ -1999,15 +2001,8 @@
                 }
             }
 
-            // REDIRECT LOGIC for search from cart
-            if (d > 0 && appState.searchSource === 'cart') {
-                appState.searchSource = null;
-                appState.isSearching = false;
-                searchContainer.classList.add('search-hidden');
-                
-                showConfirmationView(); // Go to Cart
-                return;
-            }
+            // REDIRECT LOGIC REMOVED: Stay on list when adding from search
+            // if (d > 0 && appState.searchSource === 'cart') { ... }
 
             updateFooterUI();
             
