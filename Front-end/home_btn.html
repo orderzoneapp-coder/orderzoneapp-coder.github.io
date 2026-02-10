@@ -62,11 +62,21 @@
                 </div>
 
                 <!-- 3. 기울기 조절 -->
-                <div>
+                <div class="mb-4">
                     <label class="text-xs font-bold text-gray-500 mb-1 block">3. 로고 스타일</label>
                     <div class="flex gap-2" id="style-controls">
                         <button onclick="setItalic(true, this)" class="flex-1 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all"><i>기울기</i></button>
                         <button onclick="setItalic(false, this)" class="flex-1 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all btn-active">정자체</button>
+                    </div>
+                </div>
+
+                <!-- 4. 로고 두께 조절 (신규 추가) -->
+                <div>
+                    <label class="text-xs font-bold text-gray-500 mb-1 block">4. 로고 두께</label>
+                    <div class="flex gap-2" id="weight-controls">
+                        <button onclick="setLogoWeight('font-black', this)" class="flex-1 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all btn-active">Black</button>
+                        <button onclick="setLogoWeight('font-extrabold', this)" class="flex-1 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all">ExtraBold</button>
+                        <button onclick="setLogoWeight('font-bold', this)" class="flex-1 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-all">Bold</button>
                     </div>
                 </div>
             </div>
@@ -74,6 +84,7 @@
             <div class="bg-gray-800 p-4 rounded-xl text-white text-xs leading-relaxed opacity-90">
                 💡 <b>현재 설정값:</b><br/>
                 로고: <span id="display-logo-size">9px</span> / 
+                두께: <span id="display-weight">Black</span><br/>
                 텍스트: <span id="display-text-size">14px</span> / 
                 스타일: <span id="display-style">정자체</span>
             </div>
@@ -94,11 +105,11 @@
                 <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">검색</span>
             </button>
 
-            <!-- 주문 버튼 (여기가 변경됨) -->
+            <!-- 주문 버튼 -->
             <button class="flex-1 mx-4 h-[43px] bg-[#A8D8B9] rounded-[10px] flex items-center justify-center relative shadow-md active:scale-[0.98] transition-transform cursor-pointer hover:shadow-lg">
                 <div class="flex flex-col items-center justify-center leading-none">
                     
-                    <!-- 로고 텍스트 (타겟 ID: logo-text) -->
+                    <!-- 로고 텍스트 -->
                     <span id="logo-text" class="font-black text-[#1B4D3E] mb-[1px] opacity-80 tracking-wide transition-all" style="font-size: 9px; line-height: 1.1;">
                         ORDERZ
                     </span>
@@ -108,7 +119,7 @@
                             <span class="text-[#1B4D3E] text-[11px] font-bold pt-[1px]">2</span>
                         </div>
                         
-                        <!-- 메인 텍스트 (타겟 ID: main-text) -->
+                        <!-- 메인 텍스트 -->
                         <span id="main-text" class="text-[#1B4D3E] font-bold tracking-tight transition-all" style="font-size: 14px; line-height: 1.2;">
                             담은 상품 확인하기
                         </span>
@@ -139,13 +150,12 @@
         const displayLogoSize = document.getElementById('display-logo-size');
         const displayTextSize = document.getElementById('display-text-size');
         const displayStyle = document.getElementById('display-style');
+        const displayWeight = document.getElementById('display-weight');
 
         // 1. 로고 크기 변경 함수
         function setLogoSize(size, btn) {
             logoText.style.fontSize = size + 'px';
             displayLogoSize.innerText = size + 'px';
-            
-            // 버튼 스타일 업데이트
             updateBtnStyle('logo-controls', btn);
         }
 
@@ -153,8 +163,6 @@
         function setMainSize(size, btn) {
             mainText.style.fontSize = size + 'px';
             displayTextSize.innerText = size + 'px';
-            
-            // 버튼 스타일 업데이트
             updateBtnStyle('text-controls', btn);
         }
 
@@ -167,9 +175,23 @@
                 logoText.classList.remove('italic');
                 displayStyle.innerText = "정자체";
             }
-            
-            // 버튼 스타일 업데이트
             updateBtnStyle('style-controls', btn);
+        }
+
+        // 4. 로고 두께 변경 함수 (신규)
+        function setLogoWeight(weightClass, btn) {
+            // 기존 두께 클래스 제거
+            logoText.classList.remove('font-black', 'font-extrabold', 'font-bold');
+            // 새 두께 클래스 추가
+            logoText.classList.add(weightClass);
+            
+            // 정보창 텍스트 업데이트
+            let weightName = "Black";
+            if(weightClass === 'font-extrabold') weightName = "ExtraBold";
+            if(weightClass === 'font-bold') weightName = "Bold";
+            if(displayWeight) displayWeight.innerText = weightName;
+
+            updateBtnStyle('weight-controls', btn);
         }
 
         // 버튼 활성화 스타일 처리 헬퍼 함수
