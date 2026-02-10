@@ -2,12 +2,14 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>오더즈 - 빠른주문 (고도화)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,900&display=swap'); /* For ORDERZ Logo */
+
         body {
             font-family: 'Noto Sans KR', sans-serif;
             overscroll-behavior-y: contain;
@@ -66,10 +68,10 @@
             font-weight: 700;
         }
 
-        /* Grid Layout */
+        /* Grid Layout - Adjusted for 2 lists and right-aligned icons */
         .cl-grid-row {
             display: grid;
-            grid-template-columns: 40px 1fr 36px 36px 36px 30px;
+            grid-template-columns: 40px 1fr 36px 36px 30px;
             gap: 4px;
             padding: 12px 4px;
             background: #fff;
@@ -216,17 +218,43 @@
         #delivery-sheet { transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
         #delivery-sheet.visible { transform: translateY(0); }
 
+        /* Icon Settings Btn (New) */
+        .list-settings-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #22c55e; /* Green-500 */
+            border-radius: 50%; /* Circle */
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            flex-shrink: 0;
+            margin-left: 8px;
+            margin-right: 1rem; /* Right margin added to match left padding of first tab */
+            transition: all 0.2s;
+        }
+        .list-settings-btn:active {
+            background-color: #f0fdf4;
+            color: #15803d;
+            border-color: #22c55e;
+            transform: scale(0.95);
+        }
+
         /* Add List Btn */
         .add-list-btn-wide {
-            font-size: 0.75rem;
-            color: #22c55e;
-            font-weight: 700;
-            border: 1px solid #22c55e;
-            padding: 4px 10px;
-            border-radius: 12px;
+            /* Changed to icon style in JS, but keeping class for reference */
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
             background: white;
-            white-space: nowrap;
+            border: 1px solid #e5e7eb;
+            color: #4b5563;
             flex-shrink: 0;
+            margin-left: 8px;
         }
 
         /* Category Bar Styles */
@@ -365,28 +393,161 @@
             cursor: pointer;
         }
         
+        /* Navigation Badge Style */
+        .nav-badge {
+            background-color: #FFD000; /* Requested Badge Color */
+            color: #374151; /* Dark gray text for visibility on yellow */
+            font-size: 11px;
+            font-weight: 900;
+            height: 18px;
+            min-width: 18px;
+            padding: 0 5px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-badge.hidden-badge {
+            display: none;
+        }
+        
+        /* Stepper Style in Cart */
+        .cart-stepper-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f3f4f6;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #4b5563;
+        }
+        .cart-stepper-val {
+            width: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
         /* Safe area bottom fix */
-        .safe-pb { padding-bottom: env(safe-area-inset-bottom); }
+        .safe-pb { 
+            padding-bottom: env(safe-area-inset-bottom);
+            min-height: calc(70px + env(safe-area-inset-bottom));
+            height: auto;
+        }
+        
+        /* --- Order Button States --- */
+        .footer-order-btn-base {
+            flex: 1;
+            margin: 0 2.2rem; /* 가로 길이 축소: 여백을 1rem에서 2.2rem으로 증가 */
+            height: 43px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        .footer-order-btn-base:active {
+            transform: scale(0.98);
+        }
+
+        /* State 1: Default (Home/Nav) - White Bg */
+        .footer-btn-home {
+            background-color: #FFFFFF;
+            border: 1px solid #e5e7eb;
+            color: #1B4D3E;
+        }
+        .footer-btn-home:active { background-color: #f9fafb; }
+
+        /* State 2 & 3: Active (Picking & Cart) - Custom Green Bg (#A8D8B9) */
+        .footer-btn-active {
+            background-color: #A8D8B9 !important; /* Pastel Green */
+            border: none;
+            color: #1B4D3E !important; /* Dark Green Text */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* State 4: Empty (Disabled) */
+        .footer-btn-empty {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            color: #9ca3af;
+        }
+
+        /* Typography Helper for Button */
+        /* Line 1: Brand Stamp */
+        .btn-line-1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 9px;
+            margin-bottom: 1px;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+            line-height: 1.1;
+        }
+
+        /* Line 2: Action Hero */
+        .btn-line-2 {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+            /* Flex layout added for badge alignment */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Watermark Font */
+        .watermark-font {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Order Form Styles */
+        .order-table-header {
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            padding: 10px;
+            text-align: center;
+        }
+        .order-table-cell {
+            padding: 12px 10px;
+            font-size: 13px;
+            color: #1f2937;
+            border-bottom: 1px solid #f3f4f6;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
 
-    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-20 relative overflow-hidden">
+    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-0 relative overflow-hidden">
 
         <!-- HEADER -->
         <header class="sticky top-0 bg-white z-40 shadow-sm border-b">
             <div class="relative flex justify-between items-center p-3 h-[57px]">
-                <!-- Mode Switch Button -->
-                <button id="mode-switch-btn" class="flex items-center space-x-1.5 text-gray-600 hover:bg-gray-100 rounded-lg px-2 py-1.5 transition relative">
-                    <i id="mode-icon" class="fas fa-clipboard-check text-lg"></i>
-                    <span id="mode-text" class="text-sm font-bold">주문하기</span>
-                </button>
+                
+                <!-- Modified: Text Tab Style Toggle (Size Reduced) -->
+                <div class="flex items-center cursor-pointer" id="header-mode-toggle" onclick="toggleAppMode()">
+                    <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
+                    <span id="header-mode-title" class="text-sm font-bold text-gray-800">상품목록</span>
+                </div>
                 
                 <!-- Logo: 홈으로 이동 및 상단 스크롤 -->
                 <h1 id="header-title" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-green-600 cursor-pointer">NH라인</h1>
                 <div class="flex items-center space-x-2">
-                    <span class="text-xs font-semibold">19,400P</span>
-                    <i class="fas fa-user text-lg text-gray-600"></i>
+                    <span class="text-xs font-semibold">OP</span>
+                    <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                 </div>
             </div>
             <!-- Old Nav (Hidden) -->
@@ -400,11 +561,11 @@
              <div id="category-bar" class="flex justify-around items-center bg-white py-2 px-1 border-b sticky top-[57px] z-30">
                 <button class="category-btn" onclick="filterByCategory('vegetable')">
                     <span class="text-2xl">🥬</span>
-                    <span class="text-[10px] font-medium text-gray-600">채소/과일</span>
+                    <span class="text-[10px] font-medium text-gray-600">채소.과일</span>
                 </button>
                 <button class="category-btn" onclick="filterByCategory('seafood')">
                     <span class="text-2xl">🐟</span>
-                    <span class="text-[10px] font-medium text-gray-600">수산/축산</span>
+                    <span class="text-[10px] font-medium text-gray-600">수산.축산</span>
                 </button>
                 <button class="category-btn" onclick="filterByCategory('processed')">
                     <span class="text-2xl">❄️</span>
@@ -412,11 +573,11 @@
                 </button>
                 <button class="category-btn" onclick="filterByCategory('sauce')">
                     <span class="text-2xl">🧂</span>
-                    <span class="text-[10px] font-medium text-gray-600">양념/소스</span>
+                    <span class="text-[10px] font-medium text-gray-600">양념.소스</span>
                 </button>
                 <button class="category-btn" onclick="filterByCategory('kitchen')">
-                    <span class="text-2xl">🍴</span>
-                    <span class="text-[10px] font-medium text-gray-600">주방/잡화</span>
+                    <span class="text-2xl">🥣</span>
+                    <span class="text-[10px] font-medium text-gray-600">주방.잡화</span>
                 </button>
              </div>
 
@@ -430,24 +591,27 @@
              </div>
 
              <!-- Event Theme Bar -->
-             <div class="flex justify-around items-center px-0 py-0 border-b bg-white">
-                <button class="flex-1 py-3 text-sm font-bold border-b-2 border-green-500 text-green-600">오늘의행사</button>
-                <button class="flex-1 py-3 text-sm font-medium text-gray-500 border-b border-transparent">매장행사</button>
-                <button class="flex-1 py-3 text-sm font-medium text-gray-500 border-b border-transparent">가공식품행사</button>
+             <div class="flex justify-around items-center px-4 py-2 border-b bg-white">
+                <button class="py-2 text-sm font-semibold border-b-2 border-green-500 text-green-500">타임세일</button>
+                <button class="py-2 text-sm text-gray-500">경매상품</button>
+                <button class="py-2 text-sm text-gray-500">할인상품</button>
+                <button class="py-2 text-sm text-gray-500">마감임박</button>
              </div>
 
              <!-- Home Search Box -->
              <div id="home-search-container" class="p-3 border-b bg-white search-hidden shadow-inner sticky top-[125px] z-30">
-                <div class="flex items-center w-full">
+                <div class="flex items-center w-full gap-2">
                     <div class="relative flex-grow">
                         <input type="text" id="home-search-input" placeholder="전체 상품 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
                     </div>
+                    <button onclick="closeSearch()" class="text-sm font-bold text-gray-500 whitespace-nowrap px-1">닫기</button>
                 </div>
             </div>
              
+             <!-- INCREASED PADDING BOTTOM -->
              <div id="home-product-list" class="divide-y pb-24"></div>
         </main>
 
@@ -456,7 +620,7 @@
             <!-- Sub Header (Sticky) -->
             <div id="sub-header" class="sticky top-[57px] z-30 shadow-md bg-gray-100 relative">
                 <!-- 리스트 바 -->
-                <div id="my-list-container" class="flex justify-between items-center px-0 bg-white border-b h-[40px] overflow-hidden relative">
+                <div id="my-list-container" class="flex justify-between items-center px-0 bg-white border-b h-[40px] overflow-hidden">
                     <div id="my-list-tabs" class="flex flex-1 items-center h-full no-scrollbar"></div>
                 </div>
                 
@@ -484,13 +648,14 @@
 
                 <!-- Search Box (Initially Hidden) -->
                 <div id="search-container" class="p-3 border-b bg-white search-hidden shadow-inner">
-                    <div class="flex items-center w-full">
+                    <div class="flex items-center w-full gap-2">
                         <div class="relative flex-grow">
                             <input type="text" id="product-search-input" placeholder="담은 상품 내 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
                             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
                         </div>
+                        <button onclick="closeSearch()" class="text-sm font-bold text-gray-500 whitespace-nowrap px-1">닫기</button>
                     </div>
                 </div>
             </div>
@@ -514,6 +679,131 @@
             </div>
         </main>
 
+        <!-- CART VIEW (NEW) -->
+        <main id="cart-view" class="hidden bg-gray-50 min-h-screen pb-24">
+            <!-- Header Area with Back Button Removed, Buttons Removed -->
+            <div class="bg-white px-4 py-3 border-b flex justify-between items-center sticky top-[57px] z-30 shadow-sm">
+                <h2 class="text-lg font-bold text-gray-800">담은 상품 확인 <span class="text-[#0C5608] text-base ml-1" id="cart-total-count-header">총 0개</span></h2>
+            </div>
+            
+            <!-- Default Label -->
+            <div class="px-4 py-2 text-xs text-gray-400 font-bold mt-2">담은 상품 목록</div>
+            
+            <!-- Cart List -->
+            <div id="cart-list-items" class="bg-white border-t border-b divide-y divide-gray-100">
+                <!-- Items will be rendered here -->
+            </div>
+        </main>
+
+        <!-- ORDER FORM VIEW (NEW SIMULATION) -->
+        <main id="order-form-view" class="hidden bg-white min-h-screen z-50 absolute inset-0 overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center p-3 border-b bg-white sticky top-0 z-10">
+                <button onclick="showConfirmationView()" class="p-2 text-gray-600"><i class="fas fa-chevron-left text-lg"></i></button>
+                <h2 class="text-lg font-bold text-gray-800 ml-2">주문서 작성</h2>
+            </div>
+
+            <div class="pb-20">
+                <!-- Order Table -->
+                <div class="border-b-4 border-gray-100">
+                    <div class="grid grid-cols-[1fr_50px_80px] bg-white">
+                        <div class="order-table-header text-left">품명 (규격) 단가</div>
+                        <div class="order-table-header">총수량</div>
+                        <div class="order-table-header text-right">소계</div>
+                    </div>
+                    <div id="order-form-list">
+                        <!-- List Items -->
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="bg-gray-700 text-white p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium">주문</span>
+                        <span class="font-bold" id="order-summ-price">0 원</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium">배송비</span>
+                        <span class="font-bold">0 원</span>
+                    </div>
+                    <div class="border-t border-gray-600 my-2"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold">총계</span>
+                        <span class="text-xl font-bold text-blue-300" id="order-total-price">0 원</span>
+                    </div>
+                </div>
+                <div class="bg-gray-600 text-gray-300 text-xs p-3">
+                    반환 예정 배송비<br>(TEST) <span class="float-right text-white font-bold">0 원</span>
+                </div>
+
+                <!-- Delivery Info -->
+                <div class="p-4 border-t-4 border-gray-100">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-gray-200 text-xs px-2 py-1 rounded mr-2 font-bold text-gray-600">배송지정보 ▼</span>
+                    </div>
+                    <div class="flex">
+                        <div class="w-20 text-sm font-bold text-gray-600 pt-2">전하실 말씀</div>
+                        <textarea class="flex-grow border border-gray-300 rounded p-2 text-sm h-20 resize-none" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="p-4 border-t-4 border-gray-100">
+                    <div class="border border-gray-300 rounded p-4 mb-4">
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-green-600 focus:ring-green-500" checked>
+                                <span class="font-bold text-sm text-gray-700">간편결제하기</span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
+                                <span class="text-sm text-gray-600">무통장입금</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
+                                <span class="text-sm text-gray-600">신용카드 (기타)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-bold text-gray-700">사용 포인트(1점 단위)</span>
+                        <div class="flex items-center">
+                            <input type="text" value="0" class="border border-gray-300 rounded p-1 text-right w-24 mr-1 text-sm">
+                            <span class="text-sm">점</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>보유포인트</span>
+                        <span>25,400점</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>최대사용가능포인트</span>
+                        <span>25,400점</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="p-4 mt-4">
+                    <button class="w-full bg-[#63BF86] text-white font-bold py-3 rounded-lg shadow-md text-lg mb-3" onclick="alert('결제가 완료되었습니다!'); showHomeView(true);">간편결제하기</button>
+                    <button class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 rounded-lg" onclick="showQuickOrderView()">취소</button>
+                </div>
+                
+                <!-- Footer Info -->
+                <div class="bg-gray-800 text-gray-400 text-[10px] p-6 leading-relaxed">
+                    <div class="flex space-x-3 mb-4 text-gray-300">
+                        <span>회사소개</span> <span>개인정보</span> <span>이용약관</span> <span>사업자정보확인</span>
+                    </div>
+                    회사명 원앱 주소 서울특별시 송파구 양재대로 932<br>
+                    사업자 등록번호 380-14-01523<br>
+                    대표 이무철 전화 02-6959-1374<br>
+                    통신판매업신고번호 제2021-서울송파-2063호
+                </div>
+            </div>
+        </main>
+
         <!-- CREATE LIST VIEW -->
         <div id="create-list-view" class="hidden absolute inset-0 bg-white z-50 flex flex-col">
             <!-- Header -->
@@ -526,11 +816,11 @@
             </header>
             
             <!-- Tabs -->
-            <div class="flex-none flex border-b bg-white z-20">
-                <button class="cl-tab-btn active" data-tab="all">전체</button>
-                <button class="cl-tab-btn cl-tab-l1" data-tab="1">LIST1</button>
-                <button class="cl-tab-btn cl-tab-l2" data-tab="2">LIST2</button>
-                <button class="cl-tab-btn cl-tab-l3" data-tab="3">LIST3</button>
+            <div class="flex-none flex border-b bg-white z-20 overflow-x-auto no-scrollbar">
+                <button class="cl-tab-btn active" data-tab="all" style="min-width: 60px;">전체</button>
+                <button class="cl-tab-btn cl-tab-l1" data-tab="1" style="min-width: 60px;">LIST1</button>
+                <button class="cl-tab-btn cl-tab-l2" data-tab="2" style="min-width: 60px;">LIST2</button>
+                <!-- LIST3 Tab Removed -->
             </div>
 
             <!-- Content Area -->
@@ -568,7 +858,7 @@
                     <div class="space-y-2">
                         <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l1" onclick="applyBatchMove(1)">LIST1으로 이동</button>
                         <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l2" onclick="applyBatchMove(2)">LIST2으로 이동</button>
-                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l3" onclick="applyBatchMove(3)">LIST3으로 이동</button>
+                        <!-- LIST3 Move Button Removed -->
                     </div>
                     <button id="move-sheet-cancel" class="w-full mt-4 py-3 text-gray-500 font-medium">취소</button>
                 </div>
@@ -591,21 +881,45 @@
         <div class="h-6 bg-white w-full"></div>
     </div>
 
-    <!-- FOOTER (Main) - Correctly placed outside hidden view -->
-    <footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t z-30 flex h-[60px] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] safe-pb">
-        <button id="footer-search-btn" class="flex-1 flex flex-col items-center justify-center text-gray-500 border-r border-gray-100 hover:text-green-600 transition-colors">
-            <i class="fas fa-search text-xl mb-0.5"></i>
-            <span class="text-[10px]">검색</span>
+    <!-- FOOTER (Main) - Integrated Navigation -->
+    <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 py-[10px] flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
+        
+        <!-- 왼쪽: 검색 버튼 -->
+        <button id="footer-search-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
+                <circle cx="10" cy="10" r="7" />
+                <line x1="21" x2="15" y1="21" y2="15" />
+            </svg>
+            <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">검색</span>
         </button>
-        <button id="footer-cta-btn" class="flex-1 flex flex-col items-center justify-center transition-colors bg-white text-gray-300">
-            <div class="flex items-center space-x-1 mb-0.5"><span id="footer-logo" class="font-extrabold text-xs text-green-800">ORDERZ</span></div>
-            <span id="cta-text" class="text-sm font-bold">상품을 담아 주세요</span>
+
+        <!-- 중앙: 주문하기 버튼 (43px, 16px 텍스트) -->
+        <button id="footer-order-btn" class="footer-order-btn-base footer-btn-home" onclick="handleCenterBtnClick()">
+            <div class="flex flex-col items-center justify-center leading-none w-full">
+                <!-- 로고 -->
+                <span id="btn-line-1" class="btn-line-1">ORDERZ</span>
+                <!-- 메인 텍스트 -->
+                <div id="btn-line-2" class="btn-line-2">
+                    주문하러 가기
+                </div>
+            </div>
+            <!-- Optional Floating Badge (Only for Home State if needed) -->
+            <span id="nav-cart-badge" class="nav-badge hidden-badge absolute -top-1 -right-1 shadow-sm">0</span>
         </button>
-        <button id="footer-inquiry-btn" class="flex-1 flex flex-col items-center justify-center text-gray-500 border-l border-gray-100 hover:text-green-600 transition-colors">
-            <i class="fas fa-comment-dots text-xl mb-0.5"></i>
-            <span class="text-[10px]">문의</span>
+
+        <!-- 오른쪽: 문의 버튼 -->
+        <button id="footer-inquiry-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
+                <rect x="3" y="3" width="18" height="14" rx="4" ry="4" />
+                <path d="M7 17v4l4-4" />
+                <path d="M8 10h.01" />
+                <path d="M12 10h.01" />
+                <path d="M16 10h.01" />
+            </svg>
+            <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">문의</span>
         </button>
-    </footer>
+
+    </nav>
 
     </div> <!-- END of app -->
 
@@ -719,10 +1033,7 @@
                                     <span class="text-xs font-bold text-gray-400 w-8">LIST2</span>
                                     <input type="text" id="input-list2-name" placeholder="LIST2 명칭" class="outline-none" readonly>
                                 </div>
-                                <div class="list-input-group flex items-center" id="group-l3" onclick="focusInput(3)">
-                                    <span class="text-xs font-bold text-gray-400 w-8">LIST3</span>
-                                    <input type="text" id="input-list3-name" placeholder="LIST3 명칭" class="outline-none" readonly>
-                                </div>
+                                <!-- LIST3 Input Removed -->
                             </div>
 
                             <!-- Multi-Category Keyword Pool -->
@@ -850,9 +1161,9 @@
                 ],
             },
             cart: {},
-            listNames: { 1: 'LIST1', 2: 'LIST2', 3: 'LIST3' },
+            listNames: { 1: 'LIST1', 2: 'LIST2' }, // Removed 3
             currentView: 'home', 
-            currentMyList: 0, 
+            currentMyList: 'specials', // Default view changed to 'specials' (단골특가) if needed or 0
             clTab: 'all',
             tempChanges: {},
             hasChanges: false,
@@ -862,17 +1173,24 @@
             currentSort: 'latest', 
             deliveryDate: '1월 12일(월) 도착',
             selectedCategory: null,
-            homeSearchText: ''
+            homeSearchText: '',
+            searchSource: null // Track where search started
         };
 
         const homeView = document.getElementById('home-view');
         const quickOrderView = document.getElementById('quick-order-view');
         const createListView = document.getElementById('create-list-view');
         const homeProductListEl = document.getElementById('home-product-list');
-        const modeSwitchBtn = document.getElementById('mode-switch-btn');
         const headerTitle = document.getElementById('header-title');
-        const footerCtaBtn = document.getElementById('footer-cta-btn');
-        const ctaText = document.getElementById('cta-text');
+        
+        // --- Updated Footer Elements ---
+        const footerSearchBtn = document.getElementById('footer-search-btn');
+        const footerOrderBtn = document.getElementById('footer-order-btn');
+        const btnLine1 = document.getElementById('btn-line-1');
+        const btnLine2 = document.getElementById('btn-line-2');
+        const navCartBadge = document.getElementById('nav-cart-badge');
+        const mainNavFooter = document.getElementById('main-nav-footer');
+        
         const myListTabsContainer = document.getElementById('my-list-tabs');
         const clTabs = document.querySelectorAll('.cl-tab-btn');
         const clItemsEl = document.getElementById('create-list-items');
@@ -886,7 +1204,6 @@
         const moveSheetCancel = document.getElementById('move-sheet-cancel');
         const guideModalOverlay = document.getElementById('guide-modal-overlay');
         const guideModalContent = document.getElementById('guide-modal-content');
-        const footerSearchBtn = document.getElementById('footer-search-btn');
         const searchContainer = document.getElementById('search-container');
         const productSearchInput = document.getElementById('product-search-input');
         const homeSearchContainer = document.getElementById('home-search-container');
@@ -929,8 +1246,9 @@
             quickOrderView.classList.remove('hidden');
             createListView.classList.add('hidden');
             
+            // If switching mode, set default tab if not set
             if(saveToStorage) {
-                appState.currentMyList = 0;
+                appState.currentMyList = 'specials'; // Default to 단골특가
             }
             
             renderListTabs();
@@ -946,25 +1264,50 @@
         }
 
         function updateHeaderUI() {
-            if (appState.currentView === 'home') {
-                modeIcon.className = "fas fa-bars text-lg";
-                modeText.textContent = "상품목록";
-            } else {
-                modeIcon.className = "fas fa-clipboard-check text-lg";
-                modeText.textContent = "주문하기";
+            // Update Header Title based on view
+            // Note: Since we removed modeSwitchBtn variable, we update the title directly if needed
+            // But currently the HTML has hardcoded '상품목록' in the toggle div. 
+            // We should update the span #header-mode-title
+            const titleSpan = document.getElementById('header-mode-title');
+            if(titleSpan) {
+                if (appState.currentView === 'home') {
+                    titleSpan.textContent = "상품목록";
+                } else {
+                    titleSpan.textContent = "주문하기";
+                }
             }
         }
 
-        modeSwitchBtn.onclick = function() {
-            if (appState.isSearching) closeSearch();
-            if (appState.currentView === 'home') showQuickOrderView(true);
-            else showHomeView(true);
+        // Toggle App Mode (Header Left) - Renamed logic
+        window.toggleAppMode = function() {
+            // Reset search source when switching manually
+            appState.searchSource = null;
+            
+            // Close search if open
+            if(appState.isSearching) {
+                closeSearch();
+            }
+
+            if (appState.currentView === 'home') {
+                showQuickOrderView(true);
+            } else {
+                showHomeView(true);
+            }
         };
         
+        // Logo Click Logic
         headerTitle.onclick = function() {
-            if (appState.isSearching) closeSearch();
-            if (appState.currentView !== 'home') showHomeView(true);
-            else window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Reset search source
+            appState.searchSource = null;
+            if (appState.isSearching) {
+                closeSearch();
+            }
+            
+            if (appState.currentView !== 'home') {
+                showHomeView(true);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         };
 
         // --- Sub Section Bar Logic ---
@@ -973,8 +1316,8 @@
             
             subSectionBar.classList.remove('hidden');
             
-            // Sort visibility
-            if (appState.currentMyList === 0) {
+            // Sort visibility - Show sort for 'Liked'(0) and 'Specials'(-1/specials)
+            if (appState.currentMyList === 0 || appState.currentMyList === 'specials') {
                  sortContainer.style.display = 'block';
             } else {
                  sortContainer.style.display = 'none';
@@ -1081,10 +1424,8 @@
         function syncCreateListTabNames() {
             document.querySelector('.cl-tab-l1').textContent = appState.listNames[1];
             document.querySelector('.cl-tab-l2').textContent = appState.listNames[2];
-            document.querySelector('.cl-tab-l3').textContent = appState.listNames[3];
             document.querySelector('.btn-move-l1').textContent = `${appState.listNames[1]}으로 이동`;
             document.querySelector('.btn-move-l2').textContent = `${appState.listNames[2]}으로 이동`;
-            document.querySelector('.btn-move-l3').textContent = `${appState.listNames[3]}으로 이동`;
         }
 
         function renderCreateList() {
@@ -1112,7 +1453,7 @@
                             <div class="cl-name">${p.name}</div>
                             <div class="cl-price">${p.price.toLocaleString()}원</div>
                         </div>
-                        <div>${getBtn(1)}</div><div>${getBtn(2)}</div><div>${getBtn(3)}</div>
+                        <div>${getBtn(1)}</div><div>${getBtn(2)}</div>
                         <div class="cl-drag-handle"><i class="fas fa-bars"></i></div>
                     </div>`;
                 }).join('');
@@ -1125,7 +1466,6 @@
             guideModalOverlay.classList.remove('hidden');
             document.getElementById('input-list1-name').value = appState.listNames[1];
             document.getElementById('input-list2-name').value = appState.listNames[2];
-            document.getElementById('input-list3-name').value = appState.listNames[3];
             switchGuideTab('faq');
             updateStartScreenUI();
             setTimeout(() => {
@@ -1193,7 +1533,6 @@
         window.saveListNames = function() {
             appState.listNames[1] = document.getElementById('input-list1-name').value || 'LIST1';
             appState.listNames[2] = document.getElementById('input-list2-name').value || 'LIST2';
-            appState.listNames[3] = document.getElementById('input-list3-name').value || 'LIST3';
             syncCreateListTabNames();
             renderCreateList();
             alert("이름이 변경되었습니다.");
@@ -1202,7 +1541,6 @@
         window.resetListNames = function() {
             document.getElementById('input-list1-name').value = 'LIST1';
             document.getElementById('input-list2-name').value = 'LIST2';
-            document.getElementById('input-list3-name').value = 'LIST3';
             focusInput(1);
         };
 
@@ -1311,12 +1649,17 @@
 
         productSearchInput.oninput = function(e) {
             const term = e.target.value.toLowerCase();
-            const list = getAllProducts().filter(p => p.name.toLowerCase().includes(term));
+            const displayTerm = e.target.value;
+            const list = getAllProducts().filter(p => p.liked && p.name.toLowerCase().includes(term));
             let html = renderItemsHTML(list);
             if (term.length > 0) {
                 html += `
-                <div class="p-4 text-center text-blue-600 font-bold border-t cursor-pointer hover:bg-blue-50 transition-colors" onclick="expandSearchToHome()">
-                    상품목록에서 전체 상품 검색하기 <i class="fas fa-arrow-right ml-1"></i>
+                <div class="p-6 bg-white border-t flex flex-col items-center justify-center gap-2">
+                    <span class="text-xs text-gray-600 font-bold">찾으시는 상품이 리스트에 없나요?</span>
+                    <button class="w-full py-3.5 bg-gray-100 text-gray-600 font-bold rounded-xl active:bg-gray-200 transition-all flex items-center justify-center gap-2" onclick="expandSearchToHome()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <span>전체 상품에서 '${displayTerm}' 검색</span>
+                    </button>
                 </div>`;
             }
             document.getElementById('product-list').innerHTML = html;
@@ -1346,20 +1689,18 @@
         function renderItemsHTML(items, isRelated = false) {
             return items.map(p => {
                 const qty = appState.cart[p.id] || 0;
-                // [MODIFIED] Flat Accordion Style Logic
-                // Always white bg unless selected. No gray bg for related items.
-                const rowBg = qty > 0 ? 'bg-green-50' : 'bg-white';
+                const rowBg = qty > 0 ? 'bg-green-50' : (isRelated ? 'bg-gray-50' : 'bg-white');
+                const paddingClass = 'p-3 border-b';
                 
-                // Add left border only for related items to act as the visual indicator
-                const borderClass = isRelated ? 'border-l-4 border-orange-400 pl-2' : 'pl-3';
-                const paddingClass = `p-3 border-b ${borderClass}`;
-                
+                // 단골특가 탭('specials')이 아닐 때만 행사 상품 점(dot) 표시
+                const showEventDot = p.isEvent && appState.currentMyList !== 'specials';
+
                 return `
             <div class="product-item flex items-center ${paddingClass} ${rowBg} relative">
                 <img src="${p.img}" class="w-12 h-12 rounded mr-3">
                 <div class="flex-grow pr-2">
                     <div class="flex items-center">
-                        ${p.isEvent ? '<div class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></div>' : ''}
+                        ${showEventDot ? '<div class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></div>' : ''}
                         <span class="text-sm font-bold mr-2">${p.name}</span>
                     </div>
                     <div class="text-xs text-gray-500">${p.price.toLocaleString()}원</div>
@@ -1389,25 +1730,70 @@
             }
         };
 
+        // --- ENHANCED: Footer UI with State Management ---
         function updateFooterUI() {
             const hasItems = Object.keys(appState.cart).length > 0;
-            const canClick = appState.currentView === 'home' || hasItems;
-            const footerLogo = document.getElementById('footer-logo');
+            const totalQty = Object.values(appState.cart).reduce((a,b)=>a+b,0);
+            let totalPrice = 0;
+            Object.entries(appState.cart).forEach(([pid, qty]) => {
+                const p = getAllProducts().find(x => x.id == pid);
+                if(p) totalPrice += p.price * qty;
+            });
+
+            // Reset Classes
+            footerOrderBtn.className = "footer-order-btn-base";
+            navCartBadge.classList.add('hidden-badge');
             
-            let btnClass = "flex-1 flex flex-col items-center justify-center transition-colors bg-white ";
-            if(footerLogo) footerLogo.className = "font-extrabold text-xs text-green-800";
-            ctaText.className = "text-sm font-bold text-gray-500";
-            
-            if (canClick) {
-                btnClass += "cursor-pointer hover:bg-gray-50";
+            // Logic for Central Button State
+            if (appState.currentView === 'quick-order') {
+                // STATE 2: Picking (Active)
+                if (hasItems) {
+                    footerOrderBtn.classList.add('footer-btn-active');
+                    btnLine1.style.color = '#1B4D3E'; // Dark Green
+                    btnLine2.innerHTML = `
+                        <div class="w-[18px] h-[18px] bg-[#FFB380] rounded-full flex items-center justify-center shadow-sm">
+                            <span class="text-[#1B4D3E] text-[11px] font-bold pt-[1px]">${totalQty}</span>
+                        </div>
+                        <span>담은 상품 확인하기</span>
+                    `;
+                    btnLine2.className = "btn-line-2 text-[#1B4D3E]";
+                } else {
+                    footerOrderBtn.classList.add('footer-btn-empty');
+                    btnLine1.style.color = '#9ca3af';
+                    btnLine2.textContent = "상품을 담아주세요";
+                    btnLine2.className = "btn-line-2 text-gray-400";
+                }
             } else {
-                btnClass += "cursor-default";
+                // STATE 1: Home (Default)
+                footerOrderBtn.classList.add('footer-btn-home');
+                btnLine1.style.color = '#1B4D3E';
+                btnLine2.textContent = "주문하러 가기";
+                btnLine2.className = "btn-line-2 text-[#1B4D3E]"; 
+                
+                // Show badge on Home only if items exist (Floating style for Home)
+                if (hasItems) {
+                    navCartBadge.textContent = totalQty;
+                    navCartBadge.classList.remove('hidden-badge');
+                }
             }
             
-            footerCtaBtn.className = btnClass;
-            ctaText.textContent = appState.currentView === 'home' ? "주문하러 가기" : (hasItems ? `(${Object.values(appState.cart).reduce((a,b)=>a+b,0)}) 담은 상품 확인` : "상품을 담아 주세요");
-            footerCtaBtn.onclick = appState.currentView === 'home' ? showQuickOrderView : (hasItems ? showConfirmationView : null);
+            mainNavFooter.classList.remove('hidden');
         }
+
+        // Central Button Click Handler
+        window.handleCenterBtnClick = function() {
+            if (appState.currentView === 'home') {
+                showQuickOrderView();
+            } else if (appState.currentView === 'quick-order') {
+                if (Object.keys(appState.cart).length > 0) {
+                    showConfirmationView(); 
+                } else {
+                    alert("주문할 상품을 담아주세요.");
+                }
+            }
+        }
+
+        function showConfirmationView() { alert("주문 확인 화면 (준비중)"); }
 
         function renderHomeView() {
             let list = getAllProducts(); 
@@ -1469,9 +1855,19 @@
         }
 
         function renderListTabs() {
-            const listIds = [1, 2, 3];
+            const listIds = [1, 2]; // LIST 1, 2 only
             // Passing 'this' is critical for reliable element reference in inline handlers
-            let html = `<button class="tab-btn ${appState.currentMyList===0?'tab-active':'tab-inactive'} px-4" onclick="handleTabClick(0, this)">찜한상품</button>`;
+            let html = '';
+
+            // 1. 단골특가 (Specials) - First
+            let specialsClass = appState.currentMyList === 'specials' ? 'tab-active' : 'tab-inactive';
+            html += `<button class="tab-btn ${specialsClass} px-4" onclick="handleTabClick('specials', this)">단골특가</button>`;
+
+            // 2. 찜한상품 (Liked - id 0) - Second
+            let likedClass = appState.currentMyList === 0 ? 'tab-active' : 'tab-inactive';
+            html += `<button class="tab-btn ${likedClass} px-4" onclick="handleTabClick(0, this)">찜한상품</button>`;
+
+            // 3. Lists 1, 2
             listIds.forEach(id => {
                 const isActive = appState.currentMyList === id;
                 const count = getListCount(id);
@@ -1483,7 +1879,13 @@
                 // Passing 'this' here
                 html += `<button class="tab-btn ${className} px-4" onclick="handleTabClick(${id}, this)">${appState.listNames[id]}</button>`;
             });
-            html += `<div class="flex-grow"></div><button class="add-list-btn-wide ml-2" onclick="openCreateListView()">+ 리스트 만들기</button>`;
+            
+            // 4. Create List Button (Changed to ⚙️ Icon Only)
+            html += `<div class="flex-grow"></div>
+            <button class="list-settings-btn" onclick="openCreateListView()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>`;
+            
             myListTabsContainer.innerHTML = html;
             setTimeout(() => {
                 const container = myListTabsContainer;
@@ -1502,8 +1904,8 @@
             // Close any open coach mark first
             closeCoachMark();
 
-            if (id === 0) {
-                switchMainList(0);
+            if (id === 0 || id === 'specials') {
+                switchMainList(id);
                 return;
             }
             
@@ -1556,107 +1958,85 @@
             renderProducts(); 
         };
 
-        window.toggleRelatedEvents = function(id) {
-            const el = document.getElementById(`related-events-${id}`);
-            const chevron = document.getElementById(`chevron-${id}`);
-            if (el) {
-                el.classList.toggle('hidden');
-                if (chevron) {
-                    if (el.classList.contains('hidden')) {
-                        chevron.style.transform = 'rotate(0deg)';
-                    } else {
-                        chevron.style.transform = 'rotate(180deg)';
-                    }
-                }
-            }
-        };
-
         function renderProducts() {
             let list = getAllProducts();
             let filtered = [];
             
-            if(appState.currentMyList === 0) {
-                const likedItems = list.filter(p => p.liked);
-                const sortedLikedItems = getSortedList(likedItems, appState.currentSort);
-                
-                let html = '';
-                
-                if (sortedLikedItems.length === 0) {
-                     document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">
-                        <p class="mb-2">찜한 상품이 없습니다.</p>
-                     </div>`;
-                     return;
-                }
-                
-                const renderedIds = new Set(); 
+            let countLabel = "";
+            let emptyMsg = "";
 
-                sortedLikedItems.forEach(mainItem => {
-                    if(renderedIds.has(mainItem.id)) return;
-                    renderedIds.add(mainItem.id);
+            if(appState.currentMyList === 'specials') {
+                // 단골 특가 (First Tab)
+                filtered = list.filter(p => p.isEvent);
+                countLabel = "행사 상품";
+                emptyMsg = "진행 중인 행사가 없습니다.";
+            } else if (appState.currentMyList === 0) {
+                // 찜한 상품 (Second Tab)
+                filtered = list.filter(p => p.liked);
+                countLabel = "찜한 상품";
+                emptyMsg = "찜한 상품이 없습니다.";
+            } else {
+                // 리스트
+                filtered = list.filter(p => (p.myList||[]).includes(appState.currentMyList));
+                countLabel = "담긴 상품";
+                emptyMsg = "해당 리스트에 담긴 상품이 없습니다.";
+            }
 
-                    // Find related events (Not liked, Same category, Different ID)
-                    const relatedEvents = list.filter(p => 
-                        p.isEvent && 
-                        p.thirdCategory === mainItem.thirdCategory && 
-                        !p.liked && 
-                        p.id !== mainItem.id
-                    );
-
-                    // --- Render Main Item with Badge Logic ---
-                    const qty = appState.cart[mainItem.id] || 0;
-                    const rowBg = qty > 0 ? 'bg-green-50' : 'bg-white';
-                    
-                    html += `<div class="product-item flex flex-col p-3 border-b ${rowBg} relative">
-                        <div class="flex items-center w-full">
-                            <img src="${mainItem.img}" class="w-12 h-12 rounded mr-3">
-                            <div class="flex-grow pr-2">
-                                <div class="flex items-center">
-                                    ${mainItem.isEvent ? '<div class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></div>' : ''}
-                                    <span class="text-sm font-bold mr-2">${mainItem.name}</span>
-                                </div>
-                                <div class="text-xs text-gray-500">${mainItem.price.toLocaleString()}원</div>
-                                
-                                <!-- Smart Badge -->
-                                ${relatedEvents.length > 0 ? `
-                                <button onclick="toggleRelatedEvents(${mainItem.id})" class="mt-1.5 text-[11px] flex items-center text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100 w-fit active:scale-95 transition-transform">
-                                    <i class="fas fa-bolt text-yellow-400 mr-1.5"></i> 
-                                    <span class="font-bold">행사상품 ${relatedEvents.length}개</span>
-                                    <i id="chevron-${mainItem.id}" class="fas fa-chevron-down ml-1.5 text-[10px] transition-transform duration-200"></i>
-                                </button>
-                                ` : ''}
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="flex items-center border rounded bg-white">
-                                    <button class="w-8 h-8" onclick="updateQty(${mainItem.id},-1)">-</button>
-                                    <div class="w-8 text-center text-sm font-bold">${qty}</div>
-                                    <button class="w-8 h-8" onclick="updateQty(${mainItem.id},1)">+</button>
-                                </div>
-                            </div>
-                        </div>
+            // 정렬 적용
+            const sortedList = getSortedList(filtered, appState.currentSort);
+            
+            if (sortedList.length === 0) {
+                    document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">
+                    <p class="mb-2">${emptyMsg}</p>
                     </div>`;
+                    return;
+            }
 
-                    // --- Render Hidden Container [MODIFIED] ---
-                    // Removed: bg-gray-50 border-b border-gray-100 shadow-inner
-                    // Added: border-b border-gray-100 (to separate related group from next item)
-                    // The hidden container now has no distinct background.
-                    if (relatedEvents.length > 0) {
-                        html += `<div id="related-events-${mainItem.id}" class="hidden border-b border-gray-100">`;
-                        html += renderItemsHTML(relatedEvents, true);
-                        html += `</div>`;
+            let html = '';
+            
+            // --- 카테고리 섹션 헤더 로직 추가 ---
+            if (appState.currentSort === 'category') {
+                const categoryNames = {
+                    'vegetable': '채소/과일',
+                    'seafood': '수산/축산',
+                    'processed': '식품/가공',
+                    'sauce': '양념/소스',
+                    'kitchen': '주방/잡화'
+                };
+                // 정렬 순서 정의
+                const catOrder = ['vegetable', 'seafood', 'processed', 'sauce', 'kitchen'];
+                
+                // 데이터 그룹핑
+                const grouped = {};
+                sortedList.forEach(p => {
+                    const cat = p.category || 'other';
+                    if (!grouped[cat]) grouped[cat] = [];
+                    grouped[cat].push(p);
+                });
+
+                // 순서대로 렌더링
+                catOrder.forEach(cat => {
+                    if (grouped[cat] && grouped[cat].length > 0) {
+                        html += `<div class="list-section-header text-[#0C5608] bg-gray-50 border-y border-gray-200">${categoryNames[cat]}</div>`;
+                        html += renderItemsHTML(grouped[cat]);
+                        delete grouped[cat]; // 렌더링 후 삭제
                     }
                 });
 
-                document.getElementById('product-list').innerHTML = html;
-                return;
+                // 기타 카테고리 처리 (혹시 정의되지 않은 카테고리가 있다면)
+                Object.keys(grouped).forEach(cat => {
+                     if (grouped[cat].length > 0) {
+                        html += `<div class="list-section-header text-[#0C5608] bg-gray-50 border-y border-gray-200">기타</div>`;
+                        html += renderItemsHTML(grouped[cat]);
+                     }
+                });
 
             } else {
-                filtered = list.filter(p => (p.myList||[]).includes(appState.currentMyList));
-                if (filtered.length === 0) {
-                     document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">해당 리스트에 담긴 상품이 없습니다.</div>`;
-                } else {
-                    document.getElementById('product-list').innerHTML = renderItemsHTML(filtered);
-                }
+                // 일반 정렬 (최신순, 빈도순)
+                html += renderItemsHTML(sortedList);
             }
+
+            document.getElementById('product-list').innerHTML = html;
         }
 
         window.updateQty = function(id, d) {
@@ -1675,8 +2055,6 @@
             if (appState.currentView === 'home') renderHomeView();
             else renderProducts();
         };
-
-        function showConfirmationView() { alert("주문 확인 화면 (준비중)"); }
 
         // Start
         const savedMode = localStorage.getItem('orderz_start_mode');
