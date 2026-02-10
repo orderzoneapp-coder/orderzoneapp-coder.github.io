@@ -1,0 +1,160 @@
+import React, { useState } from 'react';
+
+export default function App() {
+  const [logoSize, setLogoSize] = useState(9); 
+  const [mainSize, setMainSize] = useState(14); 
+  const [isItalic, setIsItalic] = useState(false); 
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex justify-center">
+      <div className="w-full max-w-[420px] bg-white h-screen relative shadow-2xl overflow-hidden flex flex-col">
+        
+        {/* Header Area */}
+        <div className="flex-1 overflow-y-auto pb-20 no-scrollbar bg-gray-50">
+          <header className="sticky top-0 bg-white z-10 px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <h1 className="text-lg font-bold text-gray-800">장바구니</h1>
+            <button className="text-gray-500">닫기</button>
+          </header>
+          
+          <div className="p-4 space-y-6">
+            
+            <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+              <h3 className="font-bold text-gray-800 mb-2 text-sm text-center">🎚️ 밸런스 조절기</h3>
+              <p className="text-xs text-gray-500 text-center mb-4">버튼 높이 43px 고정 환경</p>
+              
+              {/* 1. Logo Size Control */}
+              <div className="mb-4">
+                <label className="text-xs font-bold text-gray-500 mb-1 block">1. ORDERZ 크기</label>
+                <div className="flex gap-2">
+                  {[10, 9, 8].map((size) => (
+                    <button 
+                      key={size}
+                      onClick={() => setLogoSize(size)}
+                      className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                        logoSize === size 
+                        ? 'bg-green-100 text-green-800 ring-2 ring-green-600' 
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }`}
+                    >
+                      {size}px {size === 9 ? '(Best)' : ''}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Main Text Size Control */}
+              <div className="mb-4">
+                <label className="text-xs font-bold text-gray-500 mb-1 block">2. 메인 텍스트 크기</label>
+                <div className="flex gap-2">
+                  {[15, 14, 13].map((size) => (
+                    <button 
+                      key={size}
+                      onClick={() => setMainSize(size)}
+                      className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                        mainSize === size 
+                        ? 'bg-blue-100 text-blue-800 ring-2 ring-blue-600' 
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }`}
+                    >
+                      {size}px {size === 14 ? '(Best)' : ''}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+               {/* 3. Italic Control */}
+               <div>
+                <label className="text-xs font-bold text-gray-500 mb-1 block">3. 로고 기울기</label>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setIsItalic(true)}
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                      isItalic 
+                      ? 'bg-purple-100 text-purple-800 ring-2 ring-purple-600' 
+                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    }`}
+                  >
+                    기울기 (Italic)
+                  </button>
+                  <button 
+                    onClick={() => setIsItalic(false)}
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                      !isItalic 
+                      ? 'bg-purple-100 text-purple-800 ring-2 ring-purple-600' 
+                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    }`}
+                  >
+                    정자체 (Normal)
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-xl text-white text-xs leading-relaxed opacity-90">
+              💡 <b>아이콘 수정 완료:</b><br/>
+              검색 아이콘의 돋보기 알(원) 크기를 줄여서<br/>
+              가장 <b>표준적인(Standard) 비율</b>로 변경했습니다.
+            </div>
+
+          </div>
+        </div>
+
+        {/* --- BOTTOM NAVIGATION BAR (Live Preview) --- */}
+        <nav className="absolute bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-[10px] flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-50">
+          
+          {/* Left: Search */}
+          <button className="flex flex-col items-center justify-center w-14 gap-[3px]">
+            {/* Modified Icon: Standard Search (Smaller circle r=7, Centered at 10,10) */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="10" cy="10" r="7" />
+              <line x1="21" y1="21" x2="15" y2="15" />
+            </svg>
+            <span className="text-[11px] font-medium text-[#666666]">검색</span>
+          </button>
+
+          {/* Center: Order Button */}
+          <button className="flex-1 mx-4 h-[43px] bg-[#A8D8B9] rounded-[10px] flex items-center justify-center relative shadow-md transition-all">
+            <div className="flex flex-col items-center justify-center leading-none">
+              
+              {/* LOGO TEXT: Dynamic Size & Style */}
+              <span 
+                className={`font-black text-[#1B4D3E] mb-[1px] opacity-80 tracking-wide transition-all ${isItalic ? 'italic' : ''}`}
+                style={{ fontSize: `${logoSize}px`, lineHeight: '1.1' }}
+              >
+                ORDERZ
+              </span>
+              
+              <div className="flex items-center gap-1.5">
+                <div className="w-[18px] h-[18px] bg-[#FFB380] rounded-full flex items-center justify-center shadow-sm">
+                  <span className="text-[#1B4D3E] text-[11px] font-bold pt-[1px]">2</span>
+                </div>
+                
+                {/* Main Text: Dynamic Size */}
+                <span 
+                  className="text-[#1B4D3E] font-bold tracking-tight transition-all duration-300"
+                  style={{ fontSize: `${mainSize}px`, lineHeight: '1.2' }}
+                >
+                  담은 상품 확인하기
+                </span>
+              </div>
+            </div>
+          </button>
+
+          {/* Right: Inquiry */}
+          <button className="flex flex-col items-center justify-center w-14 gap-[3px]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="14" rx="4" ry="4" />
+              <path d="M7 17v4l4-4" />
+              <path d="M8 10h.01" />
+              <path d="M12 10h.01" />
+              <path d="M16 10h.01" />
+            </svg>
+            <span className="text-[11px] font-medium text-[#666666]">문의</span>
+          </button>
+
+        </nav>
+      </div>
+    </div>
+  );
+}
