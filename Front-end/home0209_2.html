@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
-        /* Montserrat import: Removed italic, using standard bold/black */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap'); 
-        /* Added Nunito for Logo */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap');
 
         body {
@@ -349,16 +347,19 @@
         .sort-option:hover { background-color: #f9fafb; }
         .sort-option.selected { color: #16a34a; font-weight: 700; }
 
-        /* List Section Header */
+        /* List Section Header - STICKY FIX */
         .list-section-header {
             background-color: #f9fafb;
             padding: 8px 16px;
             font-size: 12px;
             font-weight: 700;
-            color: #1f2937; /* Updated: Dark Gray (text-gray-800) */
+            color: #1f2937;
             border-bottom: 1px solid #f3f4f6;
             position: sticky;
-            top: 0;
+            /* Sticky Header Logic: 
+               Header (57px) + Tabs (40px) = ~97px 
+               Sticks nicely below the tabs even when sort bar hides. */
+            top: 97px; 
             z-index: 5;
         }
 
@@ -574,11 +575,12 @@
 </head>
 <body class="bg-gray-50">
 
-    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-0 relative overflow-hidden">
+    <!-- Removed overflow-hidden from #app to ensure Sticky headers work relative to viewport -->
+    <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-0 relative">
 
         <!-- HEADER -->
-        <header class="sticky top-0 bg-white z-40 shadow-sm border-b">
-            <div class="relative flex justify-between items-center p-3 h-[57px]">
+        <header class="sticky top-0 bg-white z-40 shadow-sm border-b h-[57px]">
+            <div class="relative flex justify-between items-center p-3 h-full">
                 
                 <!-- Modified: Text Tab Style Toggle (Size Reduced) -->
                 <div class="flex items-center cursor-pointer" id="header-mode-toggle" onclick="toggleAppMode()">
@@ -662,8 +664,9 @@
         <!-- QUICK ORDER MAIN (ORDER MODE) -->
         <main id="quick-order-view" class="hidden">
             <!-- Sub Header (Sticky) -->
+            <!-- Ensure z-index is higher than sticky list headers (z-5) -->
             <div id="sub-header" class="sticky top-[57px] z-30 shadow-md bg-gray-100 relative">
-                <!-- 리스트 바 -->
+                <!-- 리스트 바 (Tabs) - Always Visible -->
                 <div id="my-list-container" class="flex justify-between items-center px-0 bg-white border-b h-[40px] overflow-hidden">
                     <div id="my-list-tabs" class="flex flex-1 items-center h-full no-scrollbar"></div>
                 </div>
@@ -893,8 +896,9 @@
             
             <!-- Create List Footer (Back Button Left Aligned) -->
             <div class="flex-none bg-white border-t p-3 safe-pb z-30 flex justify-start">
+                <!-- MODIFIED: Icon Removed -->
                 <button onclick="closeCreateListView()" class="px-5 py-2 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm transition-colors hover:bg-gray-200 flex items-center">
-                    <i class="fas fa-arrow-left mr-2"></i> 뒤로가기
+                    뒤로가기
                 </button>
             </div>
 
