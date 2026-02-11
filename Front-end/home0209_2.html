@@ -848,7 +848,7 @@
         </main>
 
         <!-- CREATE LIST VIEW -->
-        <div id="create-list-view" class="hidden absolute inset-0 bg-white z-50 flex flex-col">
+        <div id="create-list-view" class="hidden fixed inset-0 z-50 flex flex-col bg-white max-w-md mx-auto">
             <!-- Header (Duplicate of Main Header for Consistency) -->
             <header class="flex-none sticky top-0 bg-white z-40 shadow-sm border-b">
                 <div class="relative flex justify-between items-center p-3 h-[57px]">
@@ -866,7 +866,8 @@
             </header>
             
             <!-- Toolbar (Back, Tabs, Save) - FLAT STRUCTURE with justify-between -->
-            <div class="flex-none flex items-center justify-between px-4 border-b bg-white z-20 h-[40px]">
+            <!-- REMOVED BORDER-B as requested -->
+            <div class="flex-none flex items-center justify-between px-4 bg-white z-20 h-[40px] mt-2">
                 <!-- Tab Group (Back button removed) -->
                 <div class="flex items-center gap-2 h-full">
                     <button class="cl-tab-btn active" data-tab="all">전체</button>
@@ -881,7 +882,7 @@
             </div>
 
             <!-- Content Area -->
-            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24" id="create-list-content">
+            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24 pt-2" id="create-list-content">
                 <!-- Select All Bar Removed as requested -->
                 <div class="mt-2" id="create-list-items">
                     <!-- Items -->
@@ -1199,7 +1200,7 @@
             </div>
 
             <div class="mt-4 pt-4 border-t text-xs text-gray-400 text-center">
-                * 오늘/내일 주문 시 도착 예정일입니다.
+                * 배송일은 +2일까지 설정 가능합니다. (기본: 내일 배송)
             </div>
         </div>
     </div>
@@ -1381,6 +1382,7 @@
             
             subSectionBar.classList.remove('hidden');
             
+            // Only show sort for Favorites (id 0)
             if (appState.currentMyList === 0) {
                  sortContainer.style.display = 'block';
             } else {
@@ -2242,7 +2244,24 @@
                 emptyMsg = "해당 리스트에 담긴 상품이 없습니다.";
             }
 
-            const sortedList = getSortedList(filtered, appState.currentSort);
+            // Apply Sort Logic ONLY for Favorites (id 0)
+            let sortedList;
+            if (appState.currentMyList === 0) {
+                sortedList = getSortedList(filtered, appState.currentSort);
+            } else if (appState.currentMyList === 'specials') {
+                // Special handling for Specials: Group by Type
+                // Mocking event types for display (cycle through types)
+                const eventTypes = ['today', 'store', 'md'];
+                filtered.forEach((p, idx) => {
+                    p.eventType = eventTypes[idx % 3];
+                });
+                // No specific sort needed, grouping handles order
+                sortedList = filtered; 
+            } else {
+                // For LIST1/LIST2, use default order (could be custom in future)
+                // Currently just list order
+                sortedList = filtered;
+            }
             
             if (sortedList.length === 0) {
                     document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">
@@ -2253,7 +2272,27 @@
 
             let html = '';
             
-            if (appState.currentSort === 'category') {
+            // Condition 1: Specials with Headers
+            if (appState.currentMyList === 'specials') {
+                const groups = {
+                    'today': { title: '오늘의 행사', items: [] },
+                    'store': { title: '매장행사', items: [] },
+                    'md': { title: '식자재행사', items: [] }
+                };
+                
+                sortedList.forEach(p => {
+                    if(groups[p.eventType]) groups[p.eventType].items.push(p);
+                });
+
+                Object.values(groups).forEach(group => {
+                    if (group.items.length > 0) {
+                        html += `<div class="list-section-header text-[#0C5608] bg-gray-50 border-y border-gray-200 text-gray-800">${group.title}</div>`;
+                        html += renderItemsHTML(group.items);
+                    }
+                });
+            }
+            // Condition 2: Category Sort (Only for Favorites)
+            else if (appState.currentMyList === 0 && appState.currentSort === 'category') {
                 const categoryNames = {
                     'vegetable': '채소/과일',
                     'seafood': '수산/축산',
@@ -2285,7 +2324,9 @@
                       }
                 });
 
-            } else {
+            } 
+            // Condition 3: Default List (Latest sort for Favorites, or Plain list for others)
+            else {
                 html += renderItemsHTML(sortedList);
             }
 
