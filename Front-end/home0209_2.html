@@ -279,7 +279,7 @@
         .category-btn.active { background-color: #f0fdf4; }
         .category-btn.active span { color: #16a34a; font-weight: 700; }
 
-        /* Sub Section Bar Styles (Modified: Not Sticky) */
+        /* Sub Section Bar Styles & Animation */
         .sub-section-bar {
             display: flex;
             justify-content: space-between;
@@ -289,6 +289,28 @@
             background-color: #fff;
             border-bottom: 1px solid #f3f4f6;
             font-size: 13px;
+        }
+        
+        .sort-bar-transition {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease;
+            max-height: 40px; 
+            opacity: 1;
+            overflow: hidden; 
+            will-change: max-height, opacity, padding;
+            transform: translateZ(0);
+        }
+        
+        .sort-bar-overflow-visible {
+            overflow: visible !important; 
+        }
+        
+        .sort-bar-collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            border-bottom: none;
+            overflow: hidden !important; 
         }
 
         .delivery-btn {
@@ -336,7 +358,7 @@
             color: #1f2937; /* Updated: Dark Gray (text-gray-800) */
             border-bottom: 1px solid #f3f4f6;
             position: sticky;
-            top: 97px; /* Header(57) + Tabs(40) */
+            top: 0;
             z-index: 5;
         }
 
@@ -554,7 +576,7 @@
 
     <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-0 relative overflow-hidden">
 
-        <!-- HEADER (Sticky top-0) -->
+        <!-- HEADER -->
         <header class="sticky top-0 bg-white z-40 shadow-sm border-b">
             <div class="relative flex justify-between items-center p-3 h-[57px]">
                 
@@ -639,42 +661,46 @@
 
         <!-- QUICK ORDER MAIN (ORDER MODE) -->
         <main id="quick-order-view" class="hidden">
-            <!-- Modified: Tabs are Sticky, Sub-Section is not -->
-            <div id="my-list-container" class="sticky top-[57px] z-30 bg-white border-b h-[40px] overflow-hidden">
-                <div id="my-list-tabs" class="flex flex-1 items-center h-full no-scrollbar px-4"></div>
-            </div>
-            
-            <!-- Sub Section Bar (Sort & Delivery) - Not Sticky -->
-            <div id="sub-section-bar" class="sub-section-bar hidden">
-                <!-- Left: Delivery Date -->
-                <div id="delivery-date-btn" class="delivery-btn" onclick="openCalendarModal()">
-                    <i class="far fa-calendar-alt text-lg text-green-600 mr-1"></i>
-                    <span id="current-delivery-date">1월 12일(월) 도착</span>
+            <!-- Sub Header (Sticky) -->
+            <div id="sub-header" class="sticky top-[57px] z-30 shadow-md bg-gray-100 relative">
+                <!-- 리스트 바 -->
+                <div id="my-list-container" class="flex justify-between items-center px-0 bg-white border-b h-[40px] overflow-hidden">
+                    <div id="my-list-tabs" class="flex flex-1 items-center h-full no-scrollbar"></div>
                 </div>
-
-                <!-- Right: Sort Dropdown -->
-                <div class="sort-dropdown-container">
-                    <div class="sort-btn" onclick="toggleSortDropdown(event)">
-                        <span id="current-sort-label">최신순</span>
-                        <i class="fas fa-caret-down text-gray-400"></i>
+                
+                <!-- Sub Section Bar (Sort & Delivery) with Animation -->
+                <div id="sub-section-bar" class="sub-section-bar hidden sort-bar-transition">
+                    <!-- Left: Delivery Date -->
+                    <div id="delivery-date-btn" class="delivery-btn" onclick="openCalendarModal()">
+                        <i class="far fa-calendar-alt text-lg text-green-600 mr-1"></i>
+                        <span id="current-delivery-date">1월 12일(월) 도착</span>
                     </div>
-                    <div id="sort-dropdown-menu" class="sort-dropdown-menu">
-                        <div class="sort-option" onclick="changeSort('latest')">최신순</div>
-                        <div class="sort-option" onclick="changeSort('category')">카테고리순</div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Search Box (Initially Hidden, Sticky when open) -->
-            <div id="search-container" class="p-3 border-b bg-white search-hidden shadow-inner sticky top-[97px] z-20">
-                <div class="flex items-center w-full gap-2">
-                    <div class="relative flex-grow">
-                        <input type="text" id="product-search-input" placeholder="담은 상품 내 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400"></i>
+                    <!-- Right: Sort Dropdown -->
+                    <div class="sort-dropdown-container">
+                        <div class="sort-btn" onclick="toggleSortDropdown(event)">
+                            <span id="current-sort-label">최신순</span>
+                            <i class="fas fa-caret-down text-gray-400"></i>
+                        </div>
+                        <div id="sort-dropdown-menu" class="sort-dropdown-menu">
+                            <div class="sort-option" onclick="changeSort('latest')">최신순</div>
+                            <div class="sort-option" onclick="changeSort('category')">카테고리순</div>
+                            <!-- 자주 쓰는 상품순 Deleted -->
                         </div>
                     </div>
-                    <button onclick="closeSearch()" class="text-sm font-bold text-gray-500 whitespace-nowrap px-1">닫기</button>
+                </div>
+
+                <!-- Search Box (Initially Hidden) -->
+                <div id="search-container" class="p-3 border-b bg-white search-hidden shadow-inner">
+                    <div class="flex items-center w-full gap-2">
+                        <div class="relative flex-grow">
+                            <input type="text" id="product-search-input" placeholder="담은 상품 내 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                        <button onclick="closeSearch()" class="text-sm font-bold text-gray-500 whitespace-nowrap px-1">닫기</button>
+                    </div>
                 </div>
             </div>
             
@@ -699,28 +725,42 @@
 
         <!-- CART VIEW (NEW) -->
         <main id="cart-view" class="hidden bg-gray-50 min-h-screen pb-24">
+            <!-- Header Area with Back Button Removed, Buttons Removed -->
             <div class="bg-white px-4 py-3 border-b flex justify-between items-center sticky top-[57px] z-30 shadow-sm">
                 <h2 class="text-lg font-bold text-gray-800">담은 상품 확인 <span class="text-[#0C5608] text-base ml-1" id="cart-total-count-header">총 0개</span></h2>
             </div>
+            
+            <!-- Default Label -->
             <div class="px-4 py-2 text-xs text-gray-400 font-bold mt-2">담은 상품 목록</div>
-            <div id="cart-list-items" class="bg-white border-t border-b divide-y divide-gray-100"></div>
+            
+            <!-- Cart List -->
+            <div id="cart-list-items" class="bg-white border-t border-b divide-y divide-gray-100">
+                <!-- Items will be rendered here -->
+            </div>
         </main>
 
         <!-- ORDER FORM VIEW (NEW SIMULATION) -->
         <main id="order-form-view" class="hidden bg-white min-h-screen z-50 absolute inset-0 overflow-y-auto">
+            <!-- Header -->
             <div class="flex items-center p-3 border-b bg-white sticky top-0 z-10">
                 <button onclick="showConfirmationView()" class="p-2 text-gray-600"><i class="fas fa-chevron-left text-lg"></i></button>
                 <h2 class="text-lg font-bold text-gray-800 ml-2">주문서 작성</h2>
             </div>
+
             <div class="pb-20">
+                <!-- Order Table -->
                 <div class="border-b-4 border-gray-100">
                     <div class="grid grid-cols-[1fr_50px_80px] bg-white">
                         <div class="order-table-header text-left">품명 (규격) 단가</div>
                         <div class="order-table-header">총수량</div>
                         <div class="order-table-header text-right">소계</div>
                     </div>
-                    <div id="order-form-list"></div>
+                    <div id="order-form-list">
+                        <!-- List Items -->
+                    </div>
                 </div>
+
+                <!-- Summary -->
                 <div class="bg-gray-700 text-white p-4">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-medium">주문</span>
@@ -736,21 +776,88 @@
                         <span class="text-xl font-bold text-blue-300" id="order-total-price">0 원</span>
                     </div>
                 </div>
+                <div class="bg-gray-600 text-gray-300 text-xs p-3">
+                    반환 예정 배송비<br>(TEST) <span class="float-right text-white font-bold">0 원</span>
+                </div>
+
+                <!-- Delivery Info -->
+                <div class="p-4 border-t-4 border-gray-100">
+                    <div class="flex items-center mb-3">
+                        <span class="bg-gray-200 text-xs px-2 py-1 rounded mr-2 font-bold text-gray-600">배송지정보 ▼</span>
+                    </div>
+                    <div class="flex">
+                        <div class="w-20 text-sm font-bold text-gray-600 pt-2">전하실 말씀</div>
+                        <textarea class="flex-grow border border-gray-300 rounded p-2 text-sm h-20 resize-none" placeholder=""></textarea>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="p-4 border-t-4 border-gray-100">
+                    <div class="border border-gray-300 rounded p-4 mb-4">
+                        <div class="mb-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-green-600 focus:ring-green-500" checked>
+                                <span class="font-bold text-sm text-gray-700">간편결제하기</span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
+                                <span class="text-sm text-gray-600">무통장입금</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
+                                <span class="text-sm text-gray-600">신용카드 (기타)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-bold text-gray-700">사용 포인트(1점 단위)</span>
+                        <div class="flex items-center">
+                            <input type="text" value="0" class="border border-gray-300 rounded p-1 text-right w-24 mr-1 text-sm">
+                            <span class="text-sm">점</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>보유포인트</span>
+                        <span>25,400점</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>최대사용가능포인트</span>
+                        <span>25,400점</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
                 <div class="p-4 mt-4">
                     <button class="w-full bg-[#63BF86] text-white font-bold py-3 rounded-lg shadow-md text-lg mb-3" onclick="alert('결제가 완료되었습니다!'); showHomeView(true);">간편결제하기</button>
                     <button class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 rounded-lg" onclick="showQuickOrderView()">취소</button>
+                </div>
+                
+                <!-- Footer Info -->
+                <div class="bg-gray-800 text-gray-400 text-[10px] p-6 leading-relaxed">
+                    <div class="flex space-x-3 mb-4 text-gray-300">
+                        <span>회사소개</span> <span>개인정보</span> <span>이용약관</span> <span>사업자정보확인</span>
+                    </div>
+                    회사명 원앱 주소 서울특별시 송파구 양재대로 932<br>
+                    사업자 등록번호 380-14-01523<br>
+                    대표 이무철 전화 02-6959-1374<br>
+                    통신판매업신고번호 제2021-서울송파-2063호
                 </div>
             </div>
         </main>
 
         <!-- CREATE LIST VIEW -->
         <div id="create-list-view" class="hidden fixed inset-0 z-50 flex flex-col bg-white max-w-md mx-auto">
+            <!-- Header (Duplicate of Main Header for Consistency) -->
             <header class="flex-none sticky top-0 bg-white z-40 shadow-sm border-b">
                 <div class="relative flex justify-between items-center p-3 h-[57px]">
                     <div class="flex items-center cursor-pointer">
                         <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
                         <span class="text-sm font-bold text-gray-800">상품목록</span>
                     </div>
+                    <!-- Updated: Match Footer Color -->
                     <h1 class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-[#1B4D3E]">NH라인</h1>
                     <div class="flex items-center space-x-2">
                         <span class="text-xs font-semibold">OP</span>
@@ -759,34 +866,60 @@
                 </div>
             </header>
             
+            <!-- Toolbar (Back, Tabs, Save) - FLAT STRUCTURE with justify-between -->
+            <!-- Modified: Added pt-3 pb-2 and removed h-[40px] for better spacing -->
             <div class="flex-none flex items-center justify-between px-4 pt-3 pb-2 bg-white z-20">
+                <!-- Tab Group (Back button removed) -->
                 <div class="flex items-center gap-2 h-full">
                     <button class="cl-tab-btn active" data-tab="all">전체</button>
                     <button class="cl-tab-btn cl-tab-l1" data-tab="1">LIST1</button>
                     <button class="cl-tab-btn cl-tab-l2" data-tab="2">LIST2</button>
                 </div>
+                
+                <!-- Save Button -->
                 <button id="create-list-save-btn" class="h-full flex items-center justify-center text-green-600 font-bold text-sm">
                     저장
                 </button>
             </div>
 
+            <!-- Content Area -->
+            <!-- Modified: Changed bg-gray-50 to bg-white, Removed pt-2/mt-2 to eliminate grey gap -->
             <div class="flex-grow overflow-y-auto bg-white pb-24" id="create-list-content">
-                <div class="" id="create-list-items"></div>
+                <!-- Select All Bar Removed as requested -->
+                <div class="" id="create-list-items">
+                    <!-- Items -->
+                </div>
             </div>
             
-            <!-- Create List Footer (Back Button, Icon Removed) -->
+            <!-- Create List Footer (Back Button Left Aligned) -->
             <div class="flex-none bg-white border-t p-3 safe-pb z-30 flex justify-start">
                 <button onclick="closeCreateListView()" class="px-5 py-2 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm transition-colors hover:bg-gray-200 flex items-center">
-                    뒤로가기
+                    <i class="fas fa-arrow-left mr-2"></i> 뒤로가기
                 </button>
             </div>
-        </div>
+
+            <!-- Move Sheet (Modal) -->
+            <div id="move-sheet-overlay" class="hidden absolute inset-0 z-40"></div>
+            <div id="move-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.15)] z-50">
+                <div class="p-5">
+                    <h3 class="font-bold text-lg mb-4 text-center">선택한 상품 이동</h3>
+                    <div class="space-y-2">
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l1" onclick="applyBatchMove(1)">LIST1으로 이동</button>
+                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l2" onclick="applyBatchMove(2)">LIST2으로 이동</button>
+                    </div>
+                    <button id="move-sheet-cancel" class="w-full mt-4 py-3 text-gray-500 font-medium">취소</button>
+                </div>
+                <div class="h-6 bg-white w-full"></div>
+            </div>
+    </div> <!-- END of create-list-view -->
     
     <!-- Delivery Date Picker (Hidden) -->
     <input type="date" id="hidden-date-picker" class="absolute opacity-0 w-0 h-0 top-0 left-0">
 
     <!-- FOOTER (Main) - Integrated Navigation -->
     <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 pt-2 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
+        
+        <!-- 왼쪽: 검색 버튼 -->
         <button id="footer-search-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
                 <circle cx="10" cy="10" r="7" />
@@ -795,14 +928,21 @@
             <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">검색</span>
         </button>
 
+        <!-- 중앙: 주문하기 버튼 (43px, 16px 텍스트) -->
         <button id="footer-order-btn" class="footer-order-btn-base footer-btn-home" onclick="handleCenterBtnClick()">
             <div class="flex flex-col items-center justify-center leading-none w-full">
+                <!-- 로고 -->
                 <span id="btn-line-1" class="btn-line-1">ORDERZ</span>
-                <div id="btn-line-2" class="btn-line-2">주문하러 가기</div>
+                <!-- 메인 텍스트 -->
+                <div id="btn-line-2" class="btn-line-2">
+                    주문하러 가기
+                </div>
             </div>
+            <!-- Optional Floating Badge (Only for Home State if needed) -->
             <span id="nav-cart-badge" class="nav-badge hidden-badge absolute -top-1 -right-1 shadow-sm">0</span>
         </button>
 
+        <!-- 오른쪽: 문의 버튼 -->
         <button id="footer-inquiry-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
                 <rect x="3" y="3" width="18" height="14" rx="4" ry="4" />
@@ -813,38 +953,214 @@
             </svg>
             <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">문의</span>
         </button>
+
     </nav>
 
     </div> <!-- END of app -->
 
+    <!-- MOVED OUTSIDE #APP: Coach Mark Popup (New) -->
     <div id="coach-mark-popup" class="coach-mark">
         <span>리스트가 비어 있습니다</span>
         <button onclick="goToCreateListFromPopup()" class="coach-btn">리스트 만들기 <i class="fas fa-chevron-right text-[9px] ml-0.5"></i></button>
     </div>
 
-    <!-- Guide Modal (FIXED HEIGHT) -->
+    <!-- MOVED OUTSIDE #APP: Guide & Setting Modal (FIXED HEIGHT) -->
     <div id="guide-modal-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity opacity-0">
         <div class="flex items-center justify-center min-h-screen px-4">
+            <!-- Added fixed height h-[70vh] here -->
             <div class="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-sm h-[70vh] overflow-hidden transform transition-transform scale-95 flex flex-col" id="guide-modal-content">
+                <!-- Header -->
                 <div class="flex justify-between items-center p-5 bg-white border-b sticky top-0 z-10 flex-none">
                     <h3 class="text-lg font-bold text-gray-900">이용 안내 및 설정</h3>
                     <button onclick="closeGuide()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
                 </div>
+                
+                <!-- Tabs -->
                 <div class="flex border-b bg-white z-10 sticky top-[68px] flex-none">
                     <button id="tab-faq" class="guide-tab-btn active" onclick="switchGuideTab('faq')">이용안내</button>
                     <button id="tab-rename" class="guide-tab-btn" onclick="switchGuideTab('rename')">이름설정</button>
                     <button id="tab-start" class="guide-tab-btn" onclick="switchGuideTab('start')">시작화면</button>
                 </div>
+                
+                <!-- Content Area (Scrollable) -->
                 <div class="flex-grow overflow-y-auto bg-gray-50">
                     <!-- Section: FAQ -->
                     <div id="guide-section-faq" class="block">
+                        <!-- FAQ 1 -->
                         <div class="faq-item" id="faq-1">
                             <div class="faq-header" onclick="toggleFaq('faq-1')">
-                                <div class="faq-question"><i class="fas fa-list-ul text-green-500 mr-2"></i> 관심상품이란?</div>
+                                <div class="faq-question">
+                                    <i class="fas fa-list-ul text-green-500 mr-2"></i> 관심상품이란?
+                                </div>
                                 <i class="fas fa-chevron-down faq-chevron"></i>
                             </div>
                             <div class="faq-content">
-                                <div class="faq-answer-box">'관심상품'탭은 <span class="text-green-600 font-bold">내가 찜한 상품(관심 상품)</span>과, 해당 상품과 관련된 <span class="text-green-600 font-bold">행사 상품</span>을 함께 모아볼 수 있는 리스트입니다.</div>
+                                <div class="faq-answer-box">
+                                    '관심상품'탭은 <span class="text-green-600 font-bold">내가 찜한 상품(관심 상품)</span>과, 해당 상품과 관련된 <span class="text-green-600 font-bold">행사 상품</span>을 함께 모아볼 수 있는 리스트입니다.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FAQ 2 -->
+                        <div class="faq-item" id="faq-2">
+                            <div class="faq-header" onclick="toggleFaq('faq-2')">
+                                <div class="faq-question">
+                                    <i class="fas fa-sort text-green-500 mr-2"></i> 상품 순서 변경
+                                </div>
+                                <i class="fas fa-chevron-down faq-chevron"></i>
+                            </div>
+                            <div class="faq-content">
+                                <div class="faq-answer-box">
+                                    전체보기에서는 불가능하며, <span class="text-green-600 font-bold">개별 리스트 탭</span>(LIST1 등)을 눌러 들어갔을 때만 상품 우측에 <span class="text-green-600 font-bold">드래그 핸들(≡)</span>이 나타납니다. 핸들을 잡고 위아래로 움직여 순서를 바꿔보세요.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FAQ 3 -->
+                        <div class="faq-item" id="faq-3">
+                            <div class="faq-header" onclick="toggleFaq('faq-3')">
+                                <div class="faq-question">
+                                    <i class="fas fa-edit text-green-500 mr-2"></i> 리스트 이름 변경
+                                </div>
+                                <i class="fas fa-chevron-down faq-chevron"></i>
+                            </div>
+                            <div class="faq-content">
+                                <div class="faq-answer-box">
+                                    상단의 <span class="text-green-600 font-bold">'이름설정' 탭</span>으로 이동하여 LIST1, LIST2, LIST3의 이름을 변경할 수 있습니다. 자주 쓰는 키워드를 선택하거나 직접 입력하여 저장하세요.
+                                    <div class="mt-3 text-right">
+                                        <button onclick="switchGuideTab('rename')" class="text-xs text-green-600 underline font-bold">이름설정 바로가기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FAQ 4 -->
+                        <div class="faq-item" id="faq-4">
+                            <div class="faq-header" onclick="toggleFaq('faq-4')">
+                                <div class="faq-question">
+                                    <i class="fas fa-home text-green-500 mr-2"></i> 시작화면 설정
+                                </div>
+                                <i class="fas fa-chevron-down faq-chevron"></i>
+                            </div>
+                            <div class="faq-content">
+                                <div class="faq-answer-box">
+                                    앱을 실행할 때 처음 보여지는 화면을 고정하고 싶다면 상단의 <span class="text-green-600 font-bold">'시작화면' 탭</span>에서 설정해주세요. 빠른 주문이 필요하다면 '주문하기'를 추천합니다.
+                                    <div class="mt-3 text-right">
+                                        <button onclick="switchGuideTab('start')" class="text-xs text-green-600 underline font-bold">시작화면 설정 바로가기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Rename -->
+                    <div id="guide-section-rename" class="hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <p class="text-[11px] text-gray-400 italic">터치하여 포커스 후 아래 키워드를 선택하세요.</p>
+                                <button onclick="resetListNames()" class="text-xs text-gray-400 underline">초기화</button>
+                            </div>
+
+                            <!-- Custom Inputs -->
+                            <div class="space-y-2 mb-4">
+                                <div class="list-input-group flex items-center active" id="group-l1" onclick="focusInput(1)">
+                                    <span class="text-xs font-bold text-gray-400 w-8">LIST1</span>
+                                    <input type="text" id="input-list1-name" placeholder="LIST1 명칭" class="outline-none" readonly>
+                                </div>
+                                <div class="list-input-group flex items-center" id="group-l2" onclick="focusInput(2)">
+                                    <span class="text-xs font-bold text-gray-400 w-8">LIST2</span>
+                                    <input type="text" id="input-list2-name" placeholder="LIST2 명칭" class="outline-none" readonly>
+                                </div>
+                                <!-- LIST3 Input Removed -->
+                            </div>
+
+                            <!-- Multi-Category Keyword Pool -->
+                            <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-inner h-56 overflow-y-auto mb-6">
+                                <div class="mb-4">
+                                    <div class="text-[10px] font-bold text-gray-400 mb-2">공간 / 관리 주체</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="keyword-chip" onclick="applyKeyword('주방')">주방</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('홀/바')">홀/바</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('창고')">창고</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('매장')">매장</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('냉장고')">냉장고</button>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="text-[10px] font-bold text-gray-400 mb-2">보관 / 온도</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="keyword-chip" onclick="applyKeyword('신선/냉장')">신선/냉장</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('냉동')">냉동</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('상온/공산')">상온/공산</button>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="text-[10px] font-bold text-gray-400 mb-2">목적 / 용도</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="keyword-chip" onclick="applyKeyword('메인재료')">메인재료</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('부재료')">부재료</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('양념/소스')">양념/소스</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('소모품')">소모품</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('직원식')">직원식</button>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="text-[10px] font-bold text-gray-400 mb-2">발주 주기</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="keyword-chip" onclick="applyKeyword('매일발주')">매일발주</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('정기발주')">정기발주</button>
+                                        <button class="keyword-chip" onclick="applyKeyword('긴급/기타')">긴급/기타</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="saveListNames()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl text-sm shadow-lg shadow-blue-100 transition-colors">
+                                설정된 이름으로 변경하기
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section: Start Screen -->
+                    <div id="guide-section-start" class="hidden">
+                        <div class="p-5">
+                            <div class="text-sm text-gray-600 mb-4 font-bold">
+                                앱 실행(접속)시 가장 먼저 보일 화면을 선택하세요.
+                            </div>
+
+                            <div class="space-y-3">
+                                <!-- Home Option -->
+                                <div class="bg-white rounded-xl border-2 p-5 flex items-center justify-between cursor-pointer transition-colors hover:bg-gray-50" 
+                                     id="option-home" onclick="setStartScreen('home')">
+                                    <div>
+                                        <div class="font-bold text-gray-800 text-sm flex items-center">
+                                            <i class="fas fa-shopping-bag mr-2 text-gray-400"></i> 상품목록 (홈)
+                                        </div>
+                                        <div class="text-[11px] text-gray-400 mt-1 pl-6">
+                                            다양한 상품을 둘러보고 검색할 때 적합합니다.
+                                        </div>
+                                    </div>
+                                    <div class="text-gray-300 transition-colors" id="check-icon-home"><i class="fas fa-circle text-xl"></i></div>
+                                </div>
+
+                                <!-- Order Option -->
+                                <div class="bg-white rounded-xl border-2 p-5 flex items-center justify-between cursor-pointer transition-colors hover:bg-gray-50" 
+                                     id="option-quick-order" onclick="setStartScreen('quick-order')">
+                                    <div>
+                                        <div class="font-bold text-gray-800 text-sm flex items-center">
+                                            <i class="fas fa-clipboard-check mr-2 text-gray-400"></i> 주문하기
+                                        </div>
+                                        <div class="text-[11px] text-gray-400 mt-1 pl-6">
+                                            자주 시키는 상품을 빠르게 주문할 때 적합합니다.
+                                        </div>
+                                    </div>
+                                    <div class="text-gray-300 transition-colors" id="check-icon-quick-order"><i class="fas fa-circle text-xl"></i></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 p-4 bg-green-50 rounded-xl border border-green-100">
+                                <div class="text-[10px] text-green-700 font-bold mb-1">
+                                    <i class="fas fa-check-circle mr-1"></i> 설정 팁
+                                </div>
+                                <div class="text-[10px] text-gray-600">
+                                    선택하신 설정은 자동으로 저장되며, 다음 앱 실행 시부터 즉시 반영됩니다.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -853,14 +1169,23 @@
         </div>
     </div>
 
-    <!-- Calendar Modal -->
+    <!-- ADDED: Calendar Modal -->
     <div id="calendar-overlay" class="fixed inset-0 bg-black/50 z-[70] hidden transition-opacity opacity-0 flex items-center justify-center px-4">
         <div id="calendar-modal" class="bg-white w-full max-w-sm rounded-2xl p-5 transform scale-95 transition-transform duration-200 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-gray-800">배송일 선택</h3>
-                <button onclick="closeCalendarModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
+                <button onclick="closeCalendarModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
             </div>
-            <div id="calendar-month-title" class="text-lg font-extrabold text-gray-800 text-center mb-4"></div>
+            
+            <div class="flex items-center justify-center gap-4 mb-4">
+                <button class="text-gray-400"><i class="fas fa-chevron-left"></i></button>
+                <span id="calendar-month-title" class="text-lg font-extrabold text-gray-800"></span>
+                <button class="text-gray-400"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <!-- Weekdays -->
             <div class="grid grid-cols-7 text-center mb-2">
                 <div class="text-xs text-red-500 font-bold">일</div>
                 <div class="text-xs text-gray-500">월</div>
@@ -870,7 +1195,12 @@
                 <div class="text-xs text-gray-500">금</div>
                 <div class="text-xs text-blue-500 font-bold">토</div>
             </div>
-            <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center"></div>
+
+            <!-- Days Grid -->
+            <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
+                <!-- JS Generated -->
+            </div>
+
             <div class="mt-4 pt-4 border-t text-xs text-gray-400 text-center">
                 * 배송일은 +2일까지 설정 가능합니다. (기본: 내일 배송)
             </div>
@@ -888,13 +1218,25 @@
                     { id: 12, name: '백다다기_5개입', price: 3500, spec: '판매처: a유통', category: 'vegetable', subCategory: '오이/호박/고추/피망', thirdCategory: '오이', isEvent: true, myList: [], likedTimestamp: 1729780000000, orderCount: 200, liked: false },
                     { id: 52, name: '베이컨(알찬)', price: 11500, spec: '판매처: a유통', category: 'seafood', subCategory: '돼지고기', thirdCategory: '가공육', isEvent: true, myList: [], likedTimestamp: 1729740000000, orderCount: 15, liked: true },
                     { id: 63, name: '식용유(말)쉐프원', price: 47800, spec: '판매처: a유통', category: 'sauce', subCategory: '기름', thirdCategory: '식용유', isEvent: false, myList: [], likedTimestamp: 1729730000000, orderCount: 80, liked: false },
+                    { id: 70, name: '배추_3입망 BOX', price: 10600, spec: '판매처: a유통', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '배추', isEvent: true, myList: [], likedTimestamp: 1729720000000, orderCount: 20, liked: false },
+                    { id: 71, name: '양파_왕20kg망 BOX', price: 22000, spec: '판매처: a유통', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', isEvent: true, myList: [], likedTimestamp: 1729710000000, orderCount: 200, liked: true },
+                    { id: 100, name: '깐마늘_1kg', price: 9300, spec: '판매처: a유통', category: 'vegetable', subCategory: '마늘', thirdCategory: '마늘', isEvent: false, myList: [], likedTimestamp: 1729700000000, orderCount: 150, liked: true },
+                    { id: 101, name: '국산 간마늘믹스_1kg', price: 6000, spec: '판매처: a유통', category: 'vegetable', subCategory: '마늘', thirdCategory: '마늘', isEvent: true, myList: [], likedTimestamp: 1729690000000, orderCount: 80, liked: false },
+                    { id: 102, name: '생강(kg)', price: 8900, spec: '판매처: a유통', category: 'vegetable', subCategory: '생강', thirdCategory: '생강', isEvent: false, myList: [], likedTimestamp: 1729680000000, orderCount: 40, liked: true },
+                    { id: 103, name: '수입김치(장길산)투명 10kg', price: 18300, spec: '판매처: a유통', category: 'processed', subCategory: '김치', thirdCategory: '김치', isEvent: true, myList: [], likedTimestamp: 1729670000000, orderCount: 90, liked: false },
+                    { id: 104, name: '무말랭이[한울] 4kg', price: 15300, spec: '판매처: a유통', category: 'processed', subCategory: '절임', thirdCategory: '무말랭이', isEvent: false, myList: [], likedTimestamp: 1729660000000, orderCount: 30, liked: true },
+                    { id: 105, name: '옥수수콘(리치스) 2.95kg', price: 5300, spec: '판매처: a유통', category: 'processed', subCategory: '통조림', thirdCategory: '옥수수', isEvent: true, myList: [], likedTimestamp: 1729650000000, orderCount: 110, liked: false },
+                    { id: 106, name: '밀감캔(만다린) 3kg', price: 9300, spec: '판매처: a유통', category: 'processed', subCategory: '통조림', thirdCategory: '과일', isEvent: false, myList: [], likedTimestamp: 1729640000000, orderCount: 20, liked: true },
                     { id: 107, name: '면장갑(10켤레)타스 1EA', price: 2100, spec: '판매처: a유통', category: 'kitchen', subCategory: '소모품', thirdCategory: '장갑', isEvent: true, myList: [], likedTimestamp: 1729630000000, orderCount: 60, liked: true },
+                    { id: 108, name: '점보롤(1즙/4입/4봉)', price: 6100, spec: '판매처: a유통', category: 'kitchen', subCategory: '소모품', thirdCategory: '휴지', isEvent: false, myList: [], likedTimestamp: 1729620000000, orderCount: 100, liked: true },
+                    { id: 109, name: '두부(판) 3kg', price: 4500, spec: '판매처: a유통', category: 'processed', subCategory: '두부', thirdCategory: '두부', isEvent: true, myList: [], likedTimestamp: 1729610000000, orderCount: 130, liked: false },
+                    { id: 110, name: '콩나물(박스) 3.5kg', price: 3800, spec: '판매처: a유통', category: 'vegetable', subCategory: '나물', thirdCategory: '콩나물', isEvent: false, myList: [], likedTimestamp: 1729600000000, orderCount: 70, liked: true }
                 ],
             },
             cart: {},
-            listNames: { 1: 'LIST1', 2: 'LIST2' },
+            listNames: { 1: 'LIST1', 2: 'LIST2' }, // Removed 3
             currentView: 'home', 
-            currentMyList: 0, 
+            currentMyList: 0, // Default to 0 (찜한상품)
             clTab: 'all',
             tempChanges: {},
             hasChanges: false,
@@ -905,7 +1247,7 @@
             deliveryDate: '1월 12일(월) 도착',
             selectedCategory: null,
             homeSearchText: '',
-            searchSource: null 
+            searchSource: null // Track where search started
         };
 
         const homeView = document.getElementById('home-view');
@@ -913,51 +1255,60 @@
         const createListView = document.getElementById('create-list-view');
         const homeProductListEl = document.getElementById('home-product-list');
         const headerTitle = document.getElementById('header-title');
+        
+        // --- Updated Footer Elements ---
         const footerSearchBtn = document.getElementById('footer-search-btn');
         const footerOrderBtn = document.getElementById('footer-order-btn');
         const btnLine1 = document.getElementById('btn-line-1');
         const btnLine2 = document.getElementById('btn-line-2');
         const navCartBadge = document.getElementById('nav-cart-badge');
         const mainNavFooter = document.getElementById('main-nav-footer');
+        
         const myListTabsContainer = document.getElementById('my-list-tabs');
         const clTabs = document.querySelectorAll('.cl-tab-btn');
         const clItemsEl = document.getElementById('create-list-items');
         const clSaveBtn = document.getElementById('create-list-save-btn');
+        // const clSelectAll = document.getElementById('cl-select-all'); // Removed in previous turn
+        const clSelectedCount = document.getElementById('cl-selected-count');
+        const clBottomDelete = document.getElementById('cl-bottom-delete');
+        const clBottomMove = document.getElementById('cl-bottom-move');
+        const moveSheet = document.getElementById('move-sheet');
+        const moveSheetOverlay = document.getElementById('move-sheet-overlay');
+        const moveSheetCancel = document.getElementById('move-sheet-cancel');
         const guideModalOverlay = document.getElementById('guide-modal-overlay');
         const guideModalContent = document.getElementById('guide-modal-content');
         const searchContainer = document.getElementById('search-container');
         const productSearchInput = document.getElementById('product-search-input');
         const homeSearchContainer = document.getElementById('home-search-container');
         const homeSearchInput = document.getElementById('home-search-input');
+        const modeIcon = document.getElementById('mode-icon');
+        const modeText = document.getElementById('mode-text');
+        
         const subSectionBar = document.getElementById('sub-section-bar');
         const currentDeliveryDateEl = document.getElementById('current-delivery-date');
         const currentSortLabelEl = document.getElementById('current-sort-label');
         const sortDropdownMenu = document.getElementById('sort-dropdown-menu');
         const sortContainer = document.querySelector('.sort-dropdown-container');
+        const deliverySheet = document.getElementById('delivery-sheet');
+        const deliverySheetOverlay = document.getElementById('delivery-sheet-overlay');
+        const deliverySheetCancel = document.getElementById('delivery-sheet-cancel');
         const productListContainer = document.getElementById('product-list-container');
+        
+        // Calendar Modal Elements
         const calendarOverlay = document.getElementById('calendar-overlay');
         const calendarModal = document.getElementById('calendar-modal');
         const calendarMonthTitle = document.getElementById('calendar-month-title');
         const calendarDaysContainer = document.getElementById('calendar-days');
+        
+        // Coach Mark Element
         const coachMarkPopup = document.getElementById('coach-mark-popup');
         let coachMarkTimeout;
 
-        function getAllProducts() { return Object.values(appState.products).flat(); }
+        function getAllProducts() {
+            return Object.values(appState.products).flat();
+        }
 
-        window.toggleAppMode = function() {
-            appState.searchSource = null;
-            if(appState.isSearching) closeSearch();
-            if (appState.currentView === 'home') showQuickOrderView(true);
-            else showHomeView(true);
-        };
-        
-        headerTitle.onclick = function() {
-            appState.searchSource = null;
-            if (appState.isSearching) closeSearch();
-            if (appState.currentView !== 'home') showHomeView(true);
-            else window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
+        // --- View Switching ---
         function showHomeView(saveToStorage = false) {
             appState.currentView = 'home';
             homeView.classList.remove('hidden');
@@ -966,7 +1317,7 @@
             updateFooterUI();
             updateHeaderUI();
             renderHomeView();
-            if(saveToStorage) localStorage.setItem('orderz_start_mode', 'home');
+            if(saveToStorage) saveDefaultView('home');
         }
 
         function showQuickOrderView(saveToStorage = false) {
@@ -974,140 +1325,527 @@
             homeView.classList.add('hidden');
             quickOrderView.classList.remove('hidden');
             createListView.classList.add('hidden');
+            
+            // If switching mode, set default tab if not set
+            if(saveToStorage) {
+                appState.currentMyList = 0; // Default to 0 (찜한상품)
+            }
+            
             renderListTabs();
             renderSubSectionBar();
             updateFooterUI();
             updateHeaderUI();
             renderProducts();
-            if(saveToStorage) localStorage.setItem('orderz_start_mode', 'quick-order');
+            if(saveToStorage) saveDefaultView('quick-order');
+        }
+
+        function saveDefaultView(view) {
+            localStorage.setItem('orderz_start_mode', view);
         }
 
         function updateHeaderUI() {
             const titleSpan = document.getElementById('header-mode-title');
-            if(titleSpan) titleSpan.textContent = (appState.currentView === 'home' ? "상품목록" : "주문하기");
+            if(titleSpan) {
+                if (appState.currentView === 'home') {
+                    titleSpan.textContent = "상품목록";
+                } else {
+                    titleSpan.textContent = "주문하기";
+                }
+            }
         }
 
+        window.toggleAppMode = function() {
+            appState.searchSource = null;
+            if(appState.isSearching) {
+                closeSearch();
+            }
+            if (appState.currentView === 'home') {
+                showQuickOrderView(true);
+            } else {
+                showHomeView(true);
+            }
+        };
+        
+        headerTitle.onclick = function() {
+            appState.searchSource = null;
+            if (appState.isSearching) {
+                closeSearch();
+            }
+            if (appState.currentView !== 'home') {
+                showHomeView(true);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // --- Sub Section Bar Logic ---
         function renderSubSectionBar() {
             if (appState.currentView !== 'quick-order') return;
+            
             subSectionBar.classList.remove('hidden');
-            sortContainer.style.display = (appState.currentMyList === 0 ? 'block' : 'none');
+            
+            // Only show sort for Favorites (id 0)
+            if (appState.currentMyList === 0) {
+                 sortContainer.style.display = 'block';
+            } else {
+                 sortContainer.style.display = 'none';
+            }
+
+            const subSectionBarEl = document.getElementById('sub-section-bar');
+            if (!subSectionBarEl.classList.contains('sort-bar-collapsed')) {
+                 subSectionBarEl.classList.add('sort-bar-overflow-visible');
+            }
+
             currentDeliveryDateEl.textContent = appState.deliveryDate;
+            
+            // Sort map updated: frequency removed
             const sortMap = { 'latest': '최신순', 'category': '카테고리순' };
             currentSortLabelEl.textContent = sortMap[appState.currentSort] || '최신순';
+            
+            document.querySelectorAll('.sort-option').forEach(el => {
+                el.classList.remove('selected');
+            });
         }
         
-        window.toggleSortDropdown = function(e) { e.stopPropagation(); sortDropdownMenu.classList.toggle('active'); };
+        window.toggleSortDropdown = function(e) {
+            e.stopPropagation();
+            sortDropdownMenu.classList.toggle('active');
+        };
+
         window.changeSort = function(sortType) {
             appState.currentSort = sortType;
             renderSubSectionBar();
             renderProducts();
             sortDropdownMenu.classList.remove('active');
             window.scrollTo(0, 0);
+            document.getElementById('product-list-container').scrollTop = 0;
         };
         
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.sort-dropdown-container')) sortDropdownMenu.classList.remove('active');
-            if (coachMarkPopup.classList.contains('visible') && !e.target.closest('.tab-disabled') && !e.target.closest('.coach-mark')) closeCoachMark();
+            if (!e.target.closest('.sort-dropdown-container')) {
+                sortDropdownMenu.classList.remove('active');
+            }
+            if (coachMarkPopup.classList.contains('visible') && !e.target.closest('.tab-disabled') && !e.target.closest('.coach-mark')) {
+                closeCoachMark();
+            }
         });
 
+        // --- Custom Calendar Modal Logic ---
         window.openCalendarModal = function() {
              renderCalendar();
              calendarOverlay.classList.remove('hidden');
-             setTimeout(() => { calendarOverlay.classList.remove('opacity-0'); calendarModal.classList.remove('scale-95'); }, 10);
+             setTimeout(() => {
+                 calendarOverlay.classList.remove('opacity-0');
+                 calendarModal.classList.remove('scale-95');
+             }, 10);
         };
 
         window.closeCalendarModal = function() {
-             calendarOverlay.classList.add('opacity-0'); calendarModal.classList.add('scale-95');
-             setTimeout(() => calendarOverlay.classList.add('hidden'), 200);
+             calendarOverlay.classList.add('opacity-0');
+             calendarModal.classList.add('scale-95');
+             setTimeout(() => {
+                 calendarOverlay.classList.add('hidden');
+             }, 200);
         };
 
         function renderCalendar() {
              const today = new Date();
-             const month = today.getMonth();
+             const tomorrow = new Date(today);
+             tomorrow.setDate(tomorrow.getDate() + 1);
+
+             // Calendar Title (Month)
              const year = today.getFullYear();
+             const month = today.getMonth();
              calendarMonthTitle.textContent = `${year}년 ${month + 1}월`;
+
+             // Days generation
              const firstDayOfMonth = new Date(year, month, 1).getDay();
              const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
+             
              let html = '';
-             for (let i = 0; i < firstDayOfMonth; i++) html += `<div></div>`;
+             
+             // Empty slots for previous month
+             for (let i = 0; i < firstDayOfMonth; i++) {
+                 html += `<div></div>`;
+             }
+
+             // Days
              for (let day = 1; day <= lastDateOfMonth; day++) {
                  const currentDate = new Date(year, month, day);
                  const isToday = currentDate.toDateString() === today.toDateString();
-                 const diff = Math.floor((currentDate - today) / (1000 * 60 * 60 * 24));
-                 const isClickable = (diff >= 0 && diff <= 2);
+                 const isTomorrow = currentDate.toDateString() === tomorrow.toDateString();
+                 
+                 // Check if it's the currently selected delivery date
+                 // Simple parsing of "1월 12일..." string
+                 const currentSelectedMonth = parseInt(appState.deliveryDate.match(/(\d+)월/)?.[1]);
                  const currentSelectedDay = parseInt(appState.deliveryDate.match(/(\d+)일/)?.[1]);
-                 const isSelected = (day === currentSelectedDay);
-                 let classNames = "cal-day-btn" + (isClickable ? " active" : " disabled") + (isSelected ? " selected" : "") + (isToday ? " today" : "");
-                 const dayName = ['일', '월', '화', '수', '목', '금', '토'][currentDate.getDay()];
-                 const dateStr = `${month + 1}월 ${day}일(${dayName}) 도착`;
-                 html += `<div class="${classNames}" ${isClickable ? `onclick="selectDate('${dateStr}')"` : ''}>${day}</div>`;
+                 const isSelected = (month + 1 === currentSelectedMonth && day === currentSelectedDay);
+
+                 let classNames = "cal-day-btn";
+                 let onclickAttr = "";
+
+                 if (isToday || isTomorrow) {
+                     classNames += " active";
+                     // Build date string for update
+                     const days = ['일', '월', '화', '수', '목', '금', '토'];
+                     const dayName = days[currentDate.getDay()];
+                     const newDateStr = `${month + 1}월 ${day}일(${dayName}) 도착`;
+                     onclickAttr = `onclick="selectDate('${newDateStr}')"`;
+                     
+                     if (isSelected) classNames += " selected";
+                     if (isToday) classNames += " today";
+                 } else {
+                     classNames += " disabled";
+                 }
+
+                 html += `<div class="${classNames}" ${onclickAttr}>${day}</div>`;
              }
+             
              calendarDaysContainer.innerHTML = html;
         }
 
-        window.selectDate = function(dateStr) { appState.deliveryDate = dateStr; renderSubSectionBar(); closeCalendarModal(); };
+        window.selectDate = function(dateStr) {
+             updateDeliveryDate(dateStr);
+             closeCalendarModal();
+        };
 
+        window.updateDeliveryDate = function(newDate) {
+            appState.deliveryDate = newDate;
+            renderSubSectionBar();
+        };
+        
+        // Removed old delivery sheet open logic (it was using openDeliverySheet which we replaced)
+        // Ensure the button calls openCalendarModal() now (updated in HTML)
+
+
+        // --- Create List Logic ---
         window.openCreateListView = function() {
             closeCoachMark();
             appState.tempChanges = {};
             appState.hasChanges = false;
             appState.clTab = 'all';
+            
             getAllProducts().forEach(p => appState.tempChanges[p.id] = [...(p.myList || [])]);
-            clTabs.forEach(t => {
+            
+            // Sync tabs in the toolbar
+            const toolbarTabs = document.querySelectorAll('.cl-tab-btn');
+            toolbarTabs.forEach(t => {
                 t.classList.toggle('active', t.dataset.tab === 'all');
-                t.onclick = () => { clTabs.forEach(tab => tab.classList.remove('active')); t.classList.add('active'); appState.clTab = t.dataset.tab; renderCreateList(); };
+                t.onclick = () => {
+                    toolbarTabs.forEach(tab => tab.classList.remove('active'));
+                    t.classList.add('active');
+                    appState.clTab = t.dataset.tab;
+                    renderCreateList();
+                };
             });
+
+            syncCreateListTabNames();
+            // Removed clSelectAll logic
             createListView.classList.remove('hidden');
             renderCreateList();
         };
 
-        window.closeCreateListView = function() { createListView.classList.add('hidden'); renderListTabs(); renderProducts(); }
+        window.closeCreateListView = function() {
+            if (appState.hasChanges && !confirm("저장하지 않은 변경사항이 있습니다. 나가시겠습니까?")) return;
+            createListView.classList.add('hidden');
+            renderListTabs();
+            if (appState.currentView === 'quick-order') renderProducts();
+        }
+
         window.saveCreateListChanges = function() {
             const allProducts = getAllProducts();
             for (const [idStr, listIds] of Object.entries(appState.tempChanges)) {
                 const id = parseInt(idStr);
                 const p = allProducts.find(prod => prod.id === id);
-                if (p) p.myList = [...listIds];
+                if (p) {
+                    p.myList = [...listIds];
+                }
             }
             alert("저장되었습니다.");
-            closeCreateListView();
+            appState.hasChanges = false;
+            createListView.classList.add('hidden');
+            renderListTabs(true); // Force rebuild to update list names
+            renderProducts();
+        }
+
+        function syncCreateListTabNames() {
+            document.querySelector('.cl-tab-l1').textContent = appState.listNames[1];
+            document.querySelector('.cl-tab-l2').textContent = appState.listNames[2];
+            // Removed button text update for deleted buttons
         }
 
         function renderCreateList() {
             const currentTab = appState.clTab;
             const relevantProducts = getAllProducts().filter(p => p.liked);
-            let filtered = (currentTab === 'all') ? relevantProducts : relevantProducts.filter(p => (appState.tempChanges[p.id] || []).includes(parseInt(currentTab)));
+            
+            let filtered = (currentTab === 'all') 
+                ? relevantProducts 
+                : relevantProducts.filter(p => (appState.tempChanges[p.id] || []).includes(parseInt(currentTab)));
+
+            filtered = getSortedList(filtered, appState.currentSort);
+
             if (filtered.length === 0) {
-                clItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-sm leading-relaxed">리스트가 비어있습니다.<br><span class="text-xs">'전체' 탭에서 상품 우측의 번호 버튼을 눌러 리스트에 추가해보세요.</span></div>`;
+                clItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-sm leading-relaxed">
+                    리스트가 비어있습니다.<br>
+                    <span class="text-xs">'전체' 탭에서 상품 우측의 번호 버튼을 눌러<br>리스트에 추가해보세요.</span>
+                </div>`;
             } else {
                 clItemsEl.innerHTML = filtered.map(p => {
                     const currentLists = appState.tempChanges[p.id] || [];
                     const getBtn = (id) => `<button class="cl-toggle-btn ${currentLists.includes(id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleListMember(${p.id}, ${id})">${id}</button>`;
-                    return `<div class="cl-grid-row" data-id="${p.id}"><div class="flex items-center justify-center"><button class="cl-trash-btn" onclick="deleteItemFromCurrentList(${p.id})"><i class="far fa-trash-alt"></i></button></div><div class="cl-info"><div class="cl-name">${p.name}</div><div class="cl-price">${p.price.toLocaleString()}원</div></div><div>${getBtn(1)}</div><div>${getBtn(2)}</div><div class="cl-drag-handle"><i class="fas fa-bars"></i></div></div>`;
+                    return `
+                    <div class="cl-grid-row" data-id="${p.id}">
+                        <div class="cl-trash-wrapper flex items-center justify-center">
+                            <button class="cl-trash-btn" onclick="event.stopPropagation(); deleteItemFromCurrentList(${p.id})">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div class="cl-info">
+                            <div class="cl-name">${p.name}</div>
+                            <div class="cl-price">${p.price.toLocaleString()}원</div>
+                        </div>
+                        <div>${getBtn(1)}</div><div>${getBtn(2)}</div>
+                        <div class="cl-drag-handle"><i class="fas fa-bars"></i></div>
+                    </div>`;
                 }).join('');
             }
+            enableDragAndDrop();
         }
+        
+        // --- Drag & Drop Logic with Auto Scroll ---
+        function enableDragAndDrop() {
+            const container = document.getElementById('create-list-items');
+            const items = container.querySelectorAll('.cl-grid-row');
+            
+            items.forEach(item => {
+                const handle = item.querySelector('.cl-drag-handle');
+                if (!handle) return;
+                
+                // --- Mouse Events ---
+                handle.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // Prevent text selection
+                    initDrag(e, item, false);
+                });
+
+                // --- Touch Events ---
+                handle.addEventListener('touchstart', (e) => {
+                    // e.preventDefault(); // Might block scrolling on some devices, careful
+                    initDrag(e.touches[0], item, true);
+                }, {passive: false});
+            });
+        }
+
+        let dragEl = null;
+        let dragGhost = null;
+        let startY = 0;
+        let scrollInterval;
+        
+        function initDrag(e, item, isTouch) {
+            dragEl = item;
+            startY = e.clientY;
+            
+            // Visual feedback
+            item.classList.add('dragging');
+            
+            // Global listeners
+            if (isTouch) {
+                document.addEventListener('touchmove', onDragMove, {passive: false});
+                document.addEventListener('touchend', onDragEnd);
+            } else {
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('mouseup', onDragEnd);
+            }
+        }
+
+        function onDragMove(e) {
+            if (!dragEl) return;
+            e.preventDefault(); // Stop native scrolling
+            
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            // Auto Scroll Logic
+            const container = document.querySelector('#create-list-view .flex-grow'); // Scrollable area
+            const rect = container.getBoundingClientRect();
+            const threshold = 50; // px
+            const speed = 10;
+            
+            clearInterval(scrollInterval);
+            
+            if (clientY < rect.top + threshold) {
+                scrollInterval = setInterval(() => { container.scrollTop -= speed; }, 16);
+            } else if (clientY > rect.bottom - threshold) {
+                scrollInterval = setInterval(() => { container.scrollTop += speed; }, 16);
+            }
+
+            // Swapping Logic
+            const siblings = [...dragEl.parentElement.children];
+            const nextElement = siblings.find(sibling => {
+                 if (sibling === dragEl) return false;
+                 const box = sibling.getBoundingClientRect();
+                 return clientY < box.top + box.height / 2;
+            });
+            
+            if (nextElement) {
+                dragEl.parentElement.insertBefore(dragEl, nextElement);
+            } else {
+                dragEl.parentElement.appendChild(dragEl);
+            }
+        }
+
+        function onDragEnd() {
+            if (dragEl) {
+                dragEl.classList.remove('dragging');
+                dragEl = null;
+            }
+            clearInterval(scrollInterval);
+            document.removeEventListener('mousemove', onDragMove);
+            document.removeEventListener('mouseup', onDragEnd);
+            document.removeEventListener('touchmove', onDragMove);
+            document.removeEventListener('touchend', onDragEnd);
+        }
+
+        window.deleteItemFromCurrentList = function(pid) {
+            if (!confirm("해당 상품을 리스트에서 제외하시겠습니까?")) return;
+            
+            if (appState.clTab === 'all') {
+                appState.tempChanges[pid] = [];
+            } else {
+                const targetListId = parseInt(appState.clTab);
+                appState.tempChanges[pid] = (appState.tempChanges[pid] || []).filter(id => id !== targetListId);
+            }
+            appState.hasChanges = true;
+            renderCreateList();
+        };
+
+        // --- Guide & Settings ---
+        window.openGuide = function() {
+            guideModalOverlay.classList.remove('hidden');
+            document.getElementById('input-list1-name').value = appState.listNames[1];
+            document.getElementById('input-list2-name').value = appState.listNames[2];
+            switchGuideTab('faq');
+            updateStartScreenUI();
+            setTimeout(() => {
+                guideModalOverlay.classList.remove('opacity-0');
+                guideModalContent.classList.remove('scale-95');
+            }, 10);
+        };
+
+        window.closeGuide = function() {
+            guideModalOverlay.classList.add('opacity-0');
+            guideModalContent.classList.add('scale-95');
+            setTimeout(() => guideModalOverlay.classList.add('hidden'), 200);
+        };
+
+        window.switchGuideTab = function(tab) {
+            document.querySelectorAll('.guide-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById('guide-section-faq').classList.add('hidden');
+            document.getElementById('guide-section-rename').classList.add('hidden');
+            document.getElementById('guide-section-start').classList.add('hidden');
+            document.getElementById(`guide-section-${tab}`).classList.remove('hidden');
+            if (tab === 'rename') focusInput(1);
+        };
+
+        window.toggleFaq = function(id) {
+            const el = document.getElementById(id);
+            const isActive = el.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+            if (!isActive) el.classList.add('active');
+        };
+
+        window.setStartScreen = function(mode) {
+            localStorage.setItem('orderz_start_mode', mode);
+            updateStartScreenUI();
+        };
+
+        function updateStartScreenUI() {
+            const currentMode = localStorage.getItem('orderz_start_mode') || 'home';
+            ['home', 'quick-order'].forEach(m => {
+                const el = document.getElementById(`option-${m}`);
+                const icon = document.getElementById(`check-icon-${m}`);
+                el.classList.remove('border-green-500', 'bg-green-50');
+                el.classList.add('border-gray-200');
+                icon.className = "text-gray-300 transition-colors";
+                icon.innerHTML = '<i class="fas fa-circle text-xl"></i>';
+            });
+            const activeEl = document.getElementById(`option-${currentMode}`);
+            const activeIcon = document.getElementById(`check-icon-${currentMode}`);
+            activeEl.classList.remove('border-gray-200');
+            activeEl.classList.add('border-green-500', 'bg-green-50');
+            activeIcon.className = "text-green-600 transition-colors";
+            activeIcon.innerHTML = '<i class="fas fa-check-circle text-xl"></i>';
+        }
+
+        window.focusInput = function(id) {
+            appState.activeListInputId = id;
+            document.querySelectorAll('.list-input-group').forEach(el => el.classList.remove('active'));
+            document.getElementById(`group-l${id}`).classList.add('active');
+        };
+
+        window.applyKeyword = function(kw) {
+            document.getElementById(`input-list${appState.activeListInputId}-name`).value = kw;
+        };
+
+        window.saveListNames = function() {
+            appState.listNames[1] = document.getElementById('input-list1-name').value || 'LIST1';
+            appState.listNames[2] = document.getElementById('input-list2-name').value || 'LIST2';
+            syncCreateListTabNames();
+            renderCreateList();
+            alert("이름이 변경되었습니다.");
+        };
+
+        window.resetListNames = function() {
+            document.getElementById('input-list1-name').value = 'LIST1';
+            document.getElementById('input-list2-name').value = 'LIST2';
+            focusInput(1);
+        };
 
         window.toggleListMember = function(pid, lid) {
             let list = appState.tempChanges[pid] || [];
             appState.tempChanges[pid] = list.includes(lid) ? list.filter(i => i !== lid) : [...list, lid].sort();
+            appState.hasChanges = true;
             renderCreateList();
         };
 
-        window.deleteItemFromCurrentList = function(pid) {
-            if (!confirm("해당 상품을 리스트에서 제외하시겠습니까?")) return;
-            appState.tempChanges[pid] = [];
-            renderCreateList();
+        window.applyBatchMove = function(targetLid) {
+            // Unused
         };
 
+        // Replaced with specific check for existing element
+        const clBottomBack = document.getElementById('cl-bottom-back');
+        if (clBottomBack) clBottomBack.onclick = closeCreateListView;
+
+        document.getElementById('create-list-save-btn').onclick = saveCreateListChanges;
+        
+        // Removed clSelectAll.onchange
+
+        clTabs.forEach(btn => btn.onclick = () => {
+            clTabs.forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            appState.clTab = btn.dataset.tab;
+            renderCreateList();
+        });
+
+        // --- Search ---
         footerSearchBtn.onclick = function() {
             appState.isSearching = !appState.isSearching;
+            updateHeaderUI();
+
             if (appState.currentView === 'home') {
                 homeSearchContainer.classList.toggle('search-hidden', !appState.isSearching);
                 if(appState.isSearching) setTimeout(() => homeSearchInput.focus(), 300);
+                else {
+                    homeSearchInput.value = '';
+                    appState.homeSearchText = '';
+                    renderHomeView();
+                }
             } else {
                 searchContainer.classList.toggle('search-hidden', !appState.isSearching);
                 if(appState.isSearching) setTimeout(() => productSearchInput.focus(), 300);
+                else {
+                    productSearchInput.value = '';
+                    renderProducts();
+                }
             }
         };
 
@@ -1115,104 +1853,602 @@
             appState.isSearching = false;
             searchContainer.classList.add('search-hidden');
             homeSearchContainer.classList.add('search-hidden');
+            productSearchInput.value = '';
+            homeSearchInput.value = '';
+            appState.homeSearchText = '';
+            updateHeaderUI();
             renderProducts();
             renderHomeView();
         };
 
-        function renderItemsHTML(items) {
-            return items.map(p => {
-                const qty = appState.cart[p.id] || 0;
-                return `<div class="product-item flex items-center p-3 border-b ${qty > 0 ? 'bg-green-50' : 'bg-white'} relative"><img src="${p.img}" class="w-12 h-12 rounded mr-3"><div class="flex-grow pr-2"><div class="flex items-center"><span class="text-sm font-bold mr-2">${p.name}</span></div><div class="text-xs text-gray-500">${p.price.toLocaleString()}원</div></div><div class="flex items-center space-x-2"><div class="flex items-center border rounded bg-white"><button class="w-8 h-8" onclick="updateQty(${p.id},-1)">-</button><div class="w-8 text-center text-sm font-bold">${qty}</div><button class="w-8 h-8" onclick="updateQty(${p.id},1)">+</button></div></div></div>`;
-            }).join('');
+        productSearchInput.oninput = function(e) {
+            const term = e.target.value.toLowerCase();
+            const displayTerm = e.target.value;
+            const list = getAllProducts().filter(p => p.liked && p.name.toLowerCase().includes(term));
+            let html = renderItemsHTML(list);
+            if (term.length > 0) {
+                html += `
+                <div class="p-6 bg-white border-t flex flex-col items-center justify-center gap-2">
+                    <span class="text-xs text-gray-600 font-bold">찾으시는 상품이 리스트에 없나요?</span>
+                    <button class="w-full py-3.5 bg-gray-100 text-gray-600 font-bold rounded-xl active:bg-gray-200 transition-all flex items-center justify-center gap-2" onclick="expandSearchToHome()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <span>전체 상품에서 '${displayTerm}' 검색</span>
+                    </button>
+                </div>`;
+            }
+            document.getElementById('product-list').innerHTML = html;
+        };
+
+        homeSearchInput.oninput = function(e) {
+            const term = e.target.value.toLowerCase();
+            appState.homeSearchText = term;
+            renderHomeView();
         }
 
+        window.expandSearchToHome = function() {
+            const query = productSearchInput.value;
+            appState.homeSearchText = query.toLowerCase();
+            appState.isSearching = true; 
+            searchContainer.classList.add('search-hidden');
+            productSearchInput.value = '';
+            showHomeView();
+            updateHeaderUI();
+            homeSearchContainer.classList.remove('search-hidden');
+            homeSearchInput.value = query;
+            homeSearchInput.focus();
+            renderHomeView();
+        };
+
+        function renderItemsHTML(items, isRelated = false) {
+            return items.map(p => {
+                const qty = appState.cart[p.id] || 0;
+                const rowBg = qty > 0 ? 'bg-green-50' : (isRelated ? 'bg-gray-50' : 'bg-white');
+                const paddingClass = 'p-3 border-b';
+                const showEventDot = p.isEvent && appState.currentMyList !== 'specials';
+
+                return `
+            <div class="product-item flex items-center ${paddingClass} ${rowBg} relative">
+                <img src="${p.img}" class="w-12 h-12 rounded mr-3">
+                <div class="flex-grow pr-2">
+                    <div class="flex items-center">
+                        ${showEventDot ? '<div class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></div>' : ''}
+                        <span class="text-sm font-bold mr-2">${p.name}</span>
+                    </div>
+                    <div class="text-xs text-gray-500">${p.price.toLocaleString()}원</div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="flex items-center border rounded bg-white">
+                        <button class="w-8 h-8" onclick="updateQty(${p.id},-1)">-</button>
+                        <div class="w-8 text-center text-sm font-bold">${qty}</div>
+                        <button class="w-8 h-8" onclick="updateQty(${p.id},1)">+</button>
+                    </div>
+                </div>
+            </div>`;
+            }).join('');
+        }
+        
+        window.toggleProductLike = function(id) {
+            const p = getAllProducts().find(x => x.id === id);
+            if (!p) return;
+            p.liked = !p.liked; 
+            
+            if (appState.currentView === 'home') {
+                renderHomeView();
+            } else {
+                renderProducts(); 
+            }
+        };
+
         function updateFooterUI() {
+            const hasItems = Object.keys(appState.cart).length > 0;
             const totalQty = Object.values(appState.cart).reduce((a,b)=>a+b,0);
-            footerOrderBtn.className = "footer-order-btn-base " + (appState.currentView === 'quick-order' ? (totalQty > 0 ? 'footer-btn-active' : 'footer-btn-empty') : 'footer-btn-home');
-            navCartBadge.classList.toggle('hidden-badge', totalQty === 0 || appState.currentView === 'quick-order');
-            navCartBadge.textContent = totalQty;
-            btnLine2.innerHTML = appState.currentView === 'quick-order' ? (totalQty > 0 ? `<div class="w-[18px] h-[18px] bg-[#FFB380] rounded-full flex items-center justify-center shadow-sm"><span class="text-[#1B4D3E] text-[11px] font-bold pt-[1px]">${totalQty}</span></div><span>담은 상품 확인하기</span>` : "상품을 담아주세요") : "주문하러 가기";
+            let totalPrice = 0;
+            Object.entries(appState.cart).forEach(([pid, qty]) => {
+                const p = getAllProducts().find(x => x.id == pid);
+                if(p) totalPrice += p.price * qty;
+            });
+
+            footerOrderBtn.className = "footer-order-btn-base";
+            navCartBadge.classList.add('hidden-badge');
+            
+            if (appState.currentView === 'quick-order') {
+                if (hasItems) {
+                    footerOrderBtn.classList.add('footer-btn-active');
+                    btnLine1.style.color = '#1B4D3E'; 
+                    btnLine2.innerHTML = `
+                        <div class="w-[18px] h-[18px] bg-[#FFB380] rounded-full flex items-center justify-center shadow-sm">
+                            <span class="text-[#1B4D3E] text-[11px] font-bold pt-[1px]">${totalQty}</span>
+                        </div>
+                        <span>담은 상품 확인하기</span>
+                    `;
+                    btnLine2.className = "btn-line-2 text-[#1B4D3E]";
+                } else {
+                    footerOrderBtn.classList.add('footer-btn-empty');
+                    // Changed: Always keep logo green even if empty
+                    btnLine1.style.color = '#1B4D3E'; 
+                    btnLine2.textContent = "상품을 담아주세요";
+                    btnLine2.className = "btn-line-2 text-gray-500"; // Changed to gray-500
+                }
+            } else {
+                footerOrderBtn.classList.add('footer-btn-home');
+                btnLine1.style.color = '#1B4D3E';
+                btnLine2.textContent = "주문하러 가기";
+                btnLine2.className = "btn-line-2 text-[#1B4D3E]"; 
+                
+                if (hasItems) {
+                    navCartBadge.textContent = totalQty;
+                    navCartBadge.classList.remove('hidden-badge');
+                }
+            }
+            
+            mainNavFooter.classList.remove('hidden');
         }
 
         window.handleCenterBtnClick = function() {
-            if (appState.currentView === 'home') showQuickOrderView();
-            else if (Object.keys(appState.cart).length > 0) alert("주문서 작성으로 이동합니다.");
+            if (appState.currentView === 'home') {
+                showQuickOrderView();
+            } else if (appState.currentView === 'quick-order') {
+                if (Object.keys(appState.cart).length > 0) {
+                    showConfirmationView(); 
+                } else {
+                    alert("주문할 상품을 담아주세요.");
+                }
+            }
         }
+
+        function showConfirmationView() { alert("주문 확인 화면 (준비중)"); }
 
         function renderHomeView() {
-            let list = getAllProducts();
+            let list = getAllProducts(); 
             if (appState.selectedCategory) list = list.filter(p => p.category === appState.selectedCategory);
             if (appState.homeSearchText) list = list.filter(p => p.name.toLowerCase().includes(appState.homeSearchText));
-            homeProductListEl.innerHTML = list.map(p => `<div class="flex items-center p-4 bg-white border-b"><img src="${p.img}" class="w-16 h-16 rounded mr-4"><div class="flex-grow"><div class="font-bold">${p.name}</div><div class="text-green-600 font-bold">${p.price.toLocaleString()}원</div></div><input type="checkbox" class="w-6 h-6 rounded accent-green-600" ${p.liked ? 'checked' : ''} onchange="toggleProductLike(${p.id})"></div>`).join('');
+
+            homeProductListEl.innerHTML = list.map(p => `
+            <div class="flex items-center p-4 bg-white border-b relative">
+                <img src="${p.img}" class="w-16 h-16 rounded mr-4">
+                <div class="flex-grow">
+                    <div class="font-bold">${p.name}</div>
+                    <div class="text-green-600 font-bold">${p.price.toLocaleString()}원</div>
+                </div>
+                <input type="checkbox" class="w-6 h-6 rounded text-green-600 border-gray-300 accent-green-600 focus:ring-green-500" ${p.liked ? 'checked' : ''} onchange="toggleProductLike(${p.id})">
+            </div>`).join('');
         }
 
-        window.toggleProductLike = function(id) {
-            const p = getAllProducts().find(x => x.id === id);
-            if (p) p.liked = !p.liked;
-            appState.currentView === 'home' ? renderHomeView() : renderProducts();
+        window.filterByCategory = function(category) {
+            appState.selectedCategory = (appState.selectedCategory === category) ? null : category;
+            updateCategoryBarUI();
+            if (appState.currentView === 'home') renderHomeView();
+            else renderProducts();
         };
 
-        function renderListTabs() {
-            const isSpecialsActive = appState.currentMyList === 'specials';
-            const isFavActive = appState.currentMyList === 0;
-            let html = `<button class="tab-btn ${isSpecialsActive ? 'tab-active' : 'tab-inactive'}" onclick="switchMainList('specials')"><i class="fas fa-star text-yellow-400 mr-1"></i>단골특가</button>`;
-            html += `<button class="tab-btn ${isFavActive ? 'tab-active' : 'tab-inactive'}" onclick="switchMainList(0)">관심상품</button>`;
-            [1, 2].forEach(id => {
-                const count = getAllProducts().filter(p => (p.myList||[]).includes(id)).length;
-                const isActive = appState.currentMyList === id;
-                html += `<button class="tab-btn ${isActive ? 'tab-active' : (count === 0 ? 'tab-disabled' : 'tab-inactive')}" onclick="handleTabClick(${id}, this)">${appState.listNames[id]}</button>`;
+        function updateCategoryBarUI() {
+            const btns = document.querySelectorAll('#category-bar .category-btn');
+            btns.forEach(btn => {
+                const onclickVal = btn.getAttribute('onclick');
+                if (appState.selectedCategory && onclickVal.includes(`'${appState.selectedCategory}'`)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
             });
-            html += `<button class="list-settings-btn" onclick="openCreateListView()"><i class="fas fa-sliders-h text-lg"></i></button>`;
-            myListTabsContainer.innerHTML = html;
-            myListTabsContainer.className = 'flex w-full items-center justify-between h-full no-scrollbar overflow-x-auto';
         }
 
-        window.handleTabClick = function(id, btn) { (getAllProducts().filter(p => (p.myList||[]).includes(id)).length === 0) ? showCoachMark(btn) : switchMainList(id); };
-        window.switchMainList = function(id) { appState.currentMyList = id; renderListTabs(); renderSubSectionBar(); renderProducts(); };
+        function getSortedList(list, sortType) {
+            const sortedList = [...list];
+            if (sortType === 'latest') {
+                sortedList.sort((a, b) => (b.likedTimestamp || 0) - (a.likedTimestamp || 0));
+            } else if (sortType === 'category') {
+                const catOrder = ['vegetable', 'seafood', 'sauce', 'processed', 'kitchen'];
+                sortedList.sort((a, b) => {
+                    const idxA = catOrder.indexOf(a.category || '') === -1 ? 999 : catOrder.indexOf(a.category || '');
+                    const idxB = catOrder.indexOf(b.category || '') === -1 ? 999 : catOrder.indexOf(b.category || '');
+                    return idxA - idxB || (a.name || '').localeCompare(b.name || '');
+                });
+            } else if (sortType === 'frequency') {
+                sortedList.sort((a, b) => (b.orderCount || 0) - (a.orderCount || 0));
+            }
+            return sortedList;
+        }
+        
+        function getListCount(listId) {
+             const list = getAllProducts();
+             return list.filter(p => (p.myList||[]).includes(listId)).length;
+        }
+
+        function renderListTabs(forceRebuild = false) {
+            const listIds = [1, 2];
+            const container = myListTabsContainer;
+            
+            // Check if we need to rebuild (if empty or forced)
+            if (container.children.length === 0 || forceRebuild) {
+                let html = '';
+
+                // Specials (Star + Fixed Text)
+                const isSpecialsActive = appState.currentMyList === 'specials';
+                let specialsClass = isSpecialsActive ? 'tab-active' : 'tab-inactive';
+                const starIcon = '<i class="fas fa-star text-yellow-400 text-lg"></i>';
+                // Modified: Fixed text instead of animated
+                const fixedText = `<span class="ml-1">단골특가</span>`;
+                
+                html += `<button class="tab-btn ${specialsClass}" onclick="handleTabClick('specials', this)">${starIcon}${fixedText}</button>`;
+
+                let likedClass = appState.currentMyList === 0 ? 'tab-active' : 'tab-inactive';
+                html += `<button class="tab-btn ${likedClass}" onclick="handleTabClick(0, this)">관심상품</button>`;
+
+                listIds.forEach(id => {
+                    const isActive = appState.currentMyList === id;
+                    const count = getListCount(id);
+                    const isDisabled = count === 0;
+                    let className = isActive ? 'tab-active' : 'tab-inactive';
+                    if (isDisabled && !isActive) className = 'tab-disabled';
+                    
+                    html += `<button class="tab-btn ${className}" onclick="handleTabClick(${id}, this)">${appState.listNames[id]}</button>`;
+                });
+                
+                // Edit Button
+                html += `<button class="list-settings-btn" onclick="openCreateListView()">
+                    <i class="fas fa-sliders-h text-lg"></i>
+                </button>`;
+                
+                container.innerHTML = html;
+                container.className = 'flex w-full items-center justify-between h-full no-scrollbar overflow-x-auto px-4';
+            } else {
+                // Update existing elements to preserve transition
+                const buttons = container.querySelectorAll('.tab-btn');
+                
+                // 1. Specials
+                const specialsBtn = buttons[0];
+                const isSpecialsActive = appState.currentMyList === 'specials';
+                if (isSpecialsActive) {
+                    specialsBtn.classList.remove('tab-inactive');
+                    specialsBtn.classList.add('tab-active');
+                } else {
+                    specialsBtn.classList.remove('tab-active');
+                    specialsBtn.classList.add('tab-inactive');
+                }
+
+                // 2. Liked
+                const likedBtn = buttons[1];
+                const isLikedActive = appState.currentMyList === 0;
+                if (isLikedActive) {
+                    likedBtn.classList.remove('tab-inactive');
+                    likedBtn.classList.add('tab-active');
+                } else {
+                    likedBtn.classList.remove('tab-active');
+                    likedBtn.classList.add('tab-inactive');
+                }
+
+                // 3. Lists
+                listIds.forEach((id, idx) => {
+                    const btn = buttons[idx + 2];
+                    const isActive = appState.currentMyList === id;
+                    const count = getListCount(id);
+                    const isDisabled = count === 0;
+                    
+                    btn.classList.remove('tab-active', 'tab-inactive', 'tab-disabled');
+                    
+                    if (isActive) {
+                        btn.classList.add('tab-active');
+                    } else {
+                        if (isDisabled) btn.classList.add('tab-disabled');
+                        else btn.classList.add('tab-inactive');
+                    }
+                });
+            }
+        }
+        
+        window.handleTabClick = function(id, btnElement) {
+            closeCoachMark();
+
+            if (id === 0 || id === 'specials') {
+                switchMainList(id);
+                return;
+            }
+            
+            const count = getListCount(id);
+            if (count === 0) {
+                showCoachMark(btnElement);
+            } else {
+                switchMainList(id);
+            }
+        };
+        
+        window.showCoachMark = function(targetEl) {
+            if (!targetEl) return;
+            
+            // 1. Prepare coordinates
+            const rect = targetEl.getBoundingClientRect();
+            const targetCenter = rect.left + (rect.width / 2);
+            const top = rect.bottom + 8;
+
+            // 2. Measure tooltip width (make visible temporarily but hidden)
+            // Reset for measurement
+            coachMarkPopup.classList.remove('visible');
+            coachMarkPopup.style.display = 'flex';
+            coachMarkPopup.style.opacity = '0'; 
+            coachMarkPopup.style.transform = 'none'; // Clear previous transforms
+            
+            // Force width calculation
+            const tooltipWidth = coachMarkPopup.offsetWidth || 200; // Fallback
+            const screenWidth = window.innerWidth;
+            const margin = 12; // Safety margin from screen edge
+            
+            // 3. Calculate Ideal Left (centered on target)
+            let left = targetCenter - (tooltipWidth / 2);
+
+            // 4. Clamp to Screen Edges
+            if (left < margin) {
+                left = margin;
+            } else if (left + tooltipWidth > screenWidth - margin) {
+                left = screenWidth - tooltipWidth - margin;
+            }
+
+            // 5. Calculate Arrow Position relative to Tooltip Box
+            // Arrow should point to targetCenter. 
+            // Relative X = targetCenter - TooltipLeft
+            const arrowX = targetCenter - left;
+
+            // 6. Apply Styles
+            coachMarkPopup.style.top = `${top}px`;
+            coachMarkPopup.style.left = `${left}px`;
+            
+            // Set CSS Variable for Arrow
+            coachMarkPopup.style.setProperty('--arrow-x', `${arrowX}px`);
+
+            // 7. Animate In
+            coachMarkPopup.style.transform = `translateY(5px)`;
+            
+            requestAnimationFrame(() => {
+                coachMarkPopup.style.opacity = ''; // Remove inline opacity so class takes over
+                coachMarkPopup.classList.add('visible');
+                coachMarkPopup.style.transform = `translateY(0)`;
+            });
+
+            clearTimeout(coachMarkTimeout);
+            coachMarkTimeout = setTimeout(closeCoachMark, 3000);
+        };
+        
+        window.closeCoachMark = function() {
+            coachMarkPopup.classList.remove('visible');
+            clearTimeout(coachMarkTimeout);
+        };
+        
+        window.goToCreateListFromPopup = function() {
+            closeCoachMark();
+            openCreateListView();
+        };
+
+        window.switchMainList = function(id) { 
+            appState.currentMyList = id; 
+            renderListTabs(); 
+            renderSubSectionBar(); 
+            renderProducts(); 
+        };
 
         function renderProducts() {
             let list = getAllProducts();
-            let filtered = (appState.currentMyList === 'specials') ? list.filter(p => p.isEvent) : (appState.currentMyList === 0 ? list.filter(p => p.liked) : list.filter(p => (p.myList||[]).includes(appState.currentMyList)));
-            if (filtered.length === 0) { document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">표시할 상품이 없습니다.</div>`; return; }
+            let filtered = [];
             
+            let countLabel = "";
+            let emptyMsg = "";
+
+            if(appState.currentMyList === 'specials') {
+                filtered = list.filter(p => p.isEvent);
+                countLabel = "행사 상품";
+                emptyMsg = "진행 중인 행사가 없습니다.";
+            } else if (appState.currentMyList === 0) {
+                filtered = list.filter(p => p.liked);
+                countLabel = "관심 상품";
+                emptyMsg = "관심 상품이 없습니다.";
+            } else {
+                filtered = list.filter(p => (p.myList||[]).includes(appState.currentMyList));
+                countLabel = "담긴 상품";
+                emptyMsg = "해당 리스트에 담긴 상품이 없습니다.";
+            }
+
+            // Apply Sort Logic ONLY for Favorites (id 0)
+            let sortedList;
+            if (appState.currentMyList === 0) {
+                sortedList = getSortedList(filtered, appState.currentSort);
+            } else if (appState.currentMyList === 'specials') {
+                // Special handling for Specials: Group by Type
+                // Mocking event types for display (cycle through types)
+                const eventTypes = ['today', 'store', 'md'];
+                filtered.forEach((p, idx) => {
+                    p.eventType = eventTypes[idx % 3];
+                });
+                // No specific sort needed, grouping handles order
+                sortedList = filtered; 
+            } else {
+                // For LIST1/LIST2, use default order (could be custom in future)
+                // Currently just list order
+                sortedList = filtered;
+            }
+            
+            if (sortedList.length === 0) {
+                    document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">
+                    <p class="mb-2">${emptyMsg}</p>
+                    </div>`;
+                    return;
+            }
+
             let html = '';
+            
+            // Condition 1: Specials with Headers
             if (appState.currentMyList === 'specials') {
-                const groups = { today: '오늘의 행사', store: '매장행사', md: '식자재행사' };
-                filtered.forEach((p, idx) => p.eventType = ['today', 'store', 'md'][idx % 3]);
-                Object.entries(groups).forEach(([key, title]) => {
-                    const groupItems = filtered.filter(p => p.eventType === key);
-                    if (groupItems.length) { html += `<div class="list-section-header text-gray-800 bg-gray-50 border-y border-gray-200">${title}</div>${renderItemsHTML(groupItems)}`; }
+                const groups = {
+                    'today': { title: '오늘의 행사', items: [] },
+                    'store': { title: '매장행사', items: [] },
+                    'md': { title: '식자재행사', items: [] }
+                };
+                
+                sortedList.forEach(p => {
+                    if(groups[p.eventType]) groups[p.eventType].items.push(p);
                 });
-            } else if (appState.currentMyList === 0 && appState.currentSort === 'category') {
-                const cats = { vegetable: '채소/과일', seafood: '수산/축산', processed: '식품/가공', sauce: '양념/소스', kitchen: '주방/잡화' };
-                Object.entries(cats).forEach(([key, title]) => {
-                    const groupItems = filtered.filter(p => p.category === key);
-                    if (groupItems.length) { html += `<div class="list-section-header text-gray-800 bg-gray-50 border-y border-gray-200">${title}</div>${renderItemsHTML(groupItems)}`; }
+
+                Object.values(groups).forEach(group => {
+                    if (group.items.length > 0) {
+                        html += `<div class="list-section-header text-[#0C5608] bg-gray-50 border-y border-gray-200 text-gray-800">${group.title}</div>`;
+                        html += renderItemsHTML(group.items);
+                    }
                 });
-            } else html = renderItemsHTML(filtered);
+            }
+            // Condition 2: Category Sort (Only for Favorites)
+            else if (appState.currentMyList === 0 && appState.currentSort === 'category') {
+                const categoryNames = {
+                    'vegetable': '채소/과일',
+                    'seafood': '수산/축산',
+                    'processed': '식품/가공',
+                    'sauce': '양념/소스',
+                    'kitchen': '주방/잡화'
+                };
+                const catOrder = ['vegetable', 'seafood', 'processed', 'sauce', 'kitchen'];
+                
+                const grouped = {};
+                sortedList.forEach(p => {
+                    const cat = p.category || 'other';
+                    if (!grouped[cat]) grouped[cat] = [];
+                    grouped[cat].push(p);
+                });
+
+                catOrder.forEach(cat => {
+                    if (grouped[cat] && grouped[cat].length > 0) {
+                        html += `<div class="list-section-header text-[#0C5608] bg-gray-50 border-y border-gray-200 text-gray-800">${categoryNames[cat]}</div>`;
+                        html += renderItemsHTML(grouped[cat]);
+                        delete grouped[cat];
+                    }
+                });
+
+                Object.keys(grouped).forEach(cat => {
+                      if (grouped[cat].length > 0) {
+                        html += `<div class="list-section-header text-[#0C5608] bg-gray-50 border-y border-gray-200 text-gray-800">기타</div>`;
+                        html += renderItemsHTML(grouped[cat]);
+                      }
+                });
+
+            } 
+            // Condition 3: Default List (Latest sort for Favorites, or Plain list for others)
+            else {
+                html += renderItemsHTML(sortedList);
+            }
+
             document.getElementById('product-list').innerHTML = html;
         }
 
         window.updateQty = function(id, d) {
-            appState.cart[id] = Math.max(0, (appState.cart[id]||0) + d);
-            if (appState.cart[id] === 0) delete appState.cart[id];
-            updateFooterUI();
-            appState.currentView === 'home' ? renderHomeView() : renderProducts();
-        };
+            const newQty = Math.max(0, (appState.cart[id]||0) + d);
+            appState.cart[id] = newQty;
+            if(appState.cart[id] === 0) delete appState.cart[id];
+            
+            if (newQty > 0) {
+                const p = getAllProducts().find(x => x.id === id);
+                if (p && !p.liked) {
+                    toggleProductLike(id); 
+                }
+            }
 
-        window.showCoachMark = function(targetEl) {
-            const rect = targetEl.getBoundingClientRect();
-            coachMarkPopup.style.top = (rect.bottom + 8) + 'px';
-            coachMarkPopup.style.left = Math.max(12, Math.min(window.innerWidth - 212, rect.left + rect.width / 2 - 100)) + 'px';
-            coachMarkPopup.style.setProperty('--arrow-x', (rect.left + rect.width / 2 - parseInt(coachMarkPopup.style.left)) + 'px');
-            coachMarkPopup.classList.add('visible');
-            clearTimeout(coachMarkTimeout); coachMarkTimeout = setTimeout(closeCoachMark, 3000);
+            updateFooterUI();
+            if (appState.currentView === 'home') renderHomeView();
+            else renderProducts();
         };
-        window.closeCoachMark = function() { coachMarkPopup.classList.remove('visible'); };
-        window.goToCreateListFromPopup = function() { closeCoachMark(); openCreateListView(); };
 
         const savedMode = localStorage.getItem('orderz_start_mode');
-        if (savedMode === 'quick-order') showQuickOrderView(); else showHomeView();
+        if (savedMode === 'quick-order') showQuickOrderView();
+        else showHomeView();
+
+        let lastScrollY = window.scrollY;
+        let isBarHidden = false;
+        let scrollTimeout;
+        
+        const handleScroll = () => {
+            if (appState.currentView !== 'quick-order') return;
+            
+            const currentScrollY = window.scrollY;
+            
+            if (Math.abs(currentScrollY - lastScrollY) < 10 || currentScrollY < 0) return;
+
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                if (!isBarHidden) {
+                    clearTimeout(scrollTimeout);
+                    subSectionBar.classList.remove('sort-bar-overflow-visible');
+                    subSectionBar.classList.add('sort-bar-collapsed');
+                    isBarHidden = true;
+                }
+            } else {
+                if (isBarHidden || currentScrollY <= 50) {
+                    subSectionBar.classList.remove('sort-bar-collapsed');
+                    isBarHidden = false;
+                    
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        if (!isBarHidden) {
+                            subSectionBar.classList.add('sort-bar-overflow-visible');
+                        }
+                    }, 300);
+                }
+            }
+            lastScrollY = currentScrollY;
+        };
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    handleScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+
+        // Simple Swipe Detection for Product List
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const minSwipeDistance = 50;
+
+        productListContainer.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        productListContainer.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipeGesture();
+        }, {passive: true});
+
+        function handleSwipeGesture() {
+            const distance = touchEndX - touchStartX;
+            if (Math.abs(distance) < minSwipeDistance) return;
+
+            // Define logical order of tabs
+            const tabs = ['specials', 0];
+            
+            // Check if lists have items to be eligible for swipe navigation
+            if (getListCount(1) > 0) tabs.push(1);
+            if (getListCount(2) > 0) tabs.push(2);
+
+            const currentIndex = tabs.indexOf(appState.currentMyList);
+            
+            // Safety check
+            if (currentIndex === -1) return;
+
+            let targetId = null;
+
+            if (distance > 0) {
+                // Swiped Right (Go Left in tabs)
+                if (currentIndex > 0) {
+                    targetId = tabs[currentIndex - 1];
+                }
+            } else {
+                // Swiped Left (Go Right in tabs)
+                if (currentIndex < tabs.length - 1) {
+                    targetId = tabs[currentIndex + 1];
+                }
+            }
+
+            if (targetId !== null) {
+                switchMainList(targetId);
+            }
+        }
     });
 </script>
 </body>
