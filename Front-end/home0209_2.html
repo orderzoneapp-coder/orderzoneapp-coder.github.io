@@ -73,8 +73,9 @@
             border-color: #1f2937;
         }
         
+        /* Modified: Inactive state is now White with border */
         .cl-tab-btn:not(.active) {
-            background-color: #f3f4f6; /* Gray-100 */
+            background-color: #ffffff; /* Changed from Gray-100 to White */
             color: #6b7280; /* Gray-500 */
             border-color: #e5e7eb;
         }
@@ -882,7 +883,8 @@
             </div>
 
             <!-- Content Area -->
-            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24 pt-2" id="create-list-content">
+            <!-- Modified: Removed pt-2 to eliminate grey gap -->
+            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24" id="create-list-content">
                 <!-- Select All Bar Removed as requested -->
                 <div class="mt-2" id="create-list-items">
                     <!-- Items -->
