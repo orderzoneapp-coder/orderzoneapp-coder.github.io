@@ -114,8 +114,8 @@
 
         .cl-toggle-btn {
             width: 30px; height: 30px; margin: 0 auto;
-            border-radius: 6px; border: 1px solid #e5e7eb;
-            background: #fff; color: #d1d5db;
+            border-radius: 6px; border: 1px solid #d1d5db; /* Darker border */
+            background: #fff; color: #4b5563; /* Darker text (gray-600) */
             font-size: 10px; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.1s;
@@ -887,7 +887,8 @@
 
             <!-- Content Area -->
             <!-- Modified: Changed bg-gray-50 to bg-white, Removed pt-2/mt-2 to eliminate grey gap -->
-            <div class="flex-grow overflow-y-auto bg-white pb-24" id="create-list-content">
+            <!-- Added no-scrollbar class here -->
+            <div class="flex-grow overflow-y-auto bg-white pb-24 no-scrollbar" id="create-list-content">
                 <!-- Select All Bar Removed as requested -->
                 <div class="" id="create-list-items">
                     <!-- Items -->
@@ -1640,9 +1641,8 @@
         }
 
         let dragEl = null;
-        let dragGhost = null;
         let startY = 0;
-        let scrollInterval;
+        let scrollInterval = null; // Explicitly initialize
         
         function initDrag(e, item, isTouch) {
             dragEl = item;
@@ -1668,20 +1668,45 @@
             const clientY = e.clientY || e.touches[0].clientY;
             
             // Auto Scroll Logic
-            const container = document.querySelector('#create-list-view .flex-grow'); // Scrollable area
+            const container = document.getElementById('create-list-content'); 
             const rect = container.getBoundingClientRect();
-            const threshold = 50; // px
-            const speed = 10;
+            const threshold = 60; // Increased threshold for easier activation
+            const speed = 10; // Scroll speed
             
-            clearInterval(scrollInterval);
-            
+            let shouldScroll = false;
+            let scrollAmount = 0;
+
             if (clientY < rect.top + threshold) {
-                scrollInterval = setInterval(() => { container.scrollTop -= speed; }, 16);
+                shouldScroll = true;
+                scrollAmount = -speed;
             } else if (clientY > rect.bottom - threshold) {
-                scrollInterval = setInterval(() => { container.scrollTop += speed; }, 16);
+                shouldScroll = true;
+                scrollAmount = speed;
             }
 
-            // Swapping Logic
+            // Manage Scroll Interval
+            if (shouldScroll) {
+                if (!scrollInterval) {
+                    scrollInterval = setInterval(() => {
+                        container.scrollTop += scrollAmount;
+                        // Important: Check swap WHILE scrolling even if mouse doesn't move
+                        performSwap(clientY);
+                    }, 16);
+                }
+            } else {
+                if (scrollInterval) {
+                    clearInterval(scrollInterval);
+                    scrollInterval = null;
+                }
+            }
+
+            // Immediate swap on move
+            performSwap(clientY);
+        }
+
+        function performSwap(clientY) {
+            if (!dragEl) return;
+
             const siblings = [...dragEl.parentElement.children];
             const nextElement = siblings.find(sibling => {
                  if (sibling === dragEl) return false;
@@ -1690,7 +1715,9 @@
             });
             
             if (nextElement) {
-                dragEl.parentElement.insertBefore(dragEl, nextElement);
+                if (nextElement !== dragEl.nextElementSibling) {
+                    dragEl.parentElement.insertBefore(dragEl, nextElement);
+                }
             } else {
                 dragEl.parentElement.appendChild(dragEl);
             }
@@ -1701,7 +1728,13 @@
                 dragEl.classList.remove('dragging');
                 dragEl = null;
             }
-            clearInterval(scrollInterval);
+            
+            // Clear Interval strictly
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
+
             document.removeEventListener('mousemove', onDragMove);
             document.removeEventListener('mouseup', onDragEnd);
             document.removeEventListener('touchmove', onDragMove);
