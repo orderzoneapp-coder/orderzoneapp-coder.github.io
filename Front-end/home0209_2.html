@@ -390,6 +390,8 @@
             /* Added for text wrap prevention */
             white-space: nowrap;
             word-break: keep-all; 
+            /* Added CSS Variable for Arrow Position */
+            --arrow-x: 50%;
         }
         .coach-mark.visible {
             opacity: 1;
@@ -400,8 +402,8 @@
             content: '';
             position: absolute;
             top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: var(--arrow-x); /* Use Variable */
+            transform: translateX(-50%); /* Center arrow on its position */
             border-width: 0 5px 6px 5px;
             border-style: solid;
             border-color: transparent transparent #2D3748 transparent;
@@ -560,6 +562,22 @@
             color: #1f2937;
             border-bottom: 1px solid #f3f4f6;
         }
+
+        /* Calendar Day Styles (New) */
+        .cal-day-btn {
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #374151;
+        }
+        .cal-day-btn.disabled { color: #d1d5db; pointer-events: none; }
+        .cal-day-btn.today { border: 1px solid #22c55e; color: #16a34a; font-weight: bold; }
+        .cal-day-btn.active:hover { background-color: #f0fdf4; }
+        .cal-day-btn.selected { background-color: #22c55e; color: white !important; font-weight: bold; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -974,13 +992,13 @@
                         <div class="faq-item" id="faq-1">
                             <div class="faq-header" onclick="toggleFaq('faq-1')">
                                 <div class="faq-question">
-                                    <i class="fas fa-list-ul text-green-500 mr-2"></i> 찜한상품이란?
+                                    <i class="fas fa-list-ul text-green-500 mr-2"></i> 관심상품이란?
                                 </div>
                                 <i class="fas fa-chevron-down faq-chevron"></i>
                             </div>
                             <div class="faq-content">
                                 <div class="faq-answer-box">
-                                    '찜한상품'탭은 <span class="text-green-600 font-bold">내가 찜한 상품</span>과, 해당 상품과 관련된 <span class="text-green-600 font-bold">행사 상품</span>을 함께 모아볼 수 있는 리스트입니다.
+                                    '관심상품'탭은 <span class="text-green-600 font-bold">내가 찜한 상품(관심 상품)</span>과, 해당 상품과 관련된 <span class="text-green-600 font-bold">행사 상품</span>을 함께 모아볼 수 있는 리스트입니다.
                                 </div>
                             </div>
                         </div>
@@ -1149,6 +1167,44 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADDED: Calendar Modal -->
+    <div id="calendar-overlay" class="fixed inset-0 bg-black/50 z-[70] hidden transition-opacity opacity-0 flex items-center justify-center px-4">
+        <div id="calendar-modal" class="bg-white w-full max-w-sm rounded-2xl p-5 transform scale-95 transition-transform duration-200 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">배송일 선택</h3>
+                <button onclick="closeCalendarModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-center gap-4 mb-4">
+                <button class="text-gray-400"><i class="fas fa-chevron-left"></i></button>
+                <span id="calendar-month-title" class="text-lg font-extrabold text-gray-800"></span>
+                <button class="text-gray-400"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <!-- Weekdays -->
+            <div class="grid grid-cols-7 text-center mb-2">
+                <div class="text-xs text-red-500 font-bold">일</div>
+                <div class="text-xs text-gray-500">월</div>
+                <div class="text-xs text-gray-500">화</div>
+                <div class="text-xs text-gray-500">수</div>
+                <div class="text-xs text-gray-500">목</div>
+                <div class="text-xs text-gray-500">금</div>
+                <div class="text-xs text-blue-500 font-bold">토</div>
+            </div>
+
+            <!-- Days Grid -->
+            <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
+                <!-- JS Generated -->
+            </div>
+
+            <div class="mt-4 pt-4 border-t text-xs text-gray-400 text-center">
+                * 오늘/내일 주문 시 도착 예정일입니다.
             </div>
         </div>
     </div>
@@ -2014,7 +2070,7 @@
                 html += `<button class="tab-btn ${specialsClass}" onclick="handleTabClick('specials', this)">${starIcon} ${animText}</button>`;
 
                 let likedClass = appState.currentMyList === 0 ? 'tab-active' : 'tab-inactive';
-                html += `<button class="tab-btn ${likedClass}" onclick="handleTabClick(0, this)">찜한상품</button>`;
+                html += `<button class="tab-btn ${likedClass}" onclick="handleTabClick(0, this)">관심상품</button>`;
 
                 listIds.forEach(id => {
                     const isActive = appState.currentMyList === id;
@@ -2096,16 +2152,52 @@
         
         window.showCoachMark = function(targetEl) {
             if (!targetEl) return;
+            
+            // 1. Prepare coordinates
             const rect = targetEl.getBoundingClientRect();
+            const targetCenter = rect.left + (rect.width / 2);
             const top = rect.bottom + 8;
-            const left = rect.left + (rect.width / 2);
+
+            // 2. Measure tooltip width (make visible temporarily but hidden)
+            coachMarkPopup.style.opacity = '0';
+            coachMarkPopup.style.display = 'flex'; // Ensure layout
+            coachMarkPopup.style.transform = 'none'; // Clear previous transforms
+            
+            // Force width calculation
+            const tooltipWidth = coachMarkPopup.offsetWidth || 200; // Fallback
+            const screenWidth = window.innerWidth;
+            const margin = 12; // Safety margin from screen edge
+            
+            // 3. Calculate Ideal Left (centered on target)
+            let left = targetCenter - (tooltipWidth / 2);
+
+            // 4. Clamp to Screen Edges
+            if (left < margin) {
+                left = margin;
+            } else if (left + tooltipWidth > screenWidth - margin) {
+                left = screenWidth - tooltipWidth - margin;
+            }
+
+            // 5. Calculate Arrow Position relative to Tooltip Box
+            // Arrow should point to targetCenter. 
+            // Relative X = targetCenter - TooltipLeft
+            const arrowX = targetCenter - left;
+
+            // 6. Apply Styles
             coachMarkPopup.style.top = `${top}px`;
             coachMarkPopup.style.left = `${left}px`;
-            coachMarkPopup.style.transform = `translateX(-50%) translateY(5px)`;
+            
+            // Set CSS Variable for Arrow
+            coachMarkPopup.style.setProperty('--arrow-x', `${arrowX}px`);
+
+            // 7. Animate In
+            coachMarkPopup.style.transform = `translateY(5px)`;
+            
             requestAnimationFrame(() => {
                 coachMarkPopup.classList.add('visible');
-                coachMarkPopup.style.transform = `translateX(-50%) translateY(0)`;
+                coachMarkPopup.style.transform = `translateY(0)`;
             });
+
             clearTimeout(coachMarkTimeout);
             coachMarkTimeout = setTimeout(closeCoachMark, 3000);
         };
@@ -2140,8 +2232,8 @@
                 emptyMsg = "진행 중인 행사가 없습니다.";
             } else if (appState.currentMyList === 0) {
                 filtered = list.filter(p => p.liked);
-                countLabel = "찜한 상품";
-                emptyMsg = "찜한 상품이 없습니다.";
+                countLabel = "관심 상품";
+                emptyMsg = "관심 상품이 없습니다.";
             } else {
                 filtered = list.filter(p => (p.myList||[]).includes(appState.currentMyList));
                 countLabel = "담긴 상품";
