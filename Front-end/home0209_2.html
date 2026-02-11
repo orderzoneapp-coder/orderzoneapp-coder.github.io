@@ -52,40 +52,31 @@
             cursor: pointer;
         }
 
-        /* Tab Text Animation */
-        .tab-anim-text {
-            max-width: 0;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy ease */
-            display: inline-block;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .tab-active .tab-anim-text {
-            max-width: 60px; /* Allow expansion */
-            opacity: 1;
-            transform: translateY(0);
-            margin-left: 4px;
-        }
-
-        /* Create List Tab Style (Modified for Toolbar Layout) */
+        /* Create List Tab Style (Modified for Pill Shape) */
         .cl-tab-btn {
-            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.875rem;
-            color: #6b7280;
-            border-bottom: 2px solid transparent;
-            font-weight: 500;
+            font-size: 0.75rem; /* text-xs equivalent */
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 9999px; /* Pill shape */
+            transition: all 0.2s;
             white-space: nowrap;
             cursor: pointer;
+            border: 1px solid transparent;
         }
+        
         .cl-tab-btn.active {
-            color: #16a34a;
-            border-bottom-color: #16a34a;
-            font-weight: 700;
+            background-color: #1f2937; /* Dark Gray bg */
+            color: white;
+            border-color: #1f2937;
+        }
+        
+        .cl-tab-btn:not(.active) {
+            background-color: #f3f4f6; /* Gray-100 */
+            color: #6b7280; /* Gray-500 */
+            border-color: #e5e7eb;
         }
 
         /* Grid Layout */
@@ -876,15 +867,12 @@
             
             <!-- Toolbar (Back, Tabs, Save) - FLAT STRUCTURE with justify-between -->
             <div class="flex-none flex items-center justify-between px-4 border-b bg-white z-20 h-[40px]">
-                <!-- Back Button -->
-                <button onclick="closeCreateListView()" class="h-full flex items-center justify-center text-gray-500">
-                    <i class="fas fa-arrow-left text-lg"></i>
-                </button>
-                
-                <!-- Tabs (Flattened) -->
-                <button class="cl-tab-btn active" data-tab="all">전체</button>
-                <button class="cl-tab-btn cl-tab-l1" data-tab="1">LIST1</button>
-                <button class="cl-tab-btn cl-tab-l2" data-tab="2">LIST2</button>
+                <!-- Tab Group (Back button removed) -->
+                <div class="flex items-center gap-2 h-full">
+                    <button class="cl-tab-btn active" data-tab="all">전체</button>
+                    <button class="cl-tab-btn cl-tab-l1" data-tab="1">LIST1</button>
+                    <button class="cl-tab-btn cl-tab-l2" data-tab="2">LIST2</button>
+                </div>
                 
                 <!-- Save Button -->
                 <button id="create-list-save-btn" class="h-full flex items-center justify-center text-green-600 font-bold text-sm">
@@ -898,6 +886,13 @@
                 <div class="mt-2" id="create-list-items">
                     <!-- Items -->
                 </div>
+            </div>
+            
+            <!-- Create List Footer (Back Button Left Aligned) -->
+            <div class="flex-none bg-white border-t p-3 safe-pb z-30 flex justify-start">
+                <button onclick="closeCreateListView()" class="px-5 py-2 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm transition-colors hover:bg-gray-200 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> 뒤로가기
+                </button>
             </div>
 
             <!-- Move Sheet (Modal) -->
@@ -1386,7 +1381,7 @@
             
             subSectionBar.classList.remove('hidden');
             
-            if (appState.currentMyList === 0 || appState.currentMyList === 'specials') {
+            if (appState.currentMyList === 0) {
                  sortContainer.style.display = 'block';
             } else {
                  sortContainer.style.display = 'none';
@@ -1586,7 +1581,10 @@
             filtered = getSortedList(filtered, appState.currentSort);
 
             if (filtered.length === 0) {
-                clItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-sm">표시할 상품이 없습니다.</div>`;
+                clItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-sm leading-relaxed">
+                    리스트가 비어있습니다.<br>
+                    <span class="text-xs">'전체' 탭에서 상품 우측의 번호 버튼을 눌러<br>리스트에 추가해보세요.</span>
+                </div>`;
             } else {
                 clItemsEl.innerHTML = filtered.map(p => {
                     const currentLists = appState.tempChanges[p.id] || [];
@@ -2061,13 +2059,14 @@
             if (container.children.length === 0 || forceRebuild) {
                 let html = '';
 
-                // Specials (Star + Animated Text)
+                // Specials (Star + Fixed Text)
                 const isSpecialsActive = appState.currentMyList === 'specials';
                 let specialsClass = isSpecialsActive ? 'tab-active' : 'tab-inactive';
                 const starIcon = '<i class="fas fa-star text-yellow-400 text-lg"></i>';
-                const animText = `<span class="tab-anim-text">단골특가</span>`;
+                // Modified: Fixed text instead of animated
+                const fixedText = `<span class="ml-1">단골특가</span>`;
                 
-                html += `<button class="tab-btn ${specialsClass}" onclick="handleTabClick('specials', this)">${starIcon} ${animText}</button>`;
+                html += `<button class="tab-btn ${specialsClass}" onclick="handleTabClick('specials', this)">${starIcon}${fixedText}</button>`;
 
                 let likedClass = appState.currentMyList === 0 ? 'tab-active' : 'tab-inactive';
                 html += `<button class="tab-btn ${likedClass}" onclick="handleTabClick(0, this)">관심상품</button>`;
