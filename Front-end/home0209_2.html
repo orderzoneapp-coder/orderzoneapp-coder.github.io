@@ -867,8 +867,8 @@
             </header>
             
             <!-- Toolbar (Back, Tabs, Save) - FLAT STRUCTURE with justify-between -->
-            <!-- REMOVED BORDER-B as requested -->
-            <div class="flex-none flex items-center justify-between px-4 bg-white z-20 h-[40px] mt-2">
+            <!-- REMOVED BORDER-B and mt-2 as requested for seamless look -->
+            <div class="flex-none flex items-center justify-between px-4 bg-white z-20 h-[40px]">
                 <!-- Tab Group (Back button removed) -->
                 <div class="flex items-center gap-2 h-full">
                     <button class="cl-tab-btn active" data-tab="all">전체</button>
@@ -883,10 +883,10 @@
             </div>
 
             <!-- Content Area -->
-            <!-- Modified: Removed pt-2 to eliminate grey gap -->
-            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24" id="create-list-content">
+            <!-- Modified: Changed bg-gray-50 to bg-white, Removed pt-2/mt-2 to eliminate grey gap -->
+            <div class="flex-grow overflow-y-auto bg-white pb-24" id="create-list-content">
                 <!-- Select All Bar Removed as requested -->
-                <div class="mt-2" id="create-list-items">
+                <div class="" id="create-list-items">
                     <!-- Items -->
                 </div>
             </div>
