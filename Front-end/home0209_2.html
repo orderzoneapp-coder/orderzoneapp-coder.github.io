@@ -227,16 +227,47 @@
             pointer-events: none;
         }
 
-        /* Move Sheet */
-        #move-sheet-overlay { background-color: rgba(0,0,0,0.4); transition: opacity 0.2s; }
-        #move-sheet { transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
-        #move-sheet.visible { transform: translateY(0); }
+        /* Calendar Modal Styles */
+        #calendar-overlay {
+            transition: opacity 0.2s ease;
+        }
+        #calendar-modal {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .cal-day-btn {
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        .cal-day-btn.disabled {
+            color: #e5e7eb;
+            pointer-events: none;
+        }
+        .cal-day-btn.active {
+            color: #1f2937;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .cal-day-btn.active:active {
+            background-color: #f3f4f6;
+        }
+        .cal-day-btn.selected {
+            background-color: #22c55e;
+            color: white;
+            font-weight: 700;
+        }
+        .cal-day-btn.today {
+            border: 1px solid #22c55e;
+            color: #16a34a;
+        }
+        .cal-day-btn.today.selected {
+            color: white; /* override for selected today */
+        }
         
-        /* Delivery Date Sheet */
-        #delivery-sheet-overlay { background-color: rgba(0,0,0,0.4); transition: opacity 0.2s; }
-        #delivery-sheet { transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
-        #delivery-sheet.visible { transform: translateY(0); }
-
         /* Icon Settings Btn */
         .list-settings-btn {
             height: 100%;
@@ -635,7 +666,7 @@
                 <!-- Sub Section Bar (Sort & Delivery) with Animation -->
                 <div id="sub-section-bar" class="sub-section-bar hidden sort-bar-transition">
                     <!-- Left: Delivery Date -->
-                    <div id="delivery-date-btn" class="delivery-btn" onclick="openDeliverySheet()">
+                    <div id="delivery-date-btn" class="delivery-btn" onclick="openCalendarModal()">
                         <i class="far fa-calendar-alt text-lg text-green-600 mr-1"></i>
                         <span id="current-delivery-date">1월 12일(월) 도착</span>
                     </div>
@@ -870,8 +901,32 @@
             </div>
     </div> <!-- END of create-list-view -->
     
-    <!-- Delivery Date Picker (Hidden) -->
-    <input type="date" id="hidden-date-picker" class="absolute opacity-0 w-0 h-0 top-0 left-0">
+    <!-- Custom Calendar Modal (Center Popup) -->
+    <div id="calendar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center transition-opacity opacity-0">
+        <div class="bg-white rounded-2xl w-[320px] p-5 shadow-2xl transform scale-95 transition-transform duration-200" id="calendar-modal">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg text-gray-800" id="calendar-month-title"></h3>
+                <button onclick="closeCalendarModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center mb-2">
+                <div class="text-xs font-bold text-red-500">일</div>
+                <div class="text-xs font-bold text-gray-500">월</div>
+                <div class="text-xs font-bold text-gray-500">화</div>
+                <div class="text-xs font-bold text-gray-500">수</div>
+                <div class="text-xs font-bold text-gray-500">목</div>
+                <div class="text-xs font-bold text-gray-500">금</div>
+                <div class="text-xs font-bold text-blue-500">토</div>
+            </div>
+            <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
+                <!-- Days will be injected here -->
+            </div>
+            <div class="mt-4 text-center">
+                 <p class="text-xs text-gray-400">* 오늘과 내일만 선택 가능합니다.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER (Main) - Integrated Navigation -->
     <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 pt-2 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
@@ -1213,6 +1268,12 @@
         const deliverySheetCancel = document.getElementById('delivery-sheet-cancel');
         const productListContainer = document.getElementById('product-list-container');
         
+        // Calendar Modal Elements
+        const calendarOverlay = document.getElementById('calendar-overlay');
+        const calendarModal = document.getElementById('calendar-modal');
+        const calendarMonthTitle = document.getElementById('calendar-month-title');
+        const calendarDaysContainer = document.getElementById('calendar-days');
+        
         // Coach Mark Element
         const coachMarkPopup = document.getElementById('coach-mark-popup');
         let coachMarkTimeout;
@@ -1342,53 +1403,93 @@
             }
         });
 
-        // Initialize Date Picker
-        const dateInput = document.getElementById('hidden-date-picker');
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        const formatDateISO = (d) => {
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+        // --- Custom Calendar Modal Logic ---
+        window.openCalendarModal = function() {
+             renderCalendar();
+             calendarOverlay.classList.remove('hidden');
+             setTimeout(() => {
+                 calendarOverlay.classList.remove('opacity-0');
+                 calendarModal.classList.remove('scale-95');
+             }, 10);
         };
 
-        // Set min/max to today/tomorrow
-        dateInput.min = formatDateISO(today);
-        dateInput.max = formatDateISO(tomorrow);
-        dateInput.value = formatDateISO(today); // Default value
-
-        window.openDeliverySheet = function() {
-            // Trigger native date picker
-            try {
-                dateInput.showPicker();
-            } catch (err) {
-                dateInput.click(); // Fallback
-            }
+        window.closeCalendarModal = function() {
+             calendarOverlay.classList.add('opacity-0');
+             calendarModal.classList.add('scale-95');
+             setTimeout(() => {
+                 calendarOverlay.classList.add('hidden');
+             }, 200);
         };
-        
-        // Handle Date Change
-        dateInput.addEventListener('change', (e) => {
-            if(!e.target.value) return;
-            const selectedDate = new Date(e.target.value);
-            const month = selectedDate.getMonth() + 1;
-            const day = selectedDate.getDate();
-            const days = ['일', '월', '화', '수', '목', '금', '토'];
-            const dayName = days[selectedDate.getDay()];
-            
-            const newDateStr = `${month}월 ${day}일(${dayName}) 도착`;
-            updateDeliveryDate(newDateStr);
-        });
-        
+
+        function renderCalendar() {
+             const today = new Date();
+             const tomorrow = new Date(today);
+             tomorrow.setDate(tomorrow.getDate() + 1);
+
+             // Calendar Title (Month)
+             const year = today.getFullYear();
+             const month = today.getMonth();
+             calendarMonthTitle.textContent = `${year}년 ${month + 1}월`;
+
+             // Days generation
+             const firstDayOfMonth = new Date(year, month, 1).getDay();
+             const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
+             
+             let html = '';
+             
+             // Empty slots for previous month
+             for (let i = 0; i < firstDayOfMonth; i++) {
+                 html += `<div></div>`;
+             }
+
+             // Days
+             for (let day = 1; day <= lastDateOfMonth; day++) {
+                 const currentDate = new Date(year, month, day);
+                 const isToday = currentDate.toDateString() === today.toDateString();
+                 const isTomorrow = currentDate.toDateString() === tomorrow.toDateString();
+                 
+                 // Check if it's the currently selected delivery date
+                 // Simple parsing of "1월 12일..." string
+                 const currentSelectedMonth = parseInt(appState.deliveryDate.match(/(\d+)월/)?.[1]);
+                 const currentSelectedDay = parseInt(appState.deliveryDate.match(/(\d+)일/)?.[1]);
+                 const isSelected = (month + 1 === currentSelectedMonth && day === currentSelectedDay);
+
+                 let classNames = "cal-day-btn";
+                 let onclickAttr = "";
+
+                 if (isToday || isTomorrow) {
+                     classNames += " active";
+                     // Build date string for update
+                     const days = ['일', '월', '화', '수', '목', '금', '토'];
+                     const dayName = days[currentDate.getDay()];
+                     const newDateStr = `${month + 1}월 ${day}일(${dayName}) 도착`;
+                     onclickAttr = `onclick="selectDate('${newDateStr}')"`;
+                     
+                     if (isSelected) classNames += " selected";
+                     if (isToday) classNames += " today";
+                 } else {
+                     classNames += " disabled";
+                 }
+
+                 html += `<div class="${classNames}" ${onclickAttr}>${day}</div>`;
+             }
+             
+             calendarDaysContainer.innerHTML = html;
+        }
+
+        window.selectDate = function(dateStr) {
+             updateDeliveryDate(dateStr);
+             closeCalendarModal();
+        };
+
         window.updateDeliveryDate = function(newDate) {
             appState.deliveryDate = newDate;
             renderSubSectionBar();
-            // closeDeliverySheet(); // No longer needed
         };
+        
+        // Removed old delivery sheet open logic (it was using openDeliverySheet which we replaced)
+        // Ensure the button calls openCalendarModal() now (updated in HTML)
 
-        // deliverySheetCancel.onclick = deliverySheetOverlay.onclick = closeDeliverySheet; // Removed
 
         // --- Create List Logic ---
         window.openCreateListView = function() {
