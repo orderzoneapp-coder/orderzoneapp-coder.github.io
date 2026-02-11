@@ -2215,19 +2215,34 @@
             handleSwipeGesture();
         }, {passive: true});
 
+        // Helper to get currently active tabs in order
+        function getActiveTabIds() {
+            const tabs = ['specials', 0]; // 기본 탭: 단골특가, 찜한상품
+            // 리스트에 상품이 있을 경우에만 스와이프 경로에 포함
+            if (getListCount(1) > 0) tabs.push(1);
+            if (getListCount(2) > 0) tabs.push(2);
+            return tabs;
+        }
+
         function handleSwipeGesture() {
             const distance = touchEndX - touchStartX;
             if (Math.abs(distance) < minSwipeDistance) return;
 
+            const activeTabs = getActiveTabIds();
+            // currentMyList가 숫자일 수도 있고 문자열일 수도 있어서 유연하게 처리
+            const currentIndex = activeTabs.indexOf(appState.currentMyList);
+
+            if (currentIndex === -1) return;
+
             if (distance > 0) {
-                // Swiped Right -> Go Left (Liked -> Specials)
-                if (appState.currentMyList === 0) {
-                    switchMainList('specials');
+                // Swiped Right -> Go Left (Previous Tab)
+                if (currentIndex > 0) {
+                    switchMainList(activeTabs[currentIndex - 1]);
                 }
             } else {
-                // Swiped Left -> Go Right (Specials -> Liked)
-                if (appState.currentMyList === 'specials') {
-                    switchMainList(0);
+                // Swiped Left -> Go Right (Next Tab)
+                if (currentIndex < activeTabs.length - 1) {
+                    switchMainList(activeTabs[currentIndex + 1]);
                 }
             }
         }
