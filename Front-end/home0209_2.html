@@ -97,8 +97,20 @@
             background: #fff;
             border-bottom: 1px solid #f3f4f6;
             align-items: center;
+            user-select: none; /* Prevent text selection during drag */
+            touch-action: pan-y; /* Allow vertical scrolling, but we handle drag manually */
         }
         .cl-grid-row.checked { background-color: #f0fdf4; }
+        
+        /* Dragging Styles */
+        .cl-grid-row.dragging {
+            opacity: 0.5;
+            background-color: #f0fdf4;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .cl-grid-row.drag-over {
+            border-top: 2px solid #22c55e;
+        }
 
         .cl-info {
             display: flex; flex-direction: column; justify-content: center;
@@ -124,7 +136,15 @@
         
         .cl-drag-handle {
             display: flex; align-items: center; justify-content: center;
-            color: #e5e7eb; cursor: grab;
+            color: #d1d5db; 
+            cursor: grab;
+            width: 100%;
+            height: 100%;
+            touch-action: none; /* Important for touch drag */
+        }
+        .cl-drag-handle:active {
+            cursor: grabbing;
+            color: #6b7280;
         }
         
         .cl-trash-btn {
@@ -227,47 +247,16 @@
             pointer-events: none;
         }
 
-        /* Calendar Modal Styles */
-        #calendar-overlay {
-            transition: opacity 0.2s ease;
-        }
-        #calendar-modal {
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .cal-day-btn {
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-        .cal-day-btn.disabled {
-            color: #e5e7eb;
-            pointer-events: none;
-        }
-        .cal-day-btn.active {
-            color: #1f2937;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .cal-day-btn.active:active {
-            background-color: #f3f4f6;
-        }
-        .cal-day-btn.selected {
-            background-color: #22c55e;
-            color: white;
-            font-weight: 700;
-        }
-        .cal-day-btn.today {
-            border: 1px solid #22c55e;
-            color: #16a34a;
-        }
-        .cal-day-btn.today.selected {
-            color: white; /* override for selected today */
-        }
+        /* Move Sheet */
+        #move-sheet-overlay { background-color: rgba(0,0,0,0.4); transition: opacity 0.2s; }
+        #move-sheet { transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
+        #move-sheet.visible { transform: translateY(0); }
         
+        /* Delivery Date Sheet */
+        #delivery-sheet-overlay { background-color: rgba(0,0,0,0.4); transition: opacity 0.2s; }
+        #delivery-sheet { transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); transform: translateY(100%); }
+        #delivery-sheet.visible { transform: translateY(0); }
+
         /* Icon Settings Btn */
         .list-settings-btn {
             height: 100%;
@@ -397,7 +386,10 @@
             opacity: 0;
             transform: translateY(5px);
             transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-            pointer-events: none; 
+            pointer-events: none;
+            /* Added for text wrap prevention */
+            white-space: nowrap;
+            word-break: keep-all; 
         }
         .coach-mark.visible {
             opacity: 1;
@@ -422,6 +414,8 @@
             font-weight: 700;
             font-size: 10px;
             cursor: pointer;
+            /* Added for text wrap prevention */
+            white-space: nowrap;
         }
         
         /* Navigation Badge Style */
@@ -583,7 +577,8 @@
                 </div>
                 
                 <!-- Logo: 홈으로 이동 및 상단 스크롤 -->
-                <h1 id="header-title" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-green-600 cursor-pointer">NH라인</h1>
+                <!-- Updated Color to Match Footer #1B4D3E -->
+                <h1 id="header-title" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-[#1B4D3E] cursor-pointer">NH라인</h1>
                 <div class="flex items-center space-x-2">
                     <span class="text-xs font-semibold">OP</span>
                     <i class="fas fa-user-circle text-2xl text-gray-400"></i>
@@ -852,7 +847,8 @@
                         <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
                         <span class="text-sm font-bold text-gray-800">상품목록</span>
                     </div>
-                    <h1 class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-green-600">NH라인</h1>
+                    <!-- Updated: Match Footer Color -->
+                    <h1 class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-[#1B4D3E]">NH라인</h1>
                     <div class="flex items-center space-x-2">
                         <span class="text-xs font-semibold">OP</span>
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
@@ -879,7 +875,7 @@
             </div>
 
             <!-- Content Area -->
-            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24">
+            <div class="flex-grow overflow-y-auto bg-gray-50 pb-24" id="create-list-content">
                 <!-- Select All Bar Removed as requested -->
                 <div class="mt-2" id="create-list-items">
                     <!-- Items -->
@@ -901,32 +897,8 @@
             </div>
     </div> <!-- END of create-list-view -->
     
-    <!-- Custom Calendar Modal (Center Popup) -->
-    <div id="calendar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center transition-opacity opacity-0">
-        <div class="bg-white rounded-2xl w-[320px] p-5 shadow-2xl transform scale-95 transition-transform duration-200" id="calendar-modal">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg text-gray-800" id="calendar-month-title"></h3>
-                <button onclick="closeCalendarModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-lg"></i>
-                </button>
-            </div>
-            <div class="grid grid-cols-7 gap-1 text-center mb-2">
-                <div class="text-xs font-bold text-red-500">일</div>
-                <div class="text-xs font-bold text-gray-500">월</div>
-                <div class="text-xs font-bold text-gray-500">화</div>
-                <div class="text-xs font-bold text-gray-500">수</div>
-                <div class="text-xs font-bold text-gray-500">목</div>
-                <div class="text-xs font-bold text-gray-500">금</div>
-                <div class="text-xs font-bold text-blue-500">토</div>
-            </div>
-            <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
-                <!-- Days will be injected here -->
-            </div>
-            <div class="mt-4 text-center">
-                 <p class="text-xs text-gray-400">* 오늘과 내일만 선택 가능합니다.</p>
-            </div>
-        </div>
-    </div>
+    <!-- Delivery Date Picker (Hidden) -->
+    <input type="date" id="hidden-date-picker" class="absolute opacity-0 w-0 h-0 top-0 left-0">
 
     <!-- FOOTER (Main) - Integrated Navigation -->
     <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 pt-2 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
@@ -1564,7 +1536,7 @@
                     const currentLists = appState.tempChanges[p.id] || [];
                     const getBtn = (id) => `<button class="cl-toggle-btn ${currentLists.includes(id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleListMember(${p.id}, ${id})">${id}</button>`;
                     return `
-                    <div class="cl-grid-row">
+                    <div class="cl-grid-row" data-id="${p.id}">
                         <div class="cl-trash-wrapper flex items-center justify-center">
                             <button class="cl-trash-btn" onclick="event.stopPropagation(); deleteItemFromCurrentList(${p.id})">
                                 <i class="far fa-trash-alt"></i>
@@ -1579,8 +1551,101 @@
                     </div>`;
                 }).join('');
             }
+            enableDragAndDrop();
         }
         
+        // --- Drag & Drop Logic with Auto Scroll ---
+        function enableDragAndDrop() {
+            const container = document.getElementById('create-list-items');
+            const items = container.querySelectorAll('.cl-grid-row');
+            
+            items.forEach(item => {
+                const handle = item.querySelector('.cl-drag-handle');
+                if (!handle) return;
+                
+                // --- Mouse Events ---
+                handle.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // Prevent text selection
+                    initDrag(e, item, false);
+                });
+
+                // --- Touch Events ---
+                handle.addEventListener('touchstart', (e) => {
+                    // e.preventDefault(); // Might block scrolling on some devices, careful
+                    initDrag(e.touches[0], item, true);
+                }, {passive: false});
+            });
+        }
+
+        let dragEl = null;
+        let dragGhost = null;
+        let startY = 0;
+        let scrollInterval;
+        
+        function initDrag(e, item, isTouch) {
+            dragEl = item;
+            startY = e.clientY;
+            
+            // Visual feedback
+            item.classList.add('dragging');
+            
+            // Global listeners
+            if (isTouch) {
+                document.addEventListener('touchmove', onDragMove, {passive: false});
+                document.addEventListener('touchend', onDragEnd);
+            } else {
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('mouseup', onDragEnd);
+            }
+        }
+
+        function onDragMove(e) {
+            if (!dragEl) return;
+            e.preventDefault(); // Stop native scrolling
+            
+            const clientY = e.clientY || e.touches[0].clientY;
+            
+            // Auto Scroll Logic
+            const container = document.querySelector('#create-list-view .flex-grow'); // Scrollable area
+            const rect = container.getBoundingClientRect();
+            const threshold = 50; // px
+            const speed = 10;
+            
+            clearInterval(scrollInterval);
+            
+            if (clientY < rect.top + threshold) {
+                scrollInterval = setInterval(() => { container.scrollTop -= speed; }, 16);
+            } else if (clientY > rect.bottom - threshold) {
+                scrollInterval = setInterval(() => { container.scrollTop += speed; }, 16);
+            }
+
+            // Swapping Logic
+            const siblings = [...dragEl.parentElement.children];
+            const nextElement = siblings.find(sibling => {
+                 if (sibling === dragEl) return false;
+                 const box = sibling.getBoundingClientRect();
+                 return clientY < box.top + box.height / 2;
+            });
+            
+            if (nextElement) {
+                dragEl.parentElement.insertBefore(dragEl, nextElement);
+            } else {
+                dragEl.parentElement.appendChild(dragEl);
+            }
+        }
+
+        function onDragEnd() {
+            if (dragEl) {
+                dragEl.classList.remove('dragging');
+                dragEl = null;
+            }
+            clearInterval(scrollInterval);
+            document.removeEventListener('mousemove', onDragMove);
+            document.removeEventListener('mouseup', onDragEnd);
+            document.removeEventListener('touchmove', onDragMove);
+            document.removeEventListener('touchend', onDragEnd);
+        }
+
         window.deleteItemFromCurrentList = function(pid) {
             if (!confirm("해당 상품을 리스트에서 제외하시겠습니까?")) return;
             
@@ -1688,8 +1753,6 @@
             // Unused
         };
 
-        // document.getElementById('create-list-close-icon').onclick = document.getElementById('cl-bottom-back').onclick = closeCreateListView; // ERROR CAUSING LINE REMOVED
-        
         // Replaced with specific check for existing element
         const clBottomBack = document.getElementById('cl-bottom-back');
         if (clBottomBack) clBottomBack.onclick = closeCreateListView;
@@ -2215,34 +2278,19 @@
             handleSwipeGesture();
         }, {passive: true});
 
-        // Helper to get currently active tabs in order
-        function getActiveTabIds() {
-            const tabs = ['specials', 0]; // 기본 탭: 단골특가, 찜한상품
-            // 리스트에 상품이 있을 경우에만 스와이프 경로에 포함
-            if (getListCount(1) > 0) tabs.push(1);
-            if (getListCount(2) > 0) tabs.push(2);
-            return tabs;
-        }
-
         function handleSwipeGesture() {
             const distance = touchEndX - touchStartX;
             if (Math.abs(distance) < minSwipeDistance) return;
 
-            const activeTabs = getActiveTabIds();
-            // currentMyList가 숫자일 수도 있고 문자열일 수도 있어서 유연하게 처리
-            const currentIndex = activeTabs.indexOf(appState.currentMyList);
-
-            if (currentIndex === -1) return;
-
             if (distance > 0) {
-                // Swiped Right -> Go Left (Previous Tab)
-                if (currentIndex > 0) {
-                    switchMainList(activeTabs[currentIndex - 1]);
+                // Swiped Right -> Go Left (Liked -> Specials)
+                if (appState.currentMyList === 0) {
+                    switchMainList('specials');
                 }
             } else {
-                // Swiped Left -> Go Right (Next Tab)
-                if (currentIndex < activeTabs.length - 1) {
-                    switchMainList(activeTabs[currentIndex + 1]);
+                // Swiped Left -> Go Right (Specials -> Liked)
+                if (appState.currentMyList === 'specials') {
+                    switchMainList(0);
                 }
             }
         }
