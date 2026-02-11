@@ -50,7 +50,7 @@
             cursor: pointer;
         }
 
-        /* Tab Text Animation - Smoother duration increased to 0.4s */
+        /* Tab Text Animation */
         .tab-anim-text {
             max-width: 0;
             opacity: 0;
@@ -429,11 +429,16 @@
             font-size: 0.9rem;
         }
 
-        /* Safe area bottom fix */
+        /* Safe area bottom fix - UPDATED FOR 59PX */
         .safe-pb { 
-            padding-bottom: env(safe-area-inset-bottom);
-            min-height: calc(70px + env(safe-area-inset-bottom));
+            /* Top padding comes from pt-2 (8px). 
+               We add 8px bottom padding + safe area. 
+               Total vertical padding = 16px. 
+               Button height = 43px. 
+               Total Height = 59px + safe area. */
+            padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
             height: auto;
+            min-height: auto;
         }
         
         /* --- Order Button States --- */
@@ -852,23 +857,11 @@
             </div>
     </div> <!-- END of create-list-view -->
     
-    <!-- Delivery Date Sheet (Modal) - Correctly placed outside hidden view -->
-    <div id="delivery-sheet-overlay" class="hidden absolute inset-0 z-40"></div>
-    <div id="delivery-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.15)] z-50">
-        <div class="p-5">
-            <h3 class="font-bold text-lg mb-4 text-center">배송일 변경</h3>
-            <div class="space-y-2">
-                <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50" onclick="updateDeliveryDate('1월 12일(월) 도착')">1월 12일(월) 도착 (기본)</button>
-                <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50" onclick="updateDeliveryDate('1월 13일(화) 도착')">1월 13일(화) 도착</button>
-                <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50" onclick="updateDeliveryDate('1월 14일(수) 도착')">1월 14일(수) 도착</button>
-            </div>
-            <button id="delivery-sheet-cancel" class="w-full mt-4 py-3 text-gray-500 font-medium">닫기</button>
-        </div>
-        <div class="h-6 bg-white w-full"></div>
-    </div>
+    <!-- Delivery Date Picker (Hidden) -->
+    <input type="date" id="hidden-date-picker" class="absolute opacity-0 w-0 h-0 top-0 left-0">
 
     <!-- FOOTER (Main) - Integrated Navigation -->
-    <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 py-[10px] flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
+    <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 pt-2 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
         
         <!-- 왼쪽: 검색 버튼 -->
         <button id="footer-search-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
@@ -1336,23 +1329,53 @@
             }
         });
 
+        // Initialize Date Picker
+        const dateInput = document.getElementById('hidden-date-picker');
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        const formatDateISO = (d) => {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        // Set min/max to today/tomorrow
+        dateInput.min = formatDateISO(today);
+        dateInput.max = formatDateISO(tomorrow);
+        dateInput.value = formatDateISO(today); // Default value
+
         window.openDeliverySheet = function() {
-            deliverySheetOverlay.classList.remove('hidden');
-            setTimeout(() => deliverySheet.classList.add('visible'), 10);
+            // Trigger native date picker
+            try {
+                dateInput.showPicker();
+            } catch (err) {
+                dateInput.click(); // Fallback
+            }
         };
         
-        window.closeDeliverySheet = function() {
-            deliverySheet.classList.remove('visible');
-            setTimeout(() => deliverySheetOverlay.classList.add('hidden'), 300);
-        };
+        // Handle Date Change
+        dateInput.addEventListener('change', (e) => {
+            if(!e.target.value) return;
+            const selectedDate = new Date(e.target.value);
+            const month = selectedDate.getMonth() + 1;
+            const day = selectedDate.getDate();
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            const dayName = days[selectedDate.getDay()];
+            
+            const newDateStr = `${month}월 ${day}일(${dayName}) 도착`;
+            updateDeliveryDate(newDateStr);
+        });
         
         window.updateDeliveryDate = function(newDate) {
             appState.deliveryDate = newDate;
             renderSubSectionBar();
-            closeDeliverySheet();
+            // closeDeliverySheet(); // No longer needed
         };
 
-        deliverySheetCancel.onclick = deliverySheetOverlay.onclick = closeDeliverySheet;
+        // deliverySheetCancel.onclick = deliverySheetOverlay.onclick = closeDeliverySheet; // Removed
 
         // --- Create List Logic ---
         window.openCreateListView = function() {
