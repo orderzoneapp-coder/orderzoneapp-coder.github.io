@@ -2159,8 +2159,10 @@
             const top = rect.bottom + 8;
 
             // 2. Measure tooltip width (make visible temporarily but hidden)
-            coachMarkPopup.style.opacity = '0';
-            coachMarkPopup.style.display = 'flex'; // Ensure layout
+            // Reset for measurement
+            coachMarkPopup.classList.remove('visible');
+            coachMarkPopup.style.display = 'flex';
+            coachMarkPopup.style.opacity = '0'; 
             coachMarkPopup.style.transform = 'none'; // Clear previous transforms
             
             // Force width calculation
@@ -2194,6 +2196,7 @@
             coachMarkPopup.style.transform = `translateY(5px)`;
             
             requestAnimationFrame(() => {
+                coachMarkPopup.style.opacity = ''; // Remove inline opacity so class takes over
                 coachMarkPopup.classList.add('visible');
                 coachMarkPopup.style.transform = `translateY(0)`;
             });
@@ -2374,16 +2377,34 @@
             const distance = touchEndX - touchStartX;
             if (Math.abs(distance) < minSwipeDistance) return;
 
+            // Define logical order of tabs
+            const tabs = ['specials', 0];
+            
+            // Check if lists have items to be eligible for swipe navigation
+            if (getListCount(1) > 0) tabs.push(1);
+            if (getListCount(2) > 0) tabs.push(2);
+
+            const currentIndex = tabs.indexOf(appState.currentMyList);
+            
+            // Safety check
+            if (currentIndex === -1) return;
+
+            let targetId = null;
+
             if (distance > 0) {
-                // Swiped Right -> Go Left (Liked -> Specials)
-                if (appState.currentMyList === 0) {
-                    switchMainList('specials');
+                // Swiped Right (Go Left in tabs)
+                if (currentIndex > 0) {
+                    targetId = tabs[currentIndex - 1];
                 }
             } else {
-                // Swiped Left -> Go Right (Specials -> Liked)
-                if (appState.currentMyList === 'specials') {
-                    switchMainList(0);
+                // Swiped Left (Go Right in tabs)
+                if (currentIndex < tabs.length - 1) {
+                    targetId = tabs[currentIndex + 1];
                 }
+            }
+
+            if (targetId !== null) {
+                switchMainList(targetId);
             }
         }
     });
