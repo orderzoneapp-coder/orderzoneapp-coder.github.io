@@ -1588,6 +1588,9 @@
                 : relevantProducts.filter(p => (appState.tempChanges[p.id] || []).includes(parseInt(currentTab)));
 
             filtered = getSortedList(filtered, appState.currentSort);
+            
+            // 전체(LIST) 탭인지 여부 확인
+            const isAllTab = currentTab === 'all';
 
             if (filtered.length === 0) {
                 clItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-xs leading-relaxed">
@@ -1598,6 +1601,10 @@
                 clItemsEl.innerHTML = filtered.map(p => {
                     const currentLists = appState.tempChanges[p.id] || [];
                     const getBtn = (id) => `<button class="cl-toggle-btn ${currentLists.includes(id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleListMember(${p.id}, ${id})">${id}</button>`;
+                    
+                    // 'LIST' 탭일 때는 드래그 핸들 대신 빈 공간 렌더링, 그 외 탭은 드래그 핸들 노출
+                    const dragHandle = isAllTab ? `<div></div>` : `<div class="cl-drag-handle"><i class="fas fa-bars"></i></div>`;
+                    
                     return `
                     <div class="cl-grid-row" data-id="${p.id}">
                         <div class="cl-trash-wrapper flex items-center justify-center">
@@ -1610,7 +1617,7 @@
                             <div class="cl-price">${p.price.toLocaleString()}원</div>
                         </div>
                         <div>${getBtn(1)}</div><div>${getBtn(2)}</div>
-                        <div class="cl-drag-handle"><i class="fas fa-bars"></i></div>
+                        ${dragHandle}
                     </div>`;
                 }).join('');
             }
