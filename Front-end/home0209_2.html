@@ -55,7 +55,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem; /* text-xs equivalent */
+            font-size: 0.875rem; /* 14px로 수정 (기존 0.75rem) */
             font-weight: 700;
             padding: 6px 14px;
             border-radius: 9999px; /* Pill shape */
@@ -853,9 +853,10 @@
 
         <!-- CREATE LIST VIEW -->
         <div id="create-list-view" class="hidden fixed inset-0 z-50 flex flex-col bg-white max-w-md mx-auto">
-            <!-- Header (Duplicate of Main Header for Consistency) -->
-            <header class="flex-none sticky top-0 bg-white z-40 shadow-sm border-b">
-                <div class="relative flex justify-between items-center p-3 h-[57px]">
+            <!-- Grouped Top Bar for Dynamic Shadow -->
+            <div id="create-list-top-bar" class="flex-none bg-white z-40 transition-shadow duration-300">
+                <!-- Header (Duplicate of Main Header for Consistency) -->
+                <header class="relative flex justify-between items-center p-3 h-[57px]">
                     <div class="flex items-center cursor-pointer">
                         <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
                         <span class="text-sm font-bold text-gray-800">상품목록</span>
@@ -866,23 +867,22 @@
                         <span class="text-xs font-semibold">OP</span>
                         <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                     </div>
-                </div>
-            </header>
-            
-            <!-- Toolbar (Back, Tabs, Save) - FLAT STRUCTURE with justify-between -->
-            <!-- Modified: Added pt-3 pb-2 and removed h-[40px] for better spacing -->
-            <div class="flex-none flex items-center justify-between px-4 pt-3 pb-2 bg-white z-20">
-                <!-- Tab Group (Back button removed) -->
-                <div class="flex items-center gap-2 h-full">
-                    <button class="cl-tab-btn active" data-tab="all">LIST</button>
-                    <button class="cl-tab-btn cl-tab-l1" data-tab="1">MY1</button>
-                    <button class="cl-tab-btn cl-tab-l2" data-tab="2">MY2</button>
-                </div>
+                </header>
                 
-                <!-- Save Button -->
-                <button id="create-list-save-btn" class="h-full flex items-center justify-center text-green-600 font-bold text-sm">
-                    저장
-                </button>
+                <!-- Toolbar (Back, Tabs, Save) - FLAT STRUCTURE with justify-between -->
+                <div class="flex items-center justify-between px-4 pt-3 pb-2">
+                    <!-- Tab Group (Back button removed) -->
+                    <div class="flex items-center gap-2 h-full">
+                        <button class="cl-tab-btn active" data-tab="all">LIST</button>
+                        <button class="cl-tab-btn cl-tab-l1" data-tab="1">MY1</button>
+                        <button class="cl-tab-btn cl-tab-l2" data-tab="2">MY2</button>
+                    </div>
+                    
+                    <!-- Save Button -->
+                    <button id="create-list-save-btn" class="h-full flex items-center justify-center text-green-600 font-bold text-sm">
+                        저장
+                    </button>
+                </div>
             </div>
 
             <!-- Content Area -->
@@ -1592,7 +1592,7 @@
             if (filtered.length === 0) {
                 clItemsEl.innerHTML = `<div class="p-10 text-center text-gray-400 text-sm leading-relaxed">
                     리스트가 비어있습니다.<br>
-                    <span class="text-xs">'전체' 탭에서 상품 우측의 번호 버튼을 눌러<br>리스트에 추가해보세요.</span>
+                    <span class="text-xs">'LIST' 탭에서 상품 우측의 번호 버튼을 눌러<br>리스트에 추가해보세요.</span>
                 </div>`;
             } else {
                 clItemsEl.innerHTML = filtered.map(p => {
@@ -2437,6 +2437,17 @@
                 ticking = true;
             }
         }, { passive: true });
+
+        // Dynamic Shadow for Edit List View
+        const clContentEl = document.getElementById('create-list-content');
+        const clTopBarEl = document.getElementById('create-list-top-bar');
+        clContentEl.addEventListener('scroll', () => {
+            if (clContentEl.scrollTop > 5) {
+                clTopBarEl.classList.add('shadow-[0_4px_15px_-3px_rgba(0,0,0,0.07)]');
+            } else {
+                clTopBarEl.classList.remove('shadow-[0_4px_15px_-3px_rgba(0,0,0,0.07)]');
+            }
+        });
 
         // Simple Swipe Detection for Product List
         let touchStartX = 0;
