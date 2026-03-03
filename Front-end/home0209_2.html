@@ -226,14 +226,16 @@
 
         /* Search Animations */
         #search-container, #home-search-container {
-            transition: max-height 0.3s ease-in-out, opacity 0.3s, padding 0.3s;
+            transition: max-height 0.3s ease-in-out, opacity 0.3s, padding 0.3s, border-width 0.3s;
             overflow: hidden;
+            max-height: 70px;
         }
         .search-hidden {
-            max-height: 0;
+            max-height: 0 !important;
             opacity: 0;
             padding-top: 0 !important;
             padding-bottom: 0 !important;
+            border-bottom-width: 0 !important;
             pointer-events: none;
         }
 
@@ -290,7 +292,7 @@
         }
         
         .sort-bar-transition {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease, border-width 0.3s ease;
             max-height: 40px; 
             opacity: 1;
             overflow: hidden; 
@@ -307,7 +309,7 @@
             opacity: 0;
             padding-top: 0 !important;
             padding-bottom: 0 !important;
-            border-bottom: none;
+            border-bottom-width: 0 !important;
             overflow: hidden !important; 
         }
 
@@ -645,7 +647,7 @@
              </div>
 
              <!-- Home Search Box -->
-             <div id="home-search-container" class="p-3 border-b bg-white search-hidden shadow-inner sticky top-[125px] z-30">
+             <div id="home-search-container" class="p-3 border-b bg-white search-hidden sticky top-[125px] z-30">
                 <div class="flex items-center w-full gap-2">
                     <div class="relative flex-grow">
                         <input type="text" id="home-search-input" placeholder="전체 상품 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
@@ -694,7 +696,7 @@
                 </div>
 
                 <!-- Search Box (Initially Hidden) -->
-                <div id="search-container" class="p-3 border-b bg-white search-hidden shadow-inner">
+                <div id="search-container" class="p-3 border-b bg-white search-hidden">
                     <div class="flex items-center w-full gap-2">
                         <div class="relative flex-grow">
                             <input type="text" id="product-search-input" placeholder="담은 상품 내 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
@@ -1397,7 +1399,10 @@
             }
 
             const subSectionBarEl = document.getElementById('sub-section-bar');
-            if (!subSectionBarEl.classList.contains('sort-bar-collapsed')) {
+            if (appState.isSearching) {
+                subSectionBarEl.classList.remove('sort-bar-overflow-visible');
+                subSectionBarEl.classList.add('sort-bar-collapsed');
+            } else if (!isBarHidden && !subSectionBarEl.classList.contains('sort-bar-collapsed')) {
                  subSectionBarEl.classList.add('sort-bar-overflow-visible');
             }
 
@@ -1885,8 +1890,17 @@
                 }
             } else {
                 searchContainer.classList.toggle('search-hidden', !appState.isSearching);
-                if(appState.isSearching) setTimeout(() => productSearchInput.focus(), 300);
-                else {
+                
+                const subSectionBarEl = document.getElementById('sub-section-bar');
+                if (appState.isSearching) {
+                    subSectionBarEl.classList.remove('sort-bar-overflow-visible');
+                    subSectionBarEl.classList.add('sort-bar-collapsed');
+                    setTimeout(() => productSearchInput.focus(), 300);
+                } else {
+                    subSectionBarEl.classList.remove('sort-bar-collapsed');
+                    setTimeout(() => {
+                        if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
+                    }, 300);
                     productSearchInput.value = '';
                     renderProducts();
                 }
@@ -1900,6 +1914,15 @@
             productSearchInput.value = '';
             homeSearchInput.value = '';
             appState.homeSearchText = '';
+            
+            if (appState.currentView === 'quick-order') {
+                const subSectionBarEl = document.getElementById('sub-section-bar');
+                subSectionBarEl.classList.remove('sort-bar-collapsed');
+                setTimeout(() => {
+                    if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
+                }, 300);
+            }
+
             updateHeaderUI();
             renderProducts();
             renderHomeView();
@@ -2406,6 +2429,7 @@
         
         const handleScroll = () => {
             if (appState.currentView !== 'quick-order') return;
+            if (appState.isSearching) return; // 검색 중일 때는 스크롤에 의한 배송일 바 숨김/표시 방지
             
             const currentScrollY = window.scrollY;
             
