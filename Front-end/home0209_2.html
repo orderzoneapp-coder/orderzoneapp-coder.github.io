@@ -224,11 +224,11 @@
             border-color: #22c55e; background-color: #f0fdf4; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
         }
 
-        /* Search Animations */
+        /* Search Animations - Fixed inner shadow and max height */
         #search-container, #home-search-container {
             transition: max-height 0.3s ease-in-out, opacity 0.3s, padding 0.3s, border-width 0.3s;
             overflow: hidden;
-            max-height: 70px;
+            max-height: 100px;
         }
         .search-hidden {
             max-height: 0 !important;
@@ -305,8 +305,8 @@
         }
         
         .sort-bar-collapsed {
-            max-height: 0;
-            opacity: 0;
+            max-height: 0 !important;
+            opacity: 0 !important;
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             border-bottom-width: 0 !important;
@@ -358,9 +358,6 @@
             color: #1f2937;
             border-bottom: 1px solid #f3f4f6;
             position: sticky;
-            /* Sticky Header Logic: 
-               Header (57px) + Tabs (40px) = ~97px 
-               Sticks nicely below the tabs even when sort bar hides. */
             top: 97px; 
             z-index: 5;
         }
@@ -382,10 +379,8 @@
             transform: translateY(5px);
             transition: opacity 0.2s ease-out, transform 0.2s ease-out;
             pointer-events: none;
-            /* Added for text wrap prevention */
             white-space: nowrap;
             word-break: keep-all; 
-            /* Added CSS Variable for Arrow Position */
             --arrow-x: 50%;
         }
         .coach-mark.visible {
@@ -397,8 +392,8 @@
             content: '';
             position: absolute;
             top: -5px;
-            left: var(--arrow-x); /* Use Variable */
-            transform: translateX(-50%); /* Center arrow on its position */
+            left: var(--arrow-x);
+            transform: translateX(-50%);
             border-width: 0 5px 6px 5px;
             border-style: solid;
             border-color: transparent transparent #2D3748 transparent;
@@ -406,12 +401,11 @@
         .coach-btn {
             background: #22c55e;
             color: white;
-            padding: 3px 10px; /* 위아래 패딩 축소 */
+            padding: 3px 10px;
             border-radius: 4px;
-            font-weight: 500; /* Bold 제거하고 Medium으로 조정 */
+            font-weight: 500;
             font-size: 12px;
             cursor: pointer;
-            /* Added for text wrap prevention */
             white-space: nowrap;
         }
         
@@ -432,34 +426,9 @@
         .nav-badge.hidden-badge {
             display: none;
         }
-        
-        /* Stepper Style in Cart */
-        .cart-stepper-btn {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f3f4f6;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 1rem;
-            color: #4b5563;
-        }
-        .cart-stepper-val {
-            width: 30px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
 
         /* Safe area bottom fix - UPDATED FOR 59PX */
         .safe-pb { 
-            /* Top padding comes from pt-2 (8px). 
-               We add 8px bottom padding + safe area. 
-               Total vertical padding = 16px. 
-               Button height = 43px. 
-               Total Height = 59px + safe area. */
             padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
             height: auto;
             min-height: auto;
@@ -467,10 +436,8 @@
         
         /* --- Order Button States --- */
         .footer-order-btn-base {
-            /* flex: 1; */
-            width: 200px; /* Modified: Fixed width 200px */
-            flex: none; /* Stop Flex */
-            /* margin: 0 2.2rem; */ /* Removed margin to center correctly with justify-between */
+            width: 200px;
+            flex: none;
             height: 43px;
             border-radius: 10px;
             display: flex;
@@ -496,9 +463,9 @@
 
         /* State 2 & 3: Active (Picking & Cart) - Custom Green Bg (#A8D8B9) */
         .footer-btn-active {
-            background-color: #A8D8B9 !important; /* Pastel Green */
+            background-color: #A8D8B9 !important;
             border: none;
-            color: #1B4D3E !important; /* Dark Green Text */
+            color: #1B4D3E !important;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         
@@ -506,18 +473,17 @@
         .footer-btn-empty {
             background-color: #f9fafb;
             border: 1px solid #e5e7eb;
-            color: #6b7280; /* Updated to gray-500 */
+            color: #6b7280;
         }
 
         /* Typography Helper for Button */
-        /* Line 1: Brand Stamp - Updated Font (Nunito) */
         .btn-line-1 {
             font-family: 'Nunito', sans-serif;
-            font-weight: 800; /* ExtraBold */
-            font-size: 9px; /* Modified: 11px -> 9px */
+            font-weight: 800;
+            font-size: 9px;
             margin-bottom: 0px;
             letter-spacing: 0.5px;
-            opacity: 1; /* Full opacity */
+            opacity: 1;
             line-height: 1.1;
             font-style: normal;
         }
@@ -529,33 +495,10 @@
             font-size: 16px;
             line-height: 1.2;
             letter-spacing: -0.025em;
-            /* Flex layout added for badge alignment */
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-        }
-
-        /* Watermark Font */
-        .watermark-font {
-            font-family: 'Montserrat', sans-serif;
-        }
-        
-        /* Order Form Styles */
-        .order-table-header {
-            background-color: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 13px;
-            font-weight: 700;
-            color: #374151;
-            padding: 10px;
-            text-align: center;
-        }
-        .order-table-cell {
-            padding: 12px 10px;
-            font-size: 13px;
-            color: #1f2937;
-            border-bottom: 1px solid #f3f4f6;
         }
 
         /* Calendar Day Styles (New) */
@@ -577,30 +520,24 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- Removed overflow-hidden from #app to ensure Sticky headers work relative to viewport -->
     <div id="app" class="max-w-md mx-auto bg-white shadow-lg min-h-screen pb-0 relative">
 
         <!-- HEADER -->
         <header class="sticky top-0 bg-white z-40 shadow-sm border-b h-[57px]">
             <div class="relative flex justify-between items-center p-3 h-full">
                 
-                <!-- Modified: Text Tab Style Toggle (Size Reduced) -->
                 <div class="flex items-center cursor-pointer" id="header-mode-toggle" onclick="toggleAppMode()">
                     <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
                     <span id="header-mode-title" class="text-sm font-bold text-gray-800">상품목록</span>
                 </div>
                 
-                <!-- Logo: 홈으로 이동 및 상단 스크롤 -->
-                <!-- Updated Color to Match Footer #1B4D3E -->
+                <!-- Logo -->
                 <h1 id="header-title" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-[#1B4D3E] cursor-pointer">NH라인</h1>
                 <div class="flex items-center space-x-2">
                     <span class="text-xs font-semibold">OP</span>
                     <i class="fas fa-user-circle text-2xl text-gray-400"></i>
                 </div>
             </div>
-            <!-- Old Nav (Hidden) -->
-            <nav id="home-category-nav" class="flex justify-around items-center p-2 border-t hidden">
-            </nav>
         </header>
 
         <!-- HOME MAIN (MALL MODE) -->
@@ -629,7 +566,7 @@
                 </button>
              </div>
 
-             <!-- Event Banner (Mock) -->
+             <!-- Event Banner -->
              <div class="bg-yellow-400 p-4 relative h-40 flex items-center justify-center overflow-hidden">
                  <div class="text-center">
                      <div class="text-xl font-bold text-white drop-shadow-md">카카오채널 친구 추가하고</div>
@@ -659,21 +596,20 @@
                 </div>
             </div>
              
-             <!-- INCREASED PADDING BOTTOM -->
+             <!-- Home Product List -->
              <div id="home-product-list" class="divide-y pb-24"></div>
         </main>
 
         <!-- QUICK ORDER MAIN (ORDER MODE) -->
         <main id="quick-order-view" class="hidden">
             <!-- Sub Header (Sticky) -->
-            <!-- Ensure z-index is higher than sticky list headers (z-5) -->
             <div id="sub-header" class="sticky top-[57px] z-30 shadow-md bg-gray-100 relative">
-                <!-- 리스트 바 (Tabs) - Always Visible -->
+                <!-- 리스트 바 (Tabs) -->
                 <div id="my-list-container" class="flex justify-between items-center px-0 bg-white border-b h-[40px] overflow-hidden">
                     <div id="my-list-tabs" class="flex flex-1 items-center h-full no-scrollbar"></div>
                 </div>
                 
-                <!-- Sub Section Bar (Sort & Delivery) with Animation -->
+                <!-- Sub Section Bar (Sort & Delivery) -->
                 <div id="sub-section-bar" class="sub-section-bar hidden sort-bar-transition">
                     <!-- Left: Delivery Date -->
                     <div id="delivery-date-btn" class="delivery-btn" onclick="openCalendarModal()">
@@ -690,12 +626,11 @@
                         <div id="sort-dropdown-menu" class="sort-dropdown-menu">
                             <div class="sort-option" onclick="changeSort('latest')">최신순</div>
                             <div class="sort-option" onclick="changeSort('category')">카테고리순</div>
-                            <!-- 자주 쓰는 상품순 Deleted -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Search Box (Initially Hidden) -->
+                <!-- Search Box -->
                 <div id="search-container" class="p-3 border-b bg-white search-hidden">
                     <div class="flex items-center w-full gap-2">
                         <div class="relative flex-grow">
@@ -713,157 +648,17 @@
             <div id="product-list-container" class="pb-24">
                 <div id="product-list" class="bg-white border-t"></div>
             </div>
-            
-            <div id="order-confirmation-container" class="hidden pb-24">
-                <div class="flex justify-between items-center px-4 py-3 bg-gray-100">
-                    <div class="flex items-baseline space-x-2">
-                        <h2 class="text-lg font-bold">담은 상품</h2>
-                        <span id="confirmation-total-count" class="text-base font-bold text-green-600"></span>
-                    </div>
-                    <button id="back-to-list-btn" class="text-sm text-green-600 font-semibold py-1 px-3 border border-green-500 rounded-lg hover:bg-green-50 bg-white">
-                        <i class="fas fa-plus mr-1"></i> 상품 추가하기
-                    </button>
-                </div>
-                <div id="confirmation-list" class="bg-white"></div>
-            </div>
-        </main>
-
-        <!-- CART VIEW (NEW) -->
-        <main id="cart-view" class="hidden bg-gray-50 min-h-screen pb-24">
-            <!-- Header Area with Back Button Removed, Buttons Removed -->
-            <div class="bg-white px-4 py-3 border-b flex justify-between items-center sticky top-[57px] z-30 shadow-sm">
-                <h2 class="text-lg font-bold text-gray-800">담은 상품 확인 <span class="text-[#0C5608] text-base ml-1" id="cart-total-count-header">총 0개</span></h2>
-            </div>
-            
-            <!-- Default Label -->
-            <div class="px-4 py-2 text-xs text-gray-400 font-bold mt-2">담은 상품 목록</div>
-            
-            <!-- Cart List -->
-            <div id="cart-list-items" class="bg-white border-t border-b divide-y divide-gray-100">
-                <!-- Items will be rendered here -->
-            </div>
-        </main>
-
-        <!-- ORDER FORM VIEW (NEW SIMULATION) -->
-        <main id="order-form-view" class="hidden bg-white min-h-screen z-50 absolute inset-0 overflow-y-auto">
-            <!-- Header -->
-            <div class="flex items-center p-3 border-b bg-white sticky top-0 z-10">
-                <button onclick="showConfirmationView()" class="p-2 text-gray-600"><i class="fas fa-chevron-left text-lg"></i></button>
-                <h2 class="text-lg font-bold text-gray-800 ml-2">주문서 작성</h2>
-            </div>
-
-            <div class="pb-20">
-                <!-- Order Table -->
-                <div class="border-b-4 border-gray-100">
-                    <div class="grid grid-cols-[1fr_50px_80px] bg-white">
-                        <div class="order-table-header text-left">품명 (규격) 단가</div>
-                        <div class="order-table-header">총수량</div>
-                        <div class="order-table-header text-right">소계</div>
-                    </div>
-                    <div id="order-form-list">
-                        <!-- List Items -->
-                    </div>
-                </div>
-
-                <!-- Summary -->
-                <div class="bg-gray-700 text-white p-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium">주문</span>
-                        <span class="font-bold" id="order-summ-price">0 원</span>
-                    </div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium">배송비</span>
-                        <span class="font-bold">0 원</span>
-                    </div>
-                    <div class="border-t border-gray-600 my-2"></div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold">총계</span>
-                        <span class="text-xl font-bold text-blue-300" id="order-total-price">0 원</span>
-                    </div>
-                </div>
-                <div class="bg-gray-600 text-gray-300 text-xs p-3">
-                    반환 예정 배송비<br>(TEST) <span class="float-right text-white font-bold">0 원</span>
-                </div>
-
-                <!-- Delivery Info -->
-                <div class="p-4 border-t-4 border-gray-100">
-                    <div class="flex items-center mb-3">
-                        <span class="bg-gray-200 text-xs px-2 py-1 rounded mr-2 font-bold text-gray-600">배송지정보 ▼</span>
-                    </div>
-                    <div class="flex">
-                        <div class="w-20 text-sm font-bold text-gray-600 pt-2">전하실 말씀</div>
-                        <textarea class="flex-grow border border-gray-300 rounded p-2 text-sm h-20 resize-none" placeholder=""></textarea>
-                    </div>
-                </div>
-
-                <!-- Payment Method -->
-                <div class="p-4 border-t-4 border-gray-100">
-                    <div class="border border-gray-300 rounded p-4 mb-4">
-                        <div class="mb-4">
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="radio" name="payment" class="w-4 h-4 text-green-600 focus:ring-green-500" checked>
-                                <span class="font-bold text-sm text-gray-700">간편결제하기</span>
-                            </label>
-                        </div>
-                        <div class="flex justify-between">
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
-                                <span class="text-sm text-gray-600">무통장입금</span>
-                            </label>
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="radio" name="payment" class="w-4 h-4 text-gray-400">
-                                <span class="text-sm text-gray-600">신용카드 (기타)</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-bold text-gray-700">사용 포인트(1점 단위)</span>
-                        <div class="flex items-center">
-                            <input type="text" value="0" class="border border-gray-300 rounded p-1 text-right w-24 mr-1 text-sm">
-                            <span class="text-sm">점</span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between text-xs text-gray-500 mb-1">
-                        <span>보유포인트</span>
-                        <span>25,400점</span>
-                    </div>
-                    <div class="flex justify-between text-xs text-gray-500">
-                        <span>최대사용가능포인트</span>
-                        <span>25,400점</span>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="p-4 mt-4">
-                    <button class="w-full bg-[#63BF86] text-white font-bold py-3 rounded-lg shadow-md text-lg mb-3" onclick="alert('결제가 완료되었습니다!'); showHomeView(true);">간편결제하기</button>
-                    <button class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 rounded-lg" onclick="showQuickOrderView()">취소</button>
-                </div>
-                
-                <!-- Footer Info -->
-                <div class="bg-gray-800 text-gray-400 text-[10px] p-6 leading-relaxed">
-                    <div class="flex space-x-3 mb-4 text-gray-300">
-                        <span>회사소개</span> <span>개인정보</span> <span>이용약관</span> <span>사업자정보확인</span>
-                    </div>
-                    회사명 원앱 주소 서울특별시 송파구 양재대로 932<br>
-                    사업자 등록번호 380-14-01523<br>
-                    대표 이무철 전화 02-6959-1374<br>
-                    통신판매업신고번호 제2021-서울송파-2063호
-                </div>
-            </div>
         </main>
 
         <!-- CREATE LIST VIEW -->
         <div id="create-list-view" class="hidden fixed inset-0 z-50 flex flex-col bg-white max-w-md mx-auto">
             <!-- Grouped Top Bar for Dynamic Shadow -->
             <div id="create-list-top-bar" class="flex-none bg-white z-40 transition-shadow duration-300">
-                <!-- Header (Duplicate of Main Header for Consistency) -->
                 <header class="relative flex justify-between items-center p-3 h-[57px] border-b">
                     <div class="flex items-center cursor-pointer">
                         <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
                         <span class="text-sm font-bold text-gray-800">상품목록</span>
                     </div>
-                    <!-- Updated: Match Footer Color -->
                     <h1 class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-[#1B4D3E]">NH라인</h1>
                     <div class="flex items-center space-x-2">
                         <span class="text-xs font-semibold">OP</span>
@@ -871,16 +666,12 @@
                     </div>
                 </header>
                 
-                <!-- Toolbar (Back, Tabs, Save) - FLAT STRUCTURE with justify-between -->
                 <div class="flex items-center justify-between px-4 pt-3 pb-2">
-                    <!-- Tab Group (Back button removed) -->
                     <div class="flex items-center gap-2 h-full">
                         <button class="cl-tab-btn active" data-tab="all">LIST</button>
                         <button class="cl-tab-btn cl-tab-l1" data-tab="1">MY1</button>
                         <button class="cl-tab-btn cl-tab-l2" data-tab="2">MY2</button>
                     </div>
-                    
-                    <!-- Save Button -->
                     <button id="create-list-save-btn" class="h-full flex items-center justify-center text-green-600 font-bold text-sm">
                         저장
                     </button>
@@ -888,295 +679,62 @@
             </div>
 
             <!-- Content Area -->
-            <!-- Modified: Changed bg-gray-50 to bg-white, Removed pt-2/mt-2 to eliminate grey gap -->
-            <!-- Added no-scrollbar class here -->
             <div class="flex-grow overflow-y-auto bg-white pb-24 no-scrollbar" id="create-list-content">
-                <!-- Select All Bar Removed as requested -->
                 <div class="" id="create-list-items">
                     <!-- Items -->
                 </div>
             </div>
             
-            <!-- Create List Footer (Back Button Left Aligned) -->
             <div class="flex-none bg-white border-t p-3 safe-pb z-30 flex justify-start">
-                <!-- MODIFIED: Icon Removed -->
                 <button onclick="closeCreateListView()" class="px-5 py-2 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm transition-colors hover:bg-gray-200 flex items-center">
                     뒤로가기
                 </button>
             </div>
-
-            <!-- Move Sheet (Modal) -->
-            <div id="move-sheet-overlay" class="hidden absolute inset-0 z-40"></div>
-            <div id="move-sheet" class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.15)] z-50">
-                <div class="p-5">
-                    <h3 class="font-bold text-lg mb-4 text-center">선택한 상품 이동</h3>
-                    <div class="space-y-2">
-                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l1" onclick="applyBatchMove(1)">MY1(으)로 이동</button>
-                        <button class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-green-50 btn-move-l2" onclick="applyBatchMove(2)">MY2(으)로 이동</button>
-                    </div>
-                    <button id="move-sheet-cancel" class="w-full mt-4 py-3 text-gray-500 font-medium">취소</button>
-                </div>
-                <div class="h-6 bg-white w-full"></div>
-            </div>
-    </div> <!-- END of create-list-view -->
+        </div>
     
-    <!-- Delivery Date Picker (Hidden) -->
-    <input type="date" id="hidden-date-picker" class="absolute opacity-0 w-0 h-0 top-0 left-0">
+        <!-- FOOTER (Main) -->
+        <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 pt-2 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
+            
+            <button id="footer-search-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
+                    <circle cx="10" cy="10" r="7" />
+                    <line x1="21" x2="15" y1="21" y2="15" />
+                </svg>
+                <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">검색</span>
+            </button>
 
-    <!-- FOOTER (Main) - Integrated Navigation -->
-    <nav id="main-nav-footer" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto w-full bg-white border-t border-gray-100 px-6 pt-2 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-40 safe-pb">
-        
-        <!-- 왼쪽: 검색 버튼 -->
-        <button id="footer-search-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
-                <circle cx="10" cy="10" r="7" />
-                <line x1="21" x2="15" y1="21" y2="15" />
-            </svg>
-            <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">검색</span>
-        </button>
-
-        <!-- 중앙: 주문하기 버튼 (43px, 16px 텍스트) -->
-        <button id="footer-order-btn" class="footer-order-btn-base footer-btn-home" onclick="handleCenterBtnClick()">
-            <div class="flex flex-col items-center justify-center leading-none w-full">
-                <!-- 로고 -->
-                <span id="btn-line-1" class="btn-line-1">ORDERZ</span>
-                <!-- 메인 텍스트 -->
-                <div id="btn-line-2" class="btn-line-2">
-                    주문하러 가기
+            <button id="footer-order-btn" class="footer-order-btn-base footer-btn-home" onclick="handleCenterBtnClick()">
+                <div class="flex flex-col items-center justify-center leading-none w-full">
+                    <span id="btn-line-1" class="btn-line-1">ORDERZ</span>
+                    <div id="btn-line-2" class="btn-line-2">
+                        주문하러 가기
+                    </div>
                 </div>
-            </div>
-            <!-- Optional Floating Badge (Only for Home State if needed) -->
-            <span id="nav-cart-badge" class="nav-badge hidden-badge absolute -top-1 -right-1 shadow-sm">0</span>
-        </button>
+                <span id="nav-cart-badge" class="nav-badge hidden-badge absolute -top-1 -right-1 shadow-sm">0</span>
+            </button>
 
-        <!-- 오른쪽: 문의 버튼 -->
-        <button id="footer-inquiry-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
-                <rect x="3" y="3" width="18" height="14" rx="4" ry="4" />
-                <path d="M7 17v4l4-4" />
-                <path d="M8 10h.01" />
-                <path d="M12 10h.01" />
-                <path d="M16 10h.01" />
-            </svg>
-            <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">문의</span>
-        </button>
+            <button id="footer-inquiry-btn" class="flex flex-col items-center justify-center w-14 gap-[3px] group active:scale-95 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:opacity-70 transition-opacity">
+                    <rect x="3" y="3" width="18" height="14" rx="4" ry="4" />
+                    <path d="M7 17v4l4-4" />
+                    <path d="M8 10h.01" />
+                    <path d="M12 10h.01" />
+                    <path d="M16 10h.01" />
+                </svg>
+                <span class="text-[11px] font-medium text-[#666666] leading-none group-hover:opacity-70">문의</span>
+            </button>
 
-    </nav>
+        </nav>
 
     </div> <!-- END of app -->
 
-    <!-- MOVED OUTSIDE #APP: Coach Mark Popup (New) -->
+    <!-- Coach Mark Popup -->
     <div id="coach-mark-popup" class="coach-mark">
         <span>리스트가 비어 있습니다</span>
         <button onclick="goToCreateListFromPopup()" class="coach-btn">리스트 만들기 <i class="fas fa-chevron-right text-[9px] ml-0.5"></i></button>
     </div>
 
-    <!-- MOVED OUTSIDE #APP: Guide & Setting Modal (FIXED HEIGHT) -->
-    <div id="guide-modal-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity opacity-0">
-        <div class="flex items-center justify-center min-h-screen px-4">
-            <!-- Added fixed height h-[70vh] here -->
-            <div class="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-sm h-[70vh] overflow-hidden transform transition-transform scale-95 flex flex-col" id="guide-modal-content">
-                <!-- Header -->
-                <div class="flex justify-between items-center p-5 bg-white border-b sticky top-0 z-10 flex-none">
-                    <h3 class="text-lg font-bold text-gray-900">이용 안내 및 설정</h3>
-                    <button onclick="closeGuide()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
-                </div>
-                
-                <!-- Tabs -->
-                <div class="flex border-b bg-white z-10 sticky top-[68px] flex-none">
-                    <button id="tab-faq" class="guide-tab-btn active" onclick="switchGuideTab('faq')">이용안내</button>
-                    <button id="tab-rename" class="guide-tab-btn" onclick="switchGuideTab('rename')">이름설정</button>
-                    <button id="tab-start" class="guide-tab-btn" onclick="switchGuideTab('start')">시작화면</button>
-                </div>
-                
-                <!-- Content Area (Scrollable) -->
-                <div class="flex-grow overflow-y-auto bg-gray-50">
-                    <!-- Section: FAQ -->
-                    <div id="guide-section-faq" class="block">
-                        <!-- FAQ 1 -->
-                        <div class="faq-item" id="faq-1">
-                            <div class="faq-header" onclick="toggleFaq('faq-1')">
-                                <div class="faq-question">
-                                    <i class="fas fa-list-ul text-green-500 mr-2"></i> 관심상품이란?
-                                </div>
-                                <i class="fas fa-chevron-down faq-chevron"></i>
-                            </div>
-                            <div class="faq-content">
-                                <div class="faq-answer-box">
-                                    '관심상품'탭은 <span class="text-green-600 font-bold">내가 찜한 상품(관심 상품)</span>과, 해당 상품과 관련된 <span class="text-green-600 font-bold">행사 상품</span>을 함께 모아볼 수 있는 리스트입니다.
-                                </div>
-                            </div>
-                        </div>
-                        <!-- FAQ 2 -->
-                        <div class="faq-item" id="faq-2">
-                            <div class="faq-header" onclick="toggleFaq('faq-2')">
-                                <div class="faq-question">
-                                    <i class="fas fa-sort text-green-500 mr-2"></i> 상품 순서 변경
-                                </div>
-                                <i class="fas fa-chevron-down faq-chevron"></i>
-                            </div>
-                            <div class="faq-content">
-                                <div class="faq-answer-box">
-                                    전체보기에서는 불가능하며, <span class="text-green-600 font-bold">개별 리스트 탭</span>(MY1 등)을 눌러 들어갔을 때만 상품 우측에 <span class="text-green-600 font-bold">드래그 핸들(≡)</span>이 나타납니다. 핸들을 잡고 위아래로 움직여 순서를 바꿔보세요.
-                                </div>
-                            </div>
-                        </div>
-                        <!-- FAQ 3 -->
-                        <div class="faq-item" id="faq-3">
-                            <div class="faq-header" onclick="toggleFaq('faq-3')">
-                                <div class="faq-question">
-                                    <i class="fas fa-edit text-green-500 mr-2"></i> 리스트 이름 변경
-                                </div>
-                                <i class="fas fa-chevron-down faq-chevron"></i>
-                            </div>
-                            <div class="faq-content">
-                                <div class="faq-answer-box">
-                                    상단의 <span class="text-green-600 font-bold">'이름설정' 탭</span>으로 이동하여 MY1, MY2의 이름을 변경할 수 있습니다. 자주 쓰는 키워드를 선택하거나 직접 입력하여 저장하세요.
-                                    <div class="mt-3 text-right">
-                                        <button onclick="switchGuideTab('rename')" class="text-xs text-green-600 underline font-bold">이름설정 바로가기</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- FAQ 4 -->
-                        <div class="faq-item" id="faq-4">
-                            <div class="faq-header" onclick="toggleFaq('faq-4')">
-                                <div class="faq-question">
-                                    <i class="fas fa-home text-green-500 mr-2"></i> 시작화면 설정
-                                </div>
-                                <i class="fas fa-chevron-down faq-chevron"></i>
-                            </div>
-                            <div class="faq-content">
-                                <div class="faq-answer-box">
-                                    앱을 실행할 때 처음 보여지는 화면을 고정하고 싶다면 상단의 <span class="text-green-600 font-bold">'시작화면' 탭</span>에서 설정해주세요. 빠른 주문이 필요하다면 '주문하기'를 추천합니다.
-                                    <div class="mt-3 text-right">
-                                        <button onclick="switchGuideTab('start')" class="text-xs text-green-600 underline font-bold">시작화면 설정 바로가기</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section: Rename -->
-                    <div id="guide-section-rename" class="hidden">
-                        <div class="p-5">
-                            <div class="flex justify-between items-center mb-4">
-                                <p class="text-[11px] text-gray-400 italic">터치하여 포커스 후 아래 키워드를 선택하세요.</p>
-                                <button onclick="resetListNames()" class="text-xs text-gray-400 underline">초기화</button>
-                            </div>
-
-                            <!-- Custom Inputs -->
-                            <div class="space-y-2 mb-4">
-                                <div class="list-input-group flex items-center active" id="group-l1" onclick="focusInput(1)">
-                                    <span class="text-xs font-bold text-gray-400 w-8">MY1</span>
-                                    <input type="text" id="input-list1-name" placeholder="MY1 명칭" class="outline-none" readonly>
-                                </div>
-                                <div class="list-input-group flex items-center" id="group-l2" onclick="focusInput(2)">
-                                    <span class="text-xs font-bold text-gray-400 w-8">MY2</span>
-                                    <input type="text" id="input-list2-name" placeholder="MY2 명칭" class="outline-none" readonly>
-                                </div>
-                                <!-- LIST3 Input Removed -->
-                            </div>
-
-                            <!-- Multi-Category Keyword Pool -->
-                            <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-inner h-56 overflow-y-auto mb-6">
-                                <div class="mb-4">
-                                    <div class="text-[10px] font-bold text-gray-400 mb-2">공간 / 관리 주체</div>
-                                    <div class="flex flex-wrap gap-2">
-                                        <button class="keyword-chip" onclick="applyKeyword('주방')">주방</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('홀/바')">홀/바</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('창고')">창고</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('매장')">매장</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('냉장고')">냉장고</button>
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <div class="text-[10px] font-bold text-gray-400 mb-2">보관 / 온도</div>
-                                    <div class="flex flex-wrap gap-2">
-                                        <button class="keyword-chip" onclick="applyKeyword('신선/냉장')">신선/냉장</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('냉동')">냉동</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('상온/공산')">상온/공산</button>
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <div class="text-[10px] font-bold text-gray-400 mb-2">목적 / 용도</div>
-                                    <div class="flex flex-wrap gap-2">
-                                        <button class="keyword-chip" onclick="applyKeyword('메인재료')">메인재료</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('부재료')">부재료</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('양념/소스')">양념/소스</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('소모품')">소모품</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('직원식')">직원식</button>
-                                    </div>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="text-[10px] font-bold text-gray-400 mb-2">발주 주기</div>
-                                    <div class="flex flex-wrap gap-2">
-                                        <button class="keyword-chip" onclick="applyKeyword('매일발주')">매일발주</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('정기발주')">정기발주</button>
-                                        <button class="keyword-chip" onclick="applyKeyword('긴급/기타')">긴급/기타</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button onclick="saveListNames()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl text-sm shadow-lg shadow-blue-100 transition-colors">
-                                설정된 이름으로 변경하기
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Section: Start Screen -->
-                    <div id="guide-section-start" class="hidden">
-                        <div class="p-5">
-                            <div class="text-sm text-gray-600 mb-4 font-bold">
-                                앱 실행(접속)시 가장 먼저 보일 화면을 선택하세요.
-                            </div>
-
-                            <div class="space-y-3">
-                                <!-- Home Option -->
-                                <div class="bg-white rounded-xl border-2 p-5 flex items-center justify-between cursor-pointer transition-colors hover:bg-gray-50" 
-                                     id="option-home" onclick="setStartScreen('home')">
-                                    <div>
-                                        <div class="font-bold text-gray-800 text-sm flex items-center">
-                                            <i class="fas fa-shopping-bag mr-2 text-gray-400"></i> 상품목록 (홈)
-                                        </div>
-                                        <div class="text-[11px] text-gray-400 mt-1 pl-6">
-                                            다양한 상품을 둘러보고 검색할 때 적합합니다.
-                                        </div>
-                                    </div>
-                                    <div class="text-gray-300 transition-colors" id="check-icon-home"><i class="fas fa-circle text-xl"></i></div>
-                                </div>
-
-                                <!-- Order Option -->
-                                <div class="bg-white rounded-xl border-2 p-5 flex items-center justify-between cursor-pointer transition-colors hover:bg-gray-50" 
-                                     id="option-quick-order" onclick="setStartScreen('quick-order')">
-                                    <div>
-                                        <div class="font-bold text-gray-800 text-sm flex items-center">
-                                            <i class="fas fa-clipboard-check mr-2 text-gray-400"></i> 주문하기
-                                        </div>
-                                        <div class="text-[11px] text-gray-400 mt-1 pl-6">
-                                            자주 시키는 상품을 빠르게 주문할 때 적합합니다.
-                                        </div>
-                                    </div>
-                                    <div class="text-gray-300 transition-colors" id="check-icon-quick-order"><i class="fas fa-circle text-xl"></i></div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-6 p-4 bg-green-50 rounded-xl border border-green-100">
-                                <div class="text-[10px] text-green-700 font-bold mb-1">
-                                    <i class="fas fa-check-circle mr-1"></i> 설정 팁
-                                </div>
-                                <div class="text-[10px] text-gray-600">
-                                    선택하신 설정은 자동으로 저장되며, 다음 앱 실행 시부터 즉시 반영됩니다.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADDED: Calendar Modal -->
+    <!-- Calendar Modal -->
     <div id="calendar-overlay" class="fixed inset-0 bg-black/50 z-[70] hidden transition-opacity opacity-0 flex items-center justify-center px-4">
         <div id="calendar-modal" class="bg-white w-full max-w-sm rounded-2xl p-5 transform scale-95 transition-transform duration-200 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
@@ -1219,42 +777,40 @@
         const appState = {
             products: { 
                 vegetable: [
-                    { id: 1, name: '흙쪽파(1kg)단', spec: '판매처: a유통', price: 9800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=쪽파', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '쪽파', isEvent: true, myList: [], deliveryDate: '2025-10-21', likedTimestamp: 1729770000000, orderCount: 50, liked: true },
-                    { id: 2, name: '깐양파_10kg', spec: '판매처: a유통', price: 19500, img: 'https://placehold.co/80x80/d1e7dd/333333?text=양파', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', isEvent: true, myList: [], deliveryDate: '2025-10-22', likedTimestamp: 1729760000000, orderCount: 120, liked: false },
-                    { id: 3, name: '무우 (낱개)', spec: '판매처: a유통', price: 2800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=무', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '무우', isEvent: false, myList: [], likedTimestamp: 1729750000000, orderCount: 30, liked: true },
-                    { id: 12, name: '백다다기_5개입', price: 3500, spec: '판매처: a유통', category: 'vegetable', subCategory: '오이/호박/고추/피망', thirdCategory: '오이', isEvent: true, myList: [], likedTimestamp: 1729780000000, orderCount: 200, liked: false },
-                    { id: 52, name: '베이컨(알찬)', price: 11500, spec: '판매처: a유통', category: 'seafood', subCategory: '돼지고기', thirdCategory: '가공육', isEvent: true, myList: [], likedTimestamp: 1729740000000, orderCount: 15, liked: true },
-                    { id: 63, name: '식용유(말)쉐프원', price: 47800, spec: '판매처: a유통', category: 'sauce', subCategory: '기름', thirdCategory: '식용유', isEvent: false, myList: [], likedTimestamp: 1729730000000, orderCount: 80, liked: false },
-                    { id: 70, name: '배추_3입망 BOX', price: 10600, spec: '판매처: a유통', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '배추', isEvent: true, myList: [], likedTimestamp: 1729720000000, orderCount: 20, liked: false },
-                    { id: 71, name: '양파_왕20kg망 BOX', price: 22000, spec: '판매처: a유통', category: 'vegetable', subCategory: '무/배추/조미채소', thirdCategory: '양파', isEvent: true, myList: [], likedTimestamp: 1729710000000, orderCount: 200, liked: true },
-                    { id: 100, name: '깐마늘_1kg', price: 9300, spec: '판매처: a유통', category: 'vegetable', subCategory: '마늘', thirdCategory: '마늘', isEvent: false, myList: [], likedTimestamp: 1729700000000, orderCount: 150, liked: true },
-                    { id: 101, name: '국산 간마늘믹스_1kg', price: 6000, spec: '판매처: a유통', category: 'vegetable', subCategory: '마늘', thirdCategory: '마늘', isEvent: true, myList: [], likedTimestamp: 1729690000000, orderCount: 80, liked: false },
-                    { id: 102, name: '생강(kg)', price: 8900, spec: '판매처: a유통', category: 'vegetable', subCategory: '생강', thirdCategory: '생강', isEvent: false, myList: [], likedTimestamp: 1729680000000, orderCount: 40, liked: true },
-                    { id: 103, name: '수입김치(장길산)투명 10kg', price: 18300, spec: '판매처: a유통', category: 'processed', subCategory: '김치', thirdCategory: '김치', isEvent: true, myList: [], likedTimestamp: 1729670000000, orderCount: 90, liked: false },
-                    { id: 104, name: '무말랭이[한울] 4kg', price: 15300, spec: '판매처: a유통', category: 'processed', subCategory: '절임', thirdCategory: '무말랭이', isEvent: false, myList: [], likedTimestamp: 1729660000000, orderCount: 30, liked: true },
-                    { id: 105, name: '옥수수콘(리치스) 2.95kg', price: 5300, spec: '판매처: a유통', category: 'processed', subCategory: '통조림', thirdCategory: '옥수수', isEvent: true, myList: [], likedTimestamp: 1729650000000, orderCount: 110, liked: false },
-                    { id: 106, name: '밀감캔(만다린) 3kg', price: 9300, spec: '판매처: a유통', category: 'processed', subCategory: '통조림', thirdCategory: '과일', isEvent: false, myList: [], likedTimestamp: 1729640000000, orderCount: 20, liked: true },
-                    { id: 107, name: '면장갑(10켤레)타스 1EA', price: 2100, spec: '판매처: a유통', category: 'kitchen', subCategory: '소모품', thirdCategory: '장갑', isEvent: true, myList: [], likedTimestamp: 1729630000000, orderCount: 60, liked: true },
-                    { id: 108, name: '점보롤(1즙/4입/4봉)', price: 6100, spec: '판매처: a유통', category: 'kitchen', subCategory: '소모품', thirdCategory: '휴지', isEvent: false, myList: [], likedTimestamp: 1729620000000, orderCount: 100, liked: true },
-                    { id: 109, name: '두부(판) 3kg', price: 4500, spec: '판매처: a유통', category: 'processed', subCategory: '두부', thirdCategory: '두부', isEvent: true, myList: [], likedTimestamp: 1729610000000, orderCount: 130, liked: false },
-                    { id: 110, name: '콩나물(박스) 3.5kg', price: 3800, spec: '판매처: a유통', category: 'vegetable', subCategory: '나물', thirdCategory: '콩나물', isEvent: false, myList: [], likedTimestamp: 1729600000000, orderCount: 70, liked: true }
+                    { id: 1, name: '흙쪽파(1kg)단', spec: '판매처: a유통', price: 9800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=쪽파', category: 'vegetable', isEvent: true, myList: [], likedTimestamp: 1729770000000, liked: true },
+                    { id: 2, name: '깐양파_10kg', spec: '판매처: a유통', price: 19500, img: 'https://placehold.co/80x80/d1e7dd/333333?text=양파', category: 'vegetable', isEvent: true, myList: [], likedTimestamp: 1729760000000, liked: false },
+                    { id: 3, name: '무우 (낱개)', spec: '판매처: a유통', price: 2800, img: 'https://placehold.co/80x80/d1e7dd/333333?text=무', category: 'vegetable', isEvent: false, myList: [], likedTimestamp: 1729750000000, liked: true },
+                    { id: 12, name: '백다다기_5개입', price: 3500, spec: '판매처: a유통', category: 'vegetable', isEvent: true, myList: [], likedTimestamp: 1729780000000, liked: false },
+                    { id: 52, name: '베이컨(알찬)', price: 11500, spec: '판매처: a유통', category: 'seafood', isEvent: true, myList: [], likedTimestamp: 1729740000000, liked: true },
+                    { id: 63, name: '식용유(말)쉐프원', price: 47800, spec: '판매처: a유통', category: 'sauce', isEvent: false, myList: [], likedTimestamp: 1729730000000, liked: false },
+                    { id: 70, name: '배추_3입망 BOX', price: 10600, spec: '판매처: a유통', category: 'vegetable', isEvent: true, myList: [], likedTimestamp: 1729720000000, liked: false },
+                    { id: 71, name: '양파_왕20kg망 BOX', price: 22000, spec: '판매처: a유통', category: 'vegetable', isEvent: true, myList: [], likedTimestamp: 1729710000000, liked: true },
+                    { id: 100, name: '깐마늘_1kg', price: 9300, spec: '판매처: a유통', category: 'vegetable', isEvent: false, myList: [], likedTimestamp: 1729700000000, liked: true },
+                    { id: 101, name: '국산 간마늘믹스_1kg', price: 6000, spec: '판매처: a유통', category: 'vegetable', isEvent: true, myList: [], likedTimestamp: 1729690000000, liked: false },
+                    { id: 102, name: '생강(kg)', price: 8900, spec: '판매처: a유통', category: 'vegetable', isEvent: false, myList: [], likedTimestamp: 1729680000000, liked: true },
+                    { id: 103, name: '수입김치(장길산)투명 10kg', price: 18300, spec: '판매처: a유통', category: 'processed', isEvent: true, myList: [], likedTimestamp: 1729670000000, liked: false },
+                    { id: 104, name: '무말랭이[한울] 4kg', price: 15300, spec: '판매처: a유통', category: 'processed', isEvent: false, myList: [], likedTimestamp: 1729660000000, liked: true },
+                    { id: 105, name: '옥수수콘(리치스) 2.95kg', price: 5300, spec: '판매처: a유통', category: 'processed', isEvent: true, myList: [], likedTimestamp: 1729650000000, liked: false },
+                    { id: 106, name: '밀감캔(만다린) 3kg', price: 9300, spec: '판매처: a유통', category: 'processed', isEvent: false, myList: [], likedTimestamp: 1729640000000, liked: true },
+                    { id: 107, name: '면장갑(10켤레)타스 1EA', price: 2100, spec: '판매처: a유통', category: 'kitchen', isEvent: true, myList: [], likedTimestamp: 1729630000000, liked: true },
+                    { id: 108, name: '점보롤(1즙/4입/4봉)', price: 6100, spec: '판매처: a유통', category: 'kitchen', isEvent: false, myList: [], likedTimestamp: 1729620000000, liked: true },
+                    { id: 109, name: '두부(판) 3kg', price: 4500, spec: '판매처: a유통', category: 'processed', isEvent: true, myList: [], likedTimestamp: 1729610000000, liked: false },
+                    { id: 110, name: '콩나물(박스) 3.5kg', price: 3800, spec: '판매처: a유통', category: 'vegetable', isEvent: false, myList: [], likedTimestamp: 1729600000000, liked: true }
                 ],
             },
             cart: {},
             listNames: { 1: 'MY1', 2: 'MY2' }, // Changed default names
-            currentView: 'home', 
+            currentView: 'quick-order', // 빠른주문 메인 고정
             currentMyList: 0, // Default to 0 (찜한상품)
             clTab: 'all',
             tempChanges: {},
             hasChanges: false,
             activeListInputId: 1,
             isSearching: false,
-            tooltipTimeout: null,
             currentSort: 'latest', 
             deliveryDate: '1월 12일(월) 도착',
             selectedCategory: null,
-            homeSearchText: '',
-            searchSource: null // Track where search started
+            homeSearchText: ''
         };
 
         const homeView = document.getElementById('home-view');
@@ -1263,7 +819,6 @@
         const homeProductListEl = document.getElementById('home-product-list');
         const headerTitle = document.getElementById('header-title');
         
-        // --- Updated Footer Elements ---
         const footerSearchBtn = document.getElementById('footer-search-btn');
         const footerOrderBtn = document.getElementById('footer-order-btn');
         const btnLine1 = document.getElementById('btn-line-1');
@@ -1274,31 +829,17 @@
         const myListTabsContainer = document.getElementById('my-list-tabs');
         const clTabs = document.querySelectorAll('.cl-tab-btn');
         const clItemsEl = document.getElementById('create-list-items');
-        const clSaveBtn = document.getElementById('create-list-save-btn');
-        // const clSelectAll = document.getElementById('cl-select-all'); // Removed in previous turn
-        const clSelectedCount = document.getElementById('cl-selected-count');
-        const clBottomDelete = document.getElementById('cl-bottom-delete');
-        const clBottomMove = document.getElementById('cl-bottom-move');
-        const moveSheet = document.getElementById('move-sheet');
-        const moveSheetOverlay = document.getElementById('move-sheet-overlay');
-        const moveSheetCancel = document.getElementById('move-sheet-cancel');
-        const guideModalOverlay = document.getElementById('guide-modal-overlay');
-        const guideModalContent = document.getElementById('guide-modal-content');
+        
         const searchContainer = document.getElementById('search-container');
         const productSearchInput = document.getElementById('product-search-input');
         const homeSearchContainer = document.getElementById('home-search-container');
         const homeSearchInput = document.getElementById('home-search-input');
-        const modeIcon = document.getElementById('mode-icon');
-        const modeText = document.getElementById('mode-text');
         
         const subSectionBar = document.getElementById('sub-section-bar');
         const currentDeliveryDateEl = document.getElementById('current-delivery-date');
         const currentSortLabelEl = document.getElementById('current-sort-label');
         const sortDropdownMenu = document.getElementById('sort-dropdown-menu');
         const sortContainer = document.querySelector('.sort-dropdown-container');
-        const deliverySheet = document.getElementById('delivery-sheet');
-        const deliverySheetOverlay = document.getElementById('delivery-sheet-overlay');
-        const deliverySheetCancel = document.getElementById('delivery-sheet-cancel');
         const productListContainer = document.getElementById('product-list-container');
         
         // Calendar Modal Elements
@@ -1310,6 +851,8 @@
         // Coach Mark Element
         const coachMarkPopup = document.getElementById('coach-mark-popup');
         let coachMarkTimeout;
+        
+        let isBarHidden = false; // 스크롤에 의한 숨김 상태 추적 변수
 
         function getAllProducts() {
             return Object.values(appState.products).flat();
@@ -1324,7 +867,7 @@
             updateFooterUI();
             updateHeaderUI();
             renderHomeView();
-            if(saveToStorage) saveDefaultView('home');
+            if(saveToStorage) localStorage.setItem('orderz_start_mode', 'home');
         }
 
         function showQuickOrderView(saveToStorage = false) {
@@ -1333,9 +876,8 @@
             quickOrderView.classList.remove('hidden');
             createListView.classList.add('hidden');
             
-            // If switching mode, set default tab if not set
             if(saveToStorage) {
-                appState.currentMyList = 0; // Default to 0 (찜한상품)
+                appState.currentMyList = 0; 
             }
             
             renderListTabs();
@@ -1343,11 +885,7 @@
             updateFooterUI();
             updateHeaderUI();
             renderProducts();
-            if(saveToStorage) saveDefaultView('quick-order');
-        }
-
-        function saveDefaultView(view) {
-            localStorage.setItem('orderz_start_mode', view);
+            if(saveToStorage) localStorage.setItem('orderz_start_mode', 'quick-order');
         }
 
         function updateHeaderUI() {
@@ -1362,7 +900,6 @@
         }
 
         window.toggleAppMode = function() {
-            appState.searchSource = null;
             if(appState.isSearching) {
                 closeSearch();
             }
@@ -1374,7 +911,6 @@
         };
         
         headerTitle.onclick = function() {
-            appState.searchSource = null;
             if (appState.isSearching) {
                 closeSearch();
             }
@@ -1391,7 +927,6 @@
             
             subSectionBar.classList.remove('hidden');
             
-            // Only show sort for Favorites (id 0)
             if (appState.currentMyList === 0) {
                  sortContainer.style.display = 'block';
             } else {
@@ -1399,16 +934,22 @@
             }
 
             const subSectionBarEl = document.getElementById('sub-section-bar');
+            
+            // 검색 중이면 무조건 숨김
             if (appState.isSearching) {
                 subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                 subSectionBarEl.classList.add('sort-bar-collapsed');
-            } else if (!isBarHidden && !subSectionBarEl.classList.contains('sort-bar-collapsed')) {
+            } else if (!isBarHidden) {
+                 // 검색 중도 아니고 스크롤로 숨겨진 상태도 아니면 보이게
                  subSectionBarEl.classList.add('sort-bar-overflow-visible');
+                 subSectionBarEl.classList.remove('sort-bar-collapsed');
+            } else {
+                 // 스크롤로 숨겨진 상태면 안보이게 유지
+                 subSectionBarEl.classList.remove('sort-bar-overflow-visible');
+                 subSectionBarEl.classList.add('sort-bar-collapsed');
             }
 
             currentDeliveryDateEl.textContent = appState.deliveryDate;
-            
-            // Sort map updated: frequency removed
             const sortMap = { 'latest': '최신순', 'category': '카테고리순' };
             currentSortLabelEl.textContent = sortMap[appState.currentSort] || '최신순';
             
@@ -1463,30 +1004,24 @@
              const tomorrow = new Date(today);
              tomorrow.setDate(tomorrow.getDate() + 1);
 
-             // Calendar Title (Month)
              const year = today.getFullYear();
              const month = today.getMonth();
              calendarMonthTitle.textContent = `${year}년 ${month + 1}월`;
 
-             // Days generation
              const firstDayOfMonth = new Date(year, month, 1).getDay();
              const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
              
              let html = '';
              
-             // Empty slots for previous month
              for (let i = 0; i < firstDayOfMonth; i++) {
                  html += `<div></div>`;
              }
 
-             // Days
              for (let day = 1; day <= lastDateOfMonth; day++) {
                  const currentDate = new Date(year, month, day);
                  const isToday = currentDate.toDateString() === today.toDateString();
                  const isTomorrow = currentDate.toDateString() === tomorrow.toDateString();
                  
-                 // Check if it's the currently selected delivery date
-                 // Simple parsing of "1월 12일..." string
                  const currentSelectedMonth = parseInt(appState.deliveryDate.match(/(\d+)월/)?.[1]);
                  const currentSelectedDay = parseInt(appState.deliveryDate.match(/(\d+)일/)?.[1]);
                  const isSelected = (month + 1 === currentSelectedMonth && day === currentSelectedDay);
@@ -1496,7 +1031,6 @@
 
                  if (isToday || isTomorrow) {
                      classNames += " active";
-                     // Build date string for update
                      const days = ['일', '월', '화', '수', '목', '금', '토'];
                      const dayName = days[currentDate.getDay()];
                      const newDateStr = `${month + 1}월 ${day}일(${dayName}) 도착`;
@@ -1523,10 +1057,6 @@
             appState.deliveryDate = newDate;
             renderSubSectionBar();
         };
-        
-        // Removed old delivery sheet open logic (it was using openDeliverySheet which we replaced)
-        // Ensure the button calls openCalendarModal() now (updated in HTML)
-
 
         // --- Create List Logic ---
         window.openCreateListView = function() {
@@ -1537,7 +1067,6 @@
             
             getAllProducts().forEach(p => appState.tempChanges[p.id] = [...(p.myList || [])]);
             
-            // Sync tabs in the toolbar
             const toolbarTabs = document.querySelectorAll('.cl-tab-btn');
             toolbarTabs.forEach(t => {
                 t.classList.toggle('active', t.dataset.tab === 'all');
@@ -1550,7 +1079,6 @@
             });
 
             syncCreateListTabNames();
-            // Removed clSelectAll logic
             createListView.classList.remove('hidden');
             renderCreateList();
         };
@@ -1574,14 +1102,13 @@
             alert("저장되었습니다.");
             appState.hasChanges = false;
             createListView.classList.add('hidden');
-            renderListTabs(true); // Force rebuild to update list names
+            renderListTabs(true);
             renderProducts();
         }
 
         function syncCreateListTabNames() {
             document.querySelector('.cl-tab-l1').textContent = appState.listNames[1];
             document.querySelector('.cl-tab-l2').textContent = appState.listNames[2];
-            // Removed button text update for deleted buttons
         }
 
         function renderCreateList() {
@@ -1593,8 +1120,6 @@
                 : relevantProducts.filter(p => (appState.tempChanges[p.id] || []).includes(parseInt(currentTab)));
 
             filtered = getSortedList(filtered, appState.currentSort);
-            
-            // 전체(LIST) 탭인지 여부 확인
             const isAllTab = currentTab === 'all';
 
             if (filtered.length === 0) {
@@ -1606,9 +1131,7 @@
                 clItemsEl.innerHTML = filtered.map(p => {
                     const currentLists = appState.tempChanges[p.id] || [];
                     const getBtn = (id) => `<button class="cl-toggle-btn ${currentLists.includes(id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleListMember(${p.id}, ${id})">${id}</button>`;
-                    
-                    // 'LIST' 탭일 때는 드래그 핸들 대신 빈 공간 렌더링, 그 외 탭은 드래그 핸들 노출
-                    const dragHandle = isAllTab ? `<div></div>` : `<div class="cl-drag-handle"><i class="fas fa-bars"></i></div>`;
+                    const dragHandle = isAllTab ? `<div></div>` : `<div class="cl-drag-handle"><i class="fas fa-bars text-gray-200"></i></div>`;
                     
                     return `
                     <div class="cl-grid-row" data-id="${p.id}">
@@ -1626,131 +1149,6 @@
                     </div>`;
                 }).join('');
             }
-            enableDragAndDrop();
-        }
-        
-        // --- Drag & Drop Logic with Auto Scroll ---
-        function enableDragAndDrop() {
-            const container = document.getElementById('create-list-items');
-            const items = container.querySelectorAll('.cl-grid-row');
-            
-            items.forEach(item => {
-                const handle = item.querySelector('.cl-drag-handle');
-                if (!handle) return;
-                
-                // --- Mouse Events ---
-                handle.addEventListener('mousedown', (e) => {
-                    e.preventDefault(); // Prevent text selection
-                    initDrag(e, item, false);
-                });
-
-                // --- Touch Events ---
-                handle.addEventListener('touchstart', (e) => {
-                    // e.preventDefault(); // Might block scrolling on some devices, careful
-                    initDrag(e.touches[0], item, true);
-                }, {passive: false});
-            });
-        }
-
-        let dragEl = null;
-        let startY = 0;
-        let scrollInterval = null; // Explicitly initialize
-        
-        function initDrag(e, item, isTouch) {
-            dragEl = item;
-            startY = e.clientY;
-            
-            // Visual feedback
-            item.classList.add('dragging');
-            
-            // Global listeners
-            if (isTouch) {
-                document.addEventListener('touchmove', onDragMove, {passive: false});
-                document.addEventListener('touchend', onDragEnd);
-            } else {
-                document.addEventListener('mousemove', onDragMove);
-                document.addEventListener('mouseup', onDragEnd);
-            }
-        }
-
-        function onDragMove(e) {
-            if (!dragEl) return;
-            e.preventDefault(); // Stop native scrolling
-            
-            const clientY = e.clientY || e.touches[0].clientY;
-            
-            // Auto Scroll Logic
-            const container = document.getElementById('create-list-content'); 
-            const rect = container.getBoundingClientRect();
-            const threshold = 60; // Increased threshold for easier activation
-            const speed = 10; // Scroll speed
-            
-            let shouldScroll = false;
-            let scrollAmount = 0;
-
-            if (clientY < rect.top + threshold) {
-                shouldScroll = true;
-                scrollAmount = -speed;
-            } else if (clientY > rect.bottom - threshold) {
-                shouldScroll = true;
-                scrollAmount = speed;
-            }
-
-            // Manage Scroll Interval
-            if (shouldScroll) {
-                if (!scrollInterval) {
-                    scrollInterval = setInterval(() => {
-                        container.scrollTop += scrollAmount;
-                        // Important: Check swap WHILE scrolling even if mouse doesn't move
-                        performSwap(clientY);
-                    }, 16);
-                }
-            } else {
-                if (scrollInterval) {
-                    clearInterval(scrollInterval);
-                    scrollInterval = null;
-                }
-            }
-
-            // Immediate swap on move
-            performSwap(clientY);
-        }
-
-        function performSwap(clientY) {
-            if (!dragEl) return;
-
-            const siblings = [...dragEl.parentElement.children];
-            const nextElement = siblings.find(sibling => {
-                 if (sibling === dragEl) return false;
-                 const box = sibling.getBoundingClientRect();
-                 return clientY < box.top + box.height / 2;
-            });
-            
-            if (nextElement) {
-                if (nextElement !== dragEl.nextElementSibling) {
-                    dragEl.parentElement.insertBefore(dragEl, nextElement);
-                }
-            } else {
-                dragEl.parentElement.appendChild(dragEl);
-            }
-        }
-
-        function onDragEnd() {
-            if (dragEl) {
-                dragEl.classList.remove('dragging');
-                dragEl = null;
-            }
-            
-            // Clear Interval strictly
-            if (scrollInterval) {
-                clearInterval(scrollInterval);
-                scrollInterval = null;
-            }
-
-            document.removeEventListener('mousemove', onDragMove);
-            document.removeEventListener('mouseup', onDragEnd);
-            document.removeEventListener('touchmove', onDragMove);
-            document.removeEventListener('touchend', onDragEnd);
         }
 
         window.deleteItemFromCurrentList = function(pid) {
@@ -1766,114 +1164,12 @@
             renderCreateList();
         };
 
-        // --- Guide & Settings ---
-        window.openGuide = function() {
-            guideModalOverlay.classList.remove('hidden');
-            document.getElementById('input-list1-name').value = appState.listNames[1];
-            document.getElementById('input-list2-name').value = appState.listNames[2];
-            switchGuideTab('faq');
-            updateStartScreenUI();
-            setTimeout(() => {
-                guideModalOverlay.classList.remove('opacity-0');
-                guideModalContent.classList.remove('scale-95');
-            }, 10);
-        };
-
-        window.closeGuide = function() {
-            guideModalOverlay.classList.add('opacity-0');
-            guideModalContent.classList.add('scale-95');
-            setTimeout(() => guideModalOverlay.classList.add('hidden'), 200);
-        };
-
-        window.switchGuideTab = function(tab) {
-            document.querySelectorAll('.guide-tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            document.getElementById('guide-section-faq').classList.add('hidden');
-            document.getElementById('guide-section-rename').classList.add('hidden');
-            document.getElementById('guide-section-start').classList.add('hidden');
-            document.getElementById(`guide-section-${tab}`).classList.remove('hidden');
-            if (tab === 'rename') focusInput(1);
-        };
-
-        window.toggleFaq = function(id) {
-            const el = document.getElementById(id);
-            const isActive = el.classList.contains('active');
-            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
-            if (!isActive) el.classList.add('active');
-        };
-
-        window.setStartScreen = function(mode) {
-            localStorage.setItem('orderz_start_mode', mode);
-            updateStartScreenUI();
-        };
-
-        function updateStartScreenUI() {
-            const currentMode = localStorage.getItem('orderz_start_mode') || 'home';
-            ['home', 'quick-order'].forEach(m => {
-                const el = document.getElementById(`option-${m}`);
-                const icon = document.getElementById(`check-icon-${m}`);
-                el.classList.remove('border-green-500', 'bg-green-50');
-                el.classList.add('border-gray-200');
-                icon.className = "text-gray-300 transition-colors";
-                icon.innerHTML = '<i class="fas fa-circle text-xl"></i>';
-            });
-            const activeEl = document.getElementById(`option-${currentMode}`);
-            const activeIcon = document.getElementById(`check-icon-${currentMode}`);
-            activeEl.classList.remove('border-gray-200');
-            activeEl.classList.add('border-green-500', 'bg-green-50');
-            activeIcon.className = "text-green-600 transition-colors";
-            activeIcon.innerHTML = '<i class="fas fa-check-circle text-xl"></i>';
-        }
-
-        window.focusInput = function(id) {
-            appState.activeListInputId = id;
-            document.querySelectorAll('.list-input-group').forEach(el => el.classList.remove('active'));
-            document.getElementById(`group-l${id}`).classList.add('active');
-        };
-
-        window.applyKeyword = function(kw) {
-            document.getElementById(`input-list${appState.activeListInputId}-name`).value = kw;
-        };
-
-        window.saveListNames = function() {
-            appState.listNames[1] = document.getElementById('input-list1-name').value || 'MY1';
-            appState.listNames[2] = document.getElementById('input-list2-name').value || 'MY2';
-            syncCreateListTabNames();
-            renderCreateList();
-            alert("이름이 변경되었습니다.");
-        };
-
-        window.resetListNames = function() {
-            document.getElementById('input-list1-name').value = 'MY1';
-            document.getElementById('input-list2-name').value = 'MY2';
-            focusInput(1);
-        };
-
         window.toggleListMember = function(pid, lid) {
             let list = appState.tempChanges[pid] || [];
             appState.tempChanges[pid] = list.includes(lid) ? list.filter(i => i !== lid) : [...list, lid].sort();
             appState.hasChanges = true;
             renderCreateList();
         };
-
-        window.applyBatchMove = function(targetLid) {
-            // Unused
-        };
-
-        // Replaced with specific check for existing element
-        const clBottomBack = document.getElementById('cl-bottom-back');
-        if (clBottomBack) clBottomBack.onclick = closeCreateListView;
-
-        document.getElementById('create-list-save-btn').onclick = saveCreateListChanges;
-        
-        // Removed clSelectAll.onchange
-
-        clTabs.forEach(btn => btn.onclick = () => {
-            clTabs.forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            appState.clTab = btn.dataset.tab;
-            renderCreateList();
-        });
 
         // --- Search ---
         footerSearchBtn.onclick = function() {
@@ -1890,17 +1186,25 @@
                 }
             } else {
                 searchContainer.classList.toggle('search-hidden', !appState.isSearching);
-                
                 const subSectionBarEl = document.getElementById('sub-section-bar');
+                
                 if (appState.isSearching) {
+                    // 검색 시작: 배송일 바 강제 숨김
                     subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                     subSectionBarEl.classList.add('sort-bar-collapsed');
                     setTimeout(() => productSearchInput.focus(), 300);
                 } else {
-                    subSectionBarEl.classList.remove('sort-bar-collapsed');
-                    setTimeout(() => {
-                        if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
-                    }, 300);
+                    // 검색 취소
+                    if (!isBarHidden) {
+                        subSectionBarEl.classList.remove('sort-bar-collapsed');
+                        setTimeout(() => {
+                            if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
+                        }, 300);
+                    } else {
+                        // 스크롤 내려가 있으면 계속 숨김 상태 유지
+                        subSectionBarEl.classList.add('sort-bar-collapsed');
+                        subSectionBarEl.classList.remove('sort-bar-overflow-visible');
+                    }
                     productSearchInput.value = '';
                     renderProducts();
                 }
@@ -1917,10 +1221,17 @@
             
             if (appState.currentView === 'quick-order') {
                 const subSectionBarEl = document.getElementById('sub-section-bar');
-                subSectionBarEl.classList.remove('sort-bar-collapsed');
-                setTimeout(() => {
-                    if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
-                }, 300);
+                // 스크롤이 올라가 있는 상태(isBarHidden = false)일 때만 다시 표시
+                if (!isBarHidden) {
+                    subSectionBarEl.classList.remove('sort-bar-collapsed');
+                    setTimeout(() => {
+                        if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
+                    }, 300);
+                } else {
+                    // 스크롤 내려가 있으면 계속 숨김 상태 유지
+                    subSectionBarEl.classList.add('sort-bar-collapsed');
+                    subSectionBarEl.classList.remove('sort-bar-overflow-visible');
+                }
             }
 
             updateHeaderUI();
@@ -1933,6 +1244,7 @@
             const displayTerm = e.target.value;
             const list = getAllProducts().filter(p => p.liked && p.name.toLowerCase().includes(term));
             let html = renderItemsHTML(list);
+            
             if (term.length > 0) {
                 html += `
                 <div class="p-6 bg-white border-t flex flex-col items-center justify-center gap-2">
@@ -1943,7 +1255,29 @@
                     </button>
                 </div>`;
             }
+
             document.getElementById('product-list').innerHTML = html;
+        };
+
+        window.expandSearchToHome = function() {
+            const query = productSearchInput.value;
+            appState.homeSearchText = query.toLowerCase();
+            appState.isSearching = true; 
+            
+            // 기존 검색바 숨기기
+            searchContainer.classList.add('search-hidden');
+            productSearchInput.value = '';
+            
+            // 홈 화면으로 이동
+            showHomeView();
+            updateHeaderUI();
+            
+            // 홈 화면 검색바 활성화 및 포커스 설정
+            homeSearchContainer.classList.remove('search-hidden');
+            homeSearchInput.value = query;
+            homeSearchInput.focus();
+            
+            renderHomeView();
         };
 
         homeSearchInput.oninput = function(e) {
@@ -1952,45 +1286,29 @@
             renderHomeView();
         }
 
-        window.expandSearchToHome = function() {
-            const query = productSearchInput.value;
-            appState.homeSearchText = query.toLowerCase();
-            appState.isSearching = true; 
-            searchContainer.classList.add('search-hidden');
-            productSearchInput.value = '';
-            showHomeView();
-            updateHeaderUI();
-            homeSearchContainer.classList.remove('search-hidden');
-            homeSearchInput.value = query;
-            homeSearchInput.focus();
-            renderHomeView();
-        };
-
-        function renderItemsHTML(items, isRelated = false) {
+        function renderItemsHTML(items) {
             return items.map(p => {
                 const qty = appState.cart[p.id] || 0;
-                const rowBg = qty > 0 ? 'bg-green-50' : (isRelated ? 'bg-gray-50' : 'bg-white');
-                const paddingClass = 'p-3 border-b';
-                const showEventDot = p.isEvent && appState.currentMyList !== 'specials';
-
+                const rowBg = qty > 0 ? 'bg-green-50' : 'bg-white';
+                
                 return `
-            <div class="product-item flex items-center ${paddingClass} ${rowBg} relative">
-                <img src="${p.img}" class="w-12 h-12 rounded mr-3">
-                <div class="flex-grow pr-2">
-                    <div class="flex items-center">
-                        ${showEventDot ? '<div class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></div>' : ''}
-                        <span class="text-sm font-bold mr-2">${p.name}</span>
+                <div class="product-item flex items-center p-3 border-b ${rowBg} relative">
+                    <img src="${p.img}" class="w-12 h-12 rounded mr-3">
+                    <div class="flex-grow pr-2">
+                        <div class="flex items-center">
+                            ${p.isEvent ? '<div class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></div>' : ''}
+                            <span class="text-sm font-bold mr-2">${p.name}</span>
+                        </div>
+                        <div class="text-xs text-gray-500">${p.price.toLocaleString()}원</div>
                     </div>
-                    <div class="text-xs text-gray-500">${p.price.toLocaleString()}원</div>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <div class="flex items-center border rounded bg-white">
-                        <button class="w-8 h-8" onclick="updateQty(${p.id},-1)">-</button>
-                        <div class="w-8 text-center text-sm font-bold">${qty}</div>
-                        <button class="w-8 h-8" onclick="updateQty(${p.id},1)">+</button>
+                    <div class="flex items-center space-x-2">
+                        <div class="flex items-center border rounded bg-white">
+                            <button class="w-8 h-8" onclick="updateQty(${p.id},-1)">-</button>
+                            <div class="w-8 text-center text-sm font-bold">${qty}</div>
+                            <button class="w-8 h-8" onclick="updateQty(${p.id},1)">+</button>
+                        </div>
                     </div>
-                </div>
-            </div>`;
+                </div>`;
             }).join('');
         }
         
@@ -2009,11 +1327,6 @@
         function updateFooterUI() {
             const hasItems = Object.keys(appState.cart).length > 0;
             const totalQty = Object.values(appState.cart).reduce((a,b)=>a+b,0);
-            let totalPrice = 0;
-            Object.entries(appState.cart).forEach(([pid, qty]) => {
-                const p = getAllProducts().find(x => x.id == pid);
-                if(p) totalPrice += p.price * qty;
-            });
 
             footerOrderBtn.className = "footer-order-btn-base";
             navCartBadge.classList.add('hidden-badge');
@@ -2031,10 +1344,9 @@
                     btnLine2.className = "btn-line-2 text-[#1B4D3E]";
                 } else {
                     footerOrderBtn.classList.add('footer-btn-empty');
-                    // Changed: Always keep logo green even if empty
                     btnLine1.style.color = '#1B4D3E'; 
                     btnLine2.textContent = "상품을 담아주세요";
-                    btnLine2.className = "btn-line-2 text-gray-500"; // Changed to gray-500
+                    btnLine2.className = "btn-line-2 text-gray-500";
                 }
             } else {
                 footerOrderBtn.classList.add('footer-btn-home');
@@ -2056,14 +1368,12 @@
                 showQuickOrderView();
             } else if (appState.currentView === 'quick-order') {
                 if (Object.keys(appState.cart).length > 0) {
-                    showConfirmationView(); 
+                    alert("주문 확인 화면 (준비중)"); 
                 } else {
                     alert("주문할 상품을 담아주세요.");
                 }
             }
         }
-
-        function showConfirmationView() { alert("주문 확인 화면 (준비중)"); }
 
         function renderHomeView() {
             let list = getAllProducts(); 
@@ -2081,25 +1391,6 @@
             </div>`).join('');
         }
 
-        window.filterByCategory = function(category) {
-            appState.selectedCategory = (appState.selectedCategory === category) ? null : category;
-            updateCategoryBarUI();
-            if (appState.currentView === 'home') renderHomeView();
-            else renderProducts();
-        };
-
-        function updateCategoryBarUI() {
-            const btns = document.querySelectorAll('#category-bar .category-btn');
-            btns.forEach(btn => {
-                const onclickVal = btn.getAttribute('onclick');
-                if (appState.selectedCategory && onclickVal.includes(`'${appState.selectedCategory}'`)) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
         function getSortedList(list, sortType) {
             const sortedList = [...list];
             if (sortType === 'latest') {
@@ -2111,12 +1402,10 @@
                     const idxB = catOrder.indexOf(b.category || '') === -1 ? 999 : catOrder.indexOf(b.category || '');
                     return idxA - idxB || (a.name || '').localeCompare(b.name || '');
                 });
-            } else if (sortType === 'frequency') {
-                sortedList.sort((a, b) => (b.orderCount || 0) - (a.orderCount || 0));
             }
             return sortedList;
         }
-        
+
         function getListCount(listId) {
              const list = getAllProducts();
              return list.filter(p => (p.myList||[]).includes(listId)).length;
@@ -2126,15 +1415,12 @@
             const listIds = [1, 2];
             const container = myListTabsContainer;
             
-            // Check if we need to rebuild (if empty or forced)
             if (container.children.length === 0 || forceRebuild) {
                 let html = '';
 
-                // Specials (Star + Fixed Text)
                 const isSpecialsActive = appState.currentMyList === 'specials';
                 let specialsClass = isSpecialsActive ? 'tab-active' : 'tab-inactive';
                 const starIcon = '<i class="fas fa-star text-yellow-400 text-lg"></i>';
-                // Modified: Fixed text instead of animated
                 const fixedText = `<span class="ml-1">단골특가</span>`;
                 
                 html += `<button class="tab-btn ${specialsClass}" onclick="handleTabClick('specials', this)">${starIcon}${fixedText}</button>`;
@@ -2152,7 +1438,6 @@
                     html += `<button class="tab-btn ${className}" onclick="handleTabClick(${id}, this)">${appState.listNames[id]}</button>`;
                 });
                 
-                // Edit Button
                 html += `<button class="list-settings-btn" onclick="openCreateListView()">
                     <i class="fas fa-sliders-h text-lg"></i>
                 </button>`;
@@ -2160,13 +1445,10 @@
                 container.innerHTML = html;
                 container.className = 'flex w-full items-center justify-between h-full no-scrollbar overflow-x-auto px-4';
             } else {
-                // Update existing elements to preserve transition
                 const buttons = container.querySelectorAll('.tab-btn');
                 
-                // 1. Specials
                 const specialsBtn = buttons[0];
-                const isSpecialsActive = appState.currentMyList === 'specials';
-                if (isSpecialsActive) {
+                if (appState.currentMyList === 'specials') {
                     specialsBtn.classList.remove('tab-inactive');
                     specialsBtn.classList.add('tab-active');
                 } else {
@@ -2174,10 +1456,8 @@
                     specialsBtn.classList.add('tab-inactive');
                 }
 
-                // 2. Liked (LIST)
                 const likedBtn = buttons[1];
-                const isLikedActive = appState.currentMyList === 0;
-                if (isLikedActive) {
+                if (appState.currentMyList === 0) {
                     likedBtn.classList.remove('tab-inactive');
                     likedBtn.classList.add('tab-active');
                 } else {
@@ -2185,7 +1465,6 @@
                     likedBtn.classList.add('tab-inactive');
                 }
 
-                // 3. Lists
                 listIds.forEach((id, idx) => {
                     const btn = buttons[idx + 2];
                     const isActive = appState.currentMyList === id;
@@ -2223,50 +1502,37 @@
         window.showCoachMark = function(targetEl) {
             if (!targetEl) return;
             
-            // 1. Prepare coordinates
             const rect = targetEl.getBoundingClientRect();
             const targetCenter = rect.left + (rect.width / 2);
             const top = rect.bottom + 8;
 
-            // 2. Measure tooltip width (make visible temporarily but hidden)
-            // Reset for measurement
             coachMarkPopup.classList.remove('visible');
             coachMarkPopup.style.display = 'flex';
             coachMarkPopup.style.opacity = '0'; 
-            coachMarkPopup.style.transform = 'none'; // Clear previous transforms
+            coachMarkPopup.style.transform = 'none'; 
             
-            // Force width calculation
-            const tooltipWidth = coachMarkPopup.offsetWidth || 200; // Fallback
+            const tooltipWidth = coachMarkPopup.offsetWidth || 200; 
             const screenWidth = window.innerWidth;
-            const margin = 12; // Safety margin from screen edge
+            const margin = 12; 
             
-            // 3. Calculate Ideal Left (centered on target)
             let left = targetCenter - (tooltipWidth / 2);
 
-            // 4. Clamp to Screen Edges
             if (left < margin) {
                 left = margin;
             } else if (left + tooltipWidth > screenWidth - margin) {
                 left = screenWidth - tooltipWidth - margin;
             }
 
-            // 5. Calculate Arrow Position relative to Tooltip Box
-            // Arrow should point to targetCenter. 
-            // Relative X = targetCenter - TooltipLeft
             const arrowX = targetCenter - left;
 
-            // 6. Apply Styles
             coachMarkPopup.style.top = `${top}px`;
             coachMarkPopup.style.left = `${left}px`;
-            
-            // Set CSS Variable for Arrow
             coachMarkPopup.style.setProperty('--arrow-x', `${arrowX}px`);
 
-            // 7. Animate In
             coachMarkPopup.style.transform = `translateY(5px)`;
             
             requestAnimationFrame(() => {
-                coachMarkPopup.style.opacity = ''; // Remove inline opacity so class takes over
+                coachMarkPopup.style.opacity = '';
                 coachMarkPopup.classList.add('visible');
                 coachMarkPopup.style.transform = `translateY(0)`;
             });
@@ -2313,35 +1579,28 @@
                 emptyMsg = "해당 리스트에 담긴 상품이 없습니다.";
             }
 
-            // Apply Sort Logic ONLY for Favorites (id 0)
             let sortedList;
             if (appState.currentMyList === 0) {
                 sortedList = getSortedList(filtered, appState.currentSort);
             } else if (appState.currentMyList === 'specials') {
-                // Special handling for Specials: Group by Type
-                // Mocking event types for display (cycle through types)
                 const eventTypes = ['today', 'store', 'md'];
                 filtered.forEach((p, idx) => {
                     p.eventType = eventTypes[idx % 3];
                 });
-                // No specific sort needed, grouping handles order
                 sortedList = filtered; 
             } else {
-                // For MY1/MY2, use default order (could be custom in future)
-                // Currently just list order
                 sortedList = filtered;
             }
             
             if (sortedList.length === 0) {
-                    document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">
-                    <p class="mb-2">${emptyMsg}</p>
-                    </div>`;
-                    return;
+                document.getElementById('product-list').innerHTML = `<div class="p-8 text-center text-gray-400 text-sm">
+                <p class="mb-2">${emptyMsg}</p>
+                </div>`;
+                return;
             }
 
             let html = '';
             
-            // Condition 1: Specials with Headers
             if (appState.currentMyList === 'specials') {
                 const groups = {
                     'today': { title: '오늘의 행사', items: [] },
@@ -2359,9 +1618,7 @@
                         html += renderItemsHTML(group.items);
                     }
                 });
-            }
-            // Condition 2: Category Sort (Only for Favorites)
-            else if (appState.currentMyList === 0 && appState.currentSort === 'category') {
+            } else if (appState.currentMyList === 0 && appState.currentSort === 'category') {
                 const categoryNames = {
                     'vegetable': '채소/과일',
                     'seafood': '수산/축산',
@@ -2393,9 +1650,7 @@
                       }
                 });
 
-            } 
-            // Condition 3: Default List (Latest sort for Favorites, or Plain list for others)
-            else {
+            } else {
                 html += renderItemsHTML(sortedList);
             }
 
@@ -2419,17 +1674,12 @@
             else renderProducts();
         };
 
-        const savedMode = localStorage.getItem('orderz_start_mode');
-        if (savedMode === 'quick-order') showQuickOrderView();
-        else showHomeView();
-
+        // Scroll Logic with Search Guard
         let lastScrollY = window.scrollY;
-        let isBarHidden = false;
         let scrollTimeout;
         
         const handleScroll = () => {
-            if (appState.currentView !== 'quick-order') return;
-            if (appState.isSearching) return; // 검색 중일 때는 스크롤에 의한 배송일 바 숨김/표시 방지
+            if (appState.currentView !== 'quick-order' || appState.isSearching) return;
             
             const currentScrollY = window.scrollY;
             
@@ -2449,7 +1699,7 @@
                     
                     clearTimeout(scrollTimeout);
                     scrollTimeout = setTimeout(() => {
-                        if (!isBarHidden) {
+                        if (!isBarHidden && !appState.isSearching) {
                             subSectionBar.classList.add('sort-bar-overflow-visible');
                         }
                     }, 300);
@@ -2469,64 +1719,12 @@
             }
         }, { passive: true });
 
-        // Dynamic Shadow for Edit List View
-        const clContentEl = document.getElementById('create-list-content');
-        const clTopBarEl = document.getElementById('create-list-top-bar');
-        clContentEl.addEventListener('scroll', () => {
-            if (clContentEl.scrollTop > 5) {
-                clTopBarEl.classList.add('shadow-[0_4px_15px_-3px_rgba(0,0,0,0.07)]');
-            } else {
-                clTopBarEl.classList.remove('shadow-[0_4px_15px_-3px_rgba(0,0,0,0.07)]');
-            }
-        });
-
-        // Simple Swipe Detection for Product List
-        let touchStartX = 0;
-        let touchEndX = 0;
-        const minSwipeDistance = 50;
-
-        productListContainer.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-
-        productListContainer.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipeGesture();
-        }, {passive: true});
-
-        function handleSwipeGesture() {
-            const distance = touchEndX - touchStartX;
-            if (Math.abs(distance) < minSwipeDistance) return;
-
-            // Define logical order of tabs
-            const tabs = ['specials', 0];
-            
-            // Check if lists have items to be eligible for swipe navigation
-            if (getListCount(1) > 0) tabs.push(1);
-            if (getListCount(2) > 0) tabs.push(2);
-
-            const currentIndex = tabs.indexOf(appState.currentMyList);
-            
-            // Safety check
-            if (currentIndex === -1) return;
-
-            let targetId = null;
-
-            if (distance > 0) {
-                // Swiped Right (Go Left in tabs)
-                if (currentIndex > 0) {
-                    targetId = tabs[currentIndex - 1];
-                }
-            } else {
-                // Swiped Left (Go Right in tabs)
-                if (currentIndex < tabs.length - 1) {
-                    targetId = tabs[currentIndex + 1];
-                }
-            }
-
-            if (targetId !== null) {
-                switchMainList(targetId);
-            }
+        // 앱 시작 뷰 설정 (빠른주문을 기본값으로 설정)
+        const savedMode = localStorage.getItem('orderz_start_mode');
+        if (savedMode === 'home') {
+            showHomeView();
+        } else {
+            showQuickOrderView();
         }
     });
 </script>
