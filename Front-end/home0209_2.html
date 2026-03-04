@@ -807,6 +807,7 @@
             hasChanges: false,
             activeListInputId: 1,
             isSearching: false,
+            isTransitioning: false, // 가짜 스크롤 방지용 플래그 추가
             currentSort: 'latest', 
             deliveryDate: '1월 12일(월) 도착',
             selectedCategory: null,
@@ -853,6 +854,7 @@
         let coachMarkTimeout;
         
         let isBarHidden = false; // 스크롤에 의한 숨김 상태 추적 변수
+        let transitionTimeout;   // 가짜 스크롤 방지용 타이머
 
         function getAllProducts() {
             return Object.values(appState.products).flat();
@@ -935,16 +937,13 @@
 
             const subSectionBarEl = document.getElementById('sub-section-bar');
             
-            // 검색 중이면 무조건 숨김
             if (appState.isSearching) {
                 subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                 subSectionBarEl.classList.add('sort-bar-collapsed');
             } else if (!isBarHidden) {
-                 // 검색 중도 아니고 스크롤로 숨겨진 상태도 아니면 보이게
                  subSectionBarEl.classList.add('sort-bar-overflow-visible');
                  subSectionBarEl.classList.remove('sort-bar-collapsed');
             } else {
-                 // 스크롤로 숨겨진 상태면 안보이게 유지
                  subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                  subSectionBarEl.classList.add('sort-bar-collapsed');
             }
@@ -1173,6 +1172,8 @@
 
         // --- Search ---
         footerSearchBtn.onclick = function() {
+            // 검색바 등장/퇴장 시 가짜 스크롤 감지 잠금
+            appState.isTransitioning = true;
             appState.isSearching = !appState.isSearching;
             updateHeaderUI();
 
@@ -1189,19 +1190,16 @@
                 const subSectionBarEl = document.getElementById('sub-section-bar');
                 
                 if (appState.isSearching) {
-                    // 검색 시작: 배송일 바 강제 숨김
                     subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                     subSectionBarEl.classList.add('sort-bar-collapsed');
                     setTimeout(() => productSearchInput.focus(), 300);
                 } else {
-                    // 검색 취소
                     if (!isBarHidden) {
                         subSectionBarEl.classList.remove('sort-bar-collapsed');
                         setTimeout(() => {
                             if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
                         }, 300);
                     } else {
-                        // 스크롤 내려가 있으면 계속 숨김 상태 유지
                         subSectionBarEl.classList.add('sort-bar-collapsed');
                         subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                     }
@@ -1209,9 +1207,18 @@
                     renderProducts();
                 }
             }
+
+            // 트랜지션(높이 변화)가 끝난 후 잠금 해제 및 새로운 스크롤 기준점 설정
+            clearTimeout(transitionTimeout);
+            transitionTimeout = setTimeout(() => {
+                appState.isTransitioning = false;
+                lastScrollY = window.scrollY;
+            }, 400);
         };
 
         window.closeSearch = function() {
+            // 외부에서 강제로 닫을 때도 동일하게 잠금
+            appState.isTransitioning = true;
             appState.isSearching = false;
             searchContainer.classList.add('search-hidden');
             homeSearchContainer.classList.add('search-hidden');
@@ -1221,14 +1228,12 @@
             
             if (appState.currentView === 'quick-order') {
                 const subSectionBarEl = document.getElementById('sub-section-bar');
-                // 스크롤이 올라가 있는 상태(isBarHidden = false)일 때만 다시 표시
                 if (!isBarHidden) {
                     subSectionBarEl.classList.remove('sort-bar-collapsed');
                     setTimeout(() => {
                         if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
                     }, 300);
                 } else {
-                    // 스크롤 내려가 있으면 계속 숨김 상태 유지
                     subSectionBarEl.classList.add('sort-bar-collapsed');
                     subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                 }
@@ -1237,6 +1242,12 @@
             updateHeaderUI();
             renderProducts();
             renderHomeView();
+
+            clearTimeout(transitionTimeout);
+            transitionTimeout = setTimeout(() => {
+                appState.isTransitioning = false;
+                lastScrollY = window.scrollY;
+            }, 400);
         };
 
         productSearchInput.oninput = function(e) {
@@ -1264,15 +1275,12 @@
             appState.homeSearchText = query.toLowerCase();
             appState.isSearching = true; 
             
-            // 기존 검색바 숨기기
             searchContainer.classList.add('search-hidden');
             productSearchInput.value = '';
             
-            // 홈 화면으로 이동
             showHomeView();
             updateHeaderUI();
             
-            // 홈 화면 검색바 활성화 및 포커스 설정
             homeSearchContainer.classList.remove('search-hidden');
             homeSearchInput.value = query;
             homeSearchInput.focus();
@@ -1679,7 +1687,8 @@
         let scrollTimeout;
         
         const handleScroll = () => {
-            if (appState.currentView !== 'quick-order' || appState.isSearching) return;
+            // isTransitioning(높이 변화 중)일 때는 스크롤 이벤트를 무시하여 가짜 스크롤 방지
+            if (appState.currentView !== 'quick-order' || appState.isSearching || appState.isTransitioning) return;
             
             const currentScrollY = window.scrollY;
             
@@ -1692,7 +1701,7 @@
                     subSectionBar.classList.add('sort-bar-collapsed');
                     isBarHidden = true;
                 }
-            } else {
+            } else if (currentScrollY < lastScrollY) {
                 if (isBarHidden || currentScrollY <= 50) {
                     subSectionBar.classList.remove('sort-bar-collapsed');
                     isBarHidden = false;
