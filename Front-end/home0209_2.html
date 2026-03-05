@@ -50,33 +50,22 @@
             cursor: pointer;
         }
 
-        /* Create List Tab Style (Modified for Pill Shape) */
+        /* Create List Tab Style */
         .cl-tab-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.875rem; /* 14px로 수정 (기존 0.75rem) */
+            font-size: 0.875rem; 
             font-weight: 700;
             padding: 6px 14px;
-            border-radius: 9999px; /* Pill shape */
+            border-radius: 9999px;
             transition: all 0.2s;
             white-space: nowrap;
             cursor: pointer;
             border: 1px solid transparent;
         }
-        
-        .cl-tab-btn.active {
-            background-color: #1f2937; /* Dark Gray bg */
-            color: white;
-            border-color: #1f2937;
-        }
-        
-        /* Modified: Inactive state is now White with border */
-        .cl-tab-btn:not(.active) {
-            background-color: #ffffff; /* Changed from Gray-100 to White */
-            color: #6b7280; /* Gray-500 */
-            border-color: #e5e7eb;
-        }
+        .cl-tab-btn.active { background-color: #1f2937; color: white; border-color: #1f2937; }
+        .cl-tab-btn:not(.active) { background-color: #ffffff; color: #6b7280; border-color: #e5e7eb; }
 
         /* Grid Layout */
         .cl-grid-row {
@@ -87,155 +76,86 @@
             background: #fff;
             border-bottom: 1px solid #f3f4f6;
             align-items: center;
-            user-select: none; /* Prevent text selection during drag */
-            touch-action: pan-y; /* Allow vertical scrolling, but we handle drag manually */
+            user-select: none;
+            touch-action: pan-y;
         }
         .cl-grid-row.checked { background-color: #f0fdf4; }
-        
-        /* Dragging Styles */
-        .cl-grid-row.dragging {
-            opacity: 0.5;
-            background-color: #f0fdf4;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .cl-grid-row.drag-over {
-            border-top: 2px solid #22c55e;
-        }
+        .cl-grid-row.dragging { opacity: 0.5; background-color: #f0fdf4; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .cl-grid-row.drag-over { border-top: 2px solid #22c55e; }
 
-        .cl-info {
-            display: flex; flex-direction: column; justify-content: center;
-            overflow: hidden; padding-right: 4px;
-        }
-        .cl-name {
-            font-size: 13px; font-weight: 600; color: #1f2937;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .cl-info { display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding-right: 4px; }
+        .cl-name { font-size: 13px; font-weight: 600; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .cl-price { font-size: 11px; color: #9ca3af; margin-top: 1px; }
 
         .cl-toggle-btn {
             width: 30px; height: 30px; margin: 0 auto;
-            border-radius: 6px; border: 1px solid #d1d5db; /* Darker border */
-            background: #fff; color: #4b5563; /* Darker text (gray-600) */
-            font-size: 10px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.1s;
+            border-radius: 6px; border: 1px solid #d1d5db;
+            background: #fff; color: #4b5563; font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; transition: all 0.1s;
         }
-        .cl-toggle-btn.active {
-            background: #22c55e; border-color: #22c55e; color: white;
-        }
-        
-        .cl-drag-handle {
-            display: flex; align-items: center; justify-content: center;
-            color: #d1d5db; 
-            cursor: grab;
-            width: 100%;
-            height: 100%;
-            touch-action: none; /* Important for touch drag */
-        }
-        .cl-drag-handle:active {
-            cursor: grabbing;
-            color: #6b7280;
-        }
-        
-        .cl-trash-btn {
-            display: flex; align-items: center; justify-content: center;
-            color: #9ca3af; cursor: pointer;
-            width: 100%; height: 100%;
-        }
+        .cl-toggle-btn.active { background: #22c55e; border-color: #22c55e; color: white; }
+        .cl-drag-handle { display: flex; align-items: center; justify-content: center; color: #d1d5db; cursor: grab; width: 100%; height: 100%; touch-action: none; }
+        .cl-drag-handle:active { cursor: grabbing; color: #6b7280; }
+        .cl-trash-btn { display: flex; align-items: center; justify-content: center; color: #9ca3af; cursor: pointer; width: 100%; height: 100%; }
         .cl-trash-btn:active { color: #ef4444; }
 
-        .cl-select-bar {
-            display: flex; align-items: center; justify-content: space-between; padding: 10px 14px;
-            background: #f9fafb; border-bottom: 1px solid #eee;
-            font-size: 12px; color: #6b7280; font-weight: 600;
-            position: sticky; top: 0; z-index: 10;
-        }
+        .cl-select-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f9fafb; border-bottom: 1px solid #eee; font-size: 12px; color: #6b7280; font-weight: 600; position: sticky; top: 0; z-index: 10; }
 
         /* Guide & Accordion */
-        .guide-btn {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 11px; color: #6b7280; background: #fff;
-            padding: 4px 10px; border: 1px solid #e5e7eb; border-radius: 12px;
-        }
-
-        /* FAQ Accordion Styles */
-        .faq-item {
-            border-bottom: 1px solid #f3f4f6;
-            background-color: white;
-        }
-        .faq-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 1.25rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+        .guide-btn { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #6b7280; background: #fff; padding: 4px 10px; border: 1px solid #e5e7eb; border-radius: 12px; }
+        .faq-item { border-bottom: 1px solid #f3f4f6; background-color: white; }
+        .faq-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; cursor: pointer; transition: background-color 0.2s; }
         .faq-header:active { background-color: #f9fafb; }
-        .faq-question {
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: #374151;
-            display: flex; align-items: center;
-        }
-        .faq-content {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
-            background-color: #f9fafb;
-        }
-        .faq-item.active .faq-content {
-            max-height: 500px;
-            transition: max-height 0.4s cubic-bezier(1, 0, 1, 0);
-        }
+        .faq-question { font-size: 0.875rem; font-weight: 700; color: #374151; display: flex; align-items: center; }
+        .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); background-color: #f9fafb; }
+        .faq-item.active .faq-content { max-height: 500px; transition: max-height 0.4s cubic-bezier(1, 0, 1, 0); }
         .faq-item.active .faq-chevron { transform: rotate(180deg); }
         .faq-chevron { transition: transform 0.2s; color: #9ca3af; }
-        
-        .faq-answer-box {
-            padding: 1.25rem;
-            font-size: 0.8rem;
-            color: #4b5563;
-            line-height: 1.6;
-            word-break: keep-all;
-        }
+        .faq-answer-box { padding: 1.25rem; font-size: 0.8rem; color: #4b5563; line-height: 1.6; word-break: keep-all; }
 
         /* Modal Tabs */
-        .guide-tab-btn {
-            flex: 1; text-align: center; padding: 0.875rem 0;
-            font-size: 0.875rem; font-weight: 500; color: #6b7280;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .guide-tab-btn.active {
-            color: #16a34a; font-weight: 700; border-bottom-color: #22c55e;
-        }
+        .guide-tab-btn { flex: 1; text-align: center; padding: 0.875rem 0; font-size: 0.875rem; font-weight: 500; color: #6b7280; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .guide-tab-btn.active { color: #16a34a; font-weight: 700; border-bottom-color: #22c55e; }
 
         /* Keyword Pool */
-        .keyword-chip {
-            font-size: 11px; padding: 6px 12px; border-radius: 8px;
-            background-color: #fff; color: #4b5563; border: 1px solid #e5e7eb;
-            cursor: pointer; white-space: nowrap; transition: all 0.2s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        }
+        .keyword-chip { font-size: 11px; padding: 6px 12px; border-radius: 8px; background-color: #fff; color: #4b5563; border: 1px solid #e5e7eb; cursor: pointer; white-space: nowrap; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
         .keyword-chip:active { background-color: #e5e7eb; transform: scale(0.96); }
+        .list-input-group { border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px 12px; transition: all 0.2s; background-color: #fff; }
+        .list-input-group.active { border-color: #22c55e; background-color: #f0fdf4; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1); }
 
-        .list-input-group {
-            border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px 12px;
-            transition: all 0.2s; background-color: #fff;
-        }
-        .list-input-group.active {
-            border-color: #22c55e; background-color: #f0fdf4; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
-        }
-
-        /* Search Animations - Fixed inner shadow and max height */
-        #search-container, #home-search-container {
+        /* Search Animations */
+        #home-search-container {
             transition: max-height 0.3s ease-in-out, opacity 0.3s, padding 0.3s, border-width 0.3s;
             overflow: hidden;
             max-height: 100px;
         }
-        .search-hidden {
+        #home-search-container.search-hidden {
             max-height: 0 !important;
             opacity: 0;
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             border-bottom-width: 0 !important;
+            pointer-events: none;
+        }
+
+        /* Order Search Full Overlay Animation */
+        #search-container {
+            position: absolute;
+            top: 0; left: 0; right: 0; 
+            height: 80px; /* bottom: 0 대신 고정 높이를 주어 스크롤 시 축소 방지 */
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(4px);
+            z-index: 50; /* 탭바, 정렬바 위로 완전히 덮기 위함 */
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        #search-container.search-hidden {
+            opacity: 0;
+            visibility: hidden;
             pointer-events: none;
         }
 
@@ -250,117 +170,33 @@
         #delivery-sheet.visible { transform: translateY(0); }
 
         /* Icon Settings Btn */
-        .list-settings-btn {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b7280; 
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid transparent;
-            padding: 0 0.5rem; 
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-        .list-settings-btn:active {
-            background-color: #f9fafb;
-            color: #22c55e;
-        }
+        .list-settings-btn { height: 100%; display: flex; align-items: center; justify-content: center; color: #6b7280; background: transparent; border: none; border-bottom: 2px solid transparent; padding: 0 0.5rem; flex-shrink: 0; transition: all 0.2s; }
+        .list-settings-btn:active { background-color: #f9fafb; color: #22c55e; }
 
         /* Category Bar Styles */
-        .category-btn {
-            display: flex; flex-direction: column; align-items: center; gap: 2px;
-            width: 100%; padding: 4px 0;
-            border-radius: 8px;
-            transition: background-color 0.2s;
-        }
+        .category-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100%; padding: 4px 0; border-radius: 8px; transition: background-color 0.2s; }
         .category-btn:active { background-color: #f3f4f6; }
         .category-btn.active { background-color: #f0fdf4; }
         .category-btn.active span { color: #16a34a; font-weight: 700; }
 
         /* Sub Section Bar Styles & Animation */
-        .sub-section-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1rem;
-            height: 40px; 
-            background-color: #fff;
-            border-bottom: 1px solid #f3f4f6;
-            font-size: 13px;
-        }
-        
-        .sort-bar-transition {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease, border-width 0.3s ease;
-            max-height: 40px; 
-            opacity: 1;
-            overflow: hidden; 
-            will-change: max-height, opacity, padding;
-            transform: translateZ(0);
-        }
-        
-        .sort-bar-overflow-visible {
-            overflow: visible !important; 
-        }
-        
-        .sort-bar-collapsed {
-            max-height: 0 !important;
-            opacity: 0 !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            border-bottom-width: 0 !important;
-            overflow: hidden !important; 
-        }
+        .sub-section-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; height: 40px; background-color: #fff; border-bottom: 1px solid #f3f4f6; font-size: 13px; }
+        .sort-bar-transition { transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease, border-width 0.3s ease; max-height: 40px; opacity: 1; overflow: hidden; will-change: max-height, opacity, padding; transform: translateZ(0); }
+        .sort-bar-overflow-visible { overflow: visible !important; }
+        .sort-bar-collapsed { max-height: 0 !important; opacity: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; border-bottom-width: 0 !important; overflow: hidden !important; }
 
-        .delivery-btn {
-            display: flex; align-items: center; gap: 4px;
-            color: #374151; font-weight: 600;
-            cursor: pointer;
-        }
-        .sort-dropdown-container {
-            position: relative;
-        }
-        .sort-btn {
-            display: flex; align-items: center; gap: 4px;
-            color: #4b5563; font-weight: 500; cursor: pointer;
-        }
-        .sort-dropdown-menu {
-            position: absolute;
-            top: 100%; right: 0;
-            margin-top: 4px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 140px;
-            z-index: 50; 
-            display: none;
-        }
+        .delivery-btn { display: flex; align-items: center; gap: 4px; color: #374151; font-weight: 600; cursor: pointer; }
+        .sort-dropdown-container { position: relative; }
+        .sort-btn { display: flex; align-items: center; gap: 4px; color: #4b5563; font-weight: 500; cursor: pointer; }
+        .sort-dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 4px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 140px; z-index: 50; display: none; }
         .sort-dropdown-menu.active { display: block; }
-        .sort-option {
-            padding: 10px 12px;
-            font-size: 13px;
-            color: #374151;
-            cursor: pointer;
-            border-bottom: 1px solid #f9fafb;
-        }
+        .sort-option { padding: 10px 12px; font-size: 13px; color: #374151; cursor: pointer; border-bottom: 1px solid #f9fafb; }
         .sort-option:last-child { border-bottom: none; }
         .sort-option:hover { background-color: #f9fafb; }
         .sort-option.selected { color: #16a34a; font-weight: 700; }
 
         /* List Section Header - STICKY FIX */
-        .list-section-header {
-            background-color: #f9fafb;
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #1f2937;
-            border-bottom: 1px solid #f3f4f6;
-            position: sticky;
-            top: 97px; 
-            z-index: 5;
-        }
+        .list-section-header { background-color: #f9fafb; padding: 8px 16px; font-size: 12px; font-weight: 700; color: #1f2937; border-bottom: 1px solid #f3f4f6; position: sticky; top: 97px; z-index: 5; }
 
         /* Coach Mark (Tooltip) */
         .coach-mark {
@@ -381,137 +217,27 @@
             pointer-events: none;
             white-space: nowrap;
             word-break: keep-all; 
-            --arrow-x: 50%;
         }
-        .coach-mark.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-        .coach-mark::before { /* Arrow pointing up */
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: var(--arrow-x);
-            transform: translateX(-50%);
-            border-width: 0 5px 6px 5px;
-            border-style: solid;
-            border-color: transparent transparent #2D3748 transparent;
-        }
-        .coach-btn {
-            background: #22c55e;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+        .coach-mark.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .coach-btn { background: #22c55e; color: white; padding: 3px 10px; border-radius: 4px; font-weight: 500; font-size: 12px; cursor: pointer; white-space: nowrap; }
         
         /* Navigation Badge Style */
-        .nav-badge {
-            background-color: #FFD000; 
-            color: #374151; 
-            font-size: 11px;
-            font-weight: 900;
-            height: 18px;
-            min-width: 18px;
-            padding: 0 5px;
-            border-radius: 99px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-badge.hidden-badge {
-            display: none;
-        }
+        .nav-badge { background-color: #FFD000; color: #374151; font-size: 11px; font-weight: 900; height: 18px; min-width: 18px; padding: 0 5px; border-radius: 99px; display: flex; align-items: center; justify-content: center; }
+        .nav-badge.hidden-badge { display: none; }
 
-        /* Safe area bottom fix - UPDATED FOR 59PX */
-        .safe-pb { 
-            padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
-            height: auto;
-            min-height: auto;
-        }
+        .safe-pb { padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important; height: auto; min-height: auto; }
         
-        /* --- Order Button States --- */
-        .footer-order-btn-base {
-            width: 200px;
-            flex: none;
-            height: 43px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-        }
-        .footer-order-btn-base:active {
-            transform: scale(0.98);
-        }
-
-        /* State 1: Default (Home/Nav) - White Bg */
-        .footer-btn-home {
-            background-color: #FFFFFF;
-            border: 1px solid #e5e7eb;
-            color: #1B4D3E;
-        }
+        .footer-order-btn-base { width: 200px; flex: none; height: 43px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden; }
+        .footer-order-btn-base:active { transform: scale(0.98); }
+        .footer-btn-home { background-color: #FFFFFF; border: 1px solid #e5e7eb; color: #1B4D3E; }
         .footer-btn-home:active { background-color: #f9fafb; }
+        .footer-btn-active { background-color: #A8D8B9 !important; border: none; color: #1B4D3E !important; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .footer-btn-empty { background-color: #f9fafb; border: 1px solid #e5e7eb; color: #6b7280; }
 
-        /* State 2 & 3: Active (Picking & Cart) - Custom Green Bg (#A8D8B9) */
-        .footer-btn-active {
-            background-color: #A8D8B9 !important;
-            border: none;
-            color: #1B4D3E !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
-        /* State 4: Empty (Disabled) */
-        .footer-btn-empty {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            color: #6b7280;
-        }
+        .btn-line-1 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 9px; margin-bottom: 0px; letter-spacing: 0.5px; opacity: 1; line-height: 1.1; font-style: normal; }
+        .btn-line-2 { font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 16px; line-height: 1.2; letter-spacing: -0.025em; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        /* Typography Helper for Button */
-        .btn-line-1 {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 800;
-            font-size: 9px;
-            margin-bottom: 0px;
-            letter-spacing: 0.5px;
-            opacity: 1;
-            line-height: 1.1;
-            font-style: normal;
-        }
-
-        /* Line 2: Action Hero */
-        .btn-line-2 {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-weight: 700;
-            font-size: 16px;
-            line-height: 1.2;
-            letter-spacing: -0.025em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        /* Calendar Day Styles (New) */
-        .cal-day-btn {
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: #374151;
-        }
+        .cal-day-btn { height: 36px; display: flex; align-items: center; justify-content: center; font-size: 13px; border-radius: 8px; cursor: pointer; color: #374151; }
         .cal-day-btn.disabled { color: #d1d5db; pointer-events: none; }
         .cal-day-btn.today { border: 1px solid #22c55e; color: #16a34a; font-weight: bold; }
         .cal-day-btn.active:hover { background-color: #f0fdf4; }
@@ -525,13 +251,10 @@
         <!-- HEADER -->
         <header class="sticky top-0 bg-white z-40 shadow-sm border-b h-[57px]">
             <div class="relative flex justify-between items-center p-3 h-full">
-                
                 <div class="flex items-center cursor-pointer" id="header-mode-toggle" onclick="toggleAppMode()">
                     <i class="fas fa-bars text-lg text-gray-600 mr-2"></i>
                     <span id="header-mode-title" class="text-sm font-bold text-gray-800">상품목록</span>
                 </div>
-                
-                <!-- Logo -->
                 <h1 id="header-title" class="absolute left-1/2 -translate-x-1/2 text-2xl font-extrabold text-[#1B4D3E] cursor-pointer">NH라인</h1>
                 <div class="flex items-center space-x-2">
                     <span class="text-xs font-semibold">OP</span>
@@ -603,6 +326,7 @@
         <!-- QUICK ORDER MAIN (ORDER MODE) -->
         <main id="quick-order-view" class="hidden">
             <!-- Sub Header (Sticky) -->
+            <!-- Sub header relative controls the overlay space for Search Bar -->
             <div id="sub-header" class="sticky top-[57px] z-30 shadow-md bg-gray-100 relative">
                 <!-- 리스트 바 (Tabs) -->
                 <div id="my-list-container" class="flex justify-between items-center px-0 bg-white border-b h-[40px] overflow-hidden">
@@ -611,13 +335,11 @@
                 
                 <!-- Sub Section Bar (Sort & Delivery) -->
                 <div id="sub-section-bar" class="sub-section-bar hidden sort-bar-transition">
-                    <!-- Left: Delivery Date -->
                     <div id="delivery-date-btn" class="delivery-btn" onclick="openCalendarModal()">
                         <i class="far fa-calendar-alt text-lg text-green-600 mr-1"></i>
                         <span id="current-delivery-date">1월 12일(월) 도착</span>
                     </div>
 
-                    <!-- Right: Sort Dropdown -->
                     <div class="sort-dropdown-container">
                         <div class="sort-btn" onclick="toggleSortDropdown(event)">
                             <span id="current-sort-label">최신순</span>
@@ -630,8 +352,8 @@
                     </div>
                 </div>
 
-                <!-- Search Box -->
-                <div id="search-container" class="p-3 border-b bg-white search-hidden">
+                <!-- Search Box (Full Overlay) -->
+                <div id="search-container" class="search-hidden">
                     <div class="flex items-center w-full gap-2">
                         <div class="relative flex-grow">
                             <input type="text" id="product-search-input" placeholder="담은 상품 내 검색" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-sm bg-gray-50">
@@ -680,9 +402,7 @@
 
             <!-- Content Area -->
             <div class="flex-grow overflow-y-auto bg-white pb-24 no-scrollbar" id="create-list-content">
-                <div class="" id="create-list-items">
-                    <!-- Items -->
-                </div>
+                <div class="" id="create-list-items"></div>
             </div>
             
             <div class="flex-none bg-white border-t p-3 safe-pb z-30 flex justify-start">
@@ -762,9 +482,7 @@
             </div>
 
             <!-- Days Grid -->
-            <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
-                <!-- JS Generated -->
-            </div>
+            <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center"></div>
 
             <div class="mt-4 pt-4 border-t text-xs text-gray-400 text-center">
                 * 배송일은 +2일까지 설정 가능합니다. (기본: 내일 배송)
@@ -807,7 +525,7 @@
             hasChanges: false,
             activeListInputId: 1,
             isSearching: false,
-            isTransitioning: false, // 가짜 스크롤 방지용 플래그 추가
+            isTransitioning: false, // 가짜 스크롤 방지용 플래그 유지
             currentSort: 'latest', 
             deliveryDate: '1월 12일(월) 도착',
             selectedCategory: null,
@@ -937,13 +655,11 @@
 
             const subSectionBarEl = document.getElementById('sub-section-bar');
             
-            if (appState.isSearching) {
-                subSectionBarEl.classList.remove('sort-bar-overflow-visible');
-                subSectionBarEl.classList.add('sort-bar-collapsed');
-            } else if (!isBarHidden) {
+            // 검색바가 전체를 덮으므로 여기서는 스크롤 상태에 따른 원래 로직만 유지합니다.
+            if (!isBarHidden && !appState.isSearching) {
                  subSectionBarEl.classList.add('sort-bar-overflow-visible');
                  subSectionBarEl.classList.remove('sort-bar-collapsed');
-            } else {
+            } else if (isBarHidden && !appState.isSearching) {
                  subSectionBarEl.classList.remove('sort-bar-overflow-visible');
                  subSectionBarEl.classList.add('sort-bar-collapsed');
             }
@@ -1186,29 +902,18 @@
                     renderHomeView();
                 }
             } else {
+                // 주문하기 화면 전체 오버레이 검색바 활성화
                 searchContainer.classList.toggle('search-hidden', !appState.isSearching);
-                const subSectionBarEl = document.getElementById('sub-section-bar');
                 
                 if (appState.isSearching) {
-                    subSectionBarEl.classList.remove('sort-bar-overflow-visible');
-                    subSectionBarEl.classList.add('sort-bar-collapsed');
                     setTimeout(() => productSearchInput.focus(), 300);
                 } else {
-                    if (!isBarHidden) {
-                        subSectionBarEl.classList.remove('sort-bar-collapsed');
-                        setTimeout(() => {
-                            if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
-                        }, 300);
-                    } else {
-                        subSectionBarEl.classList.add('sort-bar-collapsed');
-                        subSectionBarEl.classList.remove('sort-bar-overflow-visible');
-                    }
                     productSearchInput.value = '';
                     renderProducts();
                 }
             }
 
-            // 트랜지션(높이 변화)가 끝난 후 잠금 해제 및 새로운 스크롤 기준점 설정
+            // 트랜지션 완료 후 잠금 해제
             clearTimeout(transitionTimeout);
             transitionTimeout = setTimeout(() => {
                 appState.isTransitioning = false;
@@ -1217,28 +922,16 @@
         };
 
         window.closeSearch = function() {
-            // 외부에서 강제로 닫을 때도 동일하게 잠금
             appState.isTransitioning = true;
             appState.isSearching = false;
+            
             searchContainer.classList.add('search-hidden');
             homeSearchContainer.classList.add('search-hidden');
+            
             productSearchInput.value = '';
             homeSearchInput.value = '';
             appState.homeSearchText = '';
             
-            if (appState.currentView === 'quick-order') {
-                const subSectionBarEl = document.getElementById('sub-section-bar');
-                if (!isBarHidden) {
-                    subSectionBarEl.classList.remove('sort-bar-collapsed');
-                    setTimeout(() => {
-                        if (!appState.isSearching && !isBarHidden) subSectionBarEl.classList.add('sort-bar-overflow-visible');
-                    }, 300);
-                } else {
-                    subSectionBarEl.classList.add('sort-bar-collapsed');
-                    subSectionBarEl.classList.remove('sort-bar-overflow-visible');
-                }
-            }
-
             updateHeaderUI();
             renderProducts();
             renderHomeView();
@@ -1501,41 +1194,45 @@
             
             const count = getListCount(id);
             if (count === 0) {
-                showCoachMark(btnElement);
+                showCoachMark(); // 파라미터(btnElement)를 더 이상 전달받아 의존하지 않음
             } else {
                 switchMainList(id);
             }
         };
         
-        window.showCoachMark = function(targetEl) {
-            if (!targetEl) return;
-            
-            const rect = targetEl.getBoundingClientRect();
-            const targetCenter = rect.left + (rect.width / 2);
-            const top = rect.bottom + 8;
-
+        // 코치마크 위치를 MY1, MY2 탭 사이로 고정
+        window.showCoachMark = function() {
             coachMarkPopup.classList.remove('visible');
             coachMarkPopup.style.display = 'flex';
             coachMarkPopup.style.opacity = '0'; 
             coachMarkPopup.style.transform = 'none'; 
             
+            const containerRect = myListTabsContainer.getBoundingClientRect();
+            const top = containerRect.bottom + 8;
+            
             const tooltipWidth = coachMarkPopup.offsetWidth || 200; 
             const screenWidth = window.innerWidth;
-            const margin = 12; 
             
-            let left = targetCenter - (tooltipWidth / 2);
-
-            if (left < margin) {
-                left = margin;
-            } else if (left + tooltipWidth > screenWidth - margin) {
-                left = screenWidth - tooltipWidth - margin;
+            // MY1, MY2 탭 찾기
+            const tabs = myListTabsContainer.querySelectorAll('.tab-btn');
+            let targetCenter;
+            if (tabs.length >= 4) {
+                const my1Rect = tabs[2].getBoundingClientRect();
+                const my2Rect = tabs[3].getBoundingClientRect();
+                // MY1과 MY2의 중앙값 계산
+                targetCenter = (my1Rect.left + (my1Rect.width / 2) + my2Rect.left + (my2Rect.width / 2)) / 2;
+            } else {
+                targetCenter = screenWidth / 2;
             }
 
-            const arrowX = targetCenter - left;
+            let left = targetCenter - (tooltipWidth / 2);
+
+            // 화면 밖으로 벗어나지 않도록 여백 처리
+            if (left < 12) left = 12;
+            if (left + tooltipWidth > screenWidth - 12) left = screenWidth - tooltipWidth - 12;
 
             coachMarkPopup.style.top = `${top}px`;
             coachMarkPopup.style.left = `${left}px`;
-            coachMarkPopup.style.setProperty('--arrow-x', `${arrowX}px`);
 
             coachMarkPopup.style.transform = `translateY(5px)`;
             
